@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaUser, FaEnvelope, FaLock, FaPhone, FaAddressCard, FaUpload, FaSpinner } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Line } from 'rc-progress';
 
 const Signup = () => {
@@ -22,7 +22,7 @@ const Signup = () => {
   });
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-
+  let navigate = useNavigate()
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -70,6 +70,7 @@ const Signup = () => {
       setLoading(false);
       toast.success('Signup successful!');
     }, 2000);
+    navigate("/dashboard")
     console.log(formData)
   };
 

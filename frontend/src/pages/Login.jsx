@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaUser, FaLock, FaSpinner } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 const Login = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
   const [loading, setLoading] = useState(false);
-
+  let navigate = useNavigate()
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -27,7 +27,8 @@ const Login = () => {
       setLoading(false);
       toast.success("Login successful!");
       // Redirect or perform additional actions after successful login
-    }, 2000);
+    }, 1000);
+    navigate("/dashboard")
   };
 
   return (
