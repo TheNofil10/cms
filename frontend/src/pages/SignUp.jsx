@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaUser, FaEnvelope, FaLock, FaPhone, FaAddressCard, FaUpload, FaSpinner } from 'react-icons/fa';
-
+import { Link } from 'react-router-dom';
 import { Line } from 'rc-progress';
 
 const Signup = () => {
@@ -81,7 +81,7 @@ const Signup = () => {
         <h2 className="text-3xl mb-6 text-black text-center shadow-slate-1000">Employee Signup</h2>
         <Line percent={getProgress()} strokeWidth="2" strokeColor="black" />
         <form onSubmit={handleSignup} className="bg-white text-black p-8 rounded-lg shadow-lg shadow-black mt-4 ">
-          {step === 1 && (
+        {step === 1 && (
             <>
               <div className="mb-4">
                 <label className="block text-sm mb-2">First Name</label>
@@ -125,7 +125,7 @@ const Signup = () => {
                   />
                 </div>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between mb-4">
                 <button
                   type="button"
                   onClick={handleNextStep}
@@ -133,6 +133,9 @@ const Signup = () => {
                 >
                   Next
                 </button>
+                <Link to="/login" className="text-black text-sm underline">
+                  Already have an account? Login
+                </Link>
               </div>
             </>
           )}
