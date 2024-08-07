@@ -83,7 +83,7 @@ const Signup = () => {
       .then((response) => {
         console.log(response.data);
         toast.success("Signed Up Successfully");
-        navigate('/login');
+        navigate('/dashboard');
       })
       .catch((error) => {
         console.error(error.response.data);
