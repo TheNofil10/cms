@@ -1,12 +1,23 @@
 import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { FaUser, FaEnvelope, FaLock, FaPhone, FaAddressCard, FaUpload, FaSpinner } from 'react-icons/fa';
+import {
+  FaUser,
+  FaEnvelope,
+  FaLock,
+  FaPhone,
+  FaAddressCard,
+  FaUpload,
+  FaSpinner,
+} from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { Line } from 'rc-progress';
+import axios from 'axios';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
     username: '',
     email: '',
     password: '',
@@ -14,15 +25,15 @@ const Signup = () => {
     address: '',
     profileImage: null,
     imagePreview: null,
-    firstName: '',
-    lastName: '',
-    dateOfBirth: '',
+    date_of_birth: '',
     department: '',
     position: '',
   });
+
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  let navigate = useNavigate()
+  let navigate = useNavigate();
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -30,15 +41,18 @@ const Signup = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    setFormData({ ...formData, profileImage: file, imagePreview: URL.createObjectURL(file) });
+    setFormData({
+      ...formData,
+      profileImage: file,
+      imagePreview: URL.createObjectURL(file),
+    });
   };
 
   const handleNextStep = () => {
     if (validateStep(step)) {
       setStep(step + 1);
-    }
-    else{
-        toast.error("Data Not Entered")
+    } else {
+      toast.error("Data Not Entered");
     }
   };
 
@@ -49,15 +63,14 @@ const Signup = () => {
   const validateStep = (currentStep) => {
     switch (currentStep) {
       case 1:
-        return (formData.firstName && formData.lastName && formData.username);
+        return formData.first_name && formData.last_name && formData.username;
       case 2:
         return formData.email && formData.password;
       case 3:
         return formData.phone && formData.address;
       case 4:
-        return formData.dateOfBirth && formData.department && formData.position;
+        return formData.date_of_birth && formData.department && formData.position;
       default:
-        
         return true;
     }
   };
@@ -65,13 +78,20 @@ const Signup = () => {
   const handleSignup = (e) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate signup process
-    setTimeout(() => {
-      setLoading(false);
-      toast.success('Signup successful!');
-    }, 2000);
-    navigate("/dashboard")
-    console.log(formData)
+    axios
+      .post("http://localhost:8000/api/employees/", formData)
+      .then((response) => {
+        console.log(response.data);
+        toast.success("Signed Up Successfully");
+        navigate('/login');
+      })
+      .catch((error) => {
+        console.error(error.response.data);
+        toast.error("Error " + error.response.data.error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const getProgress = () => (step / 5) * 100;
@@ -79,10 +99,15 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-white text-white">
       <div className="w-full max-w-md">
-        <h2 className="text-3xl mb-6 text-black text-center shadow-slate-1000">Employee Signup</h2>
+        <h2 className="text-3xl mb-6 text-black text-center shadow-slate-1000">
+          Employee Signup
+        </h2>
         <Line percent={getProgress()} strokeWidth="2" strokeColor="black" />
-        <form onSubmit={handleSignup} className="bg-white text-black p-8 rounded-lg shadow-lg shadow-black mt-4 ">
-        {step === 1 && (
+        <form
+          onSubmit={handleSignup}
+          className="bg-white text-black p-8 rounded-lg shadow-lg shadow-black mt-4"
+        >
+          {step === 1 && (
             <>
               <div className="mb-4">
                 <label className="block text-sm mb-2">First Name</label>
@@ -90,8 +115,8 @@ const Signup = () => {
                   <FaUser className="m-2" />
                   <input
                     type="text"
-                    name="firstName"
-                    value={formData.firstName}
+                    name="first_name"
+                    value={formData.first_name}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
                     placeholder="Enter first name"
@@ -104,8 +129,8 @@ const Signup = () => {
                   <FaUser className="m-2" />
                   <input
                     type="text"
-                    name="lastName"
-                    value={formData.lastName}
+                    name="last_name"
+                    value={formData.last_name}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
                     placeholder="Enter last name"
@@ -241,20 +266,21 @@ const Signup = () => {
               <div className="mb-4">
                 <label className="block text-sm mb-2">Date of Birth</label>
                 <div className="flex items-center bg-gray-200 rounded">
-                  <FaAddressCard className="m-2" />
+                  <FaUser className="m-2" />
                   <input
                     type="date"
-                    name="dateOfBirth"
-                    value={formData.dateOfBirth}
+                    name="date_of_birth"
+                    value={formData.date_of_birth}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
+                    placeholder="Enter date of birth"
                   />
                 </div>
               </div>
               <div className="mb-4">
                 <label className="block text-sm mb-2">Department</label>
                 <div className="flex items-center bg-gray-200 rounded">
-                  <FaAddressCard className="m-2" />
+                  <FaUser className="m-2" />
                   <input
                     type="text"
                     name="department"
@@ -268,7 +294,7 @@ const Signup = () => {
               <div className="mb-4">
                 <label className="block text-sm mb-2">Position</label>
                 <div className="flex items-center bg-gray-200 rounded">
-                  <FaAddressCard className="m-2" />
+                  <FaUser className="m-2" />
                   <input
                     type="text"
                     name="position"
@@ -299,34 +325,45 @@ const Signup = () => {
           )}
           {step === 5 && (
             <>
-              <div className="flex justify-center mb-4">
-                <div className="relative">
-                  <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-gray-700">
-                    {formData.imagePreview ? (
-                      <img src={formData.imagePreview} alt="Profile" className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="flex items-center justify-center h-full bg-gray-700">
-                        <FaUser className="text-4xl text-gray-400" />
-                      </div>
-                    )}
-                  </div>
-                  <label className="absolute bottom-0 right-0 bg-gray-800 p-2 rounded-full cursor-pointer">
-                    <FaUpload />
-                    <input type="file" className="hidden" onChange={handleImageChange} />
-                  </label>
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Profile Image</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUpload className="m-2" />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                  />
                 </div>
+                {formData.imagePreview && (
+                  <img
+                    src={formData.imagePreview}
+                    alt="Profile Preview"
+                    className="mt-4 w-20 h-20 object-cover rounded-full"
+                  />
+                )}
               </div>
-              <button
-                type="submit"
-                className="w-full bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200 flex items-center justify-center"
-              >
-                {loading ? <FaSpinner className="animate-spin mr-2" /> : 'Signup'}
-              </button>
+              <div className="flex justify-between">
+                <button
+                  type="button"
+                  onClick={handlePreviousStep}
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  Previous
+                </button>
+                <button
+                  type="submit"
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  {loading ? <FaSpinner className="animate-spin" /> : 'Sign Up'}
+                </button>
+              </div>
             </>
           )}
         </form>
+        <ToastContainer />
       </div>
-      <ToastContainer />
     </div>
   );
 };
