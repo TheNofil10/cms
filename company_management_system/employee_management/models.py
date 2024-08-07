@@ -9,7 +9,7 @@ class Employee(models.Model):
     last_name = models.CharField(max_length=100)
     username = models.CharField(max_length=100, unique=True)
     email = models.EmailField(unique=True)
-    password = models.CharField(max_length=128) 
+    password = models.CharField(max_length=128)
     phone = models.CharField(max_length=15)
     address = models.TextField()
     date_of_birth = models.DateField()

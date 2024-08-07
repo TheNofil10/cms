@@ -4,10 +4,10 @@ from rest_framework import status
 from .serializers import EmployeeSerializer
 from .models import Employee
 from django.core.files.storage import FileSystemStorage
-from rest_framework.views import APIView
 
-def upload_file(storage, file, username):
-    filename = storage.save(f'media/userpics/{username}/{file.name}', file)
+def upload_file(storage, file, employee):
+    filename = storage.save(f'profile_images/employees/{employee.id}/{file.name}', file)
+    print(f'File saved to: {filename}')
     return storage.url(filename)
 
 class EmployeeViewSet(viewsets.ModelViewSet):
@@ -16,14 +16,30 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         employee = serializer.save()
-        if 'profileImage' in self.request.FILES:
-            image = self.request.FILES['profileImage']
+        if 'profile_image' in self.request.FILES:
+            print('Profile image found in request.')
+            image = self.request.FILES['profile_image']
             fs = FileSystemStorage()
-            uploaded_file_url = upload_file(fs, image, employee.username)
+            uploaded_file_url = upload_file(fs, image, employee)
+            print(f'Uploaded file URL: {uploaded_file_url}')
+            employee.profile_image = uploaded_file_url
+            employee.save()
             return Response({'employee': serializer.data, 'image_url': uploaded_file_url}, status=status.HTTP_201_CREATED)
+        else:
+            print('No profile image in request.')
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-class EmployeeListView(APIView):
-    def get(self, request):
-        employees = Employee.objects.all()
-        return Response({'employees': employees})
+    def perform_update(self, serializer):
+        employee = serializer.save()
+        if 'profile_image' in self.request.FILES:
+            print('Profile image found in request.')
+            image = self.request.FILES['profile_image']
+            fs = FileSystemStorage()
+            uploaded_file_url = upload_file(fs, image, employee)
+            print(f'Uploaded file URL: {uploaded_file_url}')
+            employee.profile_image = uploaded_file_url
+            employee.save()
+            return Response({'employee': serializer.data, 'image_url': uploaded_file_url}, status=status.HTTP_200_OK)
+        else:
+            print('No profile image in request.')
+        return Response(serializer.data, status=status.HTTP_200_OK)
