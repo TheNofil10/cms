@@ -78,21 +78,40 @@ const Signup = () => {
   const handleSignup = (e) => {
     e.preventDefault();
     setLoading(true);
-    axios
-      .post("http://localhost:8000/api/employees/", formData)
-      .then((response) => {
+
+    const formDataObj = new FormData();
+    formDataObj.append("first_name", formData.first_name);
+    formDataObj.append("last_name", formData.last_name);
+    formDataObj.append("username", formData.username);
+    formDataObj.append("email", formData.email);
+    formDataObj.append("password", formData.password);
+    formDataObj.append("phone", formData.phone);
+    formDataObj.append("address", formData.address);
+    formDataObj.append("date_of_birth", formData.date_of_birth);
+    formDataObj.append("department", formData.department);
+    formDataObj.append("position", formData.position);
+    if (formData.profileImage) {
+        formDataObj.append("profile_image", formData.profileImage);
+    }
+
+    axios.post("http://localhost:8000/api/employees/", formDataObj, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    })
+    .then((response) => {
         console.log(response.data);
         toast.success("Signed Up Successfully");
         navigate('/dashboard');
-      })
-      .catch((error) => {
+    })
+    .catch((error) => {
         console.error(error.response.data);
         toast.error("Error " + error.response.data.error);
-      })
-      .finally(() => {
+    })
+    .finally(() => {
         setLoading(false);
-      });
-  };
+    });
+};
 
   const getProgress = () => (step / 5) * 100;
 

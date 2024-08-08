@@ -110,9 +110,16 @@ DATABASES = {
     }
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
+
+AUTH_USER_MODEL = 'employee_management.Employee'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -128,7 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+AUTH_USER_MODEL = 'employee_management.Employee'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
