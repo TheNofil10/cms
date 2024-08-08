@@ -1,12 +1,26 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.hashers import make_password
 
 def employee_image_path(instance, filename):
     return f'profile_images/employees/{instance.id}/{filename}'
 
+class EmployeeManager(BaseUserManager):
+    def create_user(self, username, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('The Email field must be set')
+        email = self.normalize_email(email)
+        user = self.model(username=username, email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, username, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(username, email, password, **extra_fields)
+
 class Employee(AbstractBaseUser):
-    id = models.AutoField(primary_key=True,)
+    id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     username = models.CharField(max_length=100, unique=True)
@@ -22,31 +36,11 @@ class Employee(AbstractBaseUser):
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'address']
 
-    class Meta:
-        permissions = (
-            ('is_admin', 'Is Admin'),
-            ('is_employee', 'Is Employee'),
-        )
-        
-    @property
-    def is_anonymous(self):
-        return False
-
-    @property
-    def is_authenticated(self):
-        return True
-
-    @property
-    def is_active(self):
-        return True
+    objects = EmployeeManager()
 
     @property
     def is_staff(self):
-        return False
-
-    @property
-    def is_superuser(self):
-        return False
+        return self.is_superuser
 
     def set_password(self, password):
         self.password = make_password(password)
