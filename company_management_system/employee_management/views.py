@@ -9,6 +9,13 @@ def upload_file(storage, file, employee):
     filename = storage.save(f'profile_images/employees/{employee.id}/{file.name}', file)
     return storage.url(filename)
 
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from .serializers import EmployeeSerializer, AdminEmployeeSerializer
+from .models import Employee
+from django.core.files.storage import FileSystemStorage
+
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
@@ -36,7 +43,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         employee = self.get_object()
-        if request.user.is_superuser:
+        if request.user != employee:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         serializer = self.get_serializer(employee, data=request.data, partial=True)
@@ -73,5 +80,7 @@ class AdminEmployeeView(viewsets.ViewSet):
 
     def destroy(self, request, pk):
         employee = Employee.objects.get(pk=pk)
+        if employee.is_superuser:
+            return Response(status=status.HTTP_403_FORBIDDEN)
         employee.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
