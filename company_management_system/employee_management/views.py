@@ -28,11 +28,14 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         return [IsAuthenticated()]
 
     def get_queryset(self):
+        # Superuser can see all employees
         if self.request.user.is_superuser:
             return Employee.objects.all()
+        # Regular employees can only see their own profile
         return Employee.objects.filter(id=self.request.user.id)
 
     def perform_create(self, serializer):
+        # Admin creates an employee profile
         employee = serializer.save()
         if 'profile_image' in self.request.FILES:
             image = self.request.FILES['profile_image']
@@ -43,6 +46,12 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         employee = self.get_object()
+
+        # Admin cannot update profiles after creation
+        if request.user.is_superuser:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        # Employees can only update their own profile
         if request.user != employee:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
@@ -52,10 +61,13 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
-        if self.request.user.is_superuser:
-            return super().destroy(request, *args, **kwargs)
-        return Response(status=status.HTTP_403_FORBIDDEN)
+        employee = self.get_object()
 
+        # Admin can delete profiles (except superuser profiles)
+        if not employee.is_superuser:
+            return super().destroy(request, *args, **kwargs)
+
+        return Response(status=status.HTTP_403_FORBIDDEN)
 class AdminEmployeeView(viewsets.ViewSet):
     serializer_class = AdminEmployeeSerializer
     permission_classes = [IsAdminUser]
