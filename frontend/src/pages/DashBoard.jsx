@@ -1,7 +1,6 @@
 import React from 'react';
 import SideBarComponent from '../components/SideBarComponent';
 import { useAuth } from '../contexts/AuthContext';
-
 const DashBoard = () => {
   const { currentUser } = useAuth();
 
@@ -14,9 +13,17 @@ const DashBoard = () => {
         ) : (
           <h1>Hello, Guest!</h1>
         )}
+      <div className='container mx-auto my-4 p-6'>
+      <EmployeeCard
+        profileImage='src/assets/m2.jpg'
+        name='John Cena'
+        department='Development Team'
+        position='Senior Developer'
+        username='@johndoe'
+      />
+      </div>
       </div>
     </div>
   );
 };
-
 export default DashBoard;
