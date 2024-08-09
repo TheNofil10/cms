@@ -27,7 +27,15 @@ const DashBoard = () => {
         </div>
       </Sidebar>
 
-      <EmployeeCard/>
+      <div className='container mx-auto my-4 p-6'>
+      <EmployeeCard
+        profileImage='src/assets/m2.jpg'
+        name='John Cena'
+        department='Development Team'
+        position='Senior Developer'
+        username='@johndoe'
+      />
+      </div>
     </main>
     
   )
