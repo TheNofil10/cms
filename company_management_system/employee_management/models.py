@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.db import models
 from django.contrib.auth.hashers import make_password
 
 def employee_image_path(instance, filename):
@@ -22,7 +22,7 @@ class EmployeeManager(BaseUserManager):
 
         return self.create_user(username, email, password, **extra_fields)
 
-class Employee(AbstractBaseUser, PermissionsMixin):  # Inherit from PermissionsMixin for is_superuser
+class Employee(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -39,7 +39,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):  # Inherit from PermissionsM
     is_active = models.BooleanField(default=True)  # Required for active user
     
     USERNAME_FIELD = 'username' 
-    REQUIRED_FIELDS = ['email', 'password']
+    REQUIRED_FIELDS = ['email']
 
     objects = EmployeeManager()
 

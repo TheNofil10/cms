@@ -1,32 +1,18 @@
 import React from 'react';
-import Sidebar, { SidebarItem } from '../components/Sidebar';
-import { LuBarChart3 } from "react-icons/lu";
-import { LuLayoutDashboard } from "react-icons/lu";
-import { LuUserCircle } from "react-icons/lu";
-import { LuReceipt } from "react-icons/lu";
-import { LuSettings } from "react-icons/lu";
-import { LuHelpCircle } from "react-icons/lu";
-import EmployeeCard from '../components/EmployeeCard';
-
+import SideBarComponent from '../components/SideBarComponent';
+import { useAuth } from '../contexts/AuthContext';
 const DashBoard = () => {
-  return (
-    <main className='App flex'>
-      <Sidebar>
-        <div className="flex flex-col h-full justify-between">
-          <div>
-            <SidebarItem icon={<LuLayoutDashboard size={20}/>} text="Dashboard"/>
-            <SidebarItem icon={<LuUserCircle size={20}/>} text="Employee" />
-            <SidebarItem icon={<LuBarChart3 size={20}/>} text="Attendance" />
-            <SidebarItem icon={<LuReceipt size={20}/>} text="Payroll" />
-            <hr className='my-3'/>
-          </div>
-          <div>
-            <SidebarItem icon={<LuSettings size={20}/>} text="Settings" />
-            <SidebarItem icon={<LuHelpCircle size={20}/>} text="Help" />
-          </div>
-        </div>
-      </Sidebar>
+  const { currentUser } = useAuth();
 
+  return (
+    <div className='App flex'>
+      <SideBarComponent />
+      <div>
+        {currentUser ? (
+          <h1>Hello, {currentUser.first_name} {currentUser.last_name}!</h1>
+        ) : (
+          <h1>Hello, Guest!</h1>
+        )}
       <div className='container mx-auto my-4 p-6'>
       <EmployeeCard
         profileImage='src/assets/m2.jpg'
@@ -36,9 +22,8 @@ const DashBoard = () => {
         username='@johndoe'
       />
       </div>
-    </main>
-    
-  )
-}
-
+      </div>
+    </div>
+  );
+};
 export default DashBoard;

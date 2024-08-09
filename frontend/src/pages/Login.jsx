@@ -2,33 +2,39 @@ import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaUser, FaLock, FaSpinner } from "react-icons/fa";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+
 const Login = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
   const [loading, setLoading] = useState(false);
-  let navigate = useNavigate()
+  const { login } = useAuth();
+  let navigate = useNavigate();
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     if (!formData.username || !formData.password) {
       toast.error("Please enter both username and password.");
       return;
     }
     setLoading(true);
-    // Simulate login process
-    setTimeout(() => {
-      setLoading(false);
+    const success = await login(formData.username, formData.password);
+    setLoading(false);
+
+    if (success) {
       toast.success("Login successful!");
-      // Redirect or perform additional actions after successful login
-    }, 1000);
-    navigate("/dashboard")
+      navigate("/dashboard");
+    } else {
+      toast.error("Invalid username or password.");
+    }
   };
 
   return (
@@ -79,7 +85,10 @@ const Login = () => {
             <Link to="/signup" className="text-black text-sm underline">
               Sign Up
             </Link>
-            <Link to="/forget-password" className="text-black text-sm underline">
+            <Link
+              to="/forget-password"
+              className="text-black text-sm underline"
+            >
               Forgot Password?
             </Link>
           </div>
