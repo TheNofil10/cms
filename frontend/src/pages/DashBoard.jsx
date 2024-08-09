@@ -6,10 +6,11 @@ import { LuUserCircle } from "react-icons/lu";
 import { LuReceipt } from "react-icons/lu";
 import { LuSettings } from "react-icons/lu";
 import { LuHelpCircle } from "react-icons/lu";
+import EmployeeCard from '../components/EmployeeCard';
 
 const DashBoard = () => {
   return (
-    <main className='App'>
+    <main className='App flex'>
       <Sidebar>
         <div className="flex flex-col h-full justify-between">
           <div>
@@ -25,7 +26,10 @@ const DashBoard = () => {
           </div>
         </div>
       </Sidebar>
+
+      <EmployeeCard/>
     </main>
+    
   )
 }
 
