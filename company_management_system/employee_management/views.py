@@ -62,8 +62,10 @@ class AdminEmployeeView(viewsets.ViewSet):
 
     def list(self, request):
         employees = Employee.objects.all()
+        print(employees)  # Add this line for debugging
         serializer = AdminEmployeeSerializer(employees, many=True)
         return Response(serializer.data)
+
 
     def create(self, request):
         serializer = AdminEmployeeSerializer(data=request.data)

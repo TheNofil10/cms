@@ -30,4 +30,4 @@ const EmployeeCard = ({ profileImage, name, department, position, username }) =>
   );
 };
 
-export default EmployeeCard;
+export default EmployeeCard;

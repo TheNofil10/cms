@@ -4,14 +4,13 @@ import "react-toastify/dist/ReactToastify.css";
 import { FaUser, FaLock, FaSpinner } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-
 const Login = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, currentUser } = useAuth();
   let navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -27,12 +26,18 @@ const Login = () => {
     }
     setLoading(true);
     const success = await login(formData.username, formData.password);
-    setLoading(false);
 
     if (success) {
+      setLoading(false);
+     
       toast.success("Login successful!");
-      navigate("/dashboard");
+      console.log(currentUser)
+      
+      if (currentUser) {
+        navigate("/");
+      }
     } else {
+      setLoading(false)
       toast.error("Invalid username or password.");
     }
   };
