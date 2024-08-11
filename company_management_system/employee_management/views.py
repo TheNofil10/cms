@@ -3,12 +3,13 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .serializers import EmployeeSerializer, AdminEmployeeSerializer
 from .models import Employee
-from django.core.files.storage import FileSystemStorage
+import os
 
 def upload_file(storage, file, employee):
-    filename = storage.save(f'profile_images/employees/{employee.id}/{file.name}', file)
+    filename = file.name.replace(' ', '_')
+    file_path = os.path.join(f'profile_images/employees/{employee.id}', filename)
+    filename = storage.save(file_path, file)
     return storage.url(filename)
-
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
@@ -29,9 +30,14 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         employee = serializer.save()
         if 'profile_image' in self.request.FILES:
             image = self.request.FILES['profile_image']
-            fs = FileSystemStorage()
-            uploaded_file_url = upload_file(fs, image, employee)
-            employee.profile_image = uploaded_file_url
+            upload_file(image, employee)
+            employee.save()
+
+    def perform_update(self, serializer):
+        employee = serializer.save()
+        if 'profile_image' in self.request.FILES:
+            image = self.request.FILES['profile_image']
+            upload_file(image, employee)
             employee.save()
 
     def update(self, request, *args, **kwargs):
@@ -62,10 +68,8 @@ class AdminEmployeeView(viewsets.ViewSet):
 
     def list(self, request):
         employees = Employee.objects.all()
-        print(employees)  # Add this line for debugging
         serializer = AdminEmployeeSerializer(employees, many=True)
         return Response(serializer.data)
-
 
     def create(self, request):
         serializer = AdminEmployeeSerializer(data=request.data)
@@ -73,9 +77,7 @@ class AdminEmployeeView(viewsets.ViewSet):
             employee = serializer.save()
             if 'profile_image' in request.FILES:
                 image = request.FILES['profile_image']
-                fs = FileSystemStorage()
-                uploaded_file_url = upload_file(fs, image, employee)
-                employee.profile_image = uploaded_file_url
+                upload_file(image, employee)
                 employee.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

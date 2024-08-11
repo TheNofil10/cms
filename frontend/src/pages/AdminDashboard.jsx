@@ -1,6 +1,6 @@
 import React from "react";
 
-import EmployeeList from "../components/EmployeeList"; // Import EmployeeList component
+import EmployeeList from "../components/admin/EmployeeList"; // Import EmployeeList component
 import AdminSideBar from "../components/sidebar/AdminSideBar";
 
 const AdminDashboard = () => {
