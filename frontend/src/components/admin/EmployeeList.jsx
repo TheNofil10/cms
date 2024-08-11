@@ -5,7 +5,7 @@ import EmployeeCard from "./EmployeeCard"; // New component
 import EmployeeFilters from "./EmployeeFilters"; // New component
 import EmployeeSorting from "./EmployeeSorting"; // New component
 import EmployeeSearch from "./EmployeeSearch"; // New component
-
+import { toast, ToastContainer } from "react-toastify";
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,11 +18,14 @@ const EmployeeList = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/employees/", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
-        });
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/employees/",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
         console.log("Fetched employees:", response.data); // Log the response data
         setEmployees(response.data.results || response.data || []);
       } catch (error) {
@@ -32,7 +35,7 @@ const EmployeeList = () => {
         setLoading(false);
       }
     };
-  
+
     fetchEmployees();
   }, []);
 
@@ -44,26 +47,30 @@ const EmployeeList = () => {
     setSelectedEmployee(employee);
   };
 
-  const handleDeleteEmployee = async (id) => {
+  const handleDeleteEmployee = async (employeeId) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/employees/${id}/`, {
+      await axios.delete(`http://127.0.0.1:8000/api/employees/${employeeId}/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
       });
-      setEmployees(employees.filter((emp) => emp.id !== id));
+      toast.error("Employee deleted successfully");
     } catch (error) {
-      console.error("Error deleting employee:", error);
-      setError("There was an error deleting the employee.");
+      if (error.response && error.response.status === 404) {
+        toast.error("Employee not found");
+      } else {
+        console.error("Error deleting employee:", error);
+      }
     }
   };
 
   const filteredEmployees = employees
-    .filter(emp => 
-      emp.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      emp.last_name.toLowerCase().includes(searchTerm.toLowerCase())
+    .filter(
+      (emp) =>
+        emp.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        emp.last_name.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    .filter(emp => {
+    .filter((emp) => {
       // Add your filtering logic based on `filters`
       return true; // This should be replaced with actual filter logic
     });
@@ -103,16 +110,23 @@ const EmployeeList = () => {
           <tbody>
             {filteredEmployees.length > 0 ? (
               filteredEmployees.map((employee) => (
-                <tr key={employee.id} onClick={() => handleEmployeeClick(employee)}>
+                <tr
+                  key={employee.id}
+                  onClick={() => handleEmployeeClick(employee)}
+                >
                   <td className="px-4 py-2 border-b">{employee.id}</td>
-                  <td className="px-4 py-2 border-b">{employee.first_name} {employee.last_name}</td>
+                  <td className="px-4 py-2 border-b">
+                    {employee.first_name} {employee.last_name}
+                  </td>
                   <td className="px-4 py-2 border-b">{employee.email}</td>
                   <td className="px-4 py-2 border-b">{employee.position}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="4" className="px-4 py-2 border-b text-center">No employees found</td>
+                <td colSpan="4" className="px-4 py-2 border-b text-center">
+                  No employees found
+                </td>
               </tr>
             )}
           </tbody>
@@ -132,6 +146,7 @@ const EmployeeList = () => {
           )}
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 };

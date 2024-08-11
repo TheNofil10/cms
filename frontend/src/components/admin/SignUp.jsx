@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   FaUser,
   FaEnvelope,
@@ -9,25 +9,25 @@ import {
   FaAddressCard,
   FaUpload,
   FaSpinner,
-} from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
-import { Line } from 'rc-progress';
-import axios from 'axios';
+} from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { Line } from "rc-progress";
+import axios from "axios";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    username: '',
-    email: '',
-    password: '',
-    phone: '',
-    address: '',
-    profileImage: null,
+    first_name: "",
+    last_name: "",
+    username: "",
+    email: "",
+    password: "",
+    phone: "",
+    address: "",
+    profile_image: null,
     imagePreview: null,
-    date_of_birth: '',
-    department: '',
-    position: '',
+    date_of_birth: "",
+    department: "",
+    position: "",
   });
 
   const [step, setStep] = useState(1);
@@ -43,7 +43,7 @@ const Signup = () => {
     const file = e.target.files[0];
     setFormData({
       ...formData,
-      profileImage: file,
+      profile_image: file,
       imagePreview: URL.createObjectURL(file),
     });
   };
@@ -69,7 +69,9 @@ const Signup = () => {
       case 3:
         return formData.phone && formData.address;
       case 4:
-        return formData.date_of_birth && formData.department && formData.position;
+        return (
+          formData.date_of_birth && formData.department && formData.position
+        );
       default:
         return true;
     }
@@ -80,38 +82,52 @@ const Signup = () => {
     setLoading(true);
 
     const formDataObj = new FormData();
-    formDataObj.append("first_name", formData.first_name);
-    formDataObj.append("last_name", formData.last_name);
-    formDataObj.append("username", formData.username);
-    formDataObj.append("email", formData.email);
-    formDataObj.append("password", formData.password);
-    formDataObj.append("phone", formData.phone);
-    formDataObj.append("address", formData.address);
-    formDataObj.append("date_of_birth", formData.date_of_birth);
-    formDataObj.append("department", formData.department);
-    formDataObj.append("position", formData.position);
-    if (formData.profileImage) {
-        formDataObj.append("profile_image", formData.profileImage);
-    }
+    Object.keys(formData).forEach((key) => {
+      if (formData[key] !== null) {
+        // Ensure we're not appending null values
+        formDataObj.append(key, formData[key]);
+      }
+    });
 
-    axios.post("http://localhost:8000/api/employees/", formDataObj, {
+    console.log([...formDataObj]); // Debug FormData
+
+    axios
+      .post("http://localhost:8000/api/employees/", formDataObj, {
         headers: {
-            "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          "Content-Type": "multipart/form-data", // Ensure the content type is set to multipart
         },
-    })
-    .then((response) => {
+      })
+      .then((response) => {
         console.log(response.data);
         toast.success("Signed Up Successfully");
-        navigate('/dashboard');
-    })
-    .catch((error) => {
+        setFormData({
+          first_name: "",
+          last_name: "",
+          username: "",
+          email: "",
+          password: "",
+          phone: "",
+          address: "",
+          profile_image: null,
+          imagePreview: null,
+          date_of_birth: "",
+          department: "",
+          position: "",
+        });
+        setStep(1);
+        navigate("/admin/employees/add");
+      })
+      .catch((error) => {
         console.error(error.response.data);
-        toast.error("Error " + error.response.data.error);
-    })
-    .finally(() => {
+        toast.error(
+          "Error " + (error.response.data.error || "An error occurred")
+        );
+      })
+      .finally(() => {
         setLoading(false);
-    });
-};
+      });
+  };
 
   const getProgress = () => (step / 5) * 100;
 
@@ -375,7 +391,7 @@ const Signup = () => {
                   type="submit"
                   className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
                 >
-                  {loading ? <FaSpinner className="animate-spin" /> : 'Sign Up'}
+                  {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
                 </button>
               </div>
             </>

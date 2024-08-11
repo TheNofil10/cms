@@ -28,23 +28,19 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=100)
     username = models.CharField(max_length=100, unique=True)
     email = models.EmailField(unique=True)
-    password = models.CharField(max_length=128, blank=True)
     phone = models.CharField(max_length=15)
     address = models.TextField()
     date_of_birth = models.DateField()
     department = models.CharField(max_length=100)
     position = models.CharField(max_length=100)
     profile_image = models.ImageField(upload_to=employee_image_path, null=True, blank=True)
-    is_staff = models.BooleanField(default=False)  # Required for admin access
-    is_active = models.BooleanField(default=True)  # Required for active user
+    is_staff = models.BooleanField(default=False)  
+    is_active = models.BooleanField(default=True)  
     
-    USERNAME_FIELD = 'username' 
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
 
     objects = EmployeeManager()
-
-    def set_password(self, password):
-        self.password = make_password(password)
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'

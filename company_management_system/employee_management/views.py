@@ -3,13 +3,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .serializers import EmployeeSerializer, AdminEmployeeSerializer
 from .models import Employee
-import os
+from django.core.files.storage import default_storage
 
-def upload_file(storage, file, employee):
-    filename = file.name.replace(' ', '_')
-    file_path = os.path.join(f'profile_images/employees/{employee.id}', filename)
-    filename = storage.save(file_path, file)
-    return storage.url(filename)
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
@@ -28,16 +23,17 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         employee = serializer.save()
+        employee.is_active = True
         if 'profile_image' in self.request.FILES:
             image = self.request.FILES['profile_image']
-            upload_file(image, employee)
+            employee.profile_image = image
             employee.save()
 
     def perform_update(self, serializer):
         employee = serializer.save()
         if 'profile_image' in self.request.FILES:
             image = self.request.FILES['profile_image']
-            upload_file(image, employee)
+            employee.profile_image = image
             employee.save()
 
     def update(self, request, *args, **kwargs):
@@ -57,10 +53,10 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         employee = self.get_object()
 
-        if not employee.is_superuser:
-            return super().destroy(request, *args, **kwargs)
+        if employee.is_superuser:
+            return Response(status=status.HTTP_403_FORBIDDEN)
 
-        return Response(status=status.HTTP_403_FORBIDDEN)
+        return super().destroy(request, *args, **kwargs)
 
 class AdminEmployeeView(viewsets.ViewSet):
     serializer_class = AdminEmployeeSerializer
@@ -77,13 +73,17 @@ class AdminEmployeeView(viewsets.ViewSet):
             employee = serializer.save()
             if 'profile_image' in request.FILES:
                 image = request.FILES['profile_image']
-                upload_file(image, employee)
+                employee.profile_image = image
                 employee.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk):
-        employee = Employee.objects.get(pk=pk)
+        try:
+            employee = Employee.objects.get(pk=pk)
+        except Employee.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
         if employee.is_superuser:
             return Response(status=status.HTTP_403_FORBIDDEN)
         employee.delete()
