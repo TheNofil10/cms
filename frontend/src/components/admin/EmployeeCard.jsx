@@ -1,32 +1,35 @@
 import React from "react";
 import { FaEye as ViewIcon, FaTrash as DeleteIcon } from "react-icons/fa";
-
+import profile from "../../assets/profile.png";
 const EmployeeCard = ({ employee, onView, onDelete }) => {
-  // Use a default placeholder image if none is provided
-  const imageUrl = employee.image || "path/to/placeholder-image.png";
+  const imageUrl = employee.profile_image || profile;
 
   return (
-    <div className="p-4 bg-gray-100 rounded shadow-md flex flex-col items-center">
+    <div className="p-4 bg-gray-100 rounded shadow-md flex items-center space-x-8">
+      {/* Employee Image */}
       <img
-        src={employee.profile_image}
+        src={imageUrl}
         alt={`${employee.first_name} ${employee.last_name}`}
-        className="w-24 h-24 rounded-full mb-4 object-cover"
+        className="w-20 h-20 rounded-full object-cover"
       />
-      <h2 className="text-xl font-semibold">{employee.first_name} {employee.last_name}</h2>
-      <p className="text-sm">Email: {employee.email}</p>
-      <p className="text-sm">Position: {employee.position}</p>
-      <p className="text-sm">Department: {employee.department}</p>
-      <div className="flex space-x-2 mt-2">
-        <button
-          className="text-blue-600 hover:text-blue-800"
-          onClick={onView}
-        >
+
+      {/* Employee Details in a Row */}
+      <div className="flex-grow flex items-center space-x-8">
+        <div className="text-lg font-medium">
+          {employee.first_name} {employee.last_name}
+        </div>
+        <div className="text-gray-600">{employee.username}</div>
+        <div className="text-gray-600">{employee.email}</div>
+        <div className="text-gray-600">{employee.position}</div>
+        <div className="text-gray-600">{employee.department}</div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex space-x-4">
+        <button className="text-blue-600 hover:text-blue-800" onClick={onView}>
           <ViewIcon />
         </button>
-        <button
-          className="text-red-600 hover:text-red-800"
-          onClick={onDelete}
-        >
+        <button className="text-red-600 hover:text-red-800" onClick={onDelete}>
           <DeleteIcon />
         </button>
       </div>

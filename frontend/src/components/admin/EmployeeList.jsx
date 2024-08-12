@@ -22,6 +22,8 @@ import {
   FaSortDown,
   FaSortUp,
   FaSort,
+  FaChevronDown,
+  FaChevronUp,
 } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import EmployeeProfile from "./EmployeeProfile";
@@ -46,6 +48,7 @@ const EmployeeList = () => {
     filterValue: "",
   });
   const [pageSize, setPageSize] = useState(10);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -136,7 +139,7 @@ const EmployeeList = () => {
     setPageSize: setTablePageSize,
     state: { pageIndex },
   } = useTable(
-    { columns, data, initialState: { pageSize } }, // Add initialState
+    { columns, data, initialState: { pageSize } },
     useFilters,
     useGlobalFilter,
     useSortBy,
@@ -212,23 +215,63 @@ const EmployeeList = () => {
     pdfMake.createPdf(docDefinition).download("employees.pdf");
   };
 
+  const handleExportSelection = (format) => {
+    if (format === "excel") {
+      handleExportToExcel();
+    } else if (format === "pdf") {
+      handleExportToPdf();
+    }
+    setIsDropdownOpen(false);
+  };
+
   return (
     <div className="container mx-auto p-4 bg-white text-black">
       <ToastContainer />
       <div className="flex justify-between mb-4">
         <h1 className="text-2xl font-semibold">Employees</h1>
         <div className="flex items-center space-x-2">
+          <div className="relative">
+            <button
+              className="bg-black text-white border-none font-medium py-1 px-3 rounded text-xs flex items-center"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              <FaBox className="inline mr-1" /> Export
+              {isDropdownOpen ? (
+                <FaChevronUp className="ml-1" />
+              ) : (
+                <FaChevronDown className="ml-1" />
+              )}
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 bg-white border border-gray-300 shadow-lg rounded-lg">
+                <button
+                  className="w-full py-2 px-4 text-left hover:bg-gray-100"
+                  onClick={() => handleExportSelection("excel")}
+                >
+                  <FaBox className="inline mr-1" /> Excel
+                </button>
+                <button
+                  className="w-full py-2 px-4 text-left hover:bg-gray-100"
+                  onClick={() => handleExportSelection("pdf")}
+                >
+                  <FaBox className="inline mr-1" /> PDF
+                </button>
+              </div>
+            )}
+          </div>
           <button
             className="bg-black text-white border-none font-medium py-1 px-3 rounded text-xs"
-            onClick={handleExportToExcel}
+            onClick={() => setView(view === "table" ? "card" : "table")}
           >
-            <FaBox className="inline mr-1" /> Excel
-          </button>
-          <button
-            className="bg-black text-white border-none font-medium py-1 px-3 rounded text-xs"
-            onClick={handleExportToPdf}
-          >
-            <FaBox className="inline mr-1" /> PDF
+            {view === "table" ? (
+              <>
+                <CardIcon className="inline mr-1" /> Card
+              </>
+            ) : (
+              <>
+                <TableIcon className="inline mr-1" /> Table
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -261,20 +304,6 @@ const EmployeeList = () => {
             onClick={applyFilters}
           >
             Apply
-          </button>
-        </div>
-        <div className="flex items-center space-x-2">
-          <button
-            className="bg-black text-white border-none font-medium py-1 px-3 rounded text-xs"
-            onClick={() => setView("table")}
-          >
-            <TableIcon className="inline mr-1" /> Table
-          </button>
-          <button
-            className="bg-black text-white border-none font-medium py-1 px-3 rounded text-xs"
-            onClick={() => setView("card")}
-          >
-            <CardIcon className="inline mr-1" /> Card
           </button>
         </div>
       </div>
@@ -390,7 +419,7 @@ const EmployeeList = () => {
         </div>
       )}
       {view === "card" && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-4">
           {filteredData.map((employee) => (
             <EmployeeCard
               key={employee.id}
