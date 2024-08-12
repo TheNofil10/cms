@@ -12,8 +12,11 @@
     "dependencies": {
         "axios": "^1.7.3",
         "cors": "^2.8.5",
+        "json2csv": "^6.0.0-alpha.2",
         "jwt-decode": "^4.0.0",
         "lucide-react": "^0.426.0",
+        "papaparse": "^5.4.1",
+        "pdfmake": "^0.2.11",
         "rc-progress": "^4.0.0",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
@@ -21,7 +24,8 @@
         "react-router-dom": "^6.26.0",
         "react-table": "^7.8.0",
         "react-toastify": "^10.0.5",
-        "reactstrap": "^9.2.2"
+        "reactstrap": "^9.2.2",
+        "xlsx": "^0.18.5"
     },
     "devDependencies": {
         "@types/react": "^18.3.3",

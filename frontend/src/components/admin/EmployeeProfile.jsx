@@ -107,7 +107,6 @@ const EmployeeProfile = () => {
           Back to Employees List
         </button>
       </div>
-      <ToastContainer />
     </div>
   );
 };

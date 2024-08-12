@@ -87,9 +87,7 @@ const Login = () => {
             {loading ? <FaSpinner className="animate-spin mr-2" /> : "Login"}
           </button>
           <div className="flex justify-between mb-4">
-            <Link to="/signup" className="text-black text-sm underline">
-              Sign Up
-            </Link>
+           
             <Link
               to="/forget-password"
               className="text-black text-sm underline"

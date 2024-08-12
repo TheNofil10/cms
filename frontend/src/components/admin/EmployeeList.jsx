@@ -1,27 +1,65 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useTable, useSortBy, useFilters, useGlobalFilter } from "react-table";
+import {
+  useTable,
+  useSortBy,
+  useFilters,
+  useGlobalFilter,
+  usePagination,
+} from "react-table";
 import axios from "axios";
-import { FaFilter, FaSort, FaSortDown, FaSortUp, FaSearch } from "react-icons/fa";
+import {
+  FaFilter,
+  FaSearch,
+  FaTable as TableIcon,
+  FaTh as CardIcon,
+  FaAngleDoubleLeft,
+  FaAngleLeft,
+  FaAngleRight,
+  FaAngleDoubleRight,
+  FaBox,
+  FaEye as ViewIcon,
+  FaTrash as DeleteIcon,
+  FaSortDown,
+  FaSortUp,
+  FaSort,
+} from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import EmployeeProfile from "./EmployeeProfile";
 import EmployeeCard from "./EmployeeCard";
 import { useNavigate } from "react-router-dom";
+import * as XLSX from "xlsx";
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+
+// Initialize pdfMake with fonts
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [view, setView] = useState("table"); // "table" or "card"
+  const [view, setView] = useState("table");
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [filters, setFilters] = useState({
+    filterBy: "",
+    filterValue: "",
+  });
+  const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/employees/", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
-        });
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/employees/",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
         setEmployees(response.data.results || response.data || []);
+        setFilteredData(response.data.results || response.data || []);
       } catch (error) {
         console.error("Error fetching employees:", error);
         setError("There was an error fetching the employee data.");
@@ -33,6 +71,20 @@ const EmployeeList = () => {
     fetchEmployees();
   }, []);
 
+  useEffect(() => {
+    if (filters.filterBy && filters.filterValue) {
+      const filtered = employees.filter((employee) =>
+        employee[filters.filterBy]
+          ?.toString()
+          .toLowerCase()
+          .includes(filters.filterValue.toLowerCase())
+      );
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(employees);
+    }
+  }, [filters, employees]);
+
   const columns = useMemo(
     () => [
       { Header: "ID", accessor: "id" },
@@ -41,28 +93,60 @@ const EmployeeList = () => {
       { Header: "Email", accessor: "email" },
       { Header: "Position", accessor: "position" },
       { Header: "Department", accessor: "department" },
+      {
+        Header: "Actions",
+        Cell: ({ row }) => (
+          <div className="flex space-x-2">
+            <button
+              className="text-blue-600 hover:text-blue-800 bg-transparent border-none"
+              onClick={() => handleEmployeeClick(row.original)}
+            >
+              <ViewIcon />
+            </button>
+            <button
+              className="text-red-600 hover:text-red-800 bg-transparent border-none"
+              onClick={() => handleDeleteEmployee(row.original.id)}
+            >
+              <DeleteIcon />
+            </button>
+          </div>
+        ),
+      },
     ],
-    []
+    [employees, filteredData]
   );
 
-  const data = useMemo(() => employees, [employees]);
+  const data = useMemo(() => filteredData, [filteredData]);
 
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
+    page,
     prepareRow,
     state,
     setGlobalFilter,
-  } = useTable({ columns, data }, useFilters, useGlobalFilter, useSortBy);
+    setAllFilters,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    gotoPage,
+    previousPage,
+    nextPage,
+    setPageSize: setTablePageSize,
+    state: { pageIndex },
+  } = useTable(
+    { columns, data, initialState: { pageSize } }, // Add initialState
+    useFilters,
+    useGlobalFilter,
+    useSortBy,
+    usePagination
+  );
 
-  const { globalFilter } = state;
-
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleEmployeeClick = (employee) => {
-    navigate(`/admin/employees/${employee.id}`); // Navigate to the employee profile page
+    navigate(`/admin/employees/${employee.id}`);
   };
 
   const handleDeleteEmployee = async (employeeId) => {
@@ -74,6 +158,7 @@ const EmployeeList = () => {
       });
       toast.error("Employee deleted successfully");
       setEmployees(employees.filter((emp) => emp.id !== employeeId));
+      setFilteredData(filteredData.filter((emp) => emp.id !== employeeId));
     } catch (error) {
       if (error.response && error.response.status === 404) {
         toast.error("Employee not found");
@@ -83,92 +168,230 @@ const EmployeeList = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value,
+    }));
+  };
+
+  const handleFilterByChange = (e) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      filterBy: e.target.value,
+      filterValue: "",
+    }));
+  };
+
+  const applyFilters = () => {
+    // Trigger useEffect to filter data
+  };
+
+  const handleExportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(filteredData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Employees");
+    XLSX.writeFile(workbook, "employees.xlsx");
+  };
+
+  const handleExportToPdf = () => {
+    const docDefinition = {
+      content: filteredData.map((employee) => ({
+        columns: [
+          { text: employee.first_name, fontSize: 10 },
+          { text: employee.last_name, fontSize: 10 },
+          { text: employee.email, fontSize: 10 },
+          { text: employee.position, fontSize: 10 },
+          { text: employee.department, fontSize: 10 },
+        ],
+      })),
+      pageMargins: [40, 40, 40, 40],
+    };
+
+    pdfMake.createPdf(docDefinition).download("employees.pdf");
+  };
 
   return (
-    <div className="p-6">
-      <div className="mb-4 flex justify-between items-center">
-        <div className="flex items-center">
-          <FaSearch size={20} className="text-gray-500 mr-2" />
-          <input
-            value={globalFilter || ""}
-            onChange={(e) => setGlobalFilter(e.target.value)}
-            placeholder="Search employees..."
-            className="border border-gray-300 rounded-lg p-2"
-          />
-        </div>
-        <div>
+    <div className="container mx-auto p-4 bg-white text-black">
+      <ToastContainer />
+      <div className="flex justify-between mb-4">
+        <h1 className="text-2xl font-semibold">Employees</h1>
+        <div className="flex items-center space-x-2">
           <button
-            onClick={() => setView("table")}
-            className={`px-4 py-2 rounded-lg mr-2 ${view === "table" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+            className="bg-black text-white border-none font-medium py-1 px-3 rounded text-xs"
+            onClick={handleExportToExcel}
           >
-            Table View
+            <FaBox className="inline mr-1" /> Excel
           </button>
           <button
-            onClick={() => setView("card")}
-            className={`px-4 py-2 rounded-lg ${view === "card" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+            className="bg-black text-white border-none font-medium py-1 px-3 rounded text-xs"
+            onClick={handleExportToPdf}
           >
-            Card View
+            <FaBox className="inline mr-1" /> PDF
           </button>
         </div>
       </div>
-
-      {selectedEmployee && (
-        <EmployeeProfile
-          employee={selectedEmployee}
-          onClose={() => setSelectedEmployee(null)}
-          onDelete={() => handleDeleteEmployee(selectedEmployee.id)}
-        />
-      )}
-
-      {view === "table" ? (
-        <table {...getTableProps()} className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
-          <thead>
-            {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <th
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className="px-4 py-2 border-b text-left"
-                  >
-                    <div className="flex items-center">
-                      {column.render("Header")}
-                      <span className="ml-2">
-                        {column.isSorted ? (
-                          column.isSortedDesc ? (
-                            <FaSortDown />
+      <div className="flex justify-between mb-4">
+        <div className="flex items-center space-x-2">
+          <FaFilter className="text-sm" />
+          <select
+            name="filterBy"
+            value={filters.filterBy}
+            onChange={handleFilterByChange}
+            className="py-1 px-2 border border-gray-400 rounded text-sm"
+          >
+            <option value="">Filter by...</option>
+            <option value="first_name">First Name</option>
+            <option value="last_name">Last Name</option>
+            <option value="email">Email</option>
+            <option value="position">Position</option>
+            <option value="department">Department</option>
+          </select>
+          <input
+            type="text"
+            name="filterValue"
+            value={filters.filterValue}
+            onChange={handleFilterChange}
+            placeholder="Enter value"
+            className="py-1 px-2 border border-gray-400 rounded text-sm"
+          />
+          <button
+            className="bg-black text-white border-none font-medium py-1 px-3 rounded text-xs"
+            onClick={applyFilters}
+          >
+            Apply
+          </button>
+        </div>
+        <div className="flex items-center space-x-2">
+          <button
+            className="bg-black text-white border-none font-medium py-1 px-3 rounded text-xs"
+            onClick={() => setView("table")}
+          >
+            <TableIcon className="inline mr-1" /> Table
+          </button>
+          <button
+            className="bg-black text-white border-none font-medium py-1 px-3 rounded text-xs"
+            onClick={() => setView("card")}
+          >
+            <CardIcon className="inline mr-1" /> Card
+          </button>
+        </div>
+      </div>
+      {loading && <p>Loading...</p>}
+      {error && <p>{error}</p>}
+      {view === "table" && (
+        <div>
+          <table
+            {...getTableProps()}
+            className="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm"
+          >
+            <thead className="bg-gray-100">
+              {headerGroups.map((headerGroup) => (
+                <tr {...headerGroup.getHeaderGroupProps()}>
+                  {headerGroup.headers.map((column) => (
+                    <th
+                      {...column.getHeaderProps(column.getSortByToggleProps())}
+                      className="px-4 py-2 border-b text-left text-black"
+                    >
+                      <div className="flex items-center">
+                        {column.render("Header")}
+                        <span className="ml-2">
+                          {column.isSorted ? (
+                            column.isSortedDesc ? (
+                              <FaSortDown />
+                            ) : (
+                              <FaSortUp />
+                            )
                           ) : (
-                            <FaSortUp />
-                          )
-                        ) : (
-                          <FaSort />
-                        )}
-                      </span>
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody {...getTableBodyProps()}>
-            {rows.map((row) => {
-              prepareRow(row);
-              return (
-                <tr {...row.getRowProps()} onClick={() => handleEmployeeClick(row.original)}>
-                  {row.cells.map((cell) => (
-                    <td {...cell.getCellProps()} className="px-4 py-2 border-b">
-                      {cell.render("Cell")}
-                    </td>
+                            <FaSort />
+                          )}
+                        </span>
+                      </div>
+                    </th>
                   ))}
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {employees.map((employee) => (
+              ))}
+            </thead>
+            <tbody {...getTableBodyProps()}>
+              {page.map((row) => {
+                prepareRow(row);
+                return (
+                  <tr
+                    {...row.getRowProps()}
+                    onClick={() => handleEmployeeClick(row.original)}
+                    className="cursor-pointer hover:bg-gray-100"
+                  >
+                    {row.cells.map((cell) => (
+                      <td
+                        {...cell.getCellProps()}
+                        className="px-4 py-2 border-b text-black"
+                      >
+                        {cell.render("Cell")}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+
+          <div className="mt-4 flex justify-between items-center">
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => gotoPage(0)}
+                disabled={!canPreviousPage}
+                className="px-4 py-2 bg-gray-200 text-black rounded-lg"
+              >
+                <FaAngleDoubleLeft />
+              </button>
+              <button
+                onClick={() => previousPage()}
+                disabled={!canPreviousPage}
+                className="px-4 py-2 bg-gray-200 text-black rounded-lg"
+              >
+                <FaAngleLeft />
+              </button>
+              <button
+                onClick={() => nextPage()}
+                disabled={!canNextPage}
+                className="px-4 py-2 bg-gray-200 text-black rounded-lg"
+              >
+                <FaAngleRight />
+              </button>
+              <button
+                onClick={() => gotoPage(pageOptions.length - 1)}
+                disabled={!canNextPage}
+                className="px-4 py-2 bg-gray-200 text-black rounded-lg"
+              >
+                <FaAngleDoubleRight />
+              </button>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <span className="text-black">Page Size:</span>
+              <select
+                value={pageSize}
+                onChange={(e) => {
+                  const newSize = Number(e.target.value);
+                  setPageSize(newSize);
+                  setTablePageSize(newSize);
+                }}
+                className="border border-gray-300 rounded-lg p-2 bg-white text-black"
+              >
+                {[10, 20, 30, 40, 50].map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+      )}
+      {view === "card" && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredData.map((employee) => (
             <EmployeeCard
               key={employee.id}
               employee={employee}
@@ -177,7 +400,12 @@ const EmployeeList = () => {
           ))}
         </div>
       )}
-      <ToastContainer />
+      {selectedEmployee && (
+        <EmployeeProfile
+          employee={selectedEmployee}
+          onClose={() => setSelectedEmployee(null)}
+        />
+      )}
     </div>
   );
 };
