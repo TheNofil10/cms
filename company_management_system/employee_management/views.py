@@ -53,7 +53,10 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         employee = self.get_object()
 
-        if employee.is_superuser:
+        if request.user.is_superuser and (request.user != employee):
+            return super().destroy(request, *args, **kwargs)
+
+        if employee.is_superuser and (request.user != employee):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         return super().destroy(request, *args, **kwargs)
@@ -84,7 +87,12 @@ class AdminEmployeeView(viewsets.ViewSet):
         except Employee.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-        if employee.is_superuser:
+        if request.user.is_superuser and (request.user.id != employee.id):
+            employee.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        if employee.is_superuser and (request.user.id != employee.id):
             return Response(status=status.HTTP_403_FORBIDDEN)
+        
         employee.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -1,15 +1,18 @@
 import React from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AdminSideBar from "../sidebar/AdminSideBar";
+import Navbar from "../navbar/Navbar";
 import { Outlet } from "react-router-dom";
-import AdminSideBar from "../sidebar/AdminSideBar"
+
 const AdminLayout = () => {
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen flex bg-white text-black">
       <AdminSideBar />
-      <div className="flex-1 pl-16 md:pl-64">
+      <main className="flex-grow p-6 md:px-20 sm:px-20 bg-white">
         <Outlet />
-      </div>
+      </main>
+      <ToastContainer />
     </div>
   );
 };

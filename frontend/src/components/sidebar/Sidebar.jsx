@@ -102,7 +102,7 @@ export function SidebarItem({ icon, text, to, onClick }) {
             <span className="text-xl">{icon}</span>
             {expanded && <span className="ml-3">{text}</span>}
             {!expanded && (
-                <div className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-indigo-100 text-indigo-800 text-sm invisible opacity-0 transition-all group-hover:visible group-hover:opacity-100`}>
+                <div className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-gray-100 text-gray-800 text-sm invisible opacity-0 transition-all group-hover:visible group-hover:opacity-100`}>
                     {text}
                 </div>
             )}

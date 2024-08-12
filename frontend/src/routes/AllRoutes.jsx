@@ -13,6 +13,7 @@ import EmployeeRoute from "./EmployeeRoute";
 import LoggedInRoute from "./LoggedInRoute";
 import HomeRoute from "./HomeRoute";
 import AdminLayout from "../components/admin/AdminLayout"
+import EmployeeProfile from "../components/admin/EmployeeProfile";
 const AllRoutes = () => {
   return (
     <Routes>
@@ -30,6 +31,7 @@ const AllRoutes = () => {
         <Route path="/admin/employees" element={<EmployeesPage />} />
         <Route path="/admin/employees/add" element={<SignUp />} />
         <Route path="/admin/attendance" element={<Attendance />} />
+        <Route path="/admin/employees/:id" element={<EmployeeProfile />} />
         <Route path="/settings" element={<AdminSettings />} />
       </Route>
     </Routes>

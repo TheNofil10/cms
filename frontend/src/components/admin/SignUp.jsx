@@ -132,7 +132,7 @@ const Signup = () => {
   const getProgress = () => (step / 5) * 100;
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-white text-white">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-inherit text-white">
       <div className="w-full max-w-md">
         <h2 className="text-3xl mb-6 text-black text-center shadow-slate-1000">
           Employee Signup

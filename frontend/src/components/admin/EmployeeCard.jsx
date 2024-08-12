@@ -1,21 +1,26 @@
 import React from "react";
-import picture from "../../assets/profile.png";
+import { FaUserCircle } from "react-icons/fa";
+
 const EmployeeCard = ({ employee, onClick }) => {
   return (
     <div
-      className="bg-white p-4 border border-gray-200 rounded-lg shadow-md cursor-pointer hover:shadow-lg"
+      className="bg-white p-6 rounded-lg shadow-md flex items-center cursor-pointer mb-4 hover:bg-gray-800 transition duration-200"
       onClick={onClick}
     >
-      <img
-        src={employee.profile_image ? employee.profile_image : picture}
-        alt="Profile"
-        className="w-16 h-16 rounded-full mb-4"
-      />
-      <h3 className="text-lg font-semibold">
-        {employee.first_name} {employee.last_name}
-      </h3>
-      <p className="text-gray-600">{employee.position}</p>
-      <p className="text-gray-600">{employee.department}</p>
+      {employee.profile_image ? (
+        <img
+          src={employee.profile_image}
+          alt={`${employee.first_name} ${employee.last_name}`}
+          className="w-12 h-12 rounded-full mr-4"
+        />
+      ) : (
+        <FaUserCircle size={48} className="text-black mr-4" />
+      )}
+      <div>
+        <p className="text-xl font-semibold text-black">{employee.first_name} {employee.last_name}</p>
+        <p className="text-black">{employee.position}</p>
+        <p className="text-black text-sm">{employee.department}</p>
+      </div>
     </div>
   );
 };

@@ -1,32 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useTable, useSortBy, useFilters, useGlobalFilter } from "react-table";
 import axios from "axios";
-import EmployeeProfile from "./EmployeeProfile"; // New component
-import EmployeeCard from "./EmployeeCard"; // New component
-import EmployeeFilters from "./EmployeeFilters"; // New component
-import EmployeeSorting from "./EmployeeSorting"; // New component
-import EmployeeSearch from "./EmployeeSearch"; // New component
-import { toast, ToastContainer } from "react-toastify";
+import { FaFilter, FaSort, FaSortDown, FaSortUp, FaSearch } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import EmployeeProfile from "./EmployeeProfile";
+import EmployeeCard from "./EmployeeCard";
+import { useNavigate } from "react-router-dom";
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [view, setView] = useState("table"); // "table" or "card"
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [filters, setFilters] = useState({});
-  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/employees/",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-            },
-          }
-        );
-        console.log("Fetched employees:", response.data); // Log the response data
+        const response = await axios.get("http://127.0.0.1:8000/api/employees/", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        });
         setEmployees(response.data.results || response.data || []);
       } catch (error) {
         console.error("Error fetching employees:", error);
@@ -39,12 +33,36 @@ const EmployeeList = () => {
     fetchEmployees();
   }, []);
 
-  const handleViewChange = (newView) => {
-    setView(newView);
-  };
+  const columns = useMemo(
+    () => [
+      { Header: "ID", accessor: "id" },
+      { Header: "First Name", accessor: "first_name" },
+      { Header: "Last Name", accessor: "last_name" },
+      { Header: "Email", accessor: "email" },
+      { Header: "Position", accessor: "position" },
+      { Header: "Department", accessor: "department" },
+    ],
+    []
+  );
+
+  const data = useMemo(() => employees, [employees]);
+
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    state,
+    setGlobalFilter,
+  } = useTable({ columns, data }, useFilters, useGlobalFilter, useSortBy);
+
+  const { globalFilter } = state;
+
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleEmployeeClick = (employee) => {
-    setSelectedEmployee(employee);
+    navigate(`/admin/employees/${employee.id}`); // Navigate to the employee profile page
   };
 
   const handleDeleteEmployee = async (employeeId) => {
@@ -55,6 +73,7 @@ const EmployeeList = () => {
         },
       });
       toast.error("Employee deleted successfully");
+      setEmployees(employees.filter((emp) => emp.id !== employeeId));
     } catch (error) {
       if (error.response && error.response.status === 404) {
         toast.error("Employee not found");
@@ -64,32 +83,37 @@ const EmployeeList = () => {
     }
   };
 
-  const filteredEmployees = employees
-    .filter(
-      (emp) =>
-        emp.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        emp.last_name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .filter((emp) => {
-      // Add your filtering logic based on `filters`
-      return true; // This should be replaced with actual filter logic
-    });
-
-  // Sorting logic should be added here
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4">Employee List</h1>
-      <div className="mb-4">
-        <EmployeeSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-        <EmployeeFilters filters={filters} setFilters={setFilters} />
-        <EmployeeSorting />
-        <button onClick={() => handleViewChange("table")}>Table View</button>
-        <button onClick={() => handleViewChange("card")}>Card View</button>
+      <div className="mb-4 flex justify-between items-center">
+        <div className="flex items-center">
+          <FaSearch size={20} className="text-gray-500 mr-2" />
+          <input
+            value={globalFilter || ""}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            placeholder="Search employees..."
+            className="border border-gray-300 rounded-lg p-2"
+          />
+        </div>
+        <div>
+          <button
+            onClick={() => setView("table")}
+            className={`px-4 py-2 rounded-lg mr-2 ${view === "table" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+          >
+            Table View
+          </button>
+          <button
+            onClick={() => setView("card")}
+            className={`px-4 py-2 rounded-lg ${view === "card" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+          >
+            Card View
+          </button>
+        </div>
       </div>
+
       {selectedEmployee && (
         <EmployeeProfile
           employee={selectedEmployee}
@@ -97,53 +121,60 @@ const EmployeeList = () => {
           onDelete={() => handleDeleteEmployee(selectedEmployee.id)}
         />
       )}
+
       {view === "table" ? (
-        <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+        <table {...getTableProps()} className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
           <thead>
-            <tr>
-              <th className="px-4 py-2 border-b">ID</th>
-              <th className="px-4 py-2 border-b">Name</th>
-              <th className="px-4 py-2 border-b">Email</th>
-              <th className="px-4 py-2 border-b">Position</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredEmployees.length > 0 ? (
-              filteredEmployees.map((employee) => (
-                <tr
-                  key={employee.id}
-                  onClick={() => handleEmployeeClick(employee)}
-                >
-                  <td className="px-4 py-2 border-b">{employee.id}</td>
-                  <td className="px-4 py-2 border-b">
-                    {employee.first_name} {employee.last_name}
-                  </td>
-                  <td className="px-4 py-2 border-b">{employee.email}</td>
-                  <td className="px-4 py-2 border-b">{employee.position}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" className="px-4 py-2 border-b text-center">
-                  No employees found
-                </td>
+            {headerGroups.map((headerGroup) => (
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  <th
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    className="px-4 py-2 border-b text-left"
+                  >
+                    <div className="flex items-center">
+                      {column.render("Header")}
+                      <span className="ml-2">
+                        {column.isSorted ? (
+                          column.isSortedDesc ? (
+                            <FaSortDown />
+                          ) : (
+                            <FaSortUp />
+                          )
+                        ) : (
+                          <FaSort />
+                        )}
+                      </span>
+                    </div>
+                  </th>
+                ))}
               </tr>
-            )}
+            ))}
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {rows.map((row) => {
+              prepareRow(row);
+              return (
+                <tr {...row.getRowProps()} onClick={() => handleEmployeeClick(row.original)}>
+                  {row.cells.map((cell) => (
+                    <td {...cell.getCellProps()} className="px-4 py-2 border-b">
+                      {cell.render("Cell")}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredEmployees.length > 0 ? (
-            filteredEmployees.map((employee) => (
-              <EmployeeCard
-                key={employee.id}
-                employee={employee}
-                onClick={() => handleEmployeeClick(employee)}
-              />
-            ))
-          ) : (
-            <div className="text-center col-span-full">No employees found</div>
-          )}
+          {employees.map((employee) => (
+            <EmployeeCard
+              key={employee.id}
+              employee={employee}
+              onClick={() => handleEmployeeClick(employee)}
+            />
+          ))}
         </div>
       )}
       <ToastContainer />
