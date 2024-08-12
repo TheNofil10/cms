@@ -5,6 +5,7 @@ const EmployeeCard = ({ employee, onView, onDelete }) => {
   const imageUrl = employee.profile_image || profile;
 
   return (
+    
     <div className="p-4 bg-gray-100 rounded shadow-md flex items-center space-x-8">
       {/* Employee Image */}
       <img

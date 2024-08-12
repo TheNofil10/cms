@@ -3,17 +3,22 @@ import { Route, Routes } from "react-router-dom";
 import Login from "../pages/Login";
 import SignUp from "../components/admin/SignUp";
 import ForgetPass from "../pages/ForgetPass";
-import EmployeeDashboard from "../pages/EmployeeDashboard";
+import EmployeeDashboard from "../components/employee/EmployeeDashboard";
 import AdminDashboard from "../components/admin/AdminDashboard";
-import  EmployeesPage from "../components/admin/EmployeesPage"
-import Attendance from "../components/admin/Attendance"
-import AdminSettings from "../components/admin/AdminSettings"
+import EmployeesPage from "../components/admin/EmployeesPage";
+import Attendance from "../components/admin/Attendance";
+import AdminSettings from "../components/admin/AdminSettings";
 import ProtectedRoute from "./ProtectedRoute";
 import EmployeeRoute from "./EmployeeRoute";
 import LoggedInRoute from "./LoggedInRoute";
 import HomeRoute from "./HomeRoute";
-import AdminLayout from "../components/admin/AdminLayout"
-import EmployeeProfile from "../components/admin/EmployeeProfile";
+import AdminLayout from "../components/admin/AdminLayout";
+import EmployeeLayout from "../components/employee/EmployeeLayout"; // Adjust the import path as needed
+import EmployeeProfile from "../components/employee/EmployeeProfile"; // Adjust the import path as needed
+import EmployeeSettings from "../components/employee/EmployeeSettings";
+import EmployeeTasks from "../components/employee/EmployeeTasks";
+import EmployeeAttendance from "../components/employee/EmployeeAttendance";
+
 const AllRoutes = () => {
   return (
     <Routes>
@@ -23,7 +28,14 @@ const AllRoutes = () => {
       <Route path="/forget-password" element={<ForgetPass />} />
       
       {/* Employee Routes */}
-      <Route path="/employee/dashboard" element={<EmployeeRoute element={<EmployeeDashboard />} employeeOnly={true} />} />
+      <Route element={<EmployeeRoute element={<EmployeeLayout />} employeeOnly={true} />}>
+        <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
+        <Route path="/employee/profile" element={<EmployeeProfile />} />
+        <Route path="/employee/settings" element={<EmployeeSettings />} />
+        <Route path="/employee/tasks" element={<EmployeeTasks />} />
+        <Route path="/employee/attendance" element={<EmployeeAttendance />} />
+        {/* Add more employee routes here */}
+      </Route>
       
       {/* Admin Routes */}
       <Route element={<ProtectedRoute element={<AdminLayout />} adminOnly />}>

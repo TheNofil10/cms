@@ -29,10 +29,7 @@ const Login = () => {
 
     if (success) {
       setLoading(false);
-     
-      toast.success("Login successful!");
       console.log(currentUser)
-      
       if (currentUser) {
         navigate("/");
       }
