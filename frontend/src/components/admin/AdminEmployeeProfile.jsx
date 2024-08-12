@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { FaUserCircle } from "react-icons/fa";
 import { useAuth } from "../../contexts/AuthContext";
-const EmployeeProfile = () => {
+const AdminEmployeeProfile = () => {
   const { id } = useParams();
   const [employee, setEmployee] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -111,4 +111,4 @@ const EmployeeProfile = () => {
   );
 };
 
-export default EmployeeProfile;
+export default AdminEmployeeProfile;

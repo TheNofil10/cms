@@ -18,13 +18,14 @@ import EmployeeProfile from "../components/employee/EmployeeProfile"; // Adjust 
 import EmployeeSettings from "../components/employee/EmployeeSettings";
 import EmployeeTasks from "../components/employee/EmployeeTasks";
 import EmployeeAttendance from "../components/employee/EmployeeAttendance";
+import AdminEmployeeProfile from "../components/admin/AdminEmployeeProfile";
 
 const AllRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<HomeRoute />} />
       <Route path="/login" element={<LoggedInRoute element={<Login />} />} />
-      <Route path="/signup" element={<SignUp />} />
+
       <Route path="/forget-password" element={<ForgetPass />} />
       
       {/* Employee Routes */}
@@ -43,7 +44,7 @@ const AllRoutes = () => {
         <Route path="/admin/employees" element={<EmployeesPage />} />
         <Route path="/admin/employees/add" element={<SignUp />} />
         <Route path="/admin/attendance" element={<Attendance />} />
-        <Route path="/admin/employees/:id" element={<EmployeeProfile />} />
+        <Route path="/admin/employees/:id" element={<AdminEmployeeProfile />} />
         <Route path="/settings" element={<AdminSettings />} />
       </Route>
     </Routes>

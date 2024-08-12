@@ -26,7 +26,7 @@ import {
   FaChevronUp,
 } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
-import EmployeeProfile from "./EmployeeProfile";
+import AdminEmployeeProfile from "./AdminEmployeeProfile";
 import EmployeeCard from "./EmployeeCard";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
@@ -430,7 +430,7 @@ const EmployeeList = () => {
         </div>
       )}
       {selectedEmployee && (
-        <EmployeeProfile
+        <AdminEmployeeProfile
           employee={selectedEmployee}
           onClose={() => setSelectedEmployee(null)}
         />
