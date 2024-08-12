@@ -4,6 +4,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { toast } from "react-toastify";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+import 'react-toastify/dist/ReactToastify.css';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -22,7 +23,9 @@ const EmployeeProfile = () => {
     dateOfBirth: "",
     department: "",
     position: "",
+    profileImage: null,
   });
+  const [previewImage, setPreviewImage] = useState(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -42,7 +45,9 @@ const EmployeeProfile = () => {
           dateOfBirth: response.data.date_of_birth,
           department: response.data.department,
           position: response.data.position,
+          profileImage: response.data.profile_image,
         });
+        setPreviewImage(response.data.profile_image);
       } catch (error) {
         console.error("Error fetching profile data:", error);
         setError("Unable to fetch profile data.");
@@ -55,25 +60,46 @@ const EmployeeProfile = () => {
   }, [currentUser.id]);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value, type, files } = e.target;
+    if (type === 'file') {
+      setFormData({
+        ...formData,
+        [name]: files[0],
+      });
+      setPreviewImage(URL.createObjectURL(files[0]));
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
   const handleUpdate = async () => {
     try {
-      await axios.patch(`http://127.0.0.1:8000/api/employees/${currentUser.id}/`, formData, {
+      const data = new FormData();
+      data.append('first_name', formData.firstName);
+      data.append('last_name', formData.lastName);
+      data.append('email', formData.email);
+      data.append('phone', formData.phone);
+      data.append('address', formData.address);
+      data.append('date_of_birth', formData.dateOfBirth);
+      data.append('department', formData.department);
+      data.append('position', formData.position);
+      if (formData.profileImage) {
+        data.append('profile_image', formData.profileImage);
+      }
+
+      await axios.patch(`http://127.0.0.1:8000/api/employees/${currentUser.id}/`, data, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'multipart/form-data',
         },
       });
-      setProfile({
-        ...profile,
-        ...formData,
-      });
+
       toast.success("Profile updated successfully!");
       setIsEditing(false);
+      fetchProfile();
     } catch (error) {
       console.error("Error updating profile:", error);
       toast.error("Error updating profile.");
@@ -103,7 +129,7 @@ const EmployeeProfile = () => {
       ],
       styles: {
         header: {
-          fontSize: 18,
+          fontSize: 22,
           bold: true,
           margin: [0, 0, 0, 20],
         },
@@ -114,117 +140,101 @@ const EmployeeProfile = () => {
     pdfMake.createPdf(docDefinition).download('employee-profile.pdf');
   };
 
-  if (loading) return <div className="text-center p-6 text-white">Loading...</div>;
-  if (error) return <div className="text-center p-6 text-red-500">{error}</div>;
+  const handleConfirmUpdate = () => {
+    handleUpdate();
+  };
+
+  if (loading) return <div className="text-center p-6 text-gray-600">Loading...</div>;
+  if (error) return <div className="text-center p-6 text-red-600">{error}</div>;
 
   return (
-    <div className="p-6 bg-gray-100 text-black">
-      <h1 className="text-4xl font-bold mb-6 text-center">Profile</h1>
-      <div className="bg-white p-6 rounded-lg">
-        <img
-          src={profile.profile_image || '/default-profile.png'}
-          alt="Profile"
-          className="w-32 h-32 rounded-full mx-auto mb-4"
-        />
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-4xl font-bold mb-6 text-center text-gray-800">Employee Profile</h1>
+      <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+        <div className="flex justify-center mb-6">
+          <img
+            src={previewImage || '/default-profile.png'}
+            alt="Profile"
+            className="w-32 h-32 rounded-full border-4 border-gray-300"
+          />
+        </div>
         {isEditing ? (
           <div>
             <input
-              type="text"
-              name="firstName"
-              value={formData.firstName}
+              type="file"
+              name="profileImage"
               onChange={handleChange}
-              className="block w-full mb-2 p-2 border border-gray-300 rounded"
-              placeholder="First Name"
+              className="block w-full mb-4 p-3 border border-gray-300 rounded-md"
             />
-            <input
-              type="text"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              className="block w-full mb-2 p-2 border border-gray-300 rounded"
-              placeholder="Last Name"
-            />
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="block w-full mb-2 p-2 border border-gray-300 rounded"
-              placeholder="Email"
-            />
-            <input
-              type="text"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className="block w-full mb-2 p-2 border border-gray-300 rounded"
-              placeholder="Phone"
-            />
-            <textarea
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              className="block w-full mb-2 p-2 border border-gray-300 rounded"
-              placeholder="Address"
-            />
-            <input
-              type="date"
-              name="dateOfBirth"
-              value={formData.dateOfBirth}
-              onChange={handleChange}
-              className="block w-full mb-2 p-2 border border-gray-300 rounded"
-              placeholder="Date of Birth"
-            />
-            <input
-              type="text"
-              name="department"
-              value={formData.department}
-              onChange={handleChange}
-              className="block w-full mb-2 p-2 border border-gray-300 rounded"
-              placeholder="Department"
-            />
-            <input
-              type="text"
-              name="position"
-              value={formData.position}
-              onChange={handleChange}
-              className="block w-full mb-2 p-2 border border-gray-300 rounded"
-              placeholder="Position"
-            />
-            <button
-              onClick={handleUpdate}
-              className="bg-blue-500 text-white p-2 rounded"
-            >
-              Save Changes
-            </button>
-            <button
-              onClick={() => setIsEditing(false)}
-              className="bg-gray-500 text-white p-2 rounded ml-2"
-            >
-              Cancel
-            </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              {Object.entries({
+                firstName: "First Name",
+                lastName: "Last Name",
+                email: "Email",
+                phone: "Phone",
+                address: "Address",
+                dateOfBirth: "Date of Birth",
+                department: "Department",
+                position: "Position",
+              }).map(([key, placeholder]) => (
+                <input
+                  key={key}
+                  type={key === "email" ? "email" : key === "dateOfBirth" ? "date" : "text"}
+                  name={key}
+                  value={formData[key]}
+                  onChange={handleChange}
+                  className="block w-full p-3 border border-gray-300 rounded-md"
+                  placeholder={placeholder}
+                />
+              ))}
+            </div>
+            <div className="flex justify-between mt-4">
+              <button
+                onClick={handleConfirmUpdate}
+                className="bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition duration-200"
+              >
+                Save Changes
+              </button>
+              <button
+                onClick={() => setIsEditing(false)}
+                className="bg-gray-600 text-white p-3 rounded-md hover:bg-gray-700 transition duration-200"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         ) : (
           <div>
-            <p className="text-lg">Name: {profile.first_name} {profile.last_name}</p>
-            <p className="text-lg">Email: {profile.email}</p>
-            <p className="text-lg">Phone: {profile.phone}</p>
-            <p className="text-lg">Address: {profile.address}</p>
-            <p className="text-lg">Date of Birth: {profile.date_of_birth}</p>
-            <p className="text-lg">Department: {profile.department}</p>
-            <p className="text-lg">Position: {profile.position}</p>
-            <button
-              onClick={() => setIsEditing(true)}
-              className="bg-blue-500 text-white p-2 rounded mt-4"
-            >
-              Update Profile
-            </button>
-            <button
-              onClick={handleExportPDF}
-              className="bg-green-500 text-white p-2 rounded ml-2 mt-4"
-            >
-              Export to PDF
-            </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              {Object.entries({
+                'Name': `${profile.first_name} ${profile.last_name}`,
+                'Email': profile.email,
+                'Phone': profile.phone,
+                'Address': profile.address,
+                'Date of Birth': profile.date_of_birth,
+                'Department': profile.department,
+                'Position': profile.position,
+              }).map(([label, value]) => (
+                <div key={label} className="p-3 border-b border-gray-300">
+                  <span className="font-semibold text-gray-700">{label}:</span>
+                  <span className="ml-2 text-gray-600">{value}</span>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-between">
+              <button
+                onClick={() => setIsEditing(true)}
+                className="bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition duration-200"
+              >
+                Edit
+              </button>
+              <button
+                onClick={handleExportPDF}
+                className="bg-green-600 text-white p-3 rounded-md hover:bg-green-700 transition duration-200"
+              >
+                Export PDF
+              </button>
+            </div>
           </div>
         )}
       </div>
