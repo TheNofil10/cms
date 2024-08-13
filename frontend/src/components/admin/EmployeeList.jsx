@@ -32,11 +32,14 @@ import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+import ConfirmationModal from "./ConfirmationModal"; // Import the ConfirmationModal component
 
 // Initialize pdfMake with fonts
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const EmployeeList = () => {
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [employeeToDelete, setEmployeeToDelete] = useState(null);
   const [employees, setEmployees] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -104,7 +107,7 @@ const EmployeeList = () => {
               className="text-blue-600 hover:text-blue-800 bg-transparent border-none"
               onClick={() => handleEmployeeClick(row.original)}
             >
-              <ViewIcon />
+              <ViewIcon onClick={() => handleEmployeeClick(row.original)} />
             </button>
             <button
               className="text-red-600 hover:text-red-800 bg-transparent border-none"
@@ -151,23 +154,56 @@ const EmployeeList = () => {
   const handleEmployeeClick = (employee) => {
     navigate(`/admin/employees/${employee.id}`);
   };
+  const handleDeleteEmployee = (employeeId, employeeName) => {
+    setEmployeeToDelete({ id: employeeId, name: employeeName });
+    setShowConfirmModal(true);
+  };
+  // const handleDeleteEmployee = async (employeeId) => {
+  //   try {
+  //     await axios.delete(`http://127.0.0.1:8000/api/employees/${employeeId}/`, {
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+  //       },
+  //     });
+  //     toast.error("Employee deleted successfully");
+  //     setEmployees(employees.filter((emp) => emp.id !== employeeId));
+  //     setFilteredData(filteredData.filter((emp) => emp.id !== employeeId));
+  //     toast.success("Successfully deleted")
+  //   } catch (error) {
+  //     if (error.response && error.response.status === 404) {
+  //       toast.error("Employee not found");
+  //     } else {
+  //       console.error("Error deleting employee:", error);
+  //     }
+  //   }
+  // };
+  const confirmDeleteEmployee = async () => {
+    if (!employeeToDelete) return;
 
-  const handleDeleteEmployee = async (employeeId) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/employees/${employeeId}/`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        },
-      });
+      await axios.delete(
+        `http://127.0.0.1:8000/api/employees/${employeeToDelete.id}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
       toast.error("Employee deleted successfully");
-      setEmployees(employees.filter((emp) => emp.id !== employeeId));
-      setFilteredData(filteredData.filter((emp) => emp.id !== employeeId));
+      setEmployees(employees.filter((emp) => emp.id !== employeeToDelete.id));
+      setFilteredData(
+        filteredData.filter((emp) => emp.id !== employeeToDelete.id)
+      );
+      toast.success("Successfully deleted");
     } catch (error) {
       if (error.response && error.response.status === 404) {
         toast.error("Employee not found");
       } else {
         console.error("Error deleting employee:", error);
       }
+    } finally {
+      setShowConfirmModal(false);
+      setEmployeeToDelete(null);
     }
   };
 
@@ -348,7 +384,6 @@ const EmployeeList = () => {
                 return (
                   <tr
                     {...row.getRowProps()}
-                    onClick={() => handleEmployeeClick(row.original)}
                     className="cursor-pointer hover:bg-gray-100"
                   >
                     {row.cells.map((cell) => (
@@ -435,6 +470,13 @@ const EmployeeList = () => {
           onClose={() => setSelectedEmployee(null)}
         />
       )}
+      <ToastContainer />
+      <ConfirmationModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={confirmDeleteEmployee}
+        employeeName={employeeToDelete ? employeeToDelete.name : ""}
+      />
     </div>
   );
 };

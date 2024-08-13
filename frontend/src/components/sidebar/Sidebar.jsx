@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { ChevronLeft, ChevronRight, MoreVertical, LogOut } from "lucide-react";
+import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import logo from '../../assets/logo.png';
 import defaultProfilePic from '../../assets/profile.png'; // Replace with your default profile image
@@ -9,7 +9,7 @@ const SidebarContext = createContext();
 
 export default function Sidebar({ children }) {
     const [expanded, setExpanded] = useState(false);
-    const [showMenu, setShowMenu] = useState(false);
+    const [showSidebar, setShowSidebar] = useState(true);
     const { currentUser, logout } = useAuth();
     const userProfilePic = currentUser?.profile_pic || defaultProfilePic;
     const navigate = useNavigate();
@@ -19,59 +19,59 @@ export default function Sidebar({ children }) {
         navigate("/login");
     };
 
+    const handleToggleSidebar = () => {
+        setShowSidebar(!showSidebar);
+    };
+
     return (
         <>
-            <aside className={`fixed top-0 left-0 h-screen bg-white shadow-lg transition-transform duration-300 ease-in-out ${expanded ? "w-64" : "w-16"} z-30`}>
-                <nav className="h-full flex flex-col">
-                    <div className="p-4 pb-2 flex justify-between items-center">
-                        <img
-                            src={logo}
-                            alt="Logo"
-                            className={`transition-all ${expanded ? "w-32" : "w-0"}`}
-                        />
-                        <button
-                            onClick={() => setExpanded(!expanded)}
-                            className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
-                        >
-                            {expanded ? <ChevronLeft /> : <ChevronRight />}
-                        </button>
-                    </div>
-                    <SidebarContext.Provider value={{ expanded }}>
-                        <ul className="flex-1 px-3">
-                            {children}
-                        </ul>
-                    </SidebarContext.Provider>
-                    <div className="border-t flex p-3 items-center relative">
-                        <img
-                            src={userProfilePic}
-                            alt="Profile"
-                            className="w-10 h-10 rounded-md"
-                        />
-                        <div className={`flex-1 ml-3 transition-all ${expanded ? "opacity-100" : "opacity-0"}`}>
-                            <h4 className="font-semibold">{currentUser?.username || "User"}</h4>
-                            <span className="text-xs text-gray-600">{currentUser?.email || "user@example.com"}</span>
+            {showSidebar && (
+                <aside className={`fixed top-0 left-0 h-screen bg-white shadow-lg transition-transform duration-300 ease-in-out ${expanded ? "w-64" : "w-16"} z-30`}>
+                    <nav className="h-full flex flex-col">
+                        <div className="p-4 pb-2 flex justify-between items-center">
+                            <img
+                                src={logo}
+                                alt="Logo"
+                                className={`transition-all ${expanded ? "w-32" : "w-0"}`}
+                            />
+                            <button
+                                onClick={() => setExpanded(!expanded)}
+                                className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
+                            >
+                                {expanded ? <ChevronLeft /> : <ChevronRight />}
+                            </button>
                         </div>
-                        <button onClick={() => setShowMenu(!showMenu)}>
-                            <MoreVertical size={20} className={`ml-auto ${expanded ? "block" : "hidden"}`} />
-                        </button>
-                        {showMenu && (
-                            <div className="absolute right-0 mt-10 w-48 bg-white rounded-md shadow-lg py-1">
-                                <button 
-                                    onClick={() => navigate("/settings")} 
-                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
-                                    Settings
-                                </button>
-                                <button 
-                                    onClick={handleLogout} 
-                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
-                                    Log Out
-                                </button>
+                        <SidebarContext.Provider value={{ expanded }}>
+                            <ul className="flex-1 px-3">
+                                {children}
+                            </ul>
+                        </SidebarContext.Provider>
+                        <div className="border-t flex p-3 items-center relative">
+                            <img
+                                src={userProfilePic}
+                                alt="Profile"
+                                className="w-10 h-10 rounded-md"
+                            />
+                            <div className={`flex-1 ml-3 transition-all ${expanded ? "opacity-100" : "opacity-0"}`}>
+                                <h4 className="font-semibold">{currentUser?.username || "User"}</h4>
+                                <span className="text-xs text-gray-600">{currentUser?.email || "user@example.com"}</span>
                             </div>
-                        )}
-                    </div>
-                </nav>
-            </aside>
-            {expanded && (
+                            <button onClick={handleLogout}>
+                                <LogOut size={20} className={`ml-auto ${expanded ? "block" : "hidden"}`} />
+                            </button>
+                        </div>
+                    </nav>
+                </aside>
+            )}
+            {!showSidebar && (
+                <button
+                    onClick={handleToggleSidebar}
+                    className="fixed top-0 left-0 p-4 bg-white shadow-lg rounded-full z-30"
+                >
+                    <ChevronRight size={20} />
+                </button>
+            )}
+            {expanded && showSidebar && (
                 <div
                     className="fixed inset-0 bg-black opacity-40 z-20"
                     onClick={() => setExpanded(false)}

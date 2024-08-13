@@ -1,11 +1,11 @@
 import React from "react";
 import { FaEye as ViewIcon, FaTrash as DeleteIcon } from "react-icons/fa";
 import profile from "../../assets/profile.png";
+
 const EmployeeCard = ({ employee, onView, onDelete }) => {
   const imageUrl = employee.profile_image || profile;
 
   return (
-    
     <div className="p-4 bg-gray-100 rounded shadow-md flex items-center space-x-8">
       {/* Employee Image */}
       <img
@@ -27,10 +27,16 @@ const EmployeeCard = ({ employee, onView, onDelete }) => {
 
       {/* Action Buttons */}
       <div className="flex space-x-4">
-        <button className="text-blue-600 hover:text-blue-800" onClick={onView}>
-          <ViewIcon />
+        <button
+          className="text-blue-600 hover:text-blue-800"
+          onClick={() => onView(employee)}
+        >
+         <ViewIcon onClick={() => onView(row.original)}/>
         </button>
-        <button className="text-red-600 hover:text-red-800" onClick={onDelete}>
+        <button
+          className="text-red-600 hover:text-red-800"
+          onClick={() => onDelete(row.original.id)}
+        >
           <DeleteIcon />
         </button>
       </div>
