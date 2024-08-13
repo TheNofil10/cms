@@ -20,7 +20,6 @@ const EmployeeCard = ({ employee, onView, onDelete }) => {
           {employee.first_name} {employee.last_name}
         </div>
         <div className="text-gray-600">{employee.username}</div>
-        <div className="text-gray-600">{employee.email}</div>
         <div className="text-gray-600">{employee.position}</div>
         <div className="text-gray-600">{employee.department}</div>
       </div>
@@ -31,11 +30,11 @@ const EmployeeCard = ({ employee, onView, onDelete }) => {
           className="text-blue-600 hover:text-blue-800"
           onClick={() => onView(employee)}
         >
-         <ViewIcon onClick={() => onView(row.original)}/>
+          <ViewIcon />
         </button>
         <button
           className="text-red-600 hover:text-red-800"
-          onClick={() => onDelete(row.original.id)}
+          onClick={() => onDelete(employee.id)}
         >
           <DeleteIcon />
         </button>

@@ -9,6 +9,8 @@ import {
   FaAddressCard,
   FaUpload,
   FaSpinner,
+  FaCalendar,
+  FaDollarSign,
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { Line } from "rc-progress";
@@ -17,17 +19,23 @@ import axios from "axios";
 const Signup = () => {
   const [formData, setFormData] = useState({
     first_name: "",
+    middle_name: "",
     last_name: "",
     username: "",
     email: "",
     password: "",
     phone: "",
+    alternate_phone: "",
     address: "",
-    profile_image: null,
-    imagePreview: null,
     date_of_birth: "",
+    employment_date: "",
     department: "",
     position: "",
+    salary: "",
+    manager: "",
+    emergency_contact: "",
+    profile_image: null,
+    imagePreview: null,
   });
 
   const [step, setStep] = useState(1);
@@ -103,17 +111,23 @@ const Signup = () => {
         toast.success("Signed Up Successfully");
         setFormData({
           first_name: "",
+          middle_name: "",
           last_name: "",
           username: "",
           email: "",
           password: "",
           phone: "",
+          alternate_phone: "",
           address: "",
-          profile_image: null,
-          imagePreview: null,
           date_of_birth: "",
+          employment_date: "",
           department: "",
           position: "",
+          salary: "",
+          manager: "",
+          emergency_contact: "",
+          profile_image: null,
+          imagePreview: null,
         });
         setStep(1);
         navigate("/admin/employees/add");
@@ -173,6 +187,20 @@ const Signup = () => {
                 </div>
               </div>
               <div className="mb-4">
+                <label className="block text-sm mb-2">Middle Name</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="middle_name"
+                    value={formData.middle_name}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    placeholder="Enter middle name"
+                  />
+                </div>
+              </div>
+              <div className="mb-4">
                 <label className="block text-sm mb-2">Username</label>
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaUser className="m-2" />
@@ -194,9 +222,6 @@ const Signup = () => {
                 >
                   Next
                 </button>
-                <Link to="/login" className="text-black text-sm underline">
-                  Already have an account? Login
-                </Link>
               </div>
             </>
           )}
@@ -261,6 +286,34 @@ const Signup = () => {
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
                     placeholder="Enter phone number"
+                  />
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Alternate Phone</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaPhone className="m-2" />
+                  <input
+                    type="text"
+                    name="alternate_phone"
+                    value={formData.alternate_phone}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    placeholder="Enter alternate phone number"
+                  />
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Emergency Contact</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaPhone className="m-2" />
+                  <input
+                    type="text"
+                    name="emergency_contact"
+                    value={formData.emergency_contact}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    placeholder="Enter emergency contact"
                   />
                 </div>
               </div>
@@ -337,6 +390,33 @@ const Signup = () => {
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
                     placeholder="Enter position"
+                  />
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Employment Date</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaCalendar className="m-2" />
+                  <input
+                    type="date"
+                    name="employment_date"
+                    value={formData.employment_date}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                  />
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Salary</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaDollarSign className="m-2" />
+                  <input
+                    type="number"
+                    name="salary"
+                    value={formData.salary}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    placeholder="Enter salary"
                   />
                 </div>
               </div>

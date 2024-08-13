@@ -22,19 +22,15 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         return Employee.objects.filter(id=self.request.user.id)
 
     def perform_create(self, serializer):
-        employee = serializer.save()
-        employee.is_active = True
-        if 'profile_image' in self.request.FILES:
-            image = self.request.FILES['profile_image']
-            employee.profile_image = image
-            employee.save()
+        serializer.save(is_active=True)
 
     def perform_update(self, serializer):
-        employee = serializer.save()
+        # Save the instance first
+        instance = serializer.save()
+        # Check if a new profile image is uploaded
         if 'profile_image' in self.request.FILES:
-            image = self.request.FILES['profile_image']
-            employee.profile_image = image
-            employee.save()
+            instance.profile_image = self.request.FILES['profile_image']
+            instance.save()
 
     def update(self, request, *args, **kwargs):
         employee = self.get_object()
@@ -49,6 +45,18 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        employee = self.get_object()
+
+        if request.user.is_superuser and (request.user != employee):
+            return super().destroy(request, *args, **kwargs)
+
+        if employee.is_superuser and (request.user != employee):
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        return super().destroy(request, *args, **kwargs)
+
 
     def destroy(self, request, *args, **kwargs):
         employee = self.get_object()

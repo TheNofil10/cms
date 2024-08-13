@@ -457,10 +457,11 @@ const EmployeeList = () => {
         <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-4">
           {filteredData.map((employee) => (
             <EmployeeCard
-              key={employee.id}
-              employee={employee}
-              onClick={() => handleEmployeeClick(employee)}
-            />
+            key={employee.id}
+            employee={employee}
+            onView={handleEmployeeClick}
+            onDelete={handleDeleteEmployee}
+          />
           ))}
         </div>
       )}

@@ -11,7 +11,7 @@ export default function Sidebar({ children }) {
     const [expanded, setExpanded] = useState(false);
     const [showSidebar, setShowSidebar] = useState(true);
     const { currentUser, logout } = useAuth();
-    const userProfilePic = currentUser?.profile_pic || defaultProfilePic;
+    const userProfilePic = currentUser?.profile_image || defaultProfilePic;
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -56,9 +56,6 @@ export default function Sidebar({ children }) {
                                 <h4 className="font-semibold">{currentUser?.username || "User"}</h4>
                                 <span className="text-xs text-gray-600">{currentUser?.email || "user@example.com"}</span>
                             </div>
-                            <button onClick={handleLogout}>
-                                <LogOut size={20} className={`ml-auto ${expanded ? "block" : "hidden"}`} />
-                            </button>
                         </div>
                     </nav>
                 </aside>

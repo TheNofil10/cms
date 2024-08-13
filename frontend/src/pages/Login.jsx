@@ -25,6 +25,7 @@ const Login = () => {
       return;
     }
     setLoading(true);
+    console.log(formData)
     const success = await login(formData.username, formData.password);
 
     if (success) {
