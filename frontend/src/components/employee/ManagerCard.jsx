@@ -14,7 +14,7 @@ const ManagerCard = ({ profileImage, name, department, position, username, email
 
       {/* Manager Info */}
       <div className="flex-grow">
-        <h3 className="text-xl font-semibold">{name}</h3>
+        <h3 className="text-xl text-black font-semibold">{name}</h3>
         <p className="text-gray-600">{position}</p>
         <p className="text-gray-600">{department}</p>
         {username && <p className="text-sm text-gray-500">@{username}</p>}

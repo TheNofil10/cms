@@ -2,7 +2,7 @@ import React from "react";
 
 const MembersCard = ({ profileImage, name, department, position, username, email, phone }) => {
   return (
-    <div className="flex items-center bg-white rounded-lg shadow-md p-4 mb-4 w-full">
+    <div className="flex items-center bg-white hover:bg-gray-200 transition-all rounded-lg shadow-md p-4 mb-4 w-full">
       {/* Profile Image */}
       <div className="w-24 h-24 overflow-hidden rounded-full mr-4">
         <img

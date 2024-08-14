@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import MembersCard from "../components/employee/MembersCard";
-import { FaSearch, FaPlus, FaTrash } from 'react-icons/fa';
+import {
+  FaSearch,
+  FaPlus,
+  FaTrash,
+  FaCross,
+  FaWindowMinimize,
+} from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ManageMembersPage = () => {
   const { id } = useParams();
@@ -10,7 +18,6 @@ const ManageMembersPage = () => {
   const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
@@ -26,7 +33,7 @@ const ManageMembersPage = () => {
         );
         setDepartment(response.data);
       } catch (error) {
-        setError("Error fetching department data");
+        toast.error("Error fetching department data");
       }
     };
 
@@ -42,7 +49,7 @@ const ManageMembersPage = () => {
         );
         setEmployees(response.data);
       } catch (error) {
-        setError("Error fetching employees");
+        toast.error("Error fetching employees");
       } finally {
         setLoading(false);
       }
@@ -67,7 +74,7 @@ const ManageMembersPage = () => {
           },
         }
       );
-      setEmployees(employees.filter(emp => emp.id !== employeeId));
+      setEmployees(employees.filter((emp) => emp.id !== employeeId));
       const response = await axios.get(
         `http://127.0.0.1:8000/api/departments/${id}/`,
         {
@@ -77,8 +84,9 @@ const ManageMembersPage = () => {
         }
       );
       setDepartment(response.data);
+      toast.success("Member added successfully!");
     } catch (error) {
-      setError("Error adding member");
+      toast.error("Error adding member");
     }
   };
 
@@ -102,16 +110,17 @@ const ManageMembersPage = () => {
         }
       );
       setDepartment(response.data);
+      toast.success("Member removed successfully!");
     } catch (error) {
-      setError("Error removing member");
+      toast.error("Error removing member");
     }
   };
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
 
   return (
     <div className="container mx-auto">
+      <ToastContainer />
       <h1 className="text-4xl font-bold mb-6">Manage Department Members</h1>
       <button
         onClick={() => setModalOpen(true)}
@@ -120,25 +129,31 @@ const ManageMembersPage = () => {
         <FaPlus className="mr-2" /> Add Employee
       </button>
 
-      <div className="mb-6">
+      <div className="mb-6 bg-black text-black rounded px-4 py-2">
         <h2 className="text-2xl font-semibold mb-4">Current Members</h2>
-        {department?.members?.map(member => (
-          <div key={member.username} className="flex items-center justify-between mb-4">
-            <MembersCard
-              profileImage={member.profile_image}
-              name={`${member.first_name} ${member.last_name}`}
-              position={member.position}
-              username={member.username}
-              email={member.email}
-              phone={member.phone}
-            />
-            <button
-              onClick={() => handleRemoveMember(member.id)}
-              className="bg-red-500 text-white px-4 py-2 rounded flex items-center"
+        {department?.members?.map((member) => (
+          <Link to={`/admin/employees/${member.id}`}>
+            <div
+              key={member.username}
+              className="flex items-center justify-between mb-4"
             >
-              <FaTrash className="mr-2" /> Remove
-            </button>
-          </div>
+              <MembersCard
+                profileImage={member.profile_image}
+                name={`${member.first_name} ${member.last_name}`}
+                position={member.position}
+                username={member.username}
+                email={member.email}
+                phone={member.phone}
+              />
+
+              <button
+                onClick={() => handleRemoveMember(member.id)}
+                className="bg-red-500 text-white ml-2 px-4 py-2 rounded flex items-center"
+              >
+                <FaTrash className="mr-2" />
+              </button>
+            </div>{" "}
+          </Link>
         ))}
       </div>
 
@@ -150,7 +165,7 @@ const ManageMembersPage = () => {
               onClick={() => setModalOpen(false)}
               className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
             >
-              <FaTrash />
+              <FaWindowMinimize />
             </button>
             <h2 className="text-2xl font-semibold mb-4">Add Employees</h2>
             <input
@@ -162,11 +177,14 @@ const ManageMembersPage = () => {
             />
             <div className="max-h-full overflow-y-auto">
               {employees
-                .filter(employee =>
+                .filter((employee) =>
                   employee.username.toLowerCase().includes(search.toLowerCase())
                 )
-                .map(employee => (
-                  <div key={employee.username} className="flex items-center justify-between mb-4">
+                .map((employee) => (
+                  <div
+                    key={employee.username}
+                    className="flex items-center justify-between mb-4"
+                  >
                     <MembersCard
                       profileImage={employee.profile_image}
                       name={`${employee.first_name} ${employee.last_name}`}

@@ -23,7 +23,7 @@ class AdminEmployeeSerializer(serializers.ModelSerializer):
 class EmployeeBriefSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
-        fields = ['first_name', 'last_name', 'username', 'profile_image', 'email', 'position', 'department']
+        fields = ['id','first_name', 'last_name', 'username', 'profile_image', 'email', 'position', 'department']
 
 class DepartmentSerializer(serializers.ModelSerializer):
     members = EmployeeBriefSerializer(many=True, read_only=True, source='employees')
