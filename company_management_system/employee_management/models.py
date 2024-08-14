@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+from django.contrib.auth import get_user_model
 
 def employee_image_path(instance, filename):
     return f'profile_images/employees/{instance.id}/{filename}'
@@ -20,23 +21,24 @@ class EmployeeManager(BaseUserManager):
         # You can set additional fields as needed for superusers
         return self.create_user(username, email, password, **extra_fields)
 
+
 class Employee(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
-    middle_name = models.CharField(max_length=100, null=True, blank=True)  # New Field
+    middle_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100)
     username = models.CharField(max_length=100, unique=True)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15)
-    alternate_phone = models.CharField(max_length=15, null=True, blank=True)  # New Field
+    alternate_phone = models.CharField(max_length=15, null=True, blank=True)
     address = models.TextField()
     date_of_birth = models.DateField()
-    employment_date = models.DateField()  # New Field
-    department = models.CharField(max_length=100)
+    employment_date = models.DateField()
+    department = models.ForeignKey('Department', null=True, blank=True, on_delete=models.SET_NULL, related_name='employees')  # Use string reference
     position = models.CharField(max_length=100)
-    salary = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # New Field
-    manager = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='subordinates')  # New Field
-    emergency_contact = models.CharField(max_length=255, null=True, blank=True)  # New Field
+    salary = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    manager = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='subordinates')
+    emergency_contact = models.CharField(max_length=255, null=True, blank=True)
     profile_image = models.ImageField(upload_to=employee_image_path, null=True, blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -48,3 +50,15 @@ class Employee(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+    
+class Department(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True)
+    manager = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True, related_name='managed_departments')
+    contact_info = models.CharField(max_length=255, blank=True)
+    location = models.CharField(max_length=255, blank=True)  # New Field
+    budget = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)  # New Field
+    office_phone = models.CharField(max_length=20, blank=True)  # New Field
+
+    def __str__(self):
+        return self.name

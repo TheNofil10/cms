@@ -1,8 +1,8 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status,generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from .serializers import EmployeeSerializer, AdminEmployeeSerializer
-from .models import Employee
+from .serializers import EmployeeBriefSerializer, EmployeeSerializer, AdminEmployeeSerializer, DepartmentSerializer
+from .models import Employee, Department
 from django.core.files.storage import default_storage
 
 class EmployeeViewSet(viewsets.ModelViewSet):
@@ -17,9 +17,12 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         return [IsAuthenticated()]
 
     def get_queryset(self):
-        if self.request.user.is_superuser:
+        user = self.request.user
+        if user.is_superuser:
             return Employee.objects.all()
-        return Employee.objects.filter(id=self.request.user.id)
+        if user.is_authenticated:
+            return Employee.objects.filter(department=user.department)
+        return Employee.objects.none()
 
     def perform_create(self, serializer):
         employee = serializer.save(is_active=True)
@@ -106,3 +109,19 @@ class AdminEmployeeView(viewsets.ViewSet):
         
         employee.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class DepartmentViewSet(viewsets.ModelViewSet):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSerializer
+    permission_classes = [IsAdminUser]
+    
+class DepartmentMemberListView(generics.ListAPIView):
+    serializer_class = EmployeeBriefSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Get the current employee
+        current_employee = self.request.user
+        
+        # Filter employees by the current employee's department
+        return Employee.objects.filter(department=current_employee.department)
