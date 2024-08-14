@@ -6,7 +6,8 @@ import { useAuth } from "../../contexts/AuthContext";
 
 const AdminDashboard = () => {
   const [totalEmployees, setTotalEmployees] = useState(0);
-  const [uniqueDepartments, setUniqueDepartments] = useState([]);
+  const [totalDepartments, setTotalDepartments] = useState();
+  const [departments, setDepartments] = useState([])
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { currentUser } = useAuth();
@@ -19,10 +20,19 @@ const AdminDashboard = () => {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           },
         });
-
+  
+        const departmentResponse = await axios.get("http://127.0.0.1:8000/api/departments/", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        });
+  
         const employees = Array.isArray(response.data) ? response.data : response.data.results || [];
+        const departmentsData = Array.isArray(departmentResponse.data) ? departmentResponse.data : departmentResponse.data.results || [];
+        
+        setDepartments(departmentsData);
         setTotalEmployees(employees.length);
-        setUniqueDepartments(getUniqueDepartments(employees));
+        setTotalDepartments(departmentsData.length); // Update with the length of the fetched departments
       } catch (error) {
         console.error("Error fetching employees:", error);
         setError("Unable to fetch employee data.");
@@ -30,12 +40,7 @@ const AdminDashboard = () => {
         setLoading(false);
       }
     };
-
-    const getUniqueDepartments = (employees) => {
-      const departments = employees.map((employee) => employee.department);
-      return [...new Set(departments)];
-    };
-
+  
     fetchEmployees();
   }, []);
 
@@ -62,7 +67,7 @@ const AdminDashboard = () => {
           <FaChartPie size={40} className="text-black mr-4" />
           <div>
             <p className="text-xl font-semibold">Department Distribution</p>
-            <p className="text-2xl">{uniqueDepartments.length} Departments</p>
+            <p className="text-2xl">{totalDepartments} Departments</p>
           </div>
         </div>
       </div>

@@ -65,11 +65,13 @@ const DepartmentsPage = () => {
         );
         setDepartments(response.data.results || response.data || []);
         setFilteredData(response.data.results || response.data || []);
+        
       } catch (error) {
         console.error("Error fetching departments:", error);
         setError("There was an error fetching the department data.");
       } finally {
         setLoading(false);
+        console.log(departments)
       }
     };
 

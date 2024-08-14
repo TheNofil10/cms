@@ -135,7 +135,7 @@ const DepartmentDetailPage = () => {
 
             {/* Manager Section */}
             <div>
-              <h2 className="text-2xl font-semibold text-black mb-4">Manager</h2>
+              <h2 className="text-2xl font-semibold text-balc mb-4">Manager</h2>
               {department?.manager_name !== "N/A" ? (
                 <ManagerCard
                   profileImage={`${imageBaseUrl}${department.manager_image}`}
