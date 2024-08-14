@@ -18,6 +18,7 @@ import ConfirmationModal from "./ConfirmationModal";
 const AdminEmployeeProfile = () => {
   const { id } = useParams();
   const [employee, setEmployee] = useState(null);
+  const [department, setDepartment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { currentUser } = useAuth();
@@ -28,7 +29,7 @@ const AdminEmployeeProfile = () => {
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
-        const response = await axios.get(
+        const employeeResponse = await axios.get(
           `http://127.0.0.1:8000/api/employees/${id}/`,
           {
             headers: {
@@ -36,7 +37,20 @@ const AdminEmployeeProfile = () => {
             },
           }
         );
-        setEmployee(response.data);
+        setEmployee(employeeResponse.data);
+        
+        // Fetch department details if needed
+        if (employeeResponse.data.department) {
+          const departmentResponse = await axios.get(
+            `http://127.0.0.1:8000/api/departments/${employeeResponse.data.department}/`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+              },
+            }
+          );
+          setDepartment(departmentResponse.data);
+        }
       } catch (error) {
         console.error("Error fetching employee:", error);
         setError("Unable to fetch employee data.");
@@ -118,7 +132,7 @@ const AdminEmployeeProfile = () => {
             <FaUserTie className="mr-2" /> {employee.position}
           </p>
           <p className="text-gray-600 text-lg flex items-center justify-center">
-            <FaRegBuilding className="mr-2" /> {employee.department}
+            <FaRegBuilding className="mr-2" /> {department ? department.name : "Loading..."}
           </p>
         </div>
         <div className="mt-4">
@@ -136,7 +150,7 @@ const AdminEmployeeProfile = () => {
         <h2 className="text-3xl font-semibold mb-4">About</h2>
         <p className="text-gray-700 text-lg">Position: {employee.position}</p>
         <p className="text-gray-700 text-lg">
-          Department: {employee.department}
+          Department: {department ? department.name : "Loading..."}
         </p>
         <p className="text-gray-700 text-lg">
           Employment Date: {employee.employment_date}

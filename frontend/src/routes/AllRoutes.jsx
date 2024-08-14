@@ -19,6 +19,10 @@ import EmployeeSettings from "../components/employee/EmployeeSettings";
 import EmployeeTasks from "../components/employee/EmployeeTasks";
 import EmployeeAttendance from "../components/employee/EmployeeAttendance";
 import AdminEmployeeProfile from "../components/admin/AdminEmployeeProfile";
+import DepartmentDetailPage from "../pages/DepartmentDetailPage ";
+import AddDepartment from "../pages/AddDepartment";
+import DepartmentsPage from "../pages/DepartmentsPage";
+import EmployeeDepartment from "../pages/EmployeeDepartment";
 
 const AllRoutes = () => {
   return (
@@ -27,17 +31,22 @@ const AllRoutes = () => {
       <Route path="/login" element={<LoggedInRoute element={<Login />} />} />
 
       <Route path="/forget-password" element={<ForgetPass />} />
-      
+
       {/* Employee Routes */}
-      <Route element={<EmployeeRoute element={<EmployeeLayout />} employeeOnly={true} />}>
+      <Route
+        element={
+          <EmployeeRoute element={<EmployeeLayout />} employeeOnly={true} />
+        }
+      >
         <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
         <Route path="/employee/profile" element={<EmployeeProfile />} />
         <Route path="/employee/settings" element={<EmployeeSettings />} />
         <Route path="/employee/tasks" element={<EmployeeTasks />} />
         <Route path="/employee/attendance" element={<EmployeeAttendance />} />
+        <Route path="/employee/department" element={<EmployeeDepartment />} />
         {/* Add more employee routes here */}
       </Route>
-      
+
       {/* Admin Routes */}
       <Route element={<ProtectedRoute element={<AdminLayout />} adminOnly />}>
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
@@ -46,6 +55,12 @@ const AllRoutes = () => {
         <Route path="/admin/attendance" element={<Attendance />} />
         <Route path="/admin/employees/:id" element={<AdminEmployeeProfile />} />
         <Route path="/settings" element={<AdminSettings />} />
+        <Route path="/admin/departments" element={<DepartmentsPage />} />
+        <Route path="/admin/departments/add" element={<AddDepartment />} />
+        <Route
+          path="/admin/departments/:id"
+          element={<DepartmentDetailPage />}
+        />
       </Route>
     </Routes>
   );

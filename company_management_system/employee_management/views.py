@@ -1,5 +1,6 @@
 from rest_framework import viewsets, status,generics
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .serializers import EmployeeBriefSerializer, EmployeeSerializer, AdminEmployeeSerializer, DepartmentSerializer
 from .models import Employee, Department
@@ -125,3 +126,14 @@ class DepartmentMemberListView(generics.ListAPIView):
         
         # Filter employees by the current employee's department
         return Employee.objects.filter(department=current_employee.department)
+    
+class EmployeeDepartmentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        employee = request.user  # Get the logged-in employee
+        if not employee.department:
+            return Response({'detail': 'No department assigned'}, status=status.HTTP_404_NOT_FOUND)
+        department = employee.department  # Get the employee's department
+        serializer = DepartmentSerializer(department)
+        return Response(serializer.data)

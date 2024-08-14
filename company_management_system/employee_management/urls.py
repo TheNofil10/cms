@@ -1,6 +1,6 @@
 from django.urls import include, path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
-from .views import DepartmentMemberListView, DepartmentViewSet, EmployeeViewSet, AdminEmployeeView
+from .views import DepartmentMemberListView, DepartmentViewSet, EmployeeDepartmentView, EmployeeViewSet, AdminEmployeeView
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -15,4 +15,5 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('department-members/', DepartmentMemberListView.as_view(), name='department-member-list'),
+    path('department/me', EmployeeDepartmentView.as_view(), name='employee_department'),
 ]
