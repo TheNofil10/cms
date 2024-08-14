@@ -264,7 +264,7 @@ const EmployeeList = () => {
     <div className="container mx-auto p-4 bg-white text-black">
       <ToastContainer />
       <div className="flex justify-between mb-4">
-        <h1 className="text-2xl font-semibold">Employees</h1>
+        <h1 className="text-2xl font-semibold">Employees Lists</h1>
         <div className="flex items-center space-x-2">
           <div className="relative">
             <button

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { FaEye, FaTrash } from 'react-icons/fa';
 
 const DepartmentDetailPage = () => {
   const { id } = useParams();
@@ -71,7 +72,8 @@ const DepartmentDetailPage = () => {
       <ul>
         {department.members.map(member => (
           <li key={member.id}>
-            {member.name} <button onClick={() => handleDeleteMember(member.id)}>Remove</button>
+            {member.name}
+            <button onClick={() => handleDeleteMember(member.id)}><FaTrash /></button>
           </li>
         ))}
       </ul>
