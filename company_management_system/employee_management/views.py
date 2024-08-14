@@ -22,12 +22,14 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         return Employee.objects.filter(id=self.request.user.id)
 
     def perform_create(self, serializer):
-        serializer.save(is_active=True)
+        employee = serializer.save(is_active=True)
+        if 'profile_image' in self.request.FILES:
+            employee.profile_image = self.request.FILES['profile_image']
+            employee.save()
+
 
     def perform_update(self, serializer):
-        # Save the instance first
         instance = serializer.save()
-        # Check if a new profile image is uploaded
         if 'profile_image' in self.request.FILES:
             instance.profile_image = self.request.FILES['profile_image']
             instance.save()
