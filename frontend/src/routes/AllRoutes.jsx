@@ -23,6 +23,7 @@ import DepartmentDetailPage from "../pages/DepartmentDetailPage ";
 import AddDepartment from "../pages/AddDepartment";
 import DepartmentsPage from "../pages/DepartmentsPage";
 import EmployeeDepartment from "../pages/EmployeeDepartment";
+import ManageMembersPage from "../pages/ManageMembersPage";
 
 const AllRoutes = () => {
   return (
@@ -60,6 +61,10 @@ const AllRoutes = () => {
         <Route
           path="/admin/departments/:id"
           element={<DepartmentDetailPage />}
+        />
+        <Route
+          path="/departments/:id/manage-members"
+          element={<ManageMembersPage />}
         />
       </Route>
     </Routes>
