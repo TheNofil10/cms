@@ -27,6 +27,7 @@ const AdminEmployeeProfile = () => {
   const [employeeToDelete, setEmployeeToDelete] = useState(null);
 
   useEffect(() => {
+    
     const fetchEmployee = async () => {
       try {
         const employeeResponse = await axios.get(
@@ -61,6 +62,7 @@ const AdminEmployeeProfile = () => {
     };
 
     fetchEmployee();
+    console.log(employee)
   }, [id]);
 
   const confirmDeleteEmployee = async () => {

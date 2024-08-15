@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaSearch, FaUser } from "react-icons/fa";
+import { FaUser, FaSpinner } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 const AssignManagerModal = ({ isOpen, onClose, departmentId }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (searchQuery.length > 2) {
       const fetchEmployees = async () => {
+        setLoading(true);
         try {
           const response = await axios.get(
             `http://127.0.0.1:8000/api/employees/?search=${searchQuery}`,
@@ -23,6 +25,8 @@ const AssignManagerModal = ({ isOpen, onClose, departmentId }) => {
           setEmployees(response.data);
         } catch (error) {
           toast.error("Error fetching employees");
+        } finally {
+          setLoading(false);
         }
       };
       fetchEmployees();
@@ -32,6 +36,8 @@ const AssignManagerModal = ({ isOpen, onClose, departmentId }) => {
   }, [searchQuery]);
 
   const handleAssignManager = async () => {
+    if (!selectedEmployee) return;
+    
     try {
       await axios.patch(
         `http://127.0.0.1:8000/api/departments/${departmentId}/`,
@@ -63,7 +69,12 @@ const AssignManagerModal = ({ isOpen, onClose, departmentId }) => {
           className="w-full p-2 border rounded mb-4"
         />
         <div className="flex-1 overflow-y-auto mb-4">
-          {searchQuery.length > 2 && employees.length === 0 && (
+          {loading && (
+            <div className="flex justify-center items-center">
+              <FaSpinner className="animate-spin text-blue-500" size={24} />
+            </div>
+          )}
+          {!loading && searchQuery.length > 2 && employees.length === 0 && (
             <p className="text-gray-500">No employees found</p>
           )}
           {searchQuery.length > 2 &&

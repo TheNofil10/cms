@@ -33,6 +33,7 @@ import * as XLSX from "xlsx";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import ConfirmationModal from "./ConfirmationModal"; // Import the ConfirmationModal component
+import { useAuth } from "../../contexts/AuthContext";
 
 // Initialize pdfMake with fonts
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -45,6 +46,7 @@ const EmployeeList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [view, setView] = useState("table");
+  const {currentUser} = useAuth()
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [filters, setFilters] = useState({
     filterBy: "",
@@ -152,7 +154,10 @@ const EmployeeList = () => {
   const navigate = useNavigate();
 
   const handleEmployeeClick = (employee) => {
-    navigate(`/admin/employees/${employee.id}`);
+    if (currentUser.is_staff)
+      navigate(`/admin/employees/${employee.id}`);
+    else if(currentUser.is_hr)
+      navigate(`/hr/employees/${employee.id}`);
   };
   const handleDeleteEmployee = (employeeId, employeeName) => {
     setEmployeeToDelete({ id: employeeId, name: employeeName });

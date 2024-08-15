@@ -14,9 +14,9 @@ class AdminEmployeeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
-        employee = Employee.objects.create_user(**validated_data)
+        employee = super().create(validated_data)
         if password:
-            employee.set_password(password)
+            employee.set_password(password)  # Hash the password
             employee.save()
         return employee
     

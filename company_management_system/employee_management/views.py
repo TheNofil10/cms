@@ -34,8 +34,11 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     serializer_class = EmployeeSerializer
 
     def get_permissions(self):
-        if self.action in ["create", "destroy"]:
+        if self.action in ["destroy"]:
             return [IsAdminUser()]
+        elif self.action in ["create"]:
+           if self.request.user.is_hr_manager or self.request.user.is_superuser:
+                return [IsAuthenticated()]
         elif self.action in ["update", "partial_update"]:
             if self.request.user.is_superuser or self.request.user.is_hr_manager:
                 return [IsAuthenticated()]
