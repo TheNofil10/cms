@@ -76,8 +76,7 @@ const AdminEmployeeProfile = () => {
         }
       );
       toast.error("Employee deleted successfully");
-      // Optionally navigate or update state to reflect the deletion
-      navigate("/admin/employees"); // Redirect to employee list page
+      navigate("/admin/employees");
     } catch (error) {
       if (error.response && error.response.status === 404) {
         toast.error("Employee not found");
