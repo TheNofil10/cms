@@ -156,7 +156,7 @@ const EmployeeList = () => {
   const handleEmployeeClick = (employee) => {
     if (currentUser.is_staff)
       navigate(`/admin/employees/${employee.id}`);
-    else if(currentUser.is_hr)
+    else if(currentUser.is_hr_manager)
       navigate(`/hr/employees/${employee.id}`);
   };
   const handleDeleteEmployee = (employeeId, employeeName) => {

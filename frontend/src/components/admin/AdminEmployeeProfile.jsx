@@ -67,7 +67,11 @@ const AdminEmployeeProfile = () => {
 
   const confirmDeleteEmployee = async () => {
     if (!employeeToDelete) return;
-
+    if (currentUser.is_hr_manager){
+      toast.error("HRs cant delete an employee")
+      setShowConfirmModal(false)
+      return;
+    }
     try {
       await axios.delete(
         `http://127.0.0.1:8000/api/employees/${id}/`,
@@ -92,8 +96,8 @@ const AdminEmployeeProfile = () => {
   };
 
   const handleUpdateProfile = () => {
-    if (currentUser && currentUser.is_superuser) {
-      toast.error("Admins cannot update profiles");
+    if ((currentUser) && (currentUser.is_superuser || currentUser.is_hr_manager) ) {
+      toast.error("You cannot update profiles");
     } else {
       navigate(`/admin/employees/${id}/update`);
     }
