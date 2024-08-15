@@ -33,6 +33,7 @@ import HRApplications from "../pages/HR/HRApplications";
 import PerformanceReviewList from "../components/hr/PerformanceReviewList";
 import HRPerformanceReviews from "../pages/HR/HRPerformanceReviews";
 import HRPayRoll from "../pages/HR/HRPayRoll";
+import TalentHuntPage from "../pages/HR/TalentHuntPage";
 
 const AllRoutes = () => {
   return (
@@ -93,10 +94,9 @@ const AllRoutes = () => {
         <Route path="/hr/applications" element={<HRApplications />} />
         <Route path="/hr/performance-reviews" element={<HRPerformanceReviews />} />
         <Route path="/hr/attendance" element={<Attendance />} />
-        <Route path="/hr/dashboard" element={<HRDashboard />} />
         <Route path="/hr/profile" element={<EmployeeProfile />} />
         <Route path="/hr/settings" element={<HRSettings />} />
-        
+        <Route path="/hr/talent-hunt" element={<TalentHuntPage />} />
       </Route>
     </Routes>
   );

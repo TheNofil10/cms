@@ -11,6 +11,7 @@ import {
   FaBriefcase,
   FaUserPlus,
   FaBuilding,
+  FaRocket,
 } from "react-icons/fa";
 import { Settings, LogOut } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
@@ -30,6 +31,11 @@ const HRSideBar = () => {
         icon={<FaPaperPlane />}
         text="Job Applications"
         to="/hr/applications"
+      />
+      <SidebarItem
+        icon={<FaRocket />}
+        text="Talent Hunt"
+        to="/hr/talent-hunt"
       />
       <SidebarItem
         icon={<FaCalendarAlt />}
