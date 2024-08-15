@@ -94,7 +94,7 @@ const AddDepartment = () => {
         <Line percent={getProgress()} strokeWidth="2" strokeColor="black" />
         <form
           onSubmit={handleSubmit}
-          className="bg-white text-black p-8 rounded-lg shadow-lg mt-4"
+          className="bg-white text-black p-8 rounded-lg shadow-2xl mt-4"
         >
           {step === 1 && (
             <>

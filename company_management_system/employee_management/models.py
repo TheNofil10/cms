@@ -18,9 +18,7 @@ class EmployeeManager(BaseUserManager):
     def create_superuser(self, username, email, password=None, **extra_fields):
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_staff', True)
-        # You can set additional fields as needed for superusers
         return self.create_user(username, email, password, **extra_fields)
-
 
 class Employee(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(primary_key=True)
@@ -34,7 +32,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     address = models.TextField()
     date_of_birth = models.DateField()
     employment_date = models.DateField()
-    department = models.ForeignKey('Department', null=True, blank=True, on_delete=models.SET_NULL, related_name='employees')  # Use string reference
+    department = models.ForeignKey('Department', null=True, blank=True, on_delete=models.SET_NULL, related_name='employees')
     position = models.CharField(max_length=100)
     salary = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     manager = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='subordinates')
@@ -42,7 +40,8 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     profile_image = models.ImageField(upload_to=employee_image_path, null=True, blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    
+    is_hr_manager = models.BooleanField(default=False)  # Field to indicate HR manager
+
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
 
@@ -50,15 +49,15 @@ class Employee(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
-    
+
 class Department(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
     manager = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True, related_name='managed_departments')
     contact_info = models.CharField(max_length=255, blank=True)
-    location = models.CharField(max_length=255, blank=True)  # New Field
-    budget = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)  # New Field
-    office_phone = models.CharField(max_length=20, blank=True)  # New Field
+    location = models.CharField(max_length=255, blank=True)
+    budget = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    office_phone = models.CharField(max_length=20, blank=True)
 
     def __str__(self):
         return self.name

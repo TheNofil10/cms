@@ -14,13 +14,17 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'destroy']:
             return [IsAdminUser()]
         elif self.action in ['update', 'partial_update']:
-            return [IsAuthenticated()]
-        return [IsAuthenticated()]
+            if self.request.user.is_superuser or self.request.user.is_hr_manager:
+                return [IsAuthenticated()]  
+            return [IsAuthenticated()]  
+        return [IsAuthenticated()]  
 
     def get_queryset(self):
         user = self.request.user
         if user.is_superuser:
             return Employee.objects.all()
+        if user.is_authenticated and hasattr(user, 'is_hr_manager') and user.is_hr_manager:
+            return Employee.objects.all() 
         if user.is_authenticated:
             return Employee.objects.filter(department=user.department)
         return Employee.objects.none()
@@ -31,7 +35,6 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             employee.profile_image = self.request.FILES['profile_image']
             employee.save()
 
-
     def perform_update(self, serializer):
         instance = serializer.save()
         if 'profile_image' in self.request.FILES:
@@ -41,8 +44,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         employee = self.get_object()
 
-        if request.user.is_superuser:
-            return Response(status=status.HTTP_403_FORBIDDEN)
+        if request.user.is_superuser or (request.user.is_hr_manager and not (request.user == employee)):
+            return super().update(request, *args, **kwargs)
 
         if request.user != employee:
             return Response(status=status.HTTP_403_FORBIDDEN)
@@ -51,18 +54,6 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
-
-    def destroy(self, request, *args, **kwargs):
-        employee = self.get_object()
-
-        if request.user.is_superuser and (request.user != employee):
-            return super().destroy(request, *args, **kwargs)
-
-        if employee.is_superuser and (request.user != employee):
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
-        return super().destroy(request, *args, **kwargs)
-
 
     def destroy(self, request, *args, **kwargs):
         employee = self.get_object()
@@ -131,9 +122,9 @@ class EmployeeDepartmentView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        employee = request.user  # Get the logged-in employee
+        employee = request.user
         if not employee.department:
             return Response({'detail': 'No department assigned'}, status=status.HTTP_404_NOT_FOUND)
-        department = employee.department  # Get the employee's department
+        department = employee.department
         serializer = DepartmentSerializer(department)
         return Response(serializer.data)
