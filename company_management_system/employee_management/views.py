@@ -2,8 +2,9 @@ from rest_framework import viewsets, status,generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from .serializers import EmployeeBriefSerializer, EmployeeSerializer, AdminEmployeeSerializer, DepartmentSerializer
-from .models import Employee, Department
+from .serializers import (EmployeeBriefSerializer, EmployeeSerializer, AdminEmployeeSerializer, DepartmentSerializer ,EmployeeRecordSerializer, JobPostingSerializer, ApplicationSerializer,
+                          PerformanceReviewSerializer, LeaveSerializer, PayrollSerializer, ComplianceReportSerializer)
+from .models import Employee, Department,  EmployeeRecord, JobPosting, Application, PerformanceReview, Leave, Payroll, ComplianceReport
 from django.core.files.storage import default_storage
 
 class EmployeeViewSet(viewsets.ModelViewSet):
@@ -128,3 +129,31 @@ class EmployeeDepartmentView(APIView):
         department = employee.department
         serializer = DepartmentSerializer(department)
         return Response(serializer.data)
+
+class EmployeeRecordViewSet(viewsets.ModelViewSet):
+    queryset = EmployeeRecord.objects.all()
+    serializer_class = EmployeeRecordSerializer
+
+class JobPostingViewSet(viewsets.ModelViewSet):
+    queryset = JobPosting.objects.all()
+    serializer_class = JobPostingSerializer
+
+class ApplicationViewSet(viewsets.ModelViewSet):
+    queryset = Application.objects.all()
+    serializer_class = ApplicationSerializer
+
+class PerformanceReviewViewSet(viewsets.ModelViewSet):
+    queryset = PerformanceReview.objects.all()
+    serializer_class = PerformanceReviewSerializer
+
+class LeaveViewSet(viewsets.ModelViewSet):
+    queryset = Leave.objects.all()
+    serializer_class = LeaveSerializer
+
+class PayrollViewSet(viewsets.ModelViewSet):
+    queryset = Payroll.objects.all()
+    serializer_class = PayrollSerializer
+
+class ComplianceReportViewSet(viewsets.ModelViewSet):
+    queryset = ComplianceReport.objects.all()
+    serializer_class = ComplianceReportSerializer

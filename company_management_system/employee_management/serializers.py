@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Department, Employee
+from .models import Department, Employee, EmployeeRecord, JobPosting, Application, PerformanceReview, Leave, Payroll, ComplianceReport
 
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -55,3 +55,38 @@ class DepartmentSerializer(serializers.ModelSerializer):
         if obj.manager:
             return obj.manager.phone
         return "N/A"
+    
+class EmployeeRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmployeeRecord
+        fields = '__all__'
+
+class JobPostingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobPosting
+        fields = '__all__'
+
+class ApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Application
+        fields = '__all__'
+
+class PerformanceReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PerformanceReview
+        fields = '__all__'
+
+class LeaveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Leave
+        fields = '__all__'
+
+class PayrollSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payroll
+        fields = '__all__'
+
+class ComplianceReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ComplianceReport
+        fields = '__all__'
