@@ -6,11 +6,12 @@ import ManagerCard from "../components/employee/ManagerCard";
 import { FaEdit, FaPlus } from "react-icons/fa";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-
+import AssignManagerModal from "../components/admin/AssignManagerModal";
 const imageBaseUrl = "http://127.0.0.1:8000";
 
 const DepartmentDetailPage = () => {
   const { id } = useParams();
+  const [showModal, setShowModal] = useState(false);
   const [department, setDepartment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -36,7 +37,7 @@ const DepartmentDetailPage = () => {
           }
         );
         setDepartment(response.data);
-        console.log(response.data)
+        console.log(response.data);
         setFormData({
           name: response.data.name || "",
           description: response.data.description || "",
@@ -72,11 +73,11 @@ const DepartmentDetailPage = () => {
           },
         }
       );
-      toast.success("Successfully udpated")
-      setActiveTab("overview")
+      toast.success("Successfully udpated");
+      setActiveTab("overview");
     } catch (error) {
       setError("Error updating department");
-      toast.error(error)
+      toast.error(error);
     }
   };
 
@@ -242,6 +243,7 @@ const DepartmentDetailPage = () => {
                   placeholder="Enter contact information"
                 />
               </div>
+
               <div className="mb-4">
                 <label className="block text-black font-semibold mb-2">
                   Location
@@ -255,15 +257,30 @@ const DepartmentDetailPage = () => {
                   placeholder="Enter location"
                 />
               </div>
-              <button
-                onClick={handleUpdateDepartment}
-                className="bg-blue-500 text-white px-4 py-2 rounded flex items-center"
-              >
-                <FaEdit className="mr-2" /> Update Department
-              </button>
+              <div className="mb-4">
+                <div className="flex flex-row justify-between">
+                  <button
+                    onClick={() => setShowModal(true)}
+                    className="bg-black text-white px-4 py-2 rounded flex items-center mt-4"
+                  >
+                    <FaPlus className="mr-2" /> Assign Manager
+                  </button>
+                  <button
+                    onClick={handleUpdateDepartment}
+                    className="bg-black text-white px-4 py-2 rounded flex items-center mt-4"
+                  >
+                    <FaEdit className="mr-2" /> Update Department
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}
+        <AssignManagerModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          departmentId={id}
+        />
         <ToastContainer />
       </div>
     </div>

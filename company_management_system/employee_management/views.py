@@ -138,6 +138,22 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     serializer_class = DepartmentSerializer
     permission_classes = [IsAdminUser]
 
+    def partial_update(self, request, *args, **kwargs):
+        department = self.get_object()
+        manager_id = request.data.get("manager")
+        if manager_id:
+            try:
+                manager = Employee.objects.get(id=manager_id)
+                department.manager = manager
+                department.save()
+                serializer = self.get_serializer(department)
+                return Response(serializer.data)
+            except Employee.DoesNotExist:
+                return Response(
+                    {"detail": "Manager not found"}, status=status.HTTP_404_NOT_FOUND
+                )
+        return super().partial_update(request, *args, **kwargs)
+
 
 class DepartmentMemberListView(generics.ListAPIView):
     serializer_class = EmployeeBriefSerializer
