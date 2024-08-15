@@ -32,6 +32,7 @@ import {
   useSortBy,
   usePagination,
 } from "react-table";
+import { useAuth } from "../contexts/AuthContext";
 
 // Initialize pdfMake with fonts
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -51,7 +52,7 @@ const DepartmentsPage = () => {
   });
   const [pageSize, setPageSize] = useState(10);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
+  const { currentUser } = useAuth();
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
@@ -65,13 +66,12 @@ const DepartmentsPage = () => {
         );
         setDepartments(response.data.results || response.data || []);
         setFilteredData(response.data.results || response.data || []);
-        
       } catch (error) {
         console.error("Error fetching departments:", error);
         setError("There was an error fetching the department data.");
       } finally {
         setLoading(false);
-        console.log(departments)
+        console.log(departments);
       }
     };
 
@@ -107,14 +107,16 @@ const DepartmentsPage = () => {
             >
               <FaEye />
             </button>
-            <button
-              className="text-red-600 hover:text-red-800"
-              onClick={() =>
-                handleDeleteDepartment(row.original.id, row.original.name)
-              }
-            >
-              <FaTrashAlt />
-            </button>
+            {!currentUser.is_hr_manager && (
+              <button
+                className="text-red-600 hover:text-red-800"
+                onClick={() =>
+                  handleDeleteDepartment(row.original.id, row.original.name)
+                }
+              >
+                <FaTrashAlt />
+              </button>
+            )}
           </div>
         ),
       },
@@ -149,7 +151,10 @@ const DepartmentsPage = () => {
   );
 
   const handleViewDepartment = (department) => {
-    navigate(`/admin/departments/${department.id}`);
+    if (currentUser.is_hr_manager) 
+      navigate(`/hr/departments/${department.id}`);
+    else if(currentUser.is_staff)
+      navigate(`/admin/departments/${department.id}`);
   };
 
   const handleDeleteDepartment = (departmentId, departmentName) => {

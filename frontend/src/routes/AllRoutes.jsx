@@ -82,14 +82,21 @@ const AllRoutes = () => {
         <Route path="/hr/dashboard" element={<HRDashboard />} />
         <Route path="/hr/job-postings" element={<HRJobPosting />} />
         <Route path="/hr/employees" element={<EmployeesPage />} />
+        <Route path="/hr/employees/add" element={<SignUp />} />
+        <Route path="/hr/employees/:id" element={<AdminEmployeeProfile />} />
+        <Route
+          path="/hr/departments/:id"
+          element={<DepartmentDetailPage />}
+        />
+        <Route path="/hr/departments" element={<DepartmentsPage />} />
         <Route path="/hr/payroll" element={<HRPayRoll />} />
         <Route path="/hr/applications" element={<HRApplications />} />
         <Route path="/hr/performance-reviews" element={<HRPerformanceReviews />} />
-        <Route path="/hr/employees/add" element={<SignUp />} />
         <Route path="/hr/attendance" element={<Attendance />} />
         <Route path="/hr/dashboard" element={<HRDashboard />} />
+        <Route path="/hr/profile" element={<EmployeeProfile />} />
         <Route path="/hr/settings" element={<HRSettings />} />
-        <Route path="/hr/employees/:id" element={<AdminEmployeeProfile />} />
+        
       </Route>
     </Routes>
   );

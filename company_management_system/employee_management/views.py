@@ -139,7 +139,19 @@ class AdminEmployeeView(viewsets.ViewSet):
 class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
-    permission_classes = [IsAdminUser]
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAdminUser()]
+        return [IsAuthenticated()]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_superuser or (user.is_authenticated and hasattr(user, "is_hr_manager") and user.is_hr_manager):
+            return Department.objects.all()
+        if user.is_authenticated:
+            return Department.objects.filter(employees=user)
+        return Department.objects.none()
 
     def partial_update(self, request, *args, **kwargs):
         department = self.get_object()
@@ -156,7 +168,6 @@ class DepartmentViewSet(viewsets.ModelViewSet):
                     {"detail": "Manager not found"}, status=status.HTTP_404_NOT_FOUND
                 )
         return super().partial_update(request, *args, **kwargs)
-
 
 class DepartmentMemberListView(generics.ListAPIView):
     serializer_class = EmployeeBriefSerializer

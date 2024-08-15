@@ -7,6 +7,7 @@ import { FaEdit, FaPlus } from "react-icons/fa";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import AssignManagerModal from "../components/admin/AssignManagerModal";
+import { useAuth } from "../contexts/AuthContext";
 const imageBaseUrl = "http://127.0.0.1:8000";
 
 const DepartmentDetailPage = () => {
@@ -23,6 +24,7 @@ const DepartmentDetailPage = () => {
     contact_info: "",
     location: "",
   });
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,21 +65,25 @@ const DepartmentDetailPage = () => {
   };
 
   const handleUpdateDepartment = async () => {
-    try {
-      await axios.put(
-        `http://127.0.0.1:8000/api/departments/${id}/`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
-        }
-      );
-      toast.success("Successfully udpated");
-      setActiveTab("overview");
-    } catch (error) {
-      setError("Error updating department");
-      toast.error(error);
+    if (currentUser.is_staff || department.manager_id == currentUser.id) {
+      try {
+        await axios.put(
+          `http://127.0.0.1:8000/api/departments/${id}/`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+        toast.success("Successfully udpated");
+        setActiveTab("overview");
+      } catch (error) {
+        setError("Error updating department");
+        toast.error(error);
+      }
+    } else {
+      toast.error("You dont have the permissions to perform this action");
     }
   };
 
@@ -85,7 +91,11 @@ const DepartmentDetailPage = () => {
   if (error) return <p>{error}</p>;
 
   const handleManageMembers = () => {
-    navigate(`/departments/${id}/manage-members`);
+    if (currentUser.is_staff || currentUser.department == id) {
+      navigate(`/departments/${id}/manage-members`);
+    } else {
+      toast.error("You dont have the permissions to perform this action");
+    }
   };
 
   return (
@@ -160,7 +170,8 @@ const DepartmentDetailPage = () => {
             <div className="flex justify-end mb-4">
               <button
                 onClick={handleManageMembers}
-                className="bg-blue-500 text-white px-4 py-2 rounded flex items-center"
+                disabled={!currentUser.is_staff}
+                className="bg-blue-500 text-white px-4 disabled:bg-gray-300 disabled:text-gray-400 py-2 rounded flex items-center"
               >
                 <FaPlus className="mr-2" /> Manage Members
               </button>
@@ -260,14 +271,23 @@ const DepartmentDetailPage = () => {
               <div className="mb-4">
                 <div className="flex flex-row justify-between">
                   <button
-                    onClick={() => setShowModal(true)}
-                    className="bg-black text-white px-4 py-2 rounded flex items-center mt-4"
+                    onClick={() => {
+                      if (currentUser.is_staff) {
+                        setShowModal(true);
+                      }
+                      else{
+                        toast.error("You Dont Have the Permissions")
+                      }  
+                    }}
+                    disabled={!currentUser.is_staff}
+                    className="bg-black text-white disabled:bg-gray-200 disabled:text-gray-500 px-4 py-2 rounded flex items-center mt-4"
                   >
                     <FaPlus className="mr-2" /> Assign Manager
                   </button>
                   <button
+                  disabled={!currentUser.is_staff}
                     onClick={handleUpdateDepartment}
-                    className="bg-black text-white px-4 py-2 rounded flex items-center mt-4"
+                    className="bg-black text-white disabled:bg-gray-200 disabled:text-gray-500 px-4 py-2 rounded flex items-center mt-4"
                   >
                     <FaEdit className="mr-2" /> Update Department
                   </button>

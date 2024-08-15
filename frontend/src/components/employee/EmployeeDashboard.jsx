@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
+import { ToastContainer } from "react-toastify";
 
 const EmployeeDashboard = () => {
   const [employeeData, setEmployeeData] = useState(null);
@@ -39,6 +40,7 @@ const EmployeeDashboard = () => {
         <p className="text-lg mt-2">Department: {employeeData.department}</p>
         <p className="text-lg mt-2">Position: {employeeData.position}</p>
       </div>
+      <ToastContainer />
     </div>
   );
 };

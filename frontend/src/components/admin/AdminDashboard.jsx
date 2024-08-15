@@ -3,11 +3,12 @@ import { Link } from "react-router-dom";
 import { FaUsers, FaChartPie } from "react-icons/fa";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
+import { ToastContainer } from "react-toastify";
 
 const AdminDashboard = () => {
   const [totalEmployees, setTotalEmployees] = useState(0);
   const [totalDepartments, setTotalDepartments] = useState();
-  const [departments, setDepartments] = useState([])
+  const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { currentUser } = useAuth();
@@ -15,21 +16,31 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/employees/", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
-        });
-  
-        const departmentResponse = await axios.get("http://127.0.0.1:8000/api/departments/", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
-        });
-  
-        const employees = Array.isArray(response.data) ? response.data : response.data.results || [];
-        const departmentsData = Array.isArray(departmentResponse.data) ? departmentResponse.data : departmentResponse.data.results || [];
-        
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/employees/",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+
+        const departmentResponse = await axios.get(
+          "http://127.0.0.1:8000/api/departments/",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+
+        const employees = Array.isArray(response.data)
+          ? response.data
+          : response.data.results || [];
+        const departmentsData = Array.isArray(departmentResponse.data)
+          ? departmentResponse.data
+          : departmentResponse.data.results || [];
+
         setDepartments(departmentsData);
         setTotalEmployees(employees.length);
         setTotalDepartments(departmentsData.length); // Update with the length of the fetched departments
@@ -40,11 +51,12 @@ const AdminDashboard = () => {
         setLoading(false);
       }
     };
-  
+
     fetchEmployees();
   }, []);
 
-  if (loading) return <div className="text-center p-6 text-white">Loading...</div>;
+  if (loading)
+    return <div className="text-center p-6 text-white">Loading...</div>;
   if (error) return <div className="text-center p-6 text-red-500">{error}</div>;
 
   return (
@@ -56,20 +68,24 @@ const AdminDashboard = () => {
             Good Morning {currentUser.first_name} {currentUser.last_name} 🌳
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow-md flex items-center">
-          <FaUsers size={40} className="text-black mr-4" />
-          <div>
-            <p className="text-xl font-semibold">Total Employees</p>
-            <p className="text-2xl">{totalEmployees}</p>
+        <Link to={"/admin/employees"}>
+          <div className="bg-white p-4 hover:bg-gray-100 rounded-lg shadow-md flex items-center">
+            <FaUsers size={40} className="text-black mr-4" />
+            <div>
+              <p className="text-xl font-semibold">Total Employees</p>
+              <p className="text-2xl">{totalEmployees}</p>
+            </div>
           </div>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow-md flex items-center">
-          <FaChartPie size={40} className="text-black mr-4" />
-          <div>
-            <p className="text-xl font-semibold">Department Distribution</p>
-            <p className="text-2xl">{totalDepartments} Departments</p>
+        </Link>
+        <Link to={"/admin/departments"}>
+          <div className="bg-white p-4 hover:bg-gray-100 rounded-lg shadow-md flex items-center">
+            <FaChartPie size={40} className="text-black mr-4" />
+            <div>
+              <p className="text-xl font-semibold">Department Distribution</p>
+              <p className="text-2xl">{totalDepartments} Departments</p>
+            </div>
           </div>
-        </div>
+        </Link>
       </div>
       <div className="mb-4 flex justify-between items-center">
         <Link
@@ -85,6 +101,7 @@ const AdminDashboard = () => {
           Add Employee
         </Link>
       </div>
+      <ToastContainer />
     </div>
   );
 };

@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa";
 import UpdateProfileForm from "./UpdateProfileForm";
 import { defaultOrderByFn } from "react-table";
+import { ToastContainer } from "react-toastify";
 
 const EmployeeProfile = () => {
   const { currentUser } = useAuth();
@@ -43,7 +44,7 @@ const EmployeeProfile = () => {
         }
       );
       setDepartment(departmentResponse.data);
-      console.log(departmentResponse.data)
+      console.log(departmentResponse.data);
     } catch (error) {
       console.error("Error fetching Employee data:", error);
       setError("Unable to fetch Employee data.");
@@ -126,10 +127,7 @@ const EmployeeProfile = () => {
           Date of Birth: {employee.date_of_birth}
         </p>
         <p className="text-gray-700 text-lg">
-          Manager:{" "}
-          {department.manager
-            ? `${department.manager_name} `
-            : "N/A"}
+          Manager: {department.manager ? `${department.manager_name} ` : "N/A"}
         </p>
       </div>
 
@@ -179,7 +177,7 @@ const EmployeeProfile = () => {
         <p className="text-gray-700 text-lg">Address: {employee.address}</p>
         <p className="text-gray-700 text-lg">Salary: {employee.salary}</p>
       </div>
-
+      <ToastContainer />
       {/* Update Profile Form */}
       {isEditing && (
         <UpdateProfileForm

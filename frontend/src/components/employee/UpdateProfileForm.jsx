@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
@@ -305,6 +305,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
           </div>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 };

@@ -24,6 +24,7 @@ import {
   FaSort,
   FaChevronDown,
   FaChevronUp,
+  FaPlus,
 } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import AdminEmployeeProfile from "./AdminEmployeeProfile";
@@ -46,7 +47,7 @@ const EmployeeList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [view, setView] = useState("table");
-  const {currentUser} = useAuth()
+  const { currentUser } = useAuth();
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [filters, setFilters] = useState({
     filterBy: "",
@@ -112,8 +113,9 @@ const EmployeeList = () => {
               <ViewIcon onClick={() => handleEmployeeClick(row.original)} />
             </button>
             <button
-              className="text-red-600 hover:text-red-800 bg-transparent border-none"
+              className="text-red-600 disabled:text-gray-300 disabled:hover:text-gray-300 hover:text-red-800 bg-transparent border-none"
               onClick={() => handleDeleteEmployee(row.original.id)}
+              disabled={currentUser.is_hr_manager}
             >
               <DeleteIcon />
             </button>
@@ -154,9 +156,8 @@ const EmployeeList = () => {
   const navigate = useNavigate();
 
   const handleEmployeeClick = (employee) => {
-    if (currentUser.is_staff)
-      navigate(`/admin/employees/${employee.id}`);
-    else if(currentUser.is_hr_manager)
+    if (currentUser.is_staff) navigate(`/admin/employees/${employee.id}`);
+    else if (currentUser.is_hr_manager)
       navigate(`/hr/employees/${employee.id}`);
   };
   const handleDeleteEmployee = (employeeId, employeeName) => {
@@ -317,6 +318,16 @@ const EmployeeList = () => {
         </div>
       </div>
       <div className="flex justify-between mb-4">
+        {currentUser.is_hr_manager && (
+          <button
+            className="bg-black text-white border-none font-medium py-1 px-3 rounded text-sm"
+            onClick={() => navigate("/hr/employees/add")}
+          >
+            <FaPlus className="inline mr-1" /> Add Employee
+          </button>
+        )}
+      </div>
+      <div className="flex justify-between mb-4">
         <div className="flex items-center space-x-2">
           <FaFilter className="text-sm" />
           <select
@@ -462,11 +473,11 @@ const EmployeeList = () => {
         <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-4">
           {filteredData.map((employee) => (
             <EmployeeCard
-            key={employee.id}
-            employee={employee}
-            onView={handleEmployeeClick}
-            onDelete={handleDeleteEmployee}
-          />
+              key={employee.id}
+              employee={employee}
+              onView={handleEmployeeClick}
+              onDelete={handleDeleteEmployee}
+            />
           ))}
         </div>
       )}

@@ -4,14 +4,13 @@ import {
   FaHome,
   FaUsers,
   FaCalendarAlt,
-  FaClipboardList,
-  FaTasks,
-  FaFileAlt,
+  FaUser,
   FaDollarSign,
   FaStar,
   FaPaperPlane,
   FaBriefcase,
   FaUserPlus,
+  FaBuilding,
 } from "react-icons/fa";
 import { Settings, LogOut } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
@@ -29,17 +28,12 @@ const HRSideBar = () => {
       />
       <SidebarItem
         icon={<FaPaperPlane />}
-        text="Applications"
+        text="Job Applications"
         to="/hr/applications"
       />
       <SidebarItem
-        icon={<FaStar />}
-        text="Performance Reviews"
-        to="/hr/performance-reviews"
-      />
-      <SidebarItem
         icon={<FaCalendarAlt />}
-        text="Leave Management"
+        text="Attendance"
         to="/hr/attendance"
       />
       <SidebarItem icon={<FaDollarSign />} text="Payroll" to="/hr/payroll" />
@@ -49,13 +43,15 @@ const HRSideBar = () => {
         to="/hr/employees"
       />
       <SidebarItem
-        icon={<FaUserPlus />}
-        text="Add Employee"
-        to="/hr/employees/add"
+        icon={<FaBuilding />}
+        text="Employees List"
+        to="/hr/departments"
       />
+      <SidebarItem icon={<FaUser />} text="Profile" to="/hr/profile" />
       <hr className="my-3" />
       <SidebarItem icon={<Settings />} text="Settings" to="/hr/settings" />
       <SidebarItem icon={<LogOut />} text="Logout" onClick={logout} />
+      
     </Sidebar>
   );
 };
