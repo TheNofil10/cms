@@ -56,7 +56,7 @@ const Navbar = ({ navItems }) => {
 
         {/* Mobile Menu Items */}
         {isOpen && (
-          <div className="absolute top-full right-5 rounded-lg w-fit bg-black z-50 shadow-xl">
+          <div className="absolute top-full right-5 rounded w-fit bg-black z-50 shadow-xl">
             <div className="lg:hidden mt-4">
               {navItems.map((item) => (
                 <NavLink

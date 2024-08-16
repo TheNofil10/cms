@@ -87,6 +87,10 @@ const AllRoutes = () => {
           }
         >
           <Route path="/hr/job-postings" element={<HRJobPosting />} />
+          <Route path="/hr/job-postings/new" />
+          <Route path="/hr/job-postings/:id/edit" />
+          <Route path="/hr/job-postings/:id" />
+          <Route path="/hr/job-postings/:id/applicants" />
         </Route>
         <Route path="/hr/employees" element={<EmployeesPage />} />
         <Route path="/hr/employees/add" element={<SignUp />} />
