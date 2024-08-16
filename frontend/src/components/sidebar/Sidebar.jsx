@@ -94,12 +94,12 @@ export function SidebarItem({ icon, text, to, onClick }) {
     return (
         <li
             onClick={handleClick}
-            className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group hover:bg-indigo-50 ${expanded ? "text-gray-600" : ""}`}
+            className={`relative flex items-center py-1 px-2 my-1 font-medium rounded-md cursor-pointer transition-colors group hover:bg-indigo-50 ${expanded ? "text-gray-600" : ""}`}
         >
             <span className="text-xl">{icon}</span>
             {expanded && <span className="ml-3">{text}</span>}
             {!expanded && (
-                <div className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-gray-100 text-gray-800 text-sm invisible opacity-0 transition-all group-hover:visible group-hover:opacity-100`}>
+                <div className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-gray-100 text-gray-800 text-xs invisible opacity-0 transition-all group-hover:visible group-hover:opacity-100`}>
                     {text}
                 </div>
             )}

@@ -106,15 +106,15 @@ class EmployeeRecord(models.Model):
 class JobPosting(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    department = models.ForeignKey(
-        "Department", on_delete=models.CASCADE, related_name="job_postings"
-    )
+    requirements = models.TextField()
+    location = models.CharField(max_length=255)
+    salary = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
-    deadline = models.DateTimeField()
+    updated_at = models.DateTimeField(auto_now=True)
+    posted_by = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='job_postings')
 
     def __str__(self):
         return self.title
-
 
 class Application(models.Model):
     job_posting = models.ForeignKey(

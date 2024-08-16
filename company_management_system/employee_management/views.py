@@ -226,3 +226,23 @@ class PayrollViewSet(viewsets.ModelViewSet):
 class ComplianceReportViewSet(viewsets.ModelViewSet):
     queryset = ComplianceReport.objects.all()
     serializer_class = ComplianceReportSerializer
+
+class JobPostingViewSet(viewsets.ModelViewSet):
+    queryset = JobPosting.objects.all()
+    serializer_class = JobPostingSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        job_post = serializer.save(posted_by=self.request.user)
+        self.post_to_linkedin(job_post)
+
+    def post_to_linkedin(self, job_post):
+        pass

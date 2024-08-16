@@ -90,3 +90,20 @@ class ComplianceReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = ComplianceReport
         fields = '__all__'
+        
+class JobPostingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobPosting
+        fields = '__all__'
+
+    def create(self, validated_data):
+        title = validated_data.get('title')
+        requirements = validated_data.get('requirements')
+        description = self.generate_ai_description(title, requirements)
+
+        validated_data['description'] = description
+        return super().create(validated_data)
+
+    def generate_ai_description(self, title, requirements):
+        ai_description = f"{title}: {requirements}."
+        return ai_description
