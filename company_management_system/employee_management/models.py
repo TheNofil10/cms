@@ -102,8 +102,6 @@ class EmployeeRecord(models.Model):
     def __str__(self):
         return f"{self.employee.first_name} {self.employee.last_name} - {self.contract_type}"
 
-
-
 class JobPosting(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
