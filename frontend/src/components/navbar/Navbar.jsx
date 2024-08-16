@@ -1,52 +1,80 @@
-import React from "react";
-import { FaBell, FaUserCircle } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ navItems }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <nav className="bg-white shadow-md px-6 py-4 flex justify-between items-center">
-      <div className="flex items-center">
-        <Link to="/admin/dashboard" className="text-2xl font-bold text-blue-600">
-          Admin Dashboard
-        </Link>
-      </div>
-
-      <div className="flex items-center">
-        <div className="relative">
-          <FaBell className="text-gray-600 mr-6 text-xl cursor-pointer" />
-          {/* Notification Badge */}
-          <span className="absolute top-0 right-0 inline-block w-3 h-3 bg-red-600 rounded-full"></span>
+    <nav className="bg-white z-10 fixed top-0 left-0 w-full">
+      {/* Navbar Container */}
+      <div className="container mx-auto px-6 py-1">
+        {/* Big Rounded Button Navbar */}
+        <div className="hidden lg:flex justify-center items-center">
+          <div className="max-w-fit text-center">
+            <div className="bg-black text-white px-8 py-4 rounded-full shadow-xl flex justify-center items-center">
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.name}
+                  to={item.path}
+                  className={({ isActive }) =>
+                    `mx-4 text-white font-bold transition-colors duration-300 transform ${
+                      isActive ? "text-gray-300" : ""
+                    } hover:text-gray-400`
+                  }
+                >
+                  {item.name}
+                </NavLink>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="relative">
-          <button
-            className="flex items-center focus:outline-none"
-            onClick={() => document.getElementById('dropdown').classList.toggle('hidden')}
-          >
-            <FaUserCircle className="text-gray-600 text-2xl mr-2" />
-            <span className="text-gray-600">Admin</span>
-          </button>
-          <div
-            id="dropdown"
-            className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 hidden"
-          >
-            <Link
-              to="/admin/profile"
-              className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-            >
-              Profile
-            </Link>
+        {/* Hamburger Menu for Mobile */}
+        <div className="flex lg:hidden  justify-between items-center">
+          <div className="ml-auto flex lg:hidden">
             <button
-              onClick={() => {
-                localStorage.removeItem("access_token");
-                window.location.href = "/login";
-              }}
-              className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
+              onClick={() => setIsOpen(!isOpen)}
+              className="text-black bg-white focus:outline-none"
             >
-              Logout
+              <svg
+                className="w-6 h-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 6h16M4 12h16m-7 6h7"
+                />
+              </svg>
             </button>
           </div>
         </div>
+
+        {/* Mobile Menu Items */}
+        {isOpen && (
+          <div className="absolute top-full right-5 rounded-lg w-fit bg-black z-50 shadow-xl">
+            <div className="lg:hidden mt-4">
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.name}
+                  to={item.path}
+                  className={({ isActive }) =>
+                    `block px-4 py-2 mt-2 text-white font-bold bg-black rounded-md transition-colors duration-300 transform hover:bg-gray-800 ${
+                      isActive ? "text-gray-300" : ""
+                    }`
+                  }
+                  onClick={() => setIsOpen(false)}
+                >
+                  {item.name}
+                </NavLink>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
