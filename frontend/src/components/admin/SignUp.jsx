@@ -141,7 +141,7 @@ const Signup = () => {
           is_hr_manager: false,
         });
         setStep(1);
-        navigate("/admin/employees/add");
+        toast.success("Successfully Signed Up")
       })
       .catch((error) => {
         toast.error("An error occurred. Please try again.");

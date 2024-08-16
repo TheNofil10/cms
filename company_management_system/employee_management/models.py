@@ -17,7 +17,7 @@ class EmployeeManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(username=username, email=email, **extra_fields)
         if password:
-            user.set_password(password)  # This should hash the password
+            user.set_password(password) 
         user.save(using=self._db)
         return user
 
@@ -26,15 +26,14 @@ class EmployeeManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         return self.create_user(username, email, password, **extra_fields)
 
-
 class Employee(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100)
-    password = models.CharField(max_length=128)
     username = models.CharField(max_length=100, unique=True)
     email = models.EmailField(unique=True)
+    password = models.CharField(max_length=128)
     phone = models.CharField(max_length=15)
     alternate_phone = models.CharField(max_length=15, null=True, blank=True)
     address = models.TextField()

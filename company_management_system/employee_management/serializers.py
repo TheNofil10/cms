@@ -5,7 +5,23 @@ class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
         fields = '__all__'
+    
+    def create(self, validated_data):
+        password = validated_data.pop('password', None)
+        employee = super().create(validated_data)
+        if password:
+            employee.set_password(password)
+            employee.save()
+        return employee
 
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        instance = super().update(instance, validated_data)
+        if password:
+            instance.set_password(password)
+            instance.save()
+        return instance
+    
 class AdminEmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
