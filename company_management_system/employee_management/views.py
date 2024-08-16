@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .serializers import (
+    ApplicantSerializer,
     EmployeeBriefSerializer,
     EmployeeSerializer,
     AdminEmployeeSerializer,
@@ -16,6 +17,7 @@ from .serializers import (
     ComplianceReportSerializer,
 )
 from .models import (
+    Applicant,
     Employee,
     Department,
     EmployeeRecord,
@@ -198,16 +200,6 @@ class EmployeeRecordViewSet(viewsets.ModelViewSet):
     serializer_class = EmployeeRecordSerializer
 
 
-class JobPostingViewSet(viewsets.ModelViewSet):
-    queryset = JobPosting.objects.all()
-    serializer_class = JobPostingSerializer
-
-
-class ApplicationViewSet(viewsets.ModelViewSet):
-    queryset = Application.objects.all()
-    serializer_class = ApplicationSerializer
-
-
 class PerformanceReviewViewSet(viewsets.ModelViewSet):
     queryset = PerformanceReview.objects.all()
     serializer_class = PerformanceReviewSerializer
@@ -232,17 +224,25 @@ class JobPostingViewSet(viewsets.ModelViewSet):
     serializer_class = JobPostingSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        return self.queryset.filter(posted_by=self.request.user)
+
+class ApplicantViewSet(viewsets.ModelViewSet):
+    queryset = Applicant.objects.all()
+    serializer_class = ApplicantSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.queryset.filter(job_posting__posted_by=self.request.user)
+
+class ApplicationViewSet(viewsets.ModelViewSet):
+    queryset = Application.objects.all()
+    serializer_class = ApplicationSerializer
+
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        applicant_data = request.data.get('applicant')
+        if applicant_data:
+            applicant, created = Applicant.objects.get_or_create(email=applicant_data.get('email'), defaults=applicant_data)
+            request.data['applicant'] = applicant.id
 
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-    def perform_create(self, serializer):
-        job_post = serializer.save(posted_by=self.request.user)
-        self.post_to_linkedin(job_post)
-
-    def post_to_linkedin(self, job_post):
-        pass
+        return super().create(request, *args, **kwargs)

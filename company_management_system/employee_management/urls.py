@@ -1,6 +1,6 @@
 from django.urls import include, path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
-from .views import (DepartmentMemberListView, DepartmentViewSet, EmployeeDepartmentView, EmployeeViewSet, AdminEmployeeView,EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet,
+from .views import (ApplicantViewSet, DepartmentMemberListView, DepartmentViewSet, EmployeeDepartmentView, EmployeeViewSet, AdminEmployeeView,EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet,
                     PerformanceReviewViewSet, LeaveViewSet, PayrollViewSet, ComplianceReportViewSet)
 from rest_framework.routers import DefaultRouter
 
@@ -9,11 +9,12 @@ router.register(r'employees', EmployeeViewSet)
 router.register(r'departments', DepartmentViewSet)
 router.register(r'employee-records', EmployeeRecordViewSet)
 router.register(r'job-postings', JobPostingViewSet)
-router.register(r'applications', ApplicationViewSet)
 router.register(r'performance-reviews', PerformanceReviewViewSet)
 router.register(r'leaves', LeaveViewSet)
 router.register(r'payrolls', PayrollViewSet)
 router.register(r'compliance-reports', ComplianceReportViewSet)
+router.register(r'applications', ApplicationViewSet)
+router.register(r'applicants', ApplicantViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

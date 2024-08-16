@@ -103,32 +103,43 @@ class EmployeeRecord(models.Model):
         return f"{self.employee.first_name} {self.employee.last_name} - {self.contract_type}"
 
 
+
 class JobPosting(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    requirements = models.TextField()
-    location = models.CharField(max_length=255)
-    salary = models.DecimalField(max_digits=10, decimal_places=2)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    specifications = models.TextField(blank=True)
+    qualifications = models.TextField()
+    location = models.CharField(max_length=255, choices=[('onsite', 'Onsite'), ('remote', 'Remote'), ('hybrid', 'Hybrid')], default='onsite')
+    job_type = models.CharField(max_length=50, choices=[('fulltime', 'Full-Time'), ('parttime', 'Part-Time'), ('contract', 'Contract')], default='fulltime')
+    salary_min = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    salary_max = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    application_deadline = models.DateTimeField(null=True, blank=True)
     posted_by = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='job_postings')
+    date_posted = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
 
+class Applicant(models.Model):
+    job_posting = models.ForeignKey(JobPosting, on_delete=models.CASCADE, related_name='applicants')
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    resume = models.FileField(upload_to='resumes/')
+    status = models.CharField(max_length=50, choices=[('applied', 'Applied'), ('shortlisted', 'Shortlisted'), ('rejected', 'Rejected')])
+
+    def __str__(self):
+        return f"{self.name} - {self.job_posting.title}"
+
 class Application(models.Model):
-    job_posting = models.ForeignKey(
-        JobPosting, on_delete=models.CASCADE, related_name="applications"
-    )
-    applicant_name = models.CharField(max_length=255)
-    applicant_email = models.EmailField()
+    job_posting = models.ForeignKey(JobPosting, on_delete=models.CASCADE, related_name='applications')
+    applicant = models.ForeignKey(Applicant, on_delete=models.CASCADE, related_name='applications')
     resume = models.FileField(upload_to="resumes/")
     cover_letter = models.TextField(blank=True)
     submitted_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Application for {self.job_posting.title} by {self.applicant_name}"
-
 
 class PerformanceReview(models.Model):
     employee = models.ForeignKey(

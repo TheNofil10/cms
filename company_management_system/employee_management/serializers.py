@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Department, Employee, EmployeeRecord, JobPosting, Application, PerformanceReview, Leave, Payroll, ComplianceReport
+from .models import Applicant, Department, Employee, EmployeeRecord, JobPosting, Application, PerformanceReview, Leave, Payroll, ComplianceReport
 
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -61,16 +61,6 @@ class EmployeeRecordSerializer(serializers.ModelSerializer):
         model = EmployeeRecord
         fields = '__all__'
 
-class JobPostingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = JobPosting
-        fields = '__all__'
-
-class ApplicationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Application
-        fields = '__all__'
-
 class PerformanceReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = PerformanceReview
@@ -96,14 +86,15 @@ class JobPostingSerializer(serializers.ModelSerializer):
         model = JobPosting
         fields = '__all__'
 
-    def create(self, validated_data):
-        title = validated_data.get('title')
-        requirements = validated_data.get('requirements')
-        description = self.generate_ai_description(title, requirements)
 
-        validated_data['description'] = description
-        return super().create(validated_data)
+class ApplicantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Applicant
+        fields = '__all__'
 
-    def generate_ai_description(self, title, requirements):
-        ai_description = f"{title}: {requirements}."
-        return ai_description
+class ApplicationSerializer(serializers.ModelSerializer):
+    applicant = ApplicantSerializer()
+
+    class Meta:
+        model = Application
+        fields = '__all__'
