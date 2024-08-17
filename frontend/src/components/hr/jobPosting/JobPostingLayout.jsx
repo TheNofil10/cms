@@ -4,9 +4,9 @@ import Navbar from "../../navbar/Navbar";
 
 const JobPostingLayout = () => {
   const navItems = [
-    { name: "Jobs", path: "/job-postings" },
-    { name: "Create", path: "/job-postings/new" },
-    { name: "Analytics", path: "/job-postings/dashboard" },
+    { name: "Jobs", path: "/hr/job-postings" },
+    { name: "Create", path: "/hr/job-postings/new" },
+    { name: "Analytics", path: "/hr/job-postings/dashboard" },
   ];
   return (
     <div className="flex-grow md:px-20 sm:px-20 bg-white">

@@ -1,34 +1,48 @@
-import React from "react";
-import { FaEye as ViewIcon, FaTrash as DeleteIcon } from "react-icons/fa";
-import profile from '../../../assets/profile.png'
-const JobPostingCard = ({ jobPosting, onView, onDelete }) => {
-  const { title, description, department, location, id } = jobPosting;
+import React, { useState } from 'react';
+import { FaEye, FaTrash, FaToggleOn, FaToggleOff } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import ConfirmationModal from './ConfirmationModal'; 
+
+const JobPostingCard = ({ job, onDelete, onToggleStatus }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [isActive, setIsActive] = useState(job.isActive);
+  const navigate = useNavigate();
+
+  const handleDelete = () => {
+    onDelete(job.id);
+    setShowModal(false);
+  };
+
+  const handleToggleStatus = () => {
+    const newStatus = !isActive;
+    setIsActive(newStatus);
+    onToggleStatus(job.id, newStatus);
+  };
+
+  const handleViewDetails = () => {
+    navigate(`/hr/job-postings/${job.id}`);
+  };
 
   return (
-    <div className="p-4 bg-gray-100 rounded shadow-md flex items-center space-x-8">
-      {/* Job Posting Details in a Row */}
-      <div className="flex-grow flex items-center space-x-8">
-        <div className="text-lg font-medium">{title}</div>
-        <div className="text-gray-600">{department}</div>
-        <div className="text-gray-600">{location}</div>
-        <div className="text-gray-600">{description.slice(0, 50)}...</div> {/* Show a truncated description */}
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex space-x-4">
-        <button
-          className="text-blue-600 hover:text-blue-800"
-          onClick={() => onView(id)}
-        >
-          <ViewIcon />
+    <div className={`job-posting-card ${isActive ? 'bg-green-500' : 'bg-gray-500'} p-4 mb-4 rounded`}>
+      <h3 className="text-lg font-semibold">{job.title}</h3>
+      <p>{job.company}</p>
+      <p>{job.location}</p>
+      <p>{job.type}</p>
+      <div className="flex justify-between items-center">
+        <button onClick={handleViewDetails}><FaEye /></button>
+        <button onClick={handleToggleStatus}>
+          {isActive ? <FaToggleOn /> : <FaToggleOff />}
         </button>
-        <button
-          className="text-red-600 hover:text-red-800"
-          onClick={() => onDelete(id)}
-        >
-          <DeleteIcon />
-        </button>
+        <button onClick={() => setShowModal(true)}><FaTrash /></button>
       </div>
+      {showModal && (
+        <ConfirmationModal
+          onConfirm={handleDelete}
+          onCancel={() => setShowModal(false)}
+          message="Are you sure you want to delete this job posting?"
+        />
+      )}
     </div>
   );
 };

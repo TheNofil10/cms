@@ -225,7 +225,7 @@ class JobPostingViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return self.queryset.filter(posted_by=self.request.user)
+        return self.queryset.filter(posted_by_id=self.request.user)
 
 class ApplicantViewSet(viewsets.ModelViewSet):
     queryset = Applicant.objects.all()
@@ -233,7 +233,7 @@ class ApplicantViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return self.queryset.filter(job_posting__posted_by=self.request.user)
+        return self.queryset.filter(job_posting__posted_by_id=self.request.user)
 
 class ApplicationViewSet(viewsets.ModelViewSet):
     queryset = Application.objects.all()
