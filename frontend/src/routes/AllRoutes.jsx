@@ -36,6 +36,7 @@ import TalentHuntPage from "../pages/HR/TalentHuntPage";
 import JobPostingLayout from "../components/hr/jobPosting/JobPostingLayout";
 import JobPostingDetails from "../components/hr/jobPosting/JobPostingDetails";
 import CreateJobPostingPage from "../pages/HR/CreateJobPostingPage";
+import { ToastContainer } from "react-toastify";
 
 
 const AllRoutes = () => {

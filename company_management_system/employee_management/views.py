@@ -45,19 +45,35 @@ def generate_job_details(request):
         return Response({'error': 'Title and qualifications are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        response = co.generate(
+        # Generate the job description
+        description_response = co.generate(
             model='command-xlarge-nightly',
-            prompt=f"Generate a detailed job description and specifications for a job titled '{title}' with qualifications '{qualifications}'.",
-            max_tokens=500
+            prompt=f"Generate a detailed job description for a job titled '{title}' no headings or labels only the job description.",
+            max_tokens=300
         )
-        text = response.generations[0].text.strip()
+        description = description_response.generations[0].text.strip()
 
-        # Extract description and specifications from the response
-        description_end = text.find('\nSpecifications:')
-        description = text[:description_end].strip()
-        specifications = text[description_end:].replace('Specifications:', '').strip()
+        # Generate the job specifications
+        specifications_response = co.generate(
+            model='command-xlarge-nightly',
+            prompt=f"Generate detailed job specifications for a job titled '{title}' no headings or labels only the job specifications.",
+            max_tokens=300
+        )
+        specifications = specifications_response.generations[0].text.strip()
 
-        return Response({'description': description, 'specifications': specifications})
+        # Enhance the qualifications
+        qualifications_response = co.generate(
+            model='command-xlarge-nightly',
+            prompt=f"Enhance the following qualifications to be written in a professional way: '{qualifications}' no headings or labels only the qualifications.",
+            max_tokens=150
+        )
+        enhanced_qualifications = qualifications_response.generations[0].text.strip()
+
+        return Response({
+            'description': description,
+            'specifications': specifications,
+            'qualifications': enhanced_qualifications
+        })
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

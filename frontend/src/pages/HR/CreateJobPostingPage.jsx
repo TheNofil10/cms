@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { FaToggleOn, FaToggleOff } from "react-icons/fa";
-
+import { FaSpinner } from "react-icons/fa"; // Import spinner icon
+import { useAuth } from "../../contexts/AuthContext";
 const CreateJobPostingPage = () => {
+  const {currentUser} = useAuth()
   const [formData, setFormData] = useState({
     title: "",
     location: "onsite",
@@ -16,8 +18,10 @@ const CreateJobPostingPage = () => {
     specifications: "",
     qualifications: "",
     is_active: true,
+    posted_by: currentUser.id
   });
 
+  const [loading, setLoading] = useState(false); // State for loading
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -29,6 +33,7 @@ const CreateJobPostingPage = () => {
   };
 
   const handleGenerateAI = async () => {
+    setLoading(true); // Start loading
     try {
       const response = await axios.post(
         `http://127.0.0.1:8000/api/generate-job-details/`,
@@ -42,23 +47,28 @@ const CreateJobPostingPage = () => {
           },
         }
       );
-      const { description, specifications } = response.data;
-      
-      // Extract only the text content from the response
+      const { description, specifications, qualifications } = response.data;
+
+      // Set the fields in the formData state
       setFormData({
         ...formData,
         description: description.trim(),
-        specifications: specifications.trim()
+        specifications: specifications.trim(),
+        qualifications: qualifications.trim()
       });
+
       toast.success("AI-generated details added successfully");
     } catch (error) {
       console.error("Error generating job details:", error.response?.data || error.message);
-      toast.error("Error generating job details.");
+      toast.error(`Error: ${error.response.data.error}`);
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Start loading
     try {
       await axios.post(
         'http://127.0.0.1:8000/api/job-postings/',
@@ -74,6 +84,8 @@ const CreateJobPostingPage = () => {
     } catch (error) {
       console.error("Error creating job posting:", error.response?.data || error.message);
       toast.error("Error creating job posting.");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -192,9 +204,16 @@ const CreateJobPostingPage = () => {
           <button
             type="button"
             onClick={handleGenerateAI}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center justify-center"
+            disabled={loading} // Disable button when loading
           >
-            Generate AI Details
+            {loading ? (
+              <>
+                <FaSpinner className="animate-spin mr-2" /> Generating...
+              </>
+            ) : (
+              "Generate AI Details"
+            )}
           </button>
         </div>
         <div className="flex items-center space-x-2">
@@ -216,12 +235,20 @@ const CreateJobPostingPage = () => {
         <div className="flex justify-center mt-4">
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center justify-center"
+            disabled={loading} // Disable button when loading
           >
-            Submit
+            {loading ? (
+              <>
+                <FaSpinner className="animate-spin mr-2" /> Submitting...
+              </>
+            ) : (
+              "Submit"
+            )}
           </button>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 };
