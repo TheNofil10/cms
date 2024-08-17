@@ -11,7 +11,7 @@ const JobPostingLayout = () => {
   return (
     <div className="flex-grow md:px-20 sm:px-20 bg-white">
       <Navbar navItems={navItems} />
-      <div className="py-8">
+      <div className="py-20">
         <Outlet />
       </div>
     </div>

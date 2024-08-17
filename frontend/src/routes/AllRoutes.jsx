@@ -34,8 +34,8 @@ import HRPerformanceReviews from "../pages/HR/HRPerformanceReviews";
 import HRPayRoll from "../pages/HR/HRPayRoll";
 import TalentHuntPage from "../pages/HR/TalentHuntPage";
 import JobPostingLayout from "../components/hr/jobPosting/JobPostingLayout";
-import JobPreview from "../components/hr/jobPosting/JobPreview";
 import JobPostingDetails from "../components/hr/jobPosting/JobPostingDetails";
+
 
 const AllRoutes = () => {
   return (
@@ -90,9 +90,7 @@ const AllRoutes = () => {
         >
           <Route path="/hr/job-postings" element={<HRJobPosting />} />
           <Route path="/hr/job-postings/new" />
-          <Route path="/hr/job-postings/:id/edit" />
           <Route path="/hr/job-postings/:id" element={<JobPostingDetails />}/>
-          <Route path="/hr/job-postings/:id/applicants" />
         </Route>
         <Route path="/hr/employees" element={<EmployeesPage />} />
         <Route path="/hr/employees/add" element={<SignUp />} />

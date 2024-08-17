@@ -1,29 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import JobPostingCard from './JobPostingCard';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const JobPostingList = () => {
   const [jobPostings, setJobPostings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchJobPosts = async () => {
+    const fetchJobPostings = async () => {
       try {
         const response = await axios.get('http://127.0.0.1:8000/api/job-postings/', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('access_token')}`,
           },
         });
-        setJobPostings(response.data.results || response.data || []);
+        setJobPostings(response.data);
       } catch (error) {
-        setError('There was an error fetching the Job Postings data.');
-      } finally {
-        setLoading(false);
+        toast.error(`Error:${error}`)
+        console.error('Error fetching job postings:', error);
       }
     };
 
-    fetchJobPosts();
+    fetchJobPostings();
   }, []);
 
   const handleDelete = async (id) => {
@@ -33,45 +31,45 @@ const JobPostingList = () => {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
       });
-      setJobPostings(prev => prev.filter(job => job.id !== id));
+      setJobPostings(jobPostings.filter(job => job.id !== id));
+      toast.success("Deleted Successfully")
     } catch (error) {
       console.error('Error deleting job posting:', error);
+      toast.error('Error deleting job posting:', error);
     }
   };
 
   const handleToggleStatus = async (id, newStatus) => {
     try {
-      await axios.patch(`http://127.0.0.1:8000/api/job-postings/${id}/`, {
-        isActive: newStatus,
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-        },
-      });
-      setJobPostings(prev =>
-        prev.map(job => job.id === id ? { ...job, isActive: newStatus } : job)
+      await axios.patch(
+        `http://127.0.0.1:8000/api/job-postings/${id}/`,
+        { is_active: newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          }
+        }
       );
+      setJobPostings(jobPostings.map(job =>
+        job.id === id ? { ...job, is_active: newStatus } : job
+      ));
+      toast.success("Status updated Successfully")
     } catch (error) {
-      console.error('Error toggling job posting status:', error);
+      console.error('Error toggling job status:', error);
+      toast.error('Error toggling job status:', error);
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
-
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Job Postings</h1>
-      <div className="space-y-4">
-        {jobPostings.map(jobPosting => (
-          <JobPostingCard
-            key={jobPosting.id}
-            job={jobPosting}
-            onDelete={handleDelete}
-            onToggleStatus={handleToggleStatus}
-          />
-        ))}
-      </div>
+      {jobPostings.map((job) => (
+        <JobPostingCard
+          key={job.id}
+          job={job}
+          onDelete={handleDelete}
+          onToggleStatus={handleToggleStatus}
+        />
+      ))}
     </div>
   );
 };

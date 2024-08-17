@@ -36,30 +36,20 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     serializer_class = EmployeeSerializer
 
     def get_permissions(self):
-        if self.action in ["destroy"]:
+        if self.action == "destroy":
             return [IsAdminUser()]
-        elif self.action in ["create"]:
-           if self.request.user.is_hr_manager or self.request.user.is_superuser:
+        elif self.action in ["create", "update", "partial_update"]:
+            if self.request.user.is_hr_manager or self.request.user.is_superuser:
                 return [IsAuthenticated()]
-        elif self.action in ["update", "partial_update"]:
-            if self.request.user.is_superuser or self.request.user.is_hr_manager:
-                return [IsAuthenticated()]
-            return [IsAuthenticated()]
         return [IsAuthenticated()]
 
     def get_queryset(self):
         user = self.request.user
         if user.is_superuser:
             return Employee.objects.all()
-        if (
-            user.is_authenticated
-            and hasattr(user, "is_hr_manager")
-            and user.is_hr_manager
-        ):
+        if user.is_hr_manager:
             return Employee.objects.all()
-        if user.is_authenticated:
-            return Employee.objects.filter(department=user.department)
-        return Employee.objects.none()
+        return Employee.objects.filter(department=user.department)
 
     def perform_create(self, serializer):
         employee = serializer.save(is_active=True)
@@ -73,32 +63,11 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             instance.profile_image = self.request.FILES["profile_image"]
             instance.save()
 
-    def update(self, request, *args, **kwargs):
-        employee = self.get_object()
-
-        if request.user.is_superuser or (
-            request.user.is_hr_manager and not (request.user == employee)
-        ):
-            return super().update(request, *args, **kwargs)
-
-        if request.user != employee:
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
-        serializer = self.get_serializer(employee, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data)
-
     def destroy(self, request, *args, **kwargs):
         employee = self.get_object()
-
-        if request.user.is_superuser and (request.user != employee):
+        if request.user.is_superuser or request.user.is_hr_manager:
             return super().destroy(request, *args, **kwargs)
-
-        if employee.is_superuser and (request.user != employee):
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
-        return super().destroy(request, *args, **kwargs)
+        return Response(status=status.HTTP_403_FORBIDDEN)
 
 
 class AdminEmployeeView(viewsets.ViewSet):
@@ -218,15 +187,29 @@ class PayrollViewSet(viewsets.ModelViewSet):
 class ComplianceReportViewSet(viewsets.ModelViewSet):
     queryset = ComplianceReport.objects.all()
     serializer_class = ComplianceReportSerializer
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from .models import JobPosting
+from .serializers import JobPostingSerializer
 
 class JobPostingViewSet(viewsets.ModelViewSet):
     queryset = JobPosting.objects.all()
     serializer_class = JobPostingSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        return self.queryset.filter(posted_by_id=self.request.user)
+    def get_permissions(self):
+        if self.action in ['update', 'partial_update', 'destroy']:
+            if self.request.user.is_hr_manager or self.request.user.is_superuser:
+                return [IsAuthenticated()]
+        return [IsAuthenticated()]
 
+    def perform_update(self, serializer):
+        print("Incoming data:", self.request.data)
+        serializer.save(updated_by=self.request.user)
+        
+    def perform_destroy(self, instance):
+        instance.delete()
+        
 class ApplicantViewSet(viewsets.ModelViewSet):
     queryset = Applicant.objects.all()
     serializer_class = ApplicantSerializer

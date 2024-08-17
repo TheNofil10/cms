@@ -6,8 +6,8 @@ const ConfirmationModal = ({ onConfirm, onCancel, message }) => {
       <div className="bg-white p-4 rounded shadow-lg">
         <p>{message}</p>
         <div className="flex justify-end mt-4">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded mr-2" onClick={onConfirm}>Yes</button>
-          <button className="bg-gray-500 text-white px-4 py-2 rounded" onClick={onCancel}>No</button>
+          <button className="bg-black text-white px-4 py-2 rounded mr-2" onClick={onConfirm}>Yes</button>
+          <button className="bg-gray-100 text-gray-400 px-4 py-2 rounded" onClick={onCancel}>No</button>
         </div>
       </div>
     </div>

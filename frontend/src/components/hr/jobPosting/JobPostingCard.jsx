@@ -5,7 +5,7 @@ import ConfirmationModal from './ConfirmationModal';
 
 const JobPostingCard = ({ job, onDelete, onToggleStatus }) => {
   const [showModal, setShowModal] = useState(false);
-  const [isActive, setIsActive] = useState(job.isActive);
+  const [isActive, setIsActive] = useState(job.is_active);
   const navigate = useNavigate();
 
   const handleDelete = () => {
