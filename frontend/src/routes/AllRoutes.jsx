@@ -35,6 +35,7 @@ import HRPayRoll from "../pages/HR/HRPayRoll";
 import TalentHuntPage from "../pages/HR/TalentHuntPage";
 import JobPostingLayout from "../components/hr/jobPosting/JobPostingLayout";
 import JobPostingDetails from "../components/hr/jobPosting/JobPostingDetails";
+import CreateJobPostingPage from "../pages/HR/CreateJobPostingPage";
 
 
 const AllRoutes = () => {
@@ -89,7 +90,7 @@ const AllRoutes = () => {
           }
         >
           <Route path="/hr/job-postings" element={<HRJobPosting />} />
-          <Route path="/hr/job-postings/new" />
+          <Route path="/hr/job-postings/new" element={<CreateJobPostingPage />}/>
           <Route path="/hr/job-postings/:id" element={<JobPostingDetails />}/>
         </Route>
         <Route path="/hr/employees" element={<EmployeesPage />} />
