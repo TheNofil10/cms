@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 from .views import (ApplicantViewSet, DepartmentMemberListView, DepartmentViewSet, EmployeeDepartmentView, EmployeeViewSet, AdminEmployeeView,EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet,
-                    PerformanceReviewViewSet, LeaveViewSet, PayrollViewSet, ComplianceReportViewSet)
+                    PerformanceReviewViewSet, LeaveViewSet, PayrollViewSet, ComplianceReportViewSet, generate_job_details)
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -18,6 +18,7 @@ router.register(r'applicants', ApplicantViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+     path('generate-job-details/', generate_job_details, name='generate_job_details'),
     path('admin/employees/', AdminEmployeeView.as_view({'get': 'list'}), name='admin_employee_list'),
     path('admin/employees/create/', AdminEmployeeView.as_view({'post': 'create'}), name='admin_employee_create'),
     path('admin/employees/<pk>/', AdminEmployeeView.as_view({'delete': 'destroy'}), name='admin_employee_delete'),

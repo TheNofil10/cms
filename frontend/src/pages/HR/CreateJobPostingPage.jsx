@@ -3,13 +3,12 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { FaToggleOn, FaToggleOff } from "react-icons/fa";
-import { useAuth } from "../../contexts/AuthContext";
+
 const CreateJobPostingPage = () => {
-  const {currentUser} = useAuth()
   const [formData, setFormData] = useState({
     title: "",
-    location: "onsite", // Default value
-    job_type: "fulltime", // Default value
+    location: "onsite",
+    job_type: "fulltime",
     salary_min: "",
     salary_max: "",
     application_deadline: "",
@@ -17,7 +16,6 @@ const CreateJobPostingPage = () => {
     specifications: "",
     qualifications: "",
     is_active: true,
-    posted_by: currentUser.id, // Add any other necessary fields here
   });
 
   const navigate = useNavigate();
@@ -30,11 +28,40 @@ const CreateJobPostingPage = () => {
     });
   };
 
+  const handleGenerateAI = async () => {
+    try {
+      const response = await axios.post(
+        `http://127.0.0.1:8000/api/generate-job-details/`,
+        {
+          title: formData.title,
+          qualifications: formData.qualifications
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+      const { description, specifications } = response.data;
+      
+      // Extract only the text content from the response
+      setFormData({
+        ...formData,
+        description: description.trim(),
+        specifications: specifications.trim()
+      });
+      toast.success("AI-generated details added successfully");
+    } catch (error) {
+      console.error("Error generating job details:", error.response?.data || error.message);
+      toast.error("Error generating job details.");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `http://127.0.0.1:8000/api/job-postings/`,
+      await axios.post(
+        'http://127.0.0.1:8000/api/job-postings/',
         formData,
         {
           headers: {
@@ -105,7 +132,6 @@ const CreateJobPostingPage = () => {
             value={formData.salary_min}
             onChange={handleInputChange}
             className="border rounded p-2"
-            required
           />
         </div>
         <div className="flex flex-col space-y-2">
@@ -117,7 +143,6 @@ const CreateJobPostingPage = () => {
             value={formData.salary_max}
             onChange={handleInputChange}
             className="border rounded p-2"
-            required
           />
         </div>
         <div className="flex flex-col space-y-2">
@@ -129,7 +154,6 @@ const CreateJobPostingPage = () => {
             value={formData.application_deadline}
             onChange={handleInputChange}
             className="border rounded p-2"
-            required
           />
         </div>
         <div className="flex flex-col space-y-2">
@@ -161,36 +185,40 @@ const CreateJobPostingPage = () => {
             value={formData.qualifications}
             onChange={handleInputChange}
             className="border rounded p-2"
+            required
           />
+        </div>
+        <div className="flex justify-center mt-4">
+          <button
+            type="button"
+            onClick={handleGenerateAI}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Generate AI Details
+          </button>
         </div>
         <div className="flex items-center space-x-2">
           <label htmlFor="is_active" className="font-semibold">Active</label>
-          <button
-            type="button"
-            onClick={() => setFormData({ ...formData, is_active: !formData.is_active })}
-            className="flex items-center space-x-2"
-          >
-            {formData.is_active ? (
-              <FaToggleOn size={24} color="green" />
-            ) : (
-              <FaToggleOff size={24} color="red" />
-            )}
-            <span className="font-semibold">{formData.is_active ? 'Yes' : 'No'}</span>
-          </button>
+          <input
+            type="checkbox"
+            id="is_active"
+            name="is_active"
+            checked={formData.is_active}
+            onChange={handleInputChange}
+            className="toggle-checkbox"
+          />
+          {formData.is_active ? (
+            <FaToggleOn className="text-green-500" />
+          ) : (
+            <FaToggleOff className="text-red-500" />
+          )}
         </div>
-        <div className="flex justify-end space-x-4">
+        <div className="flex justify-center mt-4">
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
             Submit
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate("/hr/job-postings")}
-            className="bg-gray-500 text-white px-4 py-2 rounded"
-          >
-            Cancel
           </button>
         </div>
       </form>

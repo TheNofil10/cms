@@ -1,3 +1,5 @@
+from django.conf import settings
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -30,6 +32,34 @@ from .models import (
 )
 from django.core.files.storage import default_storage
 
+import cohere
+
+co = cohere.Client(settings.COHERE_API_KEY)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def generate_job_details(request):
+    title = request.data.get('title')
+    qualifications = request.data.get('qualifications')
+
+    if not title or not qualifications:
+        return Response({'error': 'Title and qualifications are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        response = co.generate(
+            model='command-xlarge-nightly',
+            prompt=f"Generate a detailed job description and specifications for a job titled '{title}' with qualifications '{qualifications}'.",
+            max_tokens=500
+        )
+        text = response.generations[0].text.strip()
+
+        # Extract description and specifications from the response
+        description_end = text.find('\nSpecifications:')
+        description = text[:description_end].strip()
+        specifications = text[description_end:].replace('Specifications:', '').strip()
+
+        return Response({'description': description, 'specifications': specifications})
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
