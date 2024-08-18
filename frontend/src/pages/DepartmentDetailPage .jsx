@@ -26,7 +26,10 @@ const DepartmentDetailPage = () => {
   });
   const { currentUser } = useAuth();
   const navigate = useNavigate();
-
+  const getRole = () =>{
+    if(currentUser.is_staff) return "admin"
+    else if(currentUser.is_hr_manager) return "hr"
+  }
   useEffect(() => {
     const fetchDepartment = async () => {
       try {
@@ -39,7 +42,6 @@ const DepartmentDetailPage = () => {
           }
         );
         setDepartment(response.data);
-        console.log(response.data);
         setFormData({
           name: response.data.name || "",
           description: response.data.description || "",
@@ -51,11 +53,16 @@ const DepartmentDetailPage = () => {
         setError("Error fetching department data");
       } finally {
         setLoading(false);
+        let role = getRole()
       }
     };
-
+  
     fetchDepartment();
-  }, [id]);
+    if (department && department.manager) {
+      console.log(`Current User: ${currentUser.username}`);
+      console.log(`Department Manager: ${department.manager.username}`);
+    }
+  }, []);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -64,8 +71,21 @@ const DepartmentDetailPage = () => {
     });
   };
 
+  const disabled = () => {
+    if (
+      !currentUser.is_staff ||
+      department.manager.username !== currentUser.username
+    ) {
+      return true;
+    } else {
+      false;
+    }
+  };
   const handleUpdateDepartment = async () => {
-    if (currentUser.is_staff || department.manager_id == currentUser.id) {
+    if (
+      currentUser.is_staff ||
+      department.manager.username == currentUser.username
+    ) {
       try {
         await axios.put(
           `http://127.0.0.1:8000/api/departments/${id}/`,
@@ -91,7 +111,7 @@ const DepartmentDetailPage = () => {
   if (error) return <p>{error}</p>;
 
   const handleManageMembers = () => {
-    if (currentUser.is_staff || currentUser.department == id) {
+    if (currentUser.is_staff || department.manager.username === currentUser.username) {
       navigate(`/departments/${id}/manage-members`);
     } else {
       toast.error("You dont have the permissions to perform this action");
@@ -147,15 +167,15 @@ const DepartmentDetailPage = () => {
             {/* Manager Section */}
             <div>
               <h2 className="text-2xl font-semibold text-balc mb-4">Manager</h2>
-              {department?.manager_name !== "N/A" ? (
+              {department?.manager.name !== "N/A" ? (
                 <ManagerCard
-                  profileImage={`${imageBaseUrl}${department.manager_image}`}
-                  name={department.manager_name}
+                  profileImage={department.manager.profile_image}
+                  name={department.manager.name}
                   department={department.name}
                   position="Manager"
                   username={department.manager.username}
-                  email={department.manager_email}
-                  phone={department.manager_phone}
+                  email={department.manager.email}
+                  phone={department.manager.phone}
                 />
               ) : (
                 <p>No manager assigned</p>
@@ -170,7 +190,7 @@ const DepartmentDetailPage = () => {
             <div className="flex justify-end mb-4">
               <button
                 onClick={handleManageMembers}
-                disabled={!currentUser.is_staff}
+                disabled={disabled}
                 className="bg-blue-500 text-white px-4 disabled:bg-gray-300 disabled:text-gray-400 py-2 rounded flex items-center"
               >
                 <FaPlus className="mr-2" /> Manage Members
@@ -179,7 +199,7 @@ const DepartmentDetailPage = () => {
             <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1  gap-6">
               {department?.members?.map((member) => (
                 <>
-                  <Link to={`/admin/employees/${member.id}`}>
+                  <Link to={`/${getRole()}/employees/${member.id}`}>
                     <MembersCard
                       key={member.username}
                       profileImage={member.profile_image}
@@ -274,18 +294,17 @@ const DepartmentDetailPage = () => {
                     onClick={() => {
                       if (currentUser.is_staff) {
                         setShowModal(true);
+                      } else {
+                        toast.error("You Dont Have the Permissions");
                       }
-                      else{
-                        toast.error("You Dont Have the Permissions")
-                      }  
                     }}
-                    disabled={!currentUser.is_staff}
+                    disabled={disabled}
                     className="bg-black text-white disabled:bg-gray-200 disabled:text-gray-500 px-4 py-2 rounded flex items-center mt-4"
                   >
                     <FaPlus className="mr-2" /> Assign Manager
                   </button>
                   <button
-                  disabled={!currentUser.is_staff}
+                    disabled={disabled}
                     onClick={handleUpdateDepartment}
                     className="bg-black text-white disabled:bg-gray-200 disabled:text-gray-500 px-4 py-2 rounded flex items-center mt-4"
                   >

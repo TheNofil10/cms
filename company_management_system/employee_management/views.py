@@ -48,7 +48,7 @@ def generate_job_details(request):
         # Generate the job description
         description_response = co.generate(
             model='command-xlarge-nightly',
-            prompt=f"Generate a detailed job description for a job titled '{title}' no headings or labels only the job description.",
+            prompt=f"Generate a detailed job description for a job titled '{title}' no headings, no qualifications , no other thing labels only the job description in bullets.",
             max_tokens=300
         )
         description = description_response.generations[0].text.strip()
@@ -56,7 +56,7 @@ def generate_job_details(request):
         # Generate the job specifications
         specifications_response = co.generate(
             model='command-xlarge-nightly',
-            prompt=f"Generate detailed job specifications for a job titled '{title}' no headings or labels only the job specifications.",
+            prompt=f"Generate detailed job specifications for a job titled '{title}' no headings, no qualifications , no other thing labels only the job specifications in bullets.",
             max_tokens=300
         )
         specifications = specifications_response.generations[0].text.strip()

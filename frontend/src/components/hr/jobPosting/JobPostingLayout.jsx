@@ -1,6 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "../../navbar/Navbar";
+import { ToastContainer } from "react-toastify";
 
 const JobPostingLayout = () => {
   const navItems = [
@@ -14,6 +15,7 @@ const JobPostingLayout = () => {
       <div className="py-20">
         <Outlet />
       </div>
+      <ToastContainer />
     </div>
   );
 };
