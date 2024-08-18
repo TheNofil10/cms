@@ -1,3 +1,4 @@
+from django.urls import reverse
 from rest_framework import serializers
 from .models import Applicant, Department, Employee, EmployeeRecord, JobPosting, Application, PerformanceReview, Leave, Payroll, ComplianceReport
 
@@ -78,7 +79,12 @@ class JobPostingSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobPosting
         fields = '__all__'
-
+    
+    def get_url(self, obj):
+        request = self.context.get('request')
+        if request is not None:
+            return request.build_absolute_uri(reverse('jobposting-detail', args=[obj.id]))
+        return ''
 
 class ApplicantSerializer(serializers.ModelSerializer):
     class Meta:

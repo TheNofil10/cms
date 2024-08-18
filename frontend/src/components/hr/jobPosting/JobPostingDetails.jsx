@@ -9,17 +9,19 @@ import {
   FaBriefcase,
   FaCalendarAlt,
   FaCheckCircle,
+  FaShareAlt
 } from "react-icons/fa";
 import { toast } from "react-toastify";
-import EditJobPostingModal from "./EditJobPostingModal"; // Import the modal component
-
+import EditJobPostingModal from "./EditJobPostingModal";
+import ShareJobModal from "./ShareJobModal";
 const JobPostingDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false); // State for share modal
 
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -32,7 +34,6 @@ const JobPostingDetails = () => {
             },
           }
         );
-        console.log(response.data)
         setJob(response.data);
       } catch (error) {
         setError("Error fetching job details.");
@@ -55,7 +56,6 @@ const JobPostingDetails = () => {
       navigate("/hr/job-postings");
     } catch (error) {
       toast.error("Error deleting job posting.");
-      console.error("Error deleting job posting:", error);
     }
   };
 
@@ -119,9 +119,15 @@ const JobPostingDetails = () => {
       <div className="flex justify-end space-x-4">
         <button
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-          onClick={() => setIsModalOpen(true)} // Open the modal on click
+          onClick={() => setIsModalOpen(true)}
         >
           Edit
+        </button>
+        <button
+          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+          onClick={() => setIsShareModalOpen(true)} // Open the share modal
+        >
+          <FaShareAlt className="inline-block mr-2" /> Share
         </button>
         <button
           className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
@@ -135,7 +141,14 @@ const JobPostingDetails = () => {
         <EditJobPostingModal
           job={job}
           setIsModalOpen={setIsModalOpen}
-          setJob={setJob} 
+          setJob={setJob}
+        />
+      )}
+
+      {isShareModalOpen && (
+        <ShareJobModal
+          job={job}
+          setIsShareModalOpen={setIsShareModalOpen}
         />
       )}
     </div>

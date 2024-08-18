@@ -35,6 +35,36 @@ from django.core.files.storage import default_storage
 import cohere
 
 co = cohere.Client(settings.COHERE_API_KEY)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def generate_post(request):
+    job_data = request.data.get('job')
+    if not job_data:
+        return Response({"error": "No job data provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+    title = job_data.get('title')
+    description = job_data.get('description')
+    qualifications = job_data.get('qualifications')
+    specifications = job_data.get('specifications')
+    location = job_data.get('location')
+    job_type = job_data.get('job_type')
+    posted_by = job_data.get('posted_by')
+
+    if not all([title, description, qualifications, specifications, location, job_type]):
+        return Response({'error': 'All job fields are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        post_response = co.generate(
+            model='command-xlarge-nightly',
+            prompt=f"Create an engaging and professional social media post for a job opening with the following details:\n\nTitle: {title}\nSpecifications: {specifications}\nLocation: {location}\nType: {job_type}\nDescription: {description}\nQualifications: {qualifications}\n\nThe post should be catchy and encourage people to apply.",
+            max_tokens=200
+        )
+        post_content = post_response.generations[0].text.strip()
+        return Response({'postContent': post_content})
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def generate_job_details(request):
@@ -56,7 +86,7 @@ def generate_job_details(request):
         # Generate the job specifications
         specifications_response = co.generate(
             model='command-xlarge-nightly',
-            prompt=f"Generate detailed job specifications for a job titled '{title}' no headings, no qualifications , no other thing labels only the job specifications in bullets.",
+            prompt=f"Generate detailed job specifications for a job titled '{title}' no headings, no qualifications , no other thing labels only the job specifications in bullter.",
             max_tokens=300
         )
         specifications = specifications_response.generations[0].text.strip()
