@@ -13,8 +13,7 @@ const JobApplicationDetailsPage = () => {
 
   useEffect(() => {
     const fetchApplicationDetails = async () => {
-      setLoading(true); 
-
+      setLoading(true);
       try {
         const response = await axios.get(
           `http://127.0.0.1:8000/api/applications/${id}/`,
@@ -26,11 +25,13 @@ const JobApplicationDetailsPage = () => {
         );
         setApplication(response.data);
         setStatus(response.data.status);
-        setStatusHistory(response.data.statusHistory || []);
+        setStatusHistory(Array.isArray(response.data.status_history) ? response.data.status_history : []);
       } catch (error) {
         toast.error("Error fetching job application details");
+        console.error(error.response ? error.response.data : error.message);
       } finally {
-        setLoading(false); 
+        console.log(application)
+        setLoading(false);
       }
     };
 
@@ -39,9 +40,10 @@ const JobApplicationDetailsPage = () => {
 
   const handleStatusChange = async (event) => {
     const newStatus = event.target.value;
+    setLoading(true);
     try {
-      await axios.patch(
-        `http://127.0.0.1:8000/api/applications/${id}/update_status/`, 
+      const response = await axios.patch(
+        `http://127.0.0.1:8000/api/applications/${id}/update_status/`,
         { status: newStatus },
         {
           headers: {
@@ -49,16 +51,30 @@ const JobApplicationDetailsPage = () => {
           },
         }
       );
+      toast.success("Status updated successfully!");
+      setApplication((prevApplication) => ({
+        ...prevApplication,
+        status: newStatus,
+        statusHistory: [
+          ...(Array.isArray(prevApplication.statusHistory) ? prevApplication.statusHistory : []),
+          {
+            status: newStatus,
+            changed_at: new Date().toISOString(),
+          },
+        ],
+      }));
       setStatus(newStatus);
-      toast.success("Status updated successfully");
     } catch (error) {
-      toast.error("Error updating status");
+      toast.error("Failed to update status");
+      console.error(error.response ? error.response.data : error.message);
     }
+    setLoading(false);
   };
 
   if (loading) return <div className="text-center p-4">Loading...</div>;
 
-  if (!application) return <div className="text-center p-4">Application not found</div>;
+  if (!application)
+    return <div className="text-center p-4">Application not found</div>;
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
@@ -69,21 +85,32 @@ const JobApplicationDetailsPage = () => {
       </div>
       <div className="mb-6">
         <p className="text-lg font-semibold">Position Applied:</p>
-        <p className="text-gray-700">{application.job_posting?.title || "N/A"}</p>
+        <p className="text-gray-700">
+          {application.job_posting?.title || "N/A"}
+        </p>
       </div>
       <div className="mb-6">
         <p className="text-lg font-semibold">Date Applied:</p>
-        <p className="text-gray-700">{new Date(application.dateApplied).toLocaleDateString() || "N/A"}</p>
+        <p className="text-gray-700">
+          {new Date(application.dateApplied).toLocaleDateString() || "N/A"}
+        </p>
       </div>
       <div className="mb-6">
         <p className="text-lg font-semibold">Resume:</p>
-        <a href={application.resumeUrl || "#"} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-          {application.resumeUrl ? "View Resume" : "Resume Not Available"}
+        <a
+          href={application.resume || "#"}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 hover:underline"
+        >
+          {application.resume ? "View Resume" : "Resume Not Available"}
         </a>
       </div>
 
       <div className="mb-6">
-        <label htmlFor="status" className="block text-lg font-semibold mb-2">Status</label>
+        <label htmlFor="status" className="block text-lg font-semibold mb-2">
+          Status
+        </label>
         <select
           id="status"
           value={status}
@@ -105,7 +132,7 @@ const JobApplicationDetailsPage = () => {
           {statusHistory.length > 0 ? (
             statusHistory.map((entry, index) => (
               <li key={index} className="text-gray-700">
-                {entry.date}: {entry.status}
+                {new Date(entry.changed_at).toLocaleDateString()} - {entry.status}
               </li>
             ))
           ) : (

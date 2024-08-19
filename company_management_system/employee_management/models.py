@@ -132,18 +132,31 @@ class Applicant(models.Model):
 class Application(models.Model):
     STATUS_CHOICES = [
         ('under_review', 'Under Review'),
+        ('reviewed', 'Reviewed'),
         ('interview_scheduled', 'Interview Scheduled'),
-        ('offer_extended', 'Offer Extended'),
+        ('interviewed', 'Interviewed'),
+        ('offer_made', 'Offer Made'),
+        ('hired', 'Hired'),
         ('rejected', 'Rejected'),
     ]
     applicant = models.ForeignKey(Applicant, on_delete=models.CASCADE)
     job_posting = models.ForeignKey(JobPosting, on_delete=models.CASCADE)
     resume = models.FileField(upload_to='resumes/')
     cover_letter = models.TextField()
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='under_review')
     submission_date = models.DateTimeField(default=timezone.now)
-    status_history = models.JSONField(default=list)
-    
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='under_review')
+    status_history = models.JSONField(default=list)  # Store status history as a list of dicts
+
+    def save(self, *args, **kwargs):
+        if self.pk:  
+            previous_status = Application.objects.get(pk=self.pk).status
+            if previous_status != self.status:
+                self.status_history.append({
+                    'status': previous_status,
+                    'changed_at': timezone.now().isoformat(),
+                })
+        super().save(*args, **kwargs)
+        
 class PerformanceReview(models.Model):
     employee = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE, related_name="performance_reviews"

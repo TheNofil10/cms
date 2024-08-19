@@ -305,23 +305,19 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
 
-    @action(detail=True, methods=['put'])
+    @action(detail=True, methods=['patch'])
     def update_status(self, request, pk=None):
         application = self.get_object()
         new_status = request.data.get('status')
-
-        valid_transitions = {
-            'Pending': ['In Review', 'Rejected'],
-            'In Review': ['Interview Scheduled', 'Rejected'],
-            'Interview Scheduled': ['Offered', 'Rejected'],
-            'Offered': ['Hired', 'Rejected'],
-            'Rejected': [],
-            'Hired': []
-        }
-
-        if new_status in valid_transitions[application.status]:
-            application.status = new_status
-            application.save()
-            return Response({'status': 'success'}, status=status.HTTP_200_OK)
-        else:
-            return Response({'error': 'Invalid status transition'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Define valid status transitions
+        valid_statuses = ['Applied', 'Reviewed', 'Interview Scheduled', 'Offer Extended', 'Hired', 'Rejected']
+        if new_status not in valid_statuses:
+            return Response({"error": "Invalid status"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Update the status and save
+        application.status = new_status
+        application.save()
+        
+        serializer = self.get_serializer(application)
+        return Response(serializer.data)

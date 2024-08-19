@@ -13,8 +13,13 @@ router.register(r'performance-reviews', PerformanceReviewViewSet)
 router.register(r'leaves', LeaveViewSet)
 router.register(r'payrolls', PayrollViewSet)
 router.register(r'compliance-reports', ComplianceReportViewSet)
-router.register(r'applications', ApplicationViewSet)
+router.register(r'applications', ApplicationViewSet, basename='application')
 router.register(r'applicants', ApplicantViewSet)
+
+
+application_list = ApplicationViewSet.as_view({'get': 'list', 'post': 'create'})
+application_detail = ApplicationViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update'})
+application_status_update = ApplicationViewSet.as_view({'post': 'update_status'})
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -28,4 +33,7 @@ urlpatterns = [
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('department-members/', DepartmentMemberListView.as_view(), name='department-member-list'),
     path('department/me', EmployeeDepartmentView.as_view(), name='employee_department'),
+     path('applications/', application_list, name='application-list'),
+    path('applications/<int:pk>/', application_detail, name='application-detail'),
+    path('applications/<int:pk>/update_status/', application_status_update, name='application-update-status'),
 ]
