@@ -136,7 +136,6 @@ class Application(models.Model):
         ('offer_extended', 'Offer Extended'),
         ('rejected', 'Rejected'),
     ]
-
     applicant = models.ForeignKey(Applicant, on_delete=models.CASCADE)
     job_posting = models.ForeignKey(JobPosting, on_delete=models.CASCADE)
     resume = models.FileField(upload_to='resumes/')
