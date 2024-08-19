@@ -27,16 +27,11 @@ const HRSideBar = () => {
         text="Job Postings"
         to="/hr/job-postings"
       />
-      <SidebarItem
-        icon={<FaPaperPlane />}
-        text="Job Applications"
-        to="/hr/applications"
-      />
-      <SidebarItem
+      {/* <SidebarItem
         icon={<FaRocket />}
         text="Talent Hunt"
         to="/hr/talent-hunt"
-      />
+      /> */}
       <SidebarItem
         icon={<FaCalendarAlt />}
         text="Attendance"

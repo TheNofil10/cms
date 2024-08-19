@@ -29,16 +29,16 @@ import EmployeeDepartment from "../pages/EmployeeDepartment";
 import ManageMembersPage from "../pages/ManageMembersPage";
 import HRRoute from "./HRRoute";
 import HRJobPosting from "../pages/HR/HRJobPosting";
-import HRApplications from "../pages/HR/HRApplications";
+import JobApplicationsPage from "../pages/HR/JobApplicationsPage";
 import HRPerformanceReviews from "../pages/HR/HRPerformanceReviews";
 import HRPayRoll from "../pages/HR/HRPayRoll";
 import TalentHuntPage from "../pages/HR/TalentHuntPage";
 import JobPostingLayout from "../components/hr/jobPosting/JobPostingLayout";
 import JobPostingDetails from "../components/hr/jobPosting/JobPostingDetails";
 import CreateJobPostingPage from "../pages/HR/CreateJobPostingPage";
-import { ToastContainer } from "react-toastify";
-
-
+import JobApplicants from "../components/hr/jobPosting/JobApplicants";
+import Application from "../components/hr/jobPosting/JobApplicationDetailsPage.jsx";
+import JobApplicationDetailsPage from "../components/hr/jobPosting/JobApplicationDetailsPage.jsx";
 const AllRoutes = () => {
   return (
     <Routes>
@@ -91,8 +91,14 @@ const AllRoutes = () => {
           }
         >
           <Route path="/hr/job-postings" element={<HRJobPosting />} />
-          <Route path="/hr/job-postings/new" element={<CreateJobPostingPage />}/>
-          <Route path="/hr/job-postings/:id" element={<JobPostingDetails />}/>
+          <Route
+            path="/hr/job-postings/new"
+            element={<CreateJobPostingPage />}
+          />
+          <Route path="/hr/job-postings/:id" element={<JobPostingDetails />} />
+          <Route path="/hr/job-applications" element={<JobApplicationsPage />} />
+          <Route path="/hr/applications/:id" element={<JobApplicationDetailsPage />} />
+          <Route path="hr/job-postings/:id/applications" element={<Application />} />
         </Route>
         <Route path="/hr/employees" element={<EmployeesPage />} />
         <Route path="/hr/employees/add" element={<SignUp />} />
@@ -100,7 +106,6 @@ const AllRoutes = () => {
         <Route path="/hr/departments/:id" element={<DepartmentDetailPage />} />
         <Route path="/hr/departments" element={<DepartmentsPage />} />
         <Route path="/hr/payroll" element={<HRPayRoll />} />
-        <Route path="/hr/applications" element={<HRApplications />} />
         <Route
           path="/hr/performance-reviews"
           element={<HRPerformanceReviews />}

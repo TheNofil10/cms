@@ -92,6 +92,7 @@ class ApplicantSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ApplicationSerializer(serializers.ModelSerializer):
+    job_posting = JobPostingSerializer()
     applicant = ApplicantSerializer()
 
     class Meta:

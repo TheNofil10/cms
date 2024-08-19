@@ -24,17 +24,37 @@ const JobPostingCard = ({ job, onDelete, onToggleStatus }) => {
   };
 
   return (
-    <div className={`job-posting-card ${isActive ? 'bg-green-500' : 'bg-gray-500'} p-4 mb-4 rounded`}>
-      <h3 className="text-lg font-semibold">{job.title}</h3>
-      <p>{job.company}</p>
-      <p>{job.location}</p>
-      <p>{job.type}</p>
-      <div className="flex justify-between items-center">
-        <button onClick={handleViewDetails}><FaEye /></button>
-        <button onClick={handleToggleStatus}>
-          {isActive ? <FaToggleOn /> : <FaToggleOff />}
-        </button>
-        <button onClick={() => setShowModal(true)}><FaTrash /></button>
+    <div className={`bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200 ${isActive ? 'border-green-500' : 'border-gray-400'} p-4 mb-4`}>
+      <div className="flex flex-row items-center">
+        <div className="flex-1">
+          <h3 className="text-xl font-semibold text-gray-800">{job.title}</h3>
+          <p className="text-gray-600">{job.company}</p>
+          <p className="text-gray-600">{job.location}</p>
+          <p className="text-gray-600">{job.job_type}</p>
+        </div>
+        <div className="flex flex-row items-center ml-4 space-x-2">
+          <button
+            onClick={handleViewDetails}
+            className="text-blue-500 hover:text-blue-700 transition"
+            aria-label="View Details"
+          >
+            <FaEye size={28} />
+          </button>
+          <button
+            onClick={handleToggleStatus}
+            className="text-green-500 hover:text-green-700 transition"
+            aria-label="Toggle Status"
+          >
+            {isActive ? <FaToggleOn size={28} /> : <FaToggleOff size={28} />}
+          </button>
+          <button
+            onClick={() => setShowModal(true)}
+            className="text-red-500 hover:text-red-700 transition"
+            aria-label="Delete"
+          >
+            <FaTrash size={28} />
+          </button>
+        </div>
       </div>
       {showModal && (
         <ConfirmationModal

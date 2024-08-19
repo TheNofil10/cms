@@ -1,0 +1,122 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+const JobApplicationDetailsPage = () => {
+  const { id } = useParams();
+  const [application, setApplication] = useState(null);
+  const [status, setStatus] = useState("");
+  const [statusHistory, setStatusHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchApplicationDetails = async () => {
+      setLoading(true); 
+
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/applications/${id}/`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+        setApplication(response.data);
+        setStatus(response.data.status);
+        setStatusHistory(response.data.statusHistory || []);
+      } catch (error) {
+        toast.error("Error fetching job application details");
+      } finally {
+        setLoading(false); 
+      }
+    };
+
+    fetchApplicationDetails();
+  }, [id]);
+
+  const handleStatusChange = async (event) => {
+    const newStatus = event.target.value;
+    try {
+      await axios.patch(
+        `http://127.0.0.1:8000/api/applications/${id}/update_status/`, 
+        { status: newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+      setStatus(newStatus);
+      toast.success("Status updated successfully");
+    } catch (error) {
+      toast.error("Error updating status");
+    }
+  };
+
+  if (loading) return <div className="text-center p-4">Loading...</div>;
+
+  if (!application) return <div className="text-center p-4">Application not found</div>;
+
+  return (
+    <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
+      <h1 className="text-2xl font-bold mb-4">Job Application Details</h1>
+      <div className="mb-6">
+        <p className="text-lg font-semibold">Applicant:</p>
+        <p className="text-gray-700">{application.applicant?.name || "N/A"}</p>
+      </div>
+      <div className="mb-6">
+        <p className="text-lg font-semibold">Position Applied:</p>
+        <p className="text-gray-700">{application.job_posting?.title || "N/A"}</p>
+      </div>
+      <div className="mb-6">
+        <p className="text-lg font-semibold">Date Applied:</p>
+        <p className="text-gray-700">{new Date(application.dateApplied).toLocaleDateString() || "N/A"}</p>
+      </div>
+      <div className="mb-6">
+        <p className="text-lg font-semibold">Resume:</p>
+        <a href={application.resumeUrl || "#"} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+          {application.resumeUrl ? "View Resume" : "Resume Not Available"}
+        </a>
+      </div>
+
+      <div className="mb-6">
+        <label htmlFor="status" className="block text-lg font-semibold mb-2">Status</label>
+        <select
+          id="status"
+          value={status}
+          onChange={handleStatusChange}
+          className="block w-full p-2 border border-gray-300 rounded-md"
+        >
+          <option value="Applied">Applied</option>
+          <option value="Reviewed">Reviewed</option>
+          <option value="Interview Scheduled">Interview Scheduled</option>
+          <option value="Offer Extended">Offer Extended</option>
+          <option value="Hired">Hired</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-2">Status History</h2>
+        <ul className="list-disc pl-5">
+          {statusHistory.length > 0 ? (
+            statusHistory.map((entry, index) => (
+              <li key={index} className="text-gray-700">
+                {entry.date}: {entry.status}
+              </li>
+            ))
+          ) : (
+            <li className="text-gray-700">No status history available</li>
+          )}
+        </ul>
+      </div>
+
+      <ToastContainer />
+    </div>
+  );
+};
+
+export default JobApplicationDetailsPage;

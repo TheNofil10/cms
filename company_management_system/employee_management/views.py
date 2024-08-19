@@ -4,6 +4,7 @@ from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from django.utils import timezone
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .serializers import (
     ApplicantSerializer,
@@ -265,10 +266,6 @@ class PayrollViewSet(viewsets.ModelViewSet):
 class ComplianceReportViewSet(viewsets.ModelViewSet):
     queryset = ComplianceReport.objects.all()
     serializer_class = ComplianceReportSerializer
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from .models import JobPosting
-from .serializers import JobPostingSerializer
 
 class JobPostingViewSet(viewsets.ModelViewSet):
     queryset = JobPosting.objects.all()
@@ -304,25 +301,27 @@ class ApplicantViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(applicant)
         return Response(serializer.data)
 
-class ApplicantViewSet(viewsets.ModelViewSet):
-    queryset = Applicant.objects.all()
-    serializer_class = ApplicantSerializer
-
 class ApplicationViewSet(viewsets.ModelViewSet):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
 
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        data = request.data
-        status_history = instance.status_history
-        if 'status' in data:
-            status_history.append({
-                'status': data['status'],
-                'date': timezone.now().isoformat()
-            })
-        data['status_history'] = status_history
-        serializer = self.get_serializer(instance, data=data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data)
+    @action(detail=True, methods=['put'])
+    def update_status(self, request, pk=None):
+        application = self.get_object()
+        new_status = request.data.get('status')
+
+        valid_transitions = {
+            'Pending': ['In Review', 'Rejected'],
+            'In Review': ['Interview Scheduled', 'Rejected'],
+            'Interview Scheduled': ['Offered', 'Rejected'],
+            'Offered': ['Hired', 'Rejected'],
+            'Rejected': [],
+            'Hired': []
+        }
+
+        if new_status in valid_transitions[application.status]:
+            application.status = new_status
+            application.save()
+            return Response({'status': 'success'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Invalid status transition'}, status=status.HTTP_400_BAD_REQUEST)

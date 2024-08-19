@@ -84,44 +84,45 @@ const ShareJobModal = ({ job, onClose }) => {
               </>
             )}
           </button>
-        </div>
-        <div className="flex justify-between space-x-2">
+          <div className="flex justify-between space-x-2">
           <FacebookShareButton
             url={`https://www.facebook.com/sharer/sharer.php?u=${postContent}`}
             quote={postContent}
             className="p-2 border rounded-full bg-blue-600 text-white"
           >
-            <FacebookIcon size={32} round />
+            <FacebookIcon size={40} round />
           </FacebookShareButton>
           <TwitterShareButton
             url={`https://twitter.com/intent/tweet?text=${postContent}`}
             title={postContent}
             className="p-2 border rounded-full bg-blue-400 text-white"
           >
-            <TwitterIcon size={32} round />
+            <TwitterIcon size={40} round />
           </TwitterShareButton>
           <LinkedinShareButton
             url={`https://www.linkedin.com/shareArticle?mini=true&summary=${postContent}`}
             title={postContent}
             className="p-2 border rounded-full bg-blue-700 text-white"
           >
-            <LinkedinIcon size={32} round />
+            <LinkedinIcon size={40} round />
           </LinkedinShareButton>
           <EmailShareButton
             url="mailto:?subject=Job Posting&body="
             body={postContent}
             className="p-2 border rounded-full bg-gray-600 text-white"
           >
-            <EmailIcon size={32} round />
+            <EmailIcon size={40} round />
           </EmailShareButton>
           <WhatsappShareButton
             url={`https://api.whatsapp.com/send?text=${postContent}`}
             title="Job Posting"
             className="p-2 border rounded-full bg-green-600 text-white"
           >
-            <WhatsappIcon size={32} round />
+            <WhatsappIcon size={40} round />
           </WhatsappShareButton>
         </div>
+        </div>
+        
       </div>
     </div>
   );

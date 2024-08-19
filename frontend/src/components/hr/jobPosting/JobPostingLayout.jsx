@@ -7,7 +7,7 @@ const JobPostingLayout = () => {
   const navItems = [
     { name: "Jobs", path: "/hr/job-postings" },
     { name: "Create", path: "/hr/job-postings/new" },
-    { name: "Analytics", path: "/hr/job-postings/dashboard" },
+    { name: "Applicants", path: "/hr/job-applications" },
   ];
   return (
     <div className="flex-grow md:px-20 sm:px-20 bg-white">
