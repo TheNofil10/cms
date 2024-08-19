@@ -145,13 +145,14 @@ const ManageMembersPage = () => {
                 email={member.email}
                 phone={member.phone}
               />
-
-              <button
-                onClick={() => handleRemoveMember(member.id)}
-                className="bg-red-500 text-white ml-2 px-4 py-2 rounded flex items-center"
-              >
-                <FaTrash className="mr-2" />
-              </button>
+              <Link to={"#"}>
+                <button
+                  onClick={() => handleRemoveMember(member.id)}
+                  className="bg-red-500 text-white ml-2 px-4 py-2 rounded flex items-center"
+                >
+                  <FaTrash className="mr-2" />
+                </button>
+              </Link>
             </div>{" "}
           </Link>
         ))}

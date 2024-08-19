@@ -57,8 +57,8 @@ def generate_post(request):
     try:
         post_response = co.generate(
             model='command-xlarge-nightly',
-            prompt=f"Create an engaging and professional social media post for a job opening with the following details:\n\nTitle: {title}\nSpecifications: {specifications}\nLocation: {location}\nType: {job_type}\nDescription: {description}\nQualifications: {qualifications}\n\nThe post should be catchy and encourage people to apply.",
-            max_tokens=200
+            prompt=f"Create an engaging and professional social media post for a job opening with the following details:\n\nTitle: {title}\nSpecifications: {specifications}\nLocation: {location}\nType: {job_type}\nDescription: {description}\nQualifications: {qualifications}\n\nThe post should be catchy and encourage people to apply give the response with only the post no other thing.",
+            max_tokens=300
         )
         post_content = post_response.generations[0].text.strip()
         return Response({'postContent': post_content})
@@ -236,6 +236,7 @@ class EmployeeDepartmentView(APIView):
                 {"detail": "No department assigned"}, status=status.HTTP_404_NOT_FOUND
             )
         department = employee.department
+        manager = employee.department.manager
         serializer = DepartmentSerializer(department)
         return Response(serializer.data)
 

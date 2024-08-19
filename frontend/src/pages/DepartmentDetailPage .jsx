@@ -62,7 +62,7 @@ const DepartmentDetailPage = () => {
       console.log(`Current User: ${currentUser.username}`);
       console.log(`Department Manager: ${department.manager.username}`);
     }
-  }, []);
+  }, [activeTab]);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -72,12 +72,9 @@ const DepartmentDetailPage = () => {
   };
 
   const disabled = () => {
-    if (
-      !currentUser.is_staff ||
-      department.manager.username !== currentUser.username
-    ) {
+    if (!currentUser.is_staff) {
       return true;
-    } else {
+    } else if( department.manager.username !== currentUser.username) {
       false;
     }
   };
@@ -97,7 +94,6 @@ const DepartmentDetailPage = () => {
           }
         );
         toast.success("Successfully udpated");
-        setActiveTab("overview");
       } catch (error) {
         setError("Error updating department");
         toast.error(error);
@@ -190,7 +186,7 @@ const DepartmentDetailPage = () => {
             <div className="flex justify-end mb-4">
               <button
                 onClick={handleManageMembers}
-                disabled={disabled}
+                disabled={disabled()}
                 className="bg-blue-500 text-white px-4 disabled:bg-gray-300 disabled:text-gray-400 py-2 rounded flex items-center"
               >
                 <FaPlus className="mr-2" /> Manage Members
@@ -298,13 +294,13 @@ const DepartmentDetailPage = () => {
                         toast.error("You Dont Have the Permissions");
                       }
                     }}
-                    disabled={disabled}
+                    disabled={disabled()}
                     className="bg-black text-white disabled:bg-gray-200 disabled:text-gray-500 px-4 py-2 rounded flex items-center mt-4"
                   >
                     <FaPlus className="mr-2" /> Assign Manager
                   </button>
                   <button
-                    disabled={disabled}
+                    disabled={disabled()}
                     onClick={handleUpdateDepartment}
                     className="bg-black text-white disabled:bg-gray-200 disabled:text-gray-500 px-4 py-2 rounded flex items-center mt-4"
                   >

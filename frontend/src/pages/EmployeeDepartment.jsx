@@ -22,11 +22,13 @@ const EmployeeDepartment = () => {
             },
           }
         );
+        
         setDepartment(response.data);
       } catch (error) {
         setError("Error fetching department data");
       } finally {
         setLoading(false);
+        console.log(department.manager.profile_image)
       }
     };
 
@@ -79,13 +81,13 @@ const EmployeeDepartment = () => {
               <h2 className="text-2xl font-semibold mb-4">Manager</h2>
               {department?.manager_name !== "N/A" ? (
                 <ManagerCard
-                  profileImage={`${imageBaseUrl}${department.manager_image}`}
-                  name={department.manager_name}
+                  profileImage={`${imageBaseUrl}${department.manager.profile_image}`}
+                  name={department.manager.name}
                   department={department.name}
                   position="Manager"
                   username={department.manager.username}
-                  email={department.manager_email}
-                  phone={department.manager_phone}
+                  email={department.manager.email}
+                  phone={department.manager.phone}
                 />
               ) : (
                 <p>No manager assigned</p>

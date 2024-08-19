@@ -148,6 +148,7 @@ const JobPostingDetails = () => {
       {isShareModalOpen && (
         <ShareJobModal
           job={job}
+          onClose={() => setIsShareModalOpen(false)} 
           setIsShareModalOpen={setIsShareModalOpen}
         />
       )}
