@@ -68,7 +68,7 @@ const HRDashboard = () => {
             Good Morning {currentUser.first_name} {currentUser.last_name} 🌳
           </div>
         </div>
-        <Link to={"/admin/employees"}>
+        <Link to={"/hr/employees"}>
           <div className="bg-white p-4 hover:bg-gray-100 rounded-lg shadow-md flex items-center">
             <FaUsers size={40} className="text-black mr-4" />
             <div>
@@ -77,7 +77,7 @@ const HRDashboard = () => {
             </div>
           </div>
         </Link>
-        <Link to={"/admin/departments"}>
+        <Link to={"/hr/departments"}>
           <div className="bg-white p-4 hover:bg-gray-100 rounded-lg shadow-md flex items-center">
             <FaChartPie size={40} className="text-black mr-4" />
             <div>

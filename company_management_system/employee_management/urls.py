@@ -18,8 +18,8 @@ router.register(r'applicants', ApplicantViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-      path('generate-post/', generate_post, name='generate-post'),
-     path('generate-job-details/', generate_job_details, name='generate_job_details'),
+    path('generate-post/', generate_post, name='generate-post'),
+    path('generate-job-details/', generate_job_details, name='generate_job_details'),
     path('admin/employees/', AdminEmployeeView.as_view({'get': 'list'}), name='admin_employee_list'),
     path('admin/employees/create/', AdminEmployeeView.as_view({'post': 'create'}), name='admin_employee_create'),
     path('admin/employees/<pk>/', AdminEmployeeView.as_view({'delete': 'destroy'}), name='admin_employee_delete'),

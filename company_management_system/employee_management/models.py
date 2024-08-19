@@ -5,7 +5,7 @@ from django.contrib.auth.models import (
 )
 from django.db import models
 from django.contrib.auth import get_user_model
-
+from django.utils import timezone
 
 def employee_image_path(instance, filename):
     return f"profile_images/employees/{instance.id}/{filename}"
@@ -122,6 +122,7 @@ class Applicant(models.Model):
     job_posting = models.ForeignKey(JobPosting, on_delete=models.CASCADE, related_name='applicants')
     name = models.CharField(max_length=255)
     email = models.EmailField()
+    
     resume = models.FileField(upload_to='resumes/')
     status = models.CharField(max_length=50, choices=[('applied', 'Applied'), ('shortlisted', 'Shortlisted'), ('rejected', 'Rejected')])
 
@@ -129,15 +130,21 @@ class Applicant(models.Model):
         return f"{self.name} - {self.job_posting.title}"
 
 class Application(models.Model):
-    job_posting = models.ForeignKey(JobPosting, on_delete=models.CASCADE, related_name='applications')
-    applicant = models.ForeignKey(Applicant, on_delete=models.CASCADE, related_name='applications')
-    resume = models.FileField(upload_to="resumes/")
-    cover_letter = models.TextField(blank=True)
-    submitted_at = models.DateTimeField(auto_now_add=True)
+    STATUS_CHOICES = [
+        ('under_review', 'Under Review'),
+        ('interview_scheduled', 'Interview Scheduled'),
+        ('offer_extended', 'Offer Extended'),
+        ('rejected', 'Rejected'),
+    ]
 
-    def __str__(self):
-        return f"Application for {self.job_posting.title} by {self.applicant_name}"
-
+    applicant = models.ForeignKey(Applicant, on_delete=models.CASCADE)
+    job_posting = models.ForeignKey(JobPosting, on_delete=models.CASCADE)
+    resume = models.FileField(upload_to='resumes/')
+    cover_letter = models.TextField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='under_review')
+    submission_date = models.DateTimeField(default=timezone.now)
+    status_history = models.JSONField(default=list)
+    
 class PerformanceReview(models.Model):
     employee = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE, related_name="performance_reviews"

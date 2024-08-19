@@ -1,7 +1,8 @@
 from django.conf import settings
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
+from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .serializers import (
@@ -292,17 +293,36 @@ class ApplicantViewSet(viewsets.ModelViewSet):
     serializer_class = ApplicantSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        return self.queryset.filter(job_posting__posted_by_id=self.request.user)
+    @action(detail=True, methods=['post'])
+    def update_status(self, request, pk=None):
+        applicant = self.get_object()
+        status = request.data.get('status')
+        if status not in ['pending', 'interviewed', 'hired']:
+            return Response({"error": "Invalid status"}, status=status.HTTP_400_BAD_REQUEST)
+        applicant.status = status
+        applicant.save()
+        serializer = self.get_serializer(applicant)
+        return Response(serializer.data)
+
+class ApplicantViewSet(viewsets.ModelViewSet):
+    queryset = Applicant.objects.all()
+    serializer_class = ApplicantSerializer
 
 class ApplicationViewSet(viewsets.ModelViewSet):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
 
-    def create(self, request, *args, **kwargs):
-        applicant_data = request.data.get('applicant')
-        if applicant_data:
-            applicant, created = Applicant.objects.get_or_create(email=applicant_data.get('email'), defaults=applicant_data)
-            request.data['applicant'] = applicant.id
-
-        return super().create(request, *args, **kwargs)
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        data = request.data
+        status_history = instance.status_history
+        if 'status' in data:
+            status_history.append({
+                'status': data['status'],
+                'date': timezone.now().isoformat()
+            })
+        data['status_history'] = status_history
+        serializer = self.get_serializer(instance, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
