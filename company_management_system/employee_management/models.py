@@ -184,8 +184,12 @@ class Attendance(models.Model):
         ('leave', 'Leave'),
         ('vacation', 'Vacation'),
         ('holiday', 'Holiday'),
-        ('half_day', 'Half Day')
+        ('half_day', 'Half Day'),
+        ('sick_leave', 'Sick Leave'),
+        ('casual_leave', 'Casual Leave'),
+        ('annual_leave', 'Annual Leave'),
     ])
+    
     time_in = models.TimeField(null=True, blank=True)
     time_out = models.TimeField(null=True, blank=True)
     comments = models.TextField(blank=True)

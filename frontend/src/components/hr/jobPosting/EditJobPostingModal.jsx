@@ -14,6 +14,7 @@ const EditJobPostingModal = ({ job, setIsModalOpen, setJob }) => {
     application_deadline: job.application_deadline
       ? job.application_deadline.split("T")[0]
       : "",
+      experience: job.experience,
     description: job.description || "",
     specifications: job.specifications || "",
     qualifications: job.qualifications || "",
@@ -61,6 +62,7 @@ const EditJobPostingModal = ({ job, setIsModalOpen, setJob }) => {
         {
           title: formData.title,
           qualifications: formData.qualifications,
+          experience: formData.experience
         },
         {
           headers: {
@@ -68,13 +70,14 @@ const EditJobPostingModal = ({ job, setIsModalOpen, setJob }) => {
           },
         }
       );
-      const { description, specifications, qualifications } = response.data;
+      const { description, specifications, qualifications, experience } = response.data;
 
       setFormData({
         ...formData,
         description: description.trim(),
         specifications: specifications.trim(),
         qualifications: qualifications.trim(),
+        experience: experience.trim(),
       });
 
       toast.success("AI-generated details added successfully");
@@ -178,6 +181,18 @@ const EditJobPostingModal = ({ job, setIsModalOpen, setJob }) => {
               onChange={handleInputChange}
               className="border rounded p-2"
               required
+            />
+          </div>
+          <div className="flex flex-col space-y-2">
+            <label htmlFor="experience" className="font-semibold">
+                Experience
+            </label>
+            <textarea
+              id="experience"
+              name="experience"
+              value={formData.experience}
+              onChange={handleInputChange}
+              className="border rounded p-2"
             />
           </div>
           <div className="flex flex-col space-y-2">

@@ -90,21 +90,21 @@ def generate_job_details(request):
 
         specifications_response = co.generate(
             model='command-xlarge-nightly',
-            prompt=f"Generate detailed job specifications for a job titled '{title}' no headings, no qualifications , no other thing labels only the job specifications in bullter.",
+            prompt=f"Generate detailed job specifications for a job titled '{title}' this is the job title: {title} no headings , no qualifications , no other thing labels only the job specifications in bullter.",
             max_tokens=300
         )
         specifications = specifications_response.generations[0].text.strip()
 
         qualifications_response = co.generate(
             model='command-xlarge-nightly',
-            prompt=f"Enhance the following qualifications to be written in a professional way: '{qualifications}' no headings or labels only the qualifications.",
+            prompt=f"Enhance the following qualifications to be written in a professional way: '{qualifications}' this is the job title: {title} no headings or labels only the qualifications.",
             max_tokens=150
         )
         enhanced_qualifications = qualifications_response.generations[0].text.strip()
         
         experience_response = co.generate(
             model='command-xlarge-nightly',
-            prompt=f"Enhance the following experience to be written in a professional way: '{experience}' no headings or labels only the qualifications.",
+            prompt=f"Enhance the following experience to be written in a professional way: '{experience}' this is the job title: {title} no headings or labels only the qualifications.",
             max_tokens=150
         )
         enhanced_experience = experience_response.generations[0].text.strip()
