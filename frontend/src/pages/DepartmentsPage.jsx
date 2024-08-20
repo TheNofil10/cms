@@ -219,16 +219,54 @@ const DepartmentsPage = () => {
 
   const handleExportToPdf = () => {
     const docDefinition = {
-      content: filteredData.map((department) => ({
-        columns: [
-          { text: department.name, fontSize: 10 },
-          { text: department.description, fontSize: 10 },
-        ],
-      })),
+      content: [
+        {
+          text: 'Departments List',
+          style: 'header',
+          alignment: 'center',
+        },
+        {
+          table: {
+            headerRows: 1,
+            widths: ['auto', '*', '*'],
+            body: [
+              // Table Headers
+              [
+                { text: 'ID', style: 'tableHeader', alignment: 'center' },
+                { text: 'Name', style: 'tableHeader', alignment: 'center' },
+                { text: 'Description', style: 'tableHeader', alignment: 'center' },
+              ],
+              // Table Body
+              ...filteredData.map((department) => [
+                { text: department.id, alignment: 'center' },
+                { text: department.name, alignment: 'center' },
+                { text: department.description, alignment: 'center' },
+              ]),
+            ],
+          },
+          layout: {
+            fillColor: function (rowIndex) {
+              return rowIndex % 2 === 0 ? '#F0F0F0' : null;
+            },
+          },
+        },
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          marginBottom: 10,
+        },
+        tableHeader: {
+          bold: true,
+          fontSize: 12,
+          color: 'black',
+        },
+      },
       pageMargins: [40, 40, 40, 40],
     };
-
-    pdfMake.createPdf(docDefinition).download("departments.pdf");
+  
+    pdfMake.createPdf(docDefinition).download('departments.pdf');
   };
 
   const handleExportSelection = (format) => {
@@ -271,7 +309,8 @@ const DepartmentsPage = () => {
 
             <button
               onClick={applyFilters}
-              className="bg-black text-white border-none font-medium py-1 px-3 rounded text-xs"
+              className="bg-black text-white border-none font-medium py-1 px-4 rounded text-sm flex items-center"
+
             >
               Apply
             </button>
@@ -279,7 +318,7 @@ const DepartmentsPage = () => {
           <div className="flex items-center space-x-2">
             <div className="relative">
               <button
-                className="bg-black text-white border-none font-medium py-1 px-3 rounded text-xs flex items-center"
+                className="bg-black text-white border-none font-medium py-1 px-4 rounded text-sm flex items-center"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
                 <FaBox className="inline mr-1" /> Export
@@ -307,7 +346,7 @@ const DepartmentsPage = () => {
               )}
             </div>
             <button
-              className="bg-black text-white border-none font-medium py-1 px-3 rounded text-xs"
+              className="bg-black text-white border-none font-medium py-1 px-4 rounded text-sm flex items-center"
               onClick={() => setView(view === "table" ? "card" : "table")}
             >
               {view === "table" ? (

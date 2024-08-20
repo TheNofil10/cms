@@ -45,7 +45,7 @@ const HRSideBar = () => {
       />
       <SidebarItem
         icon={<FaBuilding />}
-        text="Employees List"
+        text="Departments List"
         to="/hr/departments"
       />
       <SidebarItem icon={<FaUser />} text="Profile" to="/hr/profile" />

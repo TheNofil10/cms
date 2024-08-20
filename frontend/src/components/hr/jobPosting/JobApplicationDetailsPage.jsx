@@ -92,7 +92,7 @@ const JobApplicationDetailsPage = () => {
       <div className="mb-6">
         <p className="text-lg font-semibold">Date Applied:</p>
         <p className="text-gray-700">
-          {new Date(application.dateApplied).toLocaleDateString() || "N/A"}
+          {new Date(application.submission_date).toLocaleDateString() || "N/A"}
         </p>
       </div>
       <div className="mb-6">

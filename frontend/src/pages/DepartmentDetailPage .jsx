@@ -26,10 +26,10 @@ const DepartmentDetailPage = () => {
   });
   const { currentUser } = useAuth();
   const navigate = useNavigate();
-  const getRole = () =>{
-    if(currentUser.is_staff) return "admin"
-    else if(currentUser.is_hr_manager) return "hr"
-  }
+  const getRole = () => {
+    if (currentUser.is_staff) return "admin";
+    else if (currentUser.is_hr_manager) return "hr";
+  };
   useEffect(() => {
     const fetchDepartment = async () => {
       try {
@@ -53,10 +53,10 @@ const DepartmentDetailPage = () => {
         setError("Error fetching department data");
       } finally {
         setLoading(false);
-        let role = getRole()
+        let role = getRole();
       }
     };
-  
+
     fetchDepartment();
     if (department && department.manager) {
       console.log(`Current User: ${currentUser.username}`);
@@ -74,7 +74,7 @@ const DepartmentDetailPage = () => {
   const disabled = () => {
     if (!currentUser.is_staff) {
       return true;
-    } else if( department.manager.username !== currentUser.username) {
+    } else if (department.manager.username !== currentUser.username) {
       false;
     }
   };
@@ -107,7 +107,10 @@ const DepartmentDetailPage = () => {
   if (error) return <p>{error}</p>;
 
   const handleManageMembers = () => {
-    if (currentUser.is_staff || department.manager.username === currentUser.username) {
+    if (
+      currentUser.is_staff ||
+      department.manager.username === currentUser.username
+    ) {
       navigate(`/departments/${id}/manage-members`);
     } else {
       toast.error("You dont have the permissions to perform this action");
@@ -163,7 +166,7 @@ const DepartmentDetailPage = () => {
             {/* Manager Section */}
             <div>
               <h2 className="text-2xl font-semibold text-balc mb-4">Manager</h2>
-              {department?.manager.name !== "N/A" ? (
+              {department.manager?.name ? (
                 <ManagerCard
                   profileImage={department.manager.profile_image}
                   name={department.manager.name}

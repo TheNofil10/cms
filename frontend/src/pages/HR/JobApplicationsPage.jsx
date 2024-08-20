@@ -76,8 +76,8 @@ const JobApplicationsPage = () => {
   const columns = useMemo(
     () => [
       { Header: "ID", accessor: "id" },
-      { Header: "Job Title", accessor: "job_posting.title" }, // Access nested data
-      { Header: "Applicant Name", accessor: "applicant.name" }, // Access nested data
+      { Header: "Job Title", accessor: "job_posting.title" }, 
+      { Header: "Applicant Name", accessor: "applicant.name" },
       { Header: "Status", accessor: "status" },
       {
         Header: "Actions",
@@ -155,16 +155,52 @@ const JobApplicationsPage = () => {
 
   const handleExportToPdf = () => {
     const docDefinition = {
-      content: filteredData.map((application) => ({
-        columns: [
-          { text: application.job_posting.job_title, fontSize: 10 }, // Access nested data
-          { text: application.applicant.applicant_name, fontSize: 10 }, // Access nested data
-          { text: application.status, fontSize: 10 },
-        ],
-      })),
-      pageMargins: [40, 40, 40, 40],
+      content: [
+        { text: 'Job Applications', style: 'header' },
+        {
+          table: {
+            headerRows: 1,
+            widths: ['*', '*', '*'],
+            body: [
+              [
+                { text: 'Job Title', style: 'tableHeader' },
+                { text: 'Applicant Name', style: 'tableHeader' },
+                { text: 'Status', style: 'tableHeader' },
+              ],
+              ...filteredData.map((application) => [
+                { text: application.job_posting.title, style: 'tableData' },
+                { text: application.applicant.name, style: 'tableData' },
+                { text: application.status, style: 'tableData' },
+              ]),
+            ],
+          },
+          layout: {
+            fillColor: (rowIndex) => (rowIndex % 2 === 0 ? '#F0F0F0' : null),
+          },
+        },
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [0, 0, 0, 10],
+        },
+        tableHeader: {
+          bold: true,
+          fontSize: 13,
+          color: 'black',
+          fillColor: '#4CAF50',
+          alignment: 'center',
+        },
+        tableData: {
+          fontSize: 11,
+          margin: [0, 2, 0, 2],
+          alignment: 'center',
+        },
+      },
+      pageMargins: [40, 60, 40, 40],
     };
-
+  
     pdfMake.createPdf(docDefinition).download("applications.pdf");
   };
 
@@ -216,7 +252,7 @@ const JobApplicationsPage = () => {
           <div className="relative">
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center space-x-2 bg-blue-500 text-white py-2 px-4 rounded-md"
+              className="flex items-center space-x-2 bg-black text-white py-2 px-4 rounded-md"
             >
               Export <FaChevronDown />
             </button>
