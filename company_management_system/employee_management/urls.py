@@ -1,6 +1,6 @@
 from django.urls import include, path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
-from .views import (ApplicantViewSet, AttendanceViewSet, DepartmentMemberListView, DepartmentViewSet, EmployeeDepartmentView, EmployeeViewSet, AdminEmployeeView,EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet,
+from .views import (ApplicantViewSet, ApplicationListView, AttendanceViewSet, DepartmentMemberListView, DepartmentViewSet, EmployeeDepartmentView, EmployeeViewSet, AdminEmployeeView,EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet,
                     PerformanceReviewViewSet, LeaveViewSet, PayrollViewSet, ComplianceReportViewSet, generate_job_details, generate_post)
 from rest_framework.routers import DefaultRouter
 
@@ -21,7 +21,6 @@ router.register(r'applicants', ApplicantViewSet)
 application_list = ApplicationViewSet.as_view({'get': 'list', 'post': 'create'})
 application_detail = ApplicationViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update'})
 application_status_update = ApplicationViewSet.as_view({'post': 'update_status'})
-
 urlpatterns = [
     path('', include(router.urls)),
     path('generate-post/', generate_post, name='generate-post'),
@@ -37,4 +36,5 @@ urlpatterns = [
      path('applications/', application_list, name='application-list'),
     path('applications/<int:pk>/', application_detail, name='application-detail'),
     path('applications/<int:pk>/update_status/', application_status_update, name='application-update-status'),
+    path('job-postings/<int:job_id>/applications/', ApplicationListView.as_view(), name='job-posting-applications-list'),
 ]

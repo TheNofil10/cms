@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import {
   FaBuilding,
   FaMapMarkerAlt,
-  FaClock,
-  FaMoneyBillWave,
   FaBriefcase,
+  FaMoneyBillWave,
   FaCalendarAlt,
   FaCheckCircle,
   FaShareAlt
-} from "react-icons/fa";
-import { toast } from "react-toastify";
-import EditJobPostingModal from "./EditJobPostingModal";
-import ShareJobModal from "./ShareJobModal";
+} from 'react-icons/fa';
+import { toast } from 'react-toastify';
+import EditJobPostingModal from './EditJobPostingModal';
+import ShareJobModal from './ShareJobModal';
+import JobApplicationsList from './JobApplicationsList'; 
+
 const JobPostingDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const JobPostingDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false); // State for share modal
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -30,13 +31,13 @@ const JobPostingDetails = () => {
           `http://127.0.0.1:8000/api/job-postings/${id}/`,
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+              Authorization: `Bearer ${localStorage.getItem('access_token')}`,
             },
           }
         );
         setJob(response.data);
       } catch (error) {
-        setError("Error fetching job details.");
+        setError('Error fetching job details.');
       } finally {
         setLoading(false);
       }
@@ -49,13 +50,13 @@ const JobPostingDetails = () => {
     try {
       await axios.delete(`http://127.0.0.1:8000/api/job-postings/${id}/`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
       });
-      toast.success("Deleted Successfully");
-      navigate("/hr/job-postings");
+      toast.success('Deleted Successfully');
+      navigate('/hr/job-postings');
     } catch (error) {
-      toast.error("Error deleting job posting.");
+      toast.error('Error deleting job posting.');
     }
   };
 
@@ -80,23 +81,23 @@ const JobPostingDetails = () => {
         </div>
         <div className="text-lg text-gray-700">
           <p className="flex items-center mb-2">
-            <FaMoneyBillWave className="mr-2 text-yellow-500" />{" "}
-            {job.salary_min ? `$${job.salary_min}` : "N/A"} -{" "}
-            {job.salary_max ? `$${job.salary_max}` : "N/A"}
+            <FaMoneyBillWave className="mr-2 text-yellow-500" />{' '}
+            {job.salary_min ? `$${job.salary_min}` : 'N/A'} -{' '}
+            {job.salary_max ? `$${job.salary_max}` : 'N/A'}
           </p>
           <p className="flex items-center mb-2">
-            <FaCalendarAlt className="mr-2 text-purple-500" /> Deadline:{" "}
+            <FaCalendarAlt className="mr-2 text-purple-500" /> Deadline:{' '}
             {job.application_deadline
               ? new Date(job.application_deadline).toLocaleDateString()
-              : "N/A"}
+              : 'N/A'}
           </p>
           <p className="flex items-center">
             <FaCheckCircle
               className={`mr-2 ${
-                job.is_active ? "text-green-500" : "text-red-500"
+                job.is_active ? 'text-green-500' : 'text-red-500'
               }`}
-            />{" "}
-            Status: {job.is_active ? "Active" : "Inactive"}
+            />{' '}
+            Status: {job.is_active ? 'Active' : 'Inactive'}
           </p>
         </div>
       </div>
@@ -116,7 +117,7 @@ const JobPostingDetails = () => {
         <p className="text-gray-700 text-lg">{job.qualifications}</p>
       </div>
 
-      <div className="flex justify-end space-x-4">
+      <div className="flex justify-end space-x-4 mb-6">
         <button
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
           onClick={() => setIsModalOpen(true)}
@@ -125,7 +126,7 @@ const JobPostingDetails = () => {
         </button>
         <button
           className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
-          onClick={() => setIsShareModalOpen(true)} // Open the share modal
+          onClick={() => setIsShareModalOpen(true)}
         >
           <FaShareAlt className="inline-block mr-2" /> Share
         </button>
@@ -148,10 +149,12 @@ const JobPostingDetails = () => {
       {isShareModalOpen && (
         <ShareJobModal
           job={job}
-          onClose={() => setIsShareModalOpen(false)} 
+          onClose={() => setIsShareModalOpen(false)}
           setIsShareModalOpen={setIsShareModalOpen}
         />
       )}
+
+      <JobApplicationsList jobId={id} /> {/* Add the new component here */}
     </div>
   );
 };

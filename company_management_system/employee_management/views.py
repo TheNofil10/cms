@@ -343,3 +343,10 @@ class ApplicationViewSet(viewsets.ModelViewSet):
         
         serializer = self.get_serializer(application)
         return Response(serializer.data)
+    
+class ApplicationListView(generics.ListAPIView):
+    serializer_class = ApplicationSerializer
+
+    def get_queryset(self):
+        job_id = self.kwargs['job_id']
+        return Application.objects.filter(job_posting_id=job_id)
