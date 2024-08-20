@@ -279,6 +279,16 @@ class LeaveViewSet(viewsets.ModelViewSet):
             return [IsAdminUser()]
         return [IsAuthenticated()]
 
+class EmployeeAttendanceView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        employee = request.user
+        attendance = Attendance.objects.filter(employee=employee)
+        if not attendance.exists():
+            return Response({"detail": "No attendance records found."}, status=404)
+        serializer = AttendanceSerializer(attendance, many=True)
+        return Response(serializer.data)
 
 class PayrollViewSet(viewsets.ModelViewSet):
     queryset = Payroll.objects.all()

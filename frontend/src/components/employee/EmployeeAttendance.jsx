@@ -1,10 +1,9 @@
 import React from 'react'
-
+import EmployeeAttendanceDashboard from './EmployeeAttendanceDashboard '
 const EmployeeAttendance = () => {
   return (
     <div>
-      EmployeeAttendance
-      EmployeeAttendance
+      <EmployeeAttendanceDashboard />
     </div>
   )
 }
