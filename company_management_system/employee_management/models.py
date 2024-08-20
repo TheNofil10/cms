@@ -104,6 +104,7 @@ class EmployeeRecord(models.Model):
 class JobPosting(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
+    experience = models.TextField(blank=True)
     specifications = models.TextField(blank=True)
     qualifications = models.TextField()
     location = models.CharField(max_length=255, choices=[('onsite', 'Onsite'), ('remote', 'Remote'), ('hybrid', 'Hybrid')], default='onsite')

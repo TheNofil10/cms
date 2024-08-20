@@ -14,6 +14,7 @@ const CreateJobPostingPage = () => {
     salary_min: "",
     salary_max: "",
     application_deadline: "",
+    experience: "",
     description: "",
     specifications: "",
     qualifications: "",
@@ -39,7 +40,8 @@ const CreateJobPostingPage = () => {
         `http://127.0.0.1:8000/api/generate-job-details/`,
         {
           title: formData.title,
-          qualifications: formData.qualifications
+          qualifications: formData.qualifications,
+          experience: formData.experience
         },
         {
           headers: {
@@ -47,14 +49,15 @@ const CreateJobPostingPage = () => {
           },
         }
       );
-      const { description, specifications, qualifications } = response.data;
+      const { description, specifications, qualifications, experience } = response.data;
 
       // Set the fields in the formData state
       setFormData({
         ...formData,
         description: description.trim(),
         specifications: specifications.trim(),
-        qualifications: qualifications.trim()
+        qualifications: qualifications.trim(),
+        experience: experience.trim()
       });
 
       toast.success("AI-generated details added successfully");
@@ -164,6 +167,16 @@ const CreateJobPostingPage = () => {
             id="application_deadline"
             name="application_deadline"
             value={formData.application_deadline}
+            onChange={handleInputChange}
+            className="border rounded p-2"
+          />
+        </div>
+        <div className="flex flex-col space-y-2">
+          <label htmlFor="experience" className="font-semibold">Experience</label>
+          <textarea
+            id="experience"
+            name="experience"
+            value={formData.experience}
             onChange={handleInputChange}
             className="border rounded p-2"
           />

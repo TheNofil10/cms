@@ -72,20 +72,20 @@ def generate_post(request):
 def generate_job_details(request):
     title = request.data.get('title')
     qualifications = request.data.get('qualifications')
-
-    if not title or not qualifications:
-        return Response({'error': 'Title and qualifications are required.'}, status=status.HTTP_400_BAD_REQUEST)
+    experience = request.data.get('experience')
+    
+    
+    if not title or not qualifications or not experience:
+        return Response({'error': 'Title, experience and qualifications are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        # Generate the job description
         description_response = co.generate(
             model='command-xlarge-nightly',
-            prompt=f"Generate a detailed job description for a job titled '{title}' no headings, no qualifications , no other thing labels only the job description in bullets.",
+            prompt=f"Generate a detailed job description for a job titled: '{title}' with this experience:\n {experience} and these qualifications: {qualifications} - no headings, no qualifications , no other thing labels only the job description in bullets.",
             max_tokens=300
         )
         description = description_response.generations[0].text.strip()
 
-        # Generate the job specifications
         specifications_response = co.generate(
             model='command-xlarge-nightly',
             prompt=f"Generate detailed job specifications for a job titled '{title}' no headings, no qualifications , no other thing labels only the job specifications in bullter.",
@@ -93,18 +93,24 @@ def generate_job_details(request):
         )
         specifications = specifications_response.generations[0].text.strip()
 
-        # Enhance the qualifications
         qualifications_response = co.generate(
             model='command-xlarge-nightly',
             prompt=f"Enhance the following qualifications to be written in a professional way: '{qualifications}' no headings or labels only the qualifications.",
             max_tokens=150
         )
         enhanced_qualifications = qualifications_response.generations[0].text.strip()
-
+        
+        experience_response = co.generate(
+            model='command-xlarge-nightly',
+            prompt=f"Enhance the following experience to be written in a professional way: '{experience}' no headings or labels only the qualifications.",
+            max_tokens=150
+        )
+        enhanced_experience = experience_response.generations[0].text.strip()
         return Response({
             'description': description,
             'specifications': specifications,
-            'qualifications': enhanced_qualifications
+            'qualifications': enhanced_qualifications,
+            'experience': enhanced_experience,
         })
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
