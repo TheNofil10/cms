@@ -11,6 +11,7 @@ from .serializers import (
     EmployeeBriefSerializer,
     EmployeeSerializer,
     AdminEmployeeSerializer,
+    AttendanceSerializer,
     DepartmentSerializer,
     EmployeeRecordSerializer,
     JobPostingSerializer,
@@ -22,13 +23,14 @@ from .serializers import (
 )
 from .models import (
     Applicant,
+    Attendance,
     Employee,
     Department,
     EmployeeRecord,
     JobPosting,
     Application,
-    PerformanceReview,
     Leave,
+    PerformanceReview,
     Payroll,
     ComplianceReport,
 )
@@ -259,9 +261,23 @@ class PerformanceReviewViewSet(viewsets.ModelViewSet):
     serializer_class = PerformanceReviewSerializer
 
 
+class AttendanceViewSet(viewsets.ModelViewSet):
+    queryset = Attendance.objects.all()
+    serializer_class = AttendanceSerializer
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAdminUser()]
+        return [IsAuthenticated()]
+
 class LeaveViewSet(viewsets.ModelViewSet):
     queryset = Leave.objects.all()
     serializer_class = LeaveSerializer
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAdminUser()]
+        return [IsAuthenticated()]
 
 
 class PayrollViewSet(viewsets.ModelViewSet):

@@ -175,21 +175,40 @@ class PerformanceReview(models.Model):
     def __str__(self):
         return f"Performance Review of {self.employee.first_name} {self.employee.last_name}"
 
+class Attendance(models.Model):
+    employee = models.ForeignKey('Employee', on_delete=models.CASCADE)
+    date = models.DateField(default=timezone.now)
+    status = models.CharField(max_length=20, choices=[
+        ('present', 'Present'),
+        ('absent', 'Absent'),
+        ('leave', 'Leave'),
+        ('vacation', 'Vacation'),
+        ('holiday', 'Holiday'),
+        ('half_day', 'Half Day')
+    ])
+    time_in = models.TimeField(null=True, blank=True)
+    time_out = models.TimeField(null=True, blank=True)
+    comments = models.TextField(blank=True)
 
 class Leave(models.Model):
-    employee = models.ForeignKey(
-        get_user_model(), on_delete=models.CASCADE, related_name="leaves"
-    )
+    LEAVE_TYPES = [
+        ('sick', 'Sick'),
+        ('casual', 'Casual'),
+        ('annual', 'Annual'),
+        ('maternity', 'Maternity'),
+        ('paternity', 'Paternity'),
+    ]
+    employee = models.ForeignKey('Employee', on_delete=models.CASCADE)
+    leave_type = models.CharField(max_length=20, choices=LEAVE_TYPES)
     start_date = models.DateField()
     end_date = models.DateField()
-    leave_type = models.CharField(max_length=100)
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected')
+    ], default='pending')
     reason = models.TextField()
-    approved = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"Leave for {self.employee.first_name} {self.employee.last_name} from {self.start_date} to {self.end_date}"
-
-
+    
 class Payroll(models.Model):
     employee = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE, related_name="payrolls"

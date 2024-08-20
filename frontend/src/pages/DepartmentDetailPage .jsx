@@ -166,7 +166,7 @@ const DepartmentDetailPage = () => {
             {/* Manager Section */}
             <div>
               <h2 className="text-2xl font-semibold text-balc mb-4">Manager</h2>
-              {department.manager?.name ? (
+              {department.manager? (
                 <ManagerCard
                   profileImage={department.manager.profile_image}
                   name={department.manager.name}

@@ -1,6 +1,6 @@
 from django.urls import include, path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
-from .views import (ApplicantViewSet, DepartmentMemberListView, DepartmentViewSet, EmployeeDepartmentView, EmployeeViewSet, AdminEmployeeView,EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet,
+from .views import (ApplicantViewSet, AttendanceViewSet, DepartmentMemberListView, DepartmentViewSet, EmployeeDepartmentView, EmployeeViewSet, AdminEmployeeView,EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet,
                     PerformanceReviewViewSet, LeaveViewSet, PayrollViewSet, ComplianceReportViewSet, generate_job_details, generate_post)
 from rest_framework.routers import DefaultRouter
 
@@ -10,6 +10,7 @@ router.register(r'departments', DepartmentViewSet)
 router.register(r'employee-records', EmployeeRecordViewSet)
 router.register(r'job-postings', JobPostingViewSet)
 router.register(r'performance-reviews', PerformanceReviewViewSet)
+router.register(r'attendance', AttendanceViewSet)
 router.register(r'leaves', LeaveViewSet)
 router.register(r'payrolls', PayrollViewSet)
 router.register(r'compliance-reports', ComplianceReportViewSet)
