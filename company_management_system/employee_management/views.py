@@ -275,6 +275,11 @@ class AttendanceViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [IsAdminUser()]
         return [IsAuthenticated()]
+    
+    def get_queryset(self):
+        if self.request.user.is_superuser or self.request.user.is_hr_manager:
+            return Attendance.objects.all()
+        return Attendance.objects.filter(employee=self.request.user)
 
 class LeaveViewSet(viewsets.ModelViewSet):
     queryset = Leave.objects.all()
@@ -295,8 +300,7 @@ class EmployeeAttendanceView(APIView):
             return Response({"detail": "No attendance records found."}, status=404)
         serializer = AttendanceSerializer(attendance, many=True)
         return Response(serializer.data)
-
-
+    
 class CompanyAttendanceStatsView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -304,7 +308,6 @@ class CompanyAttendanceStatsView(APIView):
         if not request.user.is_hr_manager and not request.user.is_superuser:
             return Response({"detail": "Not authorized to view company-wide stats"}, status=403)
         
-        # Extract dates from request query parameters
         start_date_str = request.query_params.get('start_date')
         end_date_str = request.query_params.get('end_date')
 
@@ -397,6 +400,7 @@ class EmployeeAttendanceStatsView(APIView):
         }
         serializer = AttendanceStatsSerializer(data)
         return Response(serializer.data)
+
 class PayrollViewSet(viewsets.ModelViewSet):
     queryset = Payroll.objects.all()
     serializer_class = PayrollSerializer

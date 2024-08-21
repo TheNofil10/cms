@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 from .views import (
     ApplicantViewSet, ApplicationListView, AttendanceViewSet, CompanyAttendanceStatsView, ComplianceReportViewSet,
-    DepartmentMemberListView, DepartmentViewSet, EmployeeAttendanceStatsView, EmployeeDepartmentView,
+    DepartmentMemberListView, DepartmentViewSet, EmployeeAttendanceStatsView, EmployeeAttendanceView, EmployeeDepartmentView,
     EmployeeViewSet, AdminEmployeeView, EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet, LeaveViewSet, PayrollViewSet, PerformanceReviewViewSet, generate_job_details, generate_post
 )
 from rest_framework.routers import DefaultRouter
@@ -42,4 +42,5 @@ urlpatterns = [
     path('job-postings/<int:job_id>/applications/', ApplicationListView.as_view(), name='job-posting-applications-list'),
     path('attendance/stats/company/', CompanyAttendanceStatsView.as_view(), name='company-attendance-stats'),
     path('attendance/stats/employee/', EmployeeAttendanceStatsView.as_view(), name='employee-attendance-stats'),
+    path('attendance/', EmployeeAttendanceView.as_view(), name='employee-attendance'),
 ]
