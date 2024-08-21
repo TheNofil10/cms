@@ -377,6 +377,7 @@ class EmployeeAttendanceStatsView(APIView):
 
         total_days = attendance_records.values('date').distinct().count()
         days_present = attendance_records.filter(status='Present').count()
+        
         days_absent = attendance_records.filter(status='Absent').count()
         days_late = attendance_records.filter(status='Late').count()
         overtime_hours = attendance_records.filter(is_overtime=True).aggregate(

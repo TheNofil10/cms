@@ -18,7 +18,7 @@ const EmployeeAttendanceDashboard = () => {
   useEffect(() => {
     const fetchAttendanceData = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/attendance/stats/employee/', {
+        const statsResponse = await axios.get('http://127.0.0.1:8000/api/attendance/stats/employee/', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           },
@@ -27,8 +27,18 @@ const EmployeeAttendanceDashboard = () => {
             end_date: endDate,
           }
         });
-        setStats(response.data);
-        console.log(response.data);
+        setStats(statsResponse.data);
+        console.log(stats)
+        const attendanceResponse = await axios.get('http://127.0.0.1:8000/api/attendance/', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+          params: {
+            start_date: startDate,
+            end_date: endDate,
+          }
+        });
+        setAttendanceData(attendanceResponse.data);
       } catch (error) {
         toast.error("Error fetching attendance data");
         console.error("Error fetching attendance data:", error);
@@ -77,9 +87,9 @@ const EmployeeAttendanceDashboard = () => {
     datasets: [
       {
         data: [
-          stats.days_present,
-          stats.days_absent,
-          stats.days_late,
+          stats.days_present || 0,
+          stats.days_absent || 0,
+          stats.days_late || 0,
         ],
         backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56'],
         hoverBackgroundColor: ['#36A2EB', '#FF6384', '#FFCE56'],
@@ -91,7 +101,6 @@ const EmployeeAttendanceDashboard = () => {
     <div className="max-w-7xl mx-auto p-6 space-y-8">
       <h1 className="text-2xl font-bold">Employee Attendance Dashboard</h1>
       
-      {/* Date Range Filter */}
       <div className="bg-white p-4 rounded-lg shadow">
         <label htmlFor="start-date" className="block text-lg font-semibold">Start Date:</label>
         <input
@@ -111,7 +120,6 @@ const EmployeeAttendanceDashboard = () => {
         />
       </div>
       
-      {/* Overview Section */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-4 rounded-lg shadow">
           <h2 className="text-lg font-semibold">Total Days</h2>
@@ -130,23 +138,25 @@ const EmployeeAttendanceDashboard = () => {
           <p className="text-2xl">{stats.days_late || 0}</p>
         </div>
       </section>
-
-      {/* Charts Section */}
+      
       <section className="bg-white p-4 rounded-lg shadow">
-        <h2 className="text-xl font-semibold">Attendance Overview</h2>
-        <Line data={lineChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+        <h2 className="text-lg font-semibold">Attendance Overview</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-white p-4 rounded-lg shadow">
+            <h3 className="text-md font-semibold">Line Chart</h3>
+            <Line data={lineChartData} />
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow">
+            <h3 className="text-md font-semibold">Bar Chart</h3>
+            <Bar data={barChartData} />
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow">
+            <h3 className="text-md font-semibold">Pie Chart</h3>
+            <Pie data={pieChartData} />
+          </div>
+        </div>
       </section>
-
-      <section className="bg-white p-4 rounded-lg shadow">
-        <h2 className="text-xl font-semibold">Attendance Breakdown</h2>
-        <Bar data={barChartData} options={{ responsive: true, maintainAspectRatio: false }} />
-      </section>
-
-      <section className="bg-white p-4 rounded-lg shadow">
-        <h2 className="text-xl font-semibold">Attendance Distribution</h2>
-        <Pie data={pieChartData} options={{ responsive: true, maintainAspectRatio: false }} />
-      </section>
-
+      
       <ToastContainer />
     </div>
   );
