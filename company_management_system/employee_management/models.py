@@ -182,6 +182,7 @@ class Attendance(models.Model):
         ('present', 'Present'),
         ('absent', 'Absent'),
         ('leave', 'Leave'),
+        ('Late', 'Late'),
         ('vacation', 'Vacation'),
         ('holiday', 'Holiday'),
         ('half_day', 'Half Day'),
@@ -192,6 +193,8 @@ class Attendance(models.Model):
     
     time_in = models.TimeField(null=True, blank=True)
     time_out = models.TimeField(null=True, blank=True)
+    hours_worked = models.FloatField(default=0)
+    is_overtime = models.BooleanField(default=False)
     comments = models.TextField(blank=True)
 
 class Leave(models.Model):

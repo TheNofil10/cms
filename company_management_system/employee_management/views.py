@@ -1,13 +1,19 @@
+from datetime import datetime
 from django.conf import settings
+from decimal import Decimal
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from django.utils import timezone
+from django.utils.timezone import make_aware
 from rest_framework.views import APIView
+from django.db.models import Sum, Count, F, FloatField
+from django.db.models.functions import Cast
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .serializers import (
     ApplicantSerializer,
+    AttendanceStatsSerializer,
     EmployeeBriefSerializer,
     EmployeeSerializer,
     AdminEmployeeSerializer,
@@ -290,6 +296,107 @@ class EmployeeAttendanceView(APIView):
         serializer = AttendanceSerializer(attendance, many=True)
         return Response(serializer.data)
 
+
+class CompanyAttendanceStatsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        if not request.user.is_hr_manager and not request.user.is_superuser:
+            return Response({"detail": "Not authorized to view company-wide stats"}, status=403)
+        
+        # Extract dates from request query parameters
+        start_date_str = request.query_params.get('start_date')
+        end_date_str = request.query_params.get('end_date')
+
+        if not start_date_str or not end_date_str:
+            return Response({"detail": "Start date and end date are required."}, status=400)
+
+        try:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+        except ValueError:
+            return Response({"detail": "Invalid date format. Use YYYY-MM-DD."}, status=400)
+
+        # Ensure dates are aware
+        start_date = make_aware(datetime.combine(start_date, datetime.min.time()))
+        end_date = make_aware(datetime.combine(end_date, datetime.max.time()))
+
+        total_days = Attendance.objects.filter(date__range=[start_date, end_date]).values('date').distinct().count()
+        days_present = Attendance.objects.filter(status='Present', date__range=[start_date, end_date]).count()
+        days_absent = Attendance.objects.filter(status='Absent', date__range=[start_date, end_date]).count()
+        days_late = Attendance.objects.filter(status='Late', date__range=[start_date, end_date]).count()
+        overtime_hours = Attendance.objects.filter(is_overtime=True, date__range=[start_date, end_date]).aggregate(
+            total_overtime=Sum('hours_worked')
+        )['total_overtime'] or Decimal('0.00')
+        absent_without_leave = Attendance.objects.filter(status='Absent', employee__leave__isnull=True, date__range=[start_date, end_date]).count()
+        total_hours = Attendance.objects.filter(date__range=[start_date, end_date]).aggregate(
+            total_hours=Sum('hours_worked')
+        )['total_hours'] or Decimal('0.00')
+        average_hours_per_day = Decimal(total_hours) / total_days if total_days else Decimal('0.00')
+
+        data = {
+            'total_days': total_days,
+            'days_present': days_present,
+            'days_absent': days_absent,
+            'days_late': days_late,
+            'hours_worked': round(total_hours, 2),
+            'average_hours_per_day': round(average_hours_per_day, 2),
+            'overtime_hours': round(overtime_hours, 2),
+            'absent_without_leave': absent_without_leave,
+        }
+        serializer = AttendanceStatsSerializer(data)
+        return Response(serializer.data)
+    
+class EmployeeAttendanceStatsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        employee = request.user
+
+        # Extract dates from request query parameters
+        start_date_str = request.query_params.get('start_date')
+        end_date_str = request.query_params.get('end_date')
+
+        if not start_date_str or not end_date_str:
+            return Response({"detail": "Start date and end date are required."}, status=400)
+
+        try:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+        except ValueError:
+            return Response({"detail": "Invalid date format. Use YYYY-MM-DD."}, status=400)
+
+        # Ensure dates are aware
+        start_date = make_aware(datetime.combine(start_date, datetime.min.time()))
+        end_date = make_aware(datetime.combine(end_date, datetime.max.time()))
+
+        attendance_records = Attendance.objects.filter(employee=employee, date__range=[start_date, end_date])
+
+        total_days = attendance_records.values('date').distinct().count()
+        days_present = attendance_records.filter(status='Present').count()
+        days_absent = attendance_records.filter(status='Absent').count()
+        days_late = attendance_records.filter(status='Late').count()
+        overtime_hours = attendance_records.filter(is_overtime=True).aggregate(
+            total_overtime=Sum(Cast('hours_worked', FloatField()))
+        )['total_overtime'] or Decimal('0.00')
+        absent_without_leave = attendance_records.filter(status='Absent').count()
+        total_hours = attendance_records.aggregate(
+            total_hours=Sum(Cast('hours_worked', FloatField()))
+        )['total_hours'] or Decimal('0.00')
+        average_hours_per_day = Decimal(total_hours) / total_days if total_days else Decimal('0.00')
+
+        data = {
+            'total_days': total_days,
+            'days_present': days_present,
+            'days_absent': days_absent,
+            'days_late': days_late,
+            'hours_worked': round(total_hours, 2),
+            'average_hours_per_day': round(average_hours_per_day, 2),
+            'overtime_hours': round(overtime_hours, 2),
+            'absent_without_leave': absent_without_leave,
+        }
+        serializer = AttendanceStatsSerializer(data)
+        return Response(serializer.data)
 class PayrollViewSet(viewsets.ModelViewSet):
     queryset = Payroll.objects.all()
     serializer_class = PayrollSerializer

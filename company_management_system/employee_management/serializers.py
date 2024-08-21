@@ -65,10 +65,22 @@ class AttendanceSerializer(serializers.ModelSerializer):
         model = Attendance
         fields = '__all__'
 
+
+class AttendanceStatsSerializer(serializers.Serializer):
+    total_days = serializers.IntegerField()
+    days_present = serializers.IntegerField()
+    days_absent = serializers.IntegerField()
+    days_late = serializers.IntegerField()
+    hours_worked = serializers.FloatField()
+    average_hours_per_day = serializers.FloatField()
+    overtime_hours = serializers.FloatField()
+    absent_without_leave = serializers.IntegerField() 
+    
 class LeaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Leave
         fields = '__all__'
+        
 class PayrollSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payroll

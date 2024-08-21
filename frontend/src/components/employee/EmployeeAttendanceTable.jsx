@@ -26,10 +26,11 @@ const EmployeeAttendanceTable = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [view, setView] = useState("table");
   const [filters, setFilters] = useState({
     filterBy: "",
     filterValue: "",
+    startDate: "",
+    endDate: "",
   });
   const [pageSize, setPageSize] = useState(10);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -47,11 +48,13 @@ const EmployeeAttendanceTable = () => {
         );
         setAttendanceData(response.data || []);
         setFilteredData(response.data || []);
+        console.log(response.data)
       } catch (error) {
         console.error("Error fetching attendance data:", error);
         setError("Unable to fetch attendance data.");
       } finally {
         setLoading(false);
+        console.log(attendanceData)
       }
     };
 
@@ -59,17 +62,27 @@ const EmployeeAttendanceTable = () => {
   }, [currentUser.id]);
 
   useEffect(() => {
+    let filtered = attendanceData;
+
+    if (filters.startDate && filters.endDate) {
+      filtered = filtered.filter((record) => {
+        const recordDate = new Date(record.date);
+        const startDate = new Date(filters.startDate);
+        const endDate = new Date(filters.endDate);
+        return recordDate >= startDate && recordDate <= endDate;
+      });
+    }
+
     if (filters.filterBy && filters.filterValue) {
-      const filtered = attendanceData.filter((record) =>
+      filtered = filtered.filter((record) =>
         record[filters.filterBy]
           ?.toString()
           .toLowerCase()
           .includes(filters.filterValue.toLowerCase())
       );
-      setFilteredData(filtered);
-    } else {
-      setFilteredData(attendanceData);
     }
+
+    setFilteredData(filtered);
   }, [filters, attendanceData]);
 
   const columns = useMemo(
@@ -78,6 +91,8 @@ const EmployeeAttendanceTable = () => {
       { Header: "Time In", accessor: "time_in" },
       { Header: "Time Out", accessor: "time_out" },
       { Header: "Status", accessor: "status" },
+      { Header: "Hours Worked", accessor: "hours_worked" },
+      { Header: "Overtime", accessor: "is_overtime" },
     ],
     []
   );
@@ -90,8 +105,6 @@ const EmployeeAttendanceTable = () => {
     headerGroups,
     page,
     prepareRow,
-    setGlobalFilter,
-    setAllFilters,
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -101,7 +114,19 @@ const EmployeeAttendanceTable = () => {
     setPageSize: setTablePageSize,
     state: { pageIndex },
   } = useTable(
-    { columns, data, initialState: { pageSize } },
+    {
+      columns,
+      data,
+      initialState: {
+        pageSize,
+        sortBy: [
+          {
+            id: "date", // Column ID to sort by
+            desc: true, // Sort in descending order
+          },
+        ],
+      },
+    },
     useSortBy,
     usePagination
   );
@@ -120,19 +145,24 @@ const EmployeeAttendanceTable = () => {
         {
           table: {
             headerRows: 1,
-            widths: ["*", "*", "*", "*"],
+            widths: ["*", "*", "*", "*","*","*"],
             body: [
               [
                 { text: "Date", style: "tableHeader" },
                 { text: "Time In", style: "tableHeader" },
                 { text: "Time Out", style: "tableHeader" },
                 { text: "Status", style: "tableHeader" },
+                { text: "Hours", style: "tableHeader" },
+                { text: "Overtime", style: "tableHeader" },
               ],
               ...filteredData.map((record) => [
                 { text: record.date, style: "tableData" },
                 { text: record.time_in, style: "tableData" },
                 { text: record.time_out, style: "tableData" },
                 { text: record.status, style: "tableData" },
+                { text: record.hours_worked || '', style: "tableData" },
+                { text: record.is_overtime || '', style: "tableData" },
+
               ]),
             ],
           },
@@ -140,6 +170,8 @@ const EmployeeAttendanceTable = () => {
             fillColor: (rowIndex) => {
               if (filteredData[rowIndex - 1]?.status === "present")
                 return "#d4edda";
+              if (filteredData[rowIndex - 1]?.status === "late")
+                return "#aaaaa";
               if (
                 filteredData[rowIndex - 1]?.status === "leave" ||
                 filteredData[rowIndex - 1]?.status === "sick_leave" ||
@@ -161,17 +193,18 @@ const EmployeeAttendanceTable = () => {
         },
         tableHeader: {
           bold: true,
-          fontSize: 12,
+          fontSize: 10,  
           color: "black",
           fillColor: "#4CAF50",
           alignment: "center",
         },
         tableData: {
-          fontSize: 10,
+          fontSize: 8,   
           margin: [0, 2, 0, 2],
           alignment: "center",
         },
       },
+      
       pageMargins: [40, 60, 40, 40],
     };
 
@@ -238,6 +271,26 @@ const EmployeeAttendanceTable = () => {
           >
             <FaSearch />
           </button>
+        </div>
+        <div className="flex items-center space-x-2">
+          <label htmlFor="startDate">From:</label>
+          <input
+            type="date"
+            id="startDate"
+            name="startDate"
+            value={filters.startDate}
+            onChange={handleFilterChange}
+            className="py-1 px-2 border border-gray-300 rounded text-sm"
+          />
+          <label htmlFor="endDate">To:</label>
+          <input
+            type="date"
+            id="endDate"
+            name="endDate"
+            value={filters.endDate}
+            onChange={handleFilterChange}
+            className="py-1 px-2 border border-gray-300 rounded text-sm"
+          />
         </div>
         <div className="relative">
           <button
@@ -321,6 +374,8 @@ const EmployeeAttendanceTable = () => {
               const status = row.values.status;
               const rowBgColor =
                 status === "present"
+                  ? "bg-green-200"
+                  : status === "late"
                   ? "bg-green-100"
                   : status === "leave" ||
                     status === "sick_leave" ||

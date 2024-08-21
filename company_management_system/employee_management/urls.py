@@ -1,7 +1,10 @@
 from django.urls import include, path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
-from .views import (ApplicantViewSet, ApplicationListView, AttendanceViewSet, DepartmentMemberListView, DepartmentViewSet, EmployeeAttendanceView, EmployeeDepartmentView, EmployeeViewSet, AdminEmployeeView,EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet,
-                    PerformanceReviewViewSet, LeaveViewSet, PayrollViewSet, ComplianceReportViewSet, generate_job_details, generate_post)
+from .views import (
+    ApplicantViewSet, ApplicationListView, AttendanceViewSet, CompanyAttendanceStatsView, ComplianceReportViewSet,
+    DepartmentMemberListView, DepartmentViewSet, EmployeeAttendanceStatsView, EmployeeDepartmentView,
+    EmployeeViewSet, AdminEmployeeView, EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet, LeaveViewSet, PayrollViewSet, PerformanceReviewViewSet, generate_job_details, generate_post
+)
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -36,6 +39,7 @@ urlpatterns = [
      path('applications/', application_list, name='application-list'),
     path('applications/<int:pk>/', application_detail, name='application-detail'),
     path('applications/<int:pk>/update_status/', application_status_update, name='application-update-status'),
-    path('attendance/me', EmployeeAttendanceView.as_view(), name='employee-attendance'),
     path('job-postings/<int:job_id>/applications/', ApplicationListView.as_view(), name='job-posting-applications-list'),
+    path('attendance/stats/company/', CompanyAttendanceStatsView.as_view(), name='company-attendance-stats'),
+    path('attendance/stats/employee/', EmployeeAttendanceStatsView.as_view(), name='employee-attendance-stats'),
 ]
