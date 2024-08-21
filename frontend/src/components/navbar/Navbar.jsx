@@ -5,7 +5,7 @@ const Navbar = ({ navItems }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-white z-10 fixed top-0 left-0 w-full">
+    <nav className="bg-transparent z-10 fixed top-0 left-0 w-full">
       {/* Navbar Container */}
       <div className="container mx-auto px-6 py-1">
         {/* Big Rounded Button Navbar */}

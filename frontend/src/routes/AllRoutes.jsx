@@ -39,6 +39,9 @@ import CreateJobPostingPage from "../pages/HR/CreateJobPostingPage";
 import JobApplicants from "../components/hr/jobPosting/JobApplicants";
 import Application from "../components/hr/jobPosting/JobApplicationDetailsPage.jsx";
 import JobApplicationDetailsPage from "../components/hr/jobPosting/JobApplicationDetailsPage.jsx";
+import EmployeeAttendanceLayout from "../components/employee/EmployeeAttendanceLayout.jsx";
+import EmployeeAttendanceTable from "../components/employee/EmployeeAttendanceTable.jsx";
+import EmployeeAttendanceApplications from "../components/employee/EmployeeAttendanceApplications.jsx";
 const AllRoutes = () => {
   return (
     <Routes>
@@ -56,8 +59,18 @@ const AllRoutes = () => {
         <Route path="/employee/profile" element={<EmployeeProfile />} />
         <Route path="/employee/settings" element={<EmployeeSettings />} />
         <Route path="/employee/tasks" element={<EmployeeTasks />} />
-        <Route path="/employee/attendance" element={<EmployeeAttendance />} />
+       
         <Route path="/employee/department" element={<EmployeeDepartment />} />
+        <Route
+          element={
+            <EmployeeRoute element={<EmployeeAttendanceLayout />} employeeOnly={true}  />
+          }
+        >
+           <Route path="/employee/attendance" element={<EmployeeAttendance />} />
+           <Route path="/employee/attendance/details" element={<EmployeeAttendanceTable />} />
+           <Route path="/employee/attendance/applications" element={<EmployeeAttendanceApplications />} />
+        </Route>
+        
       </Route>
 
       {/* Admin Routes */}
