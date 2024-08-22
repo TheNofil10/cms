@@ -377,17 +377,21 @@ class EmployeeAttendanceStatsView(APIView):
 
         total_days = attendance_records.values('date').distinct().count()
         days_present = attendance_records.filter(status='Present').count()
-        
         days_absent = attendance_records.filter(status='Absent').count()
         days_late = attendance_records.filter(status='Late').count()
         overtime_hours = attendance_records.filter(is_overtime=True).aggregate(
             total_overtime=Sum(Cast('hours_worked', FloatField()))
         )['total_overtime'] or Decimal('0.00')
         absent_without_leave = attendance_records.filter(status='Absent').count()
+
         total_hours = attendance_records.aggregate(
             total_hours=Sum(Cast('hours_worked', FloatField()))
         )['total_hours'] or Decimal('0.00')
         average_hours_per_day = Decimal(total_hours) / total_days if total_days else Decimal('0.00')
+
+        # Calculate leave days
+        sick_leave =  attendance_records.filter(status='sick_leave').count()
+        casual_leave =  attendance_records.filter(status='casual_leave').count()
 
         data = {
             'total_days': total_days,
@@ -398,9 +402,10 @@ class EmployeeAttendanceStatsView(APIView):
             'average_hours_per_day': round(average_hours_per_day, 2),
             'overtime_hours': round(overtime_hours, 2),
             'absent_without_leave': absent_without_leave,
+            'sick_leave': sick_leave,
+            'casual_leave': casual_leave,
         }
-        serializer = AttendanceStatsSerializer(data)
-        return Response(serializer.data)
+        return Response(data)
 
 class PayrollViewSet(viewsets.ModelViewSet):
     queryset = Payroll.objects.all()
