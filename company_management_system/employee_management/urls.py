@@ -44,4 +44,6 @@ urlpatterns = [
     path('attendance/stats/employee/', EmployeeAttendanceStatsView.as_view(), name='employee-attendance-stats'),
     path('attendance/', EmployeeAttendanceView.as_view(), name='employee-attendance'),
     path('admin/attendance/', AttendanceViewSet.as_view({'get': 'list'}), name='admin-attendance'),
+    path('admin/attendance/update/<int:pk>/', AttendanceViewSet.as_view({'patch': 'partial_update'}), name='attendance-detail'),
+
 ]

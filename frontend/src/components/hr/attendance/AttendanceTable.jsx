@@ -17,6 +17,8 @@ import {
   FaAngleRight,
   FaAngleDoubleRight,
 } from "react-icons/fa";
+import UpdateAttendanceModal from "./UpdateAttendanceModal"; // Import your modal
+import { ToastContainer } from "react-toastify";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -31,15 +33,20 @@ const AttendanceTable = () => {
     filterValue: "",
     startDate: "",
     endDate: "",
+    employee_id: "",
+    employee_name: "",
   });
   const [pageSize, setPageSize] = useState(10);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null); 
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
+    setLoading(true)
     const fetchAttendanceData = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/admin/attendance/`,
+          "http://127.0.0.1:8000/api/admin/attendance/",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -48,18 +55,16 @@ const AttendanceTable = () => {
         );
         setAttendanceData(response.data || []);
         setFilteredData(response.data || []);
-        console.log(response.data)
       } catch (error) {
         console.error("Error fetching attendance data:", error);
         setError("Unable to fetch attendance data.");
       } finally {
         setLoading(false);
-        console.log(attendanceData)
       }
     };
 
     fetchAttendanceData();
-  }, [currentUser.id]);
+  }, [currentUser.id,isModalOpen]);
 
   useEffect(() => {
     let filtered = attendanceData;
@@ -82,23 +87,54 @@ const AttendanceTable = () => {
       );
     }
 
+    if (filters.employee_id) {
+      filtered = filtered.filter((record) =>
+        record.employee_id
+          ?.toString()
+          .toLowerCase()
+          .includes(filters.employee_id.toLowerCase())
+      );
+    }
+
+    if (filters.employee_name) {
+      filtered = filtered.filter((record) =>
+        record.employee_name
+          ?.toLowerCase()
+          .includes(filters.employee_name.toLowerCase())
+      );
+    }
+
     setFilteredData(filtered);
   }, [filters, attendanceData]);
 
   const columns = useMemo(
-  () => [
-    { Header: "Employee ID", accessor: "employee_id" },
-    { Header: "Employee Name", accessor: "employee_name" },
-    { Header: "Date", accessor: "date" },
-    { Header: "Time In", accessor: "time_in" },
-    { Header: "Time Out", accessor: "time_out" },
-    { Header: "Status", accessor: "status" },
-    { Header: "Hours Worked", accessor: "hours_worked" },
-    { Header: "Overtime", accessor: "is_overtime" },
-    { Header: "Comments", accessor: "comments" },
-  ],
-  []
-);
+    () => [
+      { Header: "Employee ID", accessor: "employee_id" },
+      { Header: "Employee Name", accessor: "employee_name" },
+      { Header: "Date", accessor: "date" },
+      { Header: "Time In", accessor: "time_in" },
+      { Header: "Time Out", accessor: "time_out" },
+      { Header: "Status", accessor: "status" },
+      { Header: "Hours Worked", accessor: "hours_worked" },
+      { Header: "Overtime", accessor: "is_overtime" },
+      { Header: "Comments", accessor: "comments" },
+      {
+        Header: "Actions",
+        Cell: ({ row }) => (
+          <button
+            onClick={() => {
+              setSelectedRecord(row.original);
+              setIsModalOpen(true);
+            }}
+            className="bg-blue-500 text-white py-1 px-2 rounded-md"
+          >
+            Edit
+          </button>
+        ),
+      },
+    ],
+    []
+  );
 
   const data = useMemo(() => filteredData, [filteredData]);
 
@@ -124,8 +160,8 @@ const AttendanceTable = () => {
         pageSize,
         sortBy: [
           {
-            id: "date", // Column ID to sort by
-            desc: true, // Sort in descending order
+            id: "date",
+            desc: true,
           },
         ],
       },
@@ -148,7 +184,7 @@ const AttendanceTable = () => {
         {
           table: {
             headerRows: 1,
-            widths: ["*", "*", "*", "*","*","*","*"],
+            widths: ["*", "*", "*", "*", "*", "*", "*"],
             body: [
               [
                 { text: "Date", style: "tableHeader" },
@@ -163,9 +199,8 @@ const AttendanceTable = () => {
                 { text: record.time_in, style: "tableData" },
                 { text: record.time_out, style: "tableData" },
                 { text: record.status, style: "tableData" },
-                { text: record.hours_worked || '', style: "tableData" },
-                { text: record.is_overtime || '', style: "tableData" },
-
+                { text: record.hours_worked || "", style: "tableData" },
+                { text: record.is_overtime || "", style: "tableData" },
               ]),
             ],
           },
@@ -174,7 +209,7 @@ const AttendanceTable = () => {
               if (filteredData[rowIndex - 1]?.status === "present")
                 return "#d4edda";
               if (filteredData[rowIndex - 1]?.status === "late")
-                return "#aaaaa";
+                return "#aaaaaa";
               if (
                 filteredData[rowIndex - 1]?.status === "leave" ||
                 filteredData[rowIndex - 1]?.status === "sick_leave" ||
@@ -196,18 +231,17 @@ const AttendanceTable = () => {
         },
         tableHeader: {
           bold: true,
-          fontSize: 10,  
+          fontSize: 10,
           color: "black",
           fillColor: "#4CAF50",
           alignment: "center",
         },
         tableData: {
-          fontSize: 8,   
+          fontSize: 8,
           margin: [0, 2, 0, 2],
           alignment: "center",
         },
       },
-      
       pageMargins: [40, 60, 40, 40],
     };
 
@@ -231,14 +265,6 @@ const AttendanceTable = () => {
     }));
   };
 
-  const handleFilterByChange = (e) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      filterBy: e.target.value,
-      filterValue: "",
-    }));
-  };
-
   const applyFilters = () => {
     // Trigger useEffect to filter data
   };
@@ -248,51 +274,41 @@ const AttendanceTable = () => {
       <div className="flex justify-between mb-4">
         <h1 className="text-2xl font-semibold">Attendance Summary</h1>
       </div>
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center space-x-2">
-          <FaFilter />
-          <select
-            name="filterBy"
-            value={filters.filterBy}
-            onChange={handleFilterByChange}
-            className="py-1 px-2 border border-gray-300 rounded text-sm"
-          >
-            <option value="">Filter by...</option>
-            <option value="date">Date</option>
-            <option value="status">Status</option>
-          </select>
+      <div className="flex items-center justify-between mb-4">
+        <div>
           <input
             type="text"
-            name="filterValue"
-            value={filters.filterValue}
+            name="employee_id"
+            value={filters.employee_id}
             onChange={handleFilterChange}
-            className="py-1 px-2 border border-gray-300 rounded text-sm"
+            placeholder="Filter by Employee ID"
+            className="border px-2 py-1 rounded-md mr-2"
           />
-          <button
-            onClick={applyFilters}
-            className="bg-black text-white border-none font-medium py-1 px-2 rounded-md"
-          >
-            <FaSearch />
-          </button>
         </div>
-        <div className="flex items-center space-x-2">
-          <label htmlFor="startDate">From:</label>
+        <div>
+          <input
+            type="text"
+            name="employee_name"
+            value={filters.employee_name}
+            onChange={handleFilterChange}
+            placeholder="Filter by Employee Name"
+            className="border px-2 py-1 rounded-md mr-2"
+          />
+        </div>
+        <div>
           <input
             type="date"
-            id="startDate"
             name="startDate"
             value={filters.startDate}
             onChange={handleFilterChange}
-            className="py-1 px-2 border border-gray-300 rounded text-sm"
+            className="border px-2 py-1 rounded-md mr-2"
           />
-          <label htmlFor="endDate">To:</label>
           <input
             type="date"
-            id="endDate"
             name="endDate"
             value={filters.endDate}
             onChange={handleFilterChange}
-            className="py-1 px-2 border border-gray-300 rounded text-sm"
+            className="border px-2 py-1 rounded-md mr-2"
           />
         </div>
         <div className="relative">
@@ -404,36 +420,37 @@ const AttendanceTable = () => {
           )}
         </tbody>
       </table>
+
       <div className="mt-4 flex items-center justify-between">
         <div className="flex items-center justify-between">
-        <button
-          onClick={() => gotoPage(0)}
-          disabled={!canPreviousPage}
-          className="px-3 py-1 bg-gray-300 rounded text-sm ml-3 disabled:bg-gray-200 disabled:text-gray-300"
-        >
-          <FaAngleDoubleLeft />
-        </button>
-        <button
-          onClick={() => previousPage()}
-          disabled={!canPreviousPage}
-          className="px-3 py-1 bg-gray-300 rounded text-sm ml-3 disabled:bg-gray-200 disabled:text-gray-300"
-        >
-          <FaAngleLeft />
-        </button>
-        <button
-          onClick={() => nextPage()}
-          disabled={!canNextPage}
-          className="px-3 py-1 bg-gray-300 rounded text-sm ml-3 disabled:bg-gray-200 disabled:text-gray-300"
-        >
-          <FaAngleRight />
-        </button>
-        <button
-          onClick={() => gotoPage(pageOptions.length - 1)}
-          disabled={!canNextPage}
-          className="px-3 py-1 bg-gray-300 rounded text-sm ml-3 disabled:bg-gray-200 disabled:text-gray-300"
-        >
-          <FaAngleDoubleRight />
-        </button>
+          <button
+            onClick={() => gotoPage(0)}
+            disabled={!canPreviousPage}
+            className="px-3 py-1 bg-gray-300 rounded text-sm ml-3 disabled:bg-gray-200 disabled:text-gray-300"
+          >
+            <FaAngleDoubleLeft />
+          </button>
+          <button
+            onClick={() => previousPage()}
+            disabled={!canPreviousPage}
+            className="px-3 py-1 bg-gray-300 rounded text-sm ml-3 disabled:bg-gray-200 disabled:text-gray-300"
+          >
+            <FaAngleLeft />
+          </button>
+          <button
+            onClick={() => nextPage()}
+            disabled={!canNextPage}
+            className="px-3 py-1 bg-gray-300 rounded text-sm ml-3 disabled:bg-gray-200 disabled:text-gray-300"
+          >
+            <FaAngleRight />
+          </button>
+          <button
+            onClick={() => gotoPage(pageOptions.length - 1)}
+            disabled={!canNextPage}
+            className="px-3 py-1 bg-gray-300 rounded text-sm ml-3 disabled:bg-gray-200 disabled:text-gray-300"
+          >
+            <FaAngleDoubleRight />
+          </button>
         </div>
         <div className="text-sm">
           Page{" "}
@@ -456,6 +473,12 @@ const AttendanceTable = () => {
           ))}
         </select>
       </div>
+      <ToastContainer />
+      <UpdateAttendanceModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        record={selectedRecord}
+      />
     </div>
   );
 };

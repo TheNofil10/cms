@@ -9,6 +9,7 @@ from django.utils.timezone import make_aware
 from rest_framework.views import APIView
 from django.db.models import Sum, Count, F, FloatField
 from django.db.models.functions import Cast
+from .permissions import IsAdminOrHRManager
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .serializers import (
@@ -272,8 +273,9 @@ class AttendanceViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return [IsAdminUser()]
+            return [IsAdminOrHRManager()]
         return [IsAuthenticated()]
+
     
     def get_queryset(self):
         if self.request.user.is_superuser or self.request.user.is_hr_manager:
