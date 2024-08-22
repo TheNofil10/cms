@@ -42,6 +42,10 @@ import JobApplicationDetailsPage from "../components/hr/jobPosting/JobApplicatio
 import EmployeeAttendanceLayout from "../components/employee/EmployeeAttendanceLayout.jsx";
 import EmployeeAttendanceTable from "../components/employee/EmployeeAttendanceTable.jsx";
 import EmployeeAttendanceApplications from "../components/employee/EmployeeAttendanceApplications.jsx";
+import HrAttendanceLayout from "../components/hr/attendance/HrAttendanceLayout.jsx";
+import AttendanceDahsboard from "../components/hr/attendance/AttendanceDahsboard.jsx";
+import AttendanceTable from "../components/hr/attendance/AttendanceTable.jsx";
+import LeaveApplications from "../components/hr/attendance/LeaveApplications.jsx";
 const AllRoutes = () => {
   return (
     <Routes>
@@ -59,18 +63,26 @@ const AllRoutes = () => {
         <Route path="/employee/profile" element={<EmployeeProfile />} />
         <Route path="/employee/settings" element={<EmployeeSettings />} />
         <Route path="/employee/tasks" element={<EmployeeTasks />} />
-       
+
         <Route path="/employee/department" element={<EmployeeDepartment />} />
         <Route
           element={
-            <EmployeeRoute element={<EmployeeAttendanceLayout />} employeeOnly={true}  />
+            <EmployeeRoute
+              element={<EmployeeAttendanceLayout />}
+              employeeOnly={true}
+            />
           }
         >
-           <Route path="/employee/attendance" element={<EmployeeAttendance />} />
-           <Route path="/employee/attendance/details" element={<EmployeeAttendanceTable />} />
-           <Route path="/employee/attendance/applications" element={<EmployeeAttendanceApplications />} />
+          <Route path="/employee/attendance" element={<EmployeeAttendance />} />
+          <Route
+            path="/employee/attendance/details"
+            element={<EmployeeAttendanceTable />}
+          />
+          <Route
+            path="/employee/attendance/applications"
+            element={<EmployeeAttendanceApplications />}
+          />
         </Route>
-        
       </Route>
 
       {/* Admin Routes */}
@@ -98,6 +110,7 @@ const AllRoutes = () => {
         element={<HRRoute element={<HRLayout />} adminOnly={false} hrOnly />}
       >
         <Route path="/hr/dashboard" element={<HRDashboard />} />
+        {/*JOb Posting*/}
         <Route
           element={
             <HRRoute element={<JobPostingLayout />} adminOnly={false} hrOnly />
@@ -109,10 +122,35 @@ const AllRoutes = () => {
             element={<CreateJobPostingPage />}
           />
           <Route path="/hr/job-postings/:id" element={<JobPostingDetails />} />
-          <Route path="/hr/job-applications" element={<JobApplicationsPage />} />
-          <Route path="/hr/applications/:id" element={<JobApplicationDetailsPage />} />
-          <Route path="hr/job-postings/:id/applications" element={<Application />} />
+          <Route
+            path="/hr/job-applications"
+            element={<JobApplicationsPage />}
+          />
+          <Route
+            path="/hr/applications/:id"
+            element={<JobApplicationDetailsPage />}
+          />
+          <Route
+            path="hr/job-postings/:id/applications"
+            element={<Application />}
+          />
         </Route>
+
+        {/*Attendance Layout*/}
+        <Route
+          element={
+            <HRRoute
+              element={<HrAttendanceLayout />}
+              adminOnly={false}
+              hrOnly
+            />
+          }
+        >
+          <Route path="/hr/attendance" element={<AttendanceDahsboard />} />
+          <Route path="/hr/attendance/table" element={<AttendanceTable />} />
+          <Route path="/hr/attendance/leaves" element={<LeaveApplications />} />
+        </Route>
+
         <Route path="/hr/employees" element={<EmployeesPage />} />
         <Route path="/hr/employees/add" element={<SignUp />} />
         <Route path="/hr/employees/:id" element={<AdminEmployeeProfile />} />
@@ -123,7 +161,7 @@ const AllRoutes = () => {
           path="/hr/performance-reviews"
           element={<HRPerformanceReviews />}
         />
-        <Route path="/hr/attendance" element={<Attendance />} />
+       
         <Route path="/hr/profile" element={<EmployeeProfile />} />
         <Route path="/hr/settings" element={<HRSettings />} />
         <Route path="/hr/talent-hunt" element={<TalentHuntPage />} />

@@ -20,10 +20,10 @@ router.register(r'compliance-reports', ComplianceReportViewSet)
 router.register(r'applications', ApplicationViewSet, basename='application')
 router.register(r'applicants', ApplicantViewSet)
 
-
 application_list = ApplicationViewSet.as_view({'get': 'list', 'post': 'create'})
 application_detail = ApplicationViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update'})
 application_status_update = ApplicationViewSet.as_view({'post': 'update_status'})
+
 urlpatterns = [
     path('', include(router.urls)),
     path('generate-post/', generate_post, name='generate-post'),
@@ -36,11 +36,12 @@ urlpatterns = [
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('department-members/', DepartmentMemberListView.as_view(), name='department-member-list'),
     path('department/me', EmployeeDepartmentView.as_view(), name='employee_department'),
-     path('applications/', application_list, name='application-list'),
+    path('applications/', application_list, name='application-list'),
     path('applications/<int:pk>/', application_detail, name='application-detail'),
     path('applications/<int:pk>/update_status/', application_status_update, name='application-update-status'),
     path('job-postings/<int:job_id>/applications/', ApplicationListView.as_view(), name='job-posting-applications-list'),
     path('attendance/stats/company/', CompanyAttendanceStatsView.as_view(), name='company-attendance-stats'),
     path('attendance/stats/employee/', EmployeeAttendanceStatsView.as_view(), name='employee-attendance-stats'),
     path('attendance/', EmployeeAttendanceView.as_view(), name='employee-attendance'),
+    path('admin/attendance/', AttendanceViewSet.as_view({'get': 'list'}), name='admin-attendance'),
 ]
