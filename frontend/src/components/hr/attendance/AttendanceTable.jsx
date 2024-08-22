@@ -86,16 +86,19 @@ const AttendanceTable = () => {
   }, [filters, attendanceData]);
 
   const columns = useMemo(
-    () => [
-      { Header: "Date", accessor: "date" },
-      { Header: "Time In", accessor: "time_in" },
-      { Header: "Time Out", accessor: "time_out" },
-      { Header: "Status", accessor: "status" },
-      { Header: "Hours Worked", accessor: "hours_worked" },
-      { Header: "Overtime", accessor: "is_overtime" },
-    ],
-    []
-  );
+  () => [
+    { Header: "Employee ID", accessor: "employee_id" },
+    { Header: "Employee Name", accessor: "employee_name" },
+    { Header: "Date", accessor: "date" },
+    { Header: "Time In", accessor: "time_in" },
+    { Header: "Time Out", accessor: "time_out" },
+    { Header: "Status", accessor: "status" },
+    { Header: "Hours Worked", accessor: "hours_worked" },
+    { Header: "Overtime", accessor: "is_overtime" },
+    { Header: "Comments", accessor: "comments" },
+  ],
+  []
+);
 
   const data = useMemo(() => filteredData, [filteredData]);
 

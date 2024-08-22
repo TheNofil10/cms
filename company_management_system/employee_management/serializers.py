@@ -61,10 +61,10 @@ class PerformanceReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class AttendanceSerializer(serializers.ModelSerializer):
+    employee_name = serializers.ReadOnlyField(source='employee.username')
     class Meta:
         model = Attendance
-        fields = '__all__'
-
+        fields = ['id', 'employee_id', 'employee_name', 'date', 'time_in', 'time_out', 'status', 'hours_worked', 'is_overtime', 'comments']  
 
 class AttendanceStatsSerializer(serializers.Serializer):
     total_days = serializers.IntegerField()

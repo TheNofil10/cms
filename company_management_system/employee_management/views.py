@@ -241,7 +241,6 @@ class DepartmentMemberListView(generics.ListAPIView):
 
         return Employee.objects.filter(department=current_employee.department)
 
-
 class EmployeeDepartmentView(APIView):
     permission_classes = [IsAuthenticated]
 
