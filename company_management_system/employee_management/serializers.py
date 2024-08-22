@@ -74,7 +74,10 @@ class AttendanceStatsSerializer(serializers.Serializer):
     hours_worked = serializers.FloatField()
     average_hours_per_day = serializers.FloatField()
     overtime_hours = serializers.FloatField()
-    absent_without_leave = serializers.IntegerField() 
+    absent_without_leave = serializers.IntegerField()
+    sick_leave = serializers.IntegerField()  
+    casual_leave = serializers.IntegerField()  
+
     
 class LeaveSerializer(serializers.ModelSerializer):
     class Meta:

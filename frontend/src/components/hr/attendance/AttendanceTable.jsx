@@ -11,6 +11,7 @@ import {
   FaChevronDown,
   FaSortDown,
   FaSortUp,
+  FaSpinner,
   FaSort,
   FaAngleDoubleLeft,
   FaAngleLeft,
@@ -64,7 +65,7 @@ const AttendanceTable = () => {
     };
 
     fetchAttendanceData();
-  }, [currentUser.id,isModalOpen]);
+  }, [currentUser.id]);
 
   useEffect(() => {
     let filtered = attendanceData;
@@ -265,16 +266,13 @@ const AttendanceTable = () => {
     }));
   };
 
-  const applyFilters = () => {
-    // Trigger useEffect to filter data
-  };
-
   return (
     <div className="max-w-7xl mx-auto p-1">
       <div className="flex justify-between mb-4">
         <h1 className="text-2xl font-semibold">Attendance Summary</h1>
       </div>
       <div className="flex items-center justify-between mb-4">
+        
         <div>
           <input
             type="text"
@@ -375,7 +373,7 @@ const AttendanceTable = () => {
                 colSpan={columns.length}
                 className="text-center py-4 text-sm text-gray-600"
               >
-                Loading...
+                <FaSpinner className="animate-spin text-gray-600 text-xl" />
               </td>
             </tr>
           ) : error ? (

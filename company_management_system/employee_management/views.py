@@ -325,18 +325,23 @@ class CompanyAttendanceStatsView(APIView):
         start_date = make_aware(datetime.combine(start_date, datetime.min.time()))
         end_date = make_aware(datetime.combine(end_date, datetime.max.time()))
 
-        total_days = Attendance.objects.filter(date__range=[start_date, end_date]).values('date').distinct().count()
-        days_present = Attendance.objects.filter(status='Present', date__range=[start_date, end_date]).count()
-        days_absent = Attendance.objects.filter(status='Absent', date__range=[start_date, end_date]).count()
-        days_late = Attendance.objects.filter(status='Late', date__range=[start_date, end_date]).count()
-        overtime_hours = Attendance.objects.filter(is_overtime=True, date__range=[start_date, end_date]).aggregate(
-            total_overtime=Sum('hours_worked')
+        total_days = Attendance.objects.values('date').distinct().count()
+        days_present = Attendance.objects.filter(status='Present').count()
+        days_absent = Attendance.objects.filter(status='Absent').count()
+        days_late = Attendance.objects.filter(status='Late').count()
+        overtime_hours = Attendance.objects.filter(is_overtime=True).aggregate(
+            total_overtime=Sum(Cast('hours_worked', FloatField()))
         )['total_overtime'] or Decimal('0.00')
-        absent_without_leave = Attendance.objects.filter(status='Absent', employee__leave__isnull=True, date__range=[start_date, end_date]).count()
-        total_hours = Attendance.objects.filter(date__range=[start_date, end_date]).aggregate(
-            total_hours=Sum('hours_worked')
+        absent_without_leave = Attendance.objects.filter(status='Absent').count()
+
+        total_hours = Attendance.objects.aggregate(
+            total_hours=Sum(Cast('hours_worked', FloatField()))
         )['total_hours'] or Decimal('0.00')
         average_hours_per_day = Decimal(total_hours) / total_days if total_days else Decimal('0.00')
+
+        # Calculate leave days
+        sick_leave = Attendance.objects.filter(status='sick_leave').count()
+        casual_leave = Attendance.objects.filter(status='casual_leave').count()
 
         data = {
             'total_days': total_days,
@@ -347,10 +352,11 @@ class CompanyAttendanceStatsView(APIView):
             'average_hours_per_day': round(average_hours_per_day, 2),
             'overtime_hours': round(overtime_hours, 2),
             'absent_without_leave': absent_without_leave,
+            'sick_leave': sick_leave,
+            'casual_leave': casual_leave,
         }
         serializer = AttendanceStatsSerializer(data)
         return Response(serializer.data)
-    
 class EmployeeAttendanceStatsView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -399,12 +405,12 @@ class EmployeeAttendanceStatsView(APIView):
             'days_present': days_present,
             'days_absent': days_absent,
             'days_late': days_late,
+            'sick_leave': sick_leave,
+            'casual_leave': casual_leave,
             'hours_worked': round(total_hours, 2),
             'average_hours_per_day': round(average_hours_per_day, 2),
             'overtime_hours': round(overtime_hours, 2),
             'absent_without_leave': absent_without_leave,
-            'sick_leave': sick_leave,
-            'casual_leave': casual_leave,
         }
         return Response(data)
 
