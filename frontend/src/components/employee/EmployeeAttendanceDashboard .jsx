@@ -33,8 +33,8 @@ const EmployeeAttendanceDashboard = () => {
           }
         );
         setStats(statsResponse.data);
-        console.log(startDate);
-        console.log("Stats:", statsResponse.data);
+
+        // Fetching attendance data
         const attendanceResponse = await axios.get(
           "http://127.0.0.1:8000/api/attendance/",
           {
@@ -47,7 +47,15 @@ const EmployeeAttendanceDashboard = () => {
             },
           }
         );
-        setAttendanceData(attendanceResponse.data);
+
+        // Filtering attendance data based on date range
+        const filteredData = attendanceResponse.data.filter(
+          (entry) =>
+            new Date(entry.date) >= new Date(startDate) &&
+            new Date(entry.date) <= new Date(endDate)
+        );
+
+        setAttendanceData(filteredData);
       } catch (error) {
         toast.error("Error fetching attendance data");
         console.error("Error fetching attendance data:", error);
@@ -192,36 +200,28 @@ const EmployeeAttendanceDashboard = () => {
         </div>
       </section>
 
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div
-          className="bg-white p-4 rounded-lg shadow"
-          style={{ height: "300px" }}
-        >
-          <h2 className="text-lg font-semibold">
-            Attendance Overview (Line Chart)
-          </h2>
-          <Line data={lineChartData} options={{ maintainAspectRatio: false }} />
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+        <div className="py-5">
+          <div
+            className="bg-white p-4 "
+            style={{ height: "400px" }}
+          >
+            <h2 className="text-lg font-semibold">Hours Worked</h2>
+            <Line
+              data={lineChartData}
+              options={{ maintainAspectRatio: false }}
+            />
+          </div>
         </div>
-
-        <div
-          className="bg-white p-4 rounded-lg shadow"
-          style={{ height: "300px" }}
-        >
-          <h2 className="text-lg font-semibold">
-            Attendance Breakdown (Bar Chart)
-          </h2>
-          <Bar data={barChartData} options={{ maintainAspectRatio: false }} />
+        <div className="p-5">
+          <div
+            className="bg-white p-4 "
+            style={{ height: "400px" }}
+          >
+            <h2 className="text-lg font-semibold">Overview</h2>
+            <Pie data={pieChartData} options={{ maintainAspectRatio: false }} />
+          </div>
         </div>
-      </section>
-
-      <section
-        className="bg-white p-4 rounded-lg shadow"
-        style={{ height: "300px" }}
-      >
-        <h2 className="text-lg font-semibold">
-          Attendance Summary (Pie Chart)
-        </h2>
-        <Pie data={pieChartData} options={{ maintainAspectRatio: false }} />
       </section>
 
       <ToastContainer />
