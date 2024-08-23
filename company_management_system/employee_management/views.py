@@ -9,7 +9,7 @@ from django.utils.timezone import make_aware
 from rest_framework.views import APIView
 from django.db.models import Sum, Count, F, FloatField
 from django.db.models.functions import Cast
-from .permissions import IsAdminOrHRManager
+from .permissions import IsAdminHRManagerHODOrManager, IsAdminOrHRManager
 from rest_framework.viewsets import ModelViewSet
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -133,17 +133,22 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         if self.action == "destroy":
             return [IsAdminUser()]
         elif self.action in ["create", "update", "partial_update"]:
-            if self.request.user.is_hr_manager or self.request.user.is_superuser:
+            if (
+                self.request.user.is_hr_manager or 
+                self.request.user.is_superuser or 
+                self.request.user.is_hod or 
+                self.request.user.is_manager
+            ):
                 return [IsAuthenticated()]
         return [IsAuthenticated()]
-
+    
     def get_queryset(self):
         user = self.request.user
-        if user.is_superuser:
+        if user.is_superuser or user.is_hr_manager:
             return Employee.objects.all()
-        if user.is_hr_manager:
-            return Employee.objects.all()
-        return Employee.objects.filter(department=user.department)
+        elif user.is_hod or user.is_manager:
+            return Employee.objects.filter(department=user.department)
+        return Employee.objects.none()
 
     def perform_create(self, serializer):
         employee = serializer.save(is_active=True)
@@ -207,32 +212,21 @@ class DepartmentViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return [IsAdminUser()]
+            if (
+                self.request.user.is_superuser or 
+                self.request.user.is_hr_manager or 
+                self.request.user.is_hod
+            ):
+                return [IsAuthenticated()]
         return [IsAuthenticated()]
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_superuser or (user.is_authenticated and hasattr(user, "is_hr_manager") and user.is_hr_manager):
+        if user.is_superuser or user.is_hr_manager or user.is_hod:
             return Department.objects.all()
-        if user.is_authenticated:
-            return Department.objects.filter(employees=user)
+        elif user.is_manager:
+            return Department.objects.filter(manager=user)
         return Department.objects.none()
-
-    def partial_update(self, request, *args, **kwargs):
-        department = self.get_object()
-        manager_id = request.data.get("manager")
-        if manager_id:
-            try:
-                manager = Employee.objects.get(id=manager_id)
-                department.manager = manager
-                department.save()
-                serializer = self.get_serializer(department)
-                return Response(serializer.data)
-            except Employee.DoesNotExist:
-                return Response(
-                    {"detail": "Manager not found"}, status=status.HTTP_404_NOT_FOUND
-                )
-        return super().partial_update(request, *args, **kwargs)
 
 class DepartmentMemberListView(generics.ListAPIView):
     serializer_class = EmployeeBriefSerializer
@@ -274,13 +268,14 @@ class AttendanceViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return [IsAdminOrHRManager()]
+            return [IsAdminHRManagerHODOrManager()]
         return [IsAuthenticated()]
 
-    
     def get_queryset(self):
         if self.request.user.is_superuser or self.request.user.is_hr_manager:
             return Attendance.objects.all()
+        elif self.request.user.is_hod or self.request.user.is_manager:
+            return Attendance.objects.filter(employee__department=self.request.user.department)
         return Attendance.objects.filter(employee=self.request.user)
 
 class LeaveViewSet(viewsets.ModelViewSet):
