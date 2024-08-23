@@ -16,3 +16,7 @@ class IsAdminHRManagerHODOrManager(BasePermission):
             request.user and 
             (request.user.is_superuser or request.user.is_hr_manager or request.user.is_hod or request.user.is_manager)
         )
+
+class IsManager(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.is_manager

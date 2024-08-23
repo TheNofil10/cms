@@ -9,7 +9,7 @@ from django.utils.timezone import make_aware
 from rest_framework.views import APIView
 from django.db.models import Sum, Count, F, FloatField
 from django.db.models.functions import Cast
-from .permissions import IsAdminHRManagerHODOrManager, IsAdminOrHRManager
+from .permissions import IsAdminOrHRManager, IsManager
 from rest_framework.viewsets import ModelViewSet
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -133,22 +133,17 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         if self.action == "destroy":
             return [IsAdminUser()]
         elif self.action in ["create", "update", "partial_update"]:
-            if (
-                self.request.user.is_hr_manager or 
-                self.request.user.is_superuser or 
-                self.request.user.is_hod or 
-                self.request.user.is_manager
-            ):
+            if self.request.user.is_hr_manager or self.request.user.is_superuser:
                 return [IsAuthenticated()]
         return [IsAuthenticated()]
-    
+
     def get_queryset(self):
         user = self.request.user
-        if user.is_superuser or user.is_hr_manager:
+        if user.is_superuser:
             return Employee.objects.all()
-        elif user.is_hod or user.is_manager:
-            return Employee.objects.filter(department=user.department)
-        return Employee.objects.none()
+        if user.is_hr_manager:
+            return Employee.objects.all()
+        return Employee.objects.filter(department=user.department)
 
     def perform_create(self, serializer):
         employee = serializer.save(is_active=True)
@@ -212,22 +207,44 @@ class DepartmentViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            if (
-                self.request.user.is_superuser or 
-                self.request.user.is_hr_manager or 
-                self.request.user.is_hod
-            ):
-                return [IsAuthenticated()]
+            return [IsAdminUser()]
         return [IsAuthenticated()]
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_superuser or user.is_hr_manager or user.is_hod:
+        if user.is_superuser or (user.is_authenticated and hasattr(user, "is_hr_manager") and user.is_hr_manager):
             return Department.objects.all()
-        elif user.is_manager:
-            return Department.objects.filter(manager=user)
+        if user.is_authenticated:
+            return Department.objects.filter(employees=user)
         return Department.objects.none()
 
+    def partial_update(self, request, *args, **kwargs):
+        department = self.get_object()
+        manager_id = request.data.get("manager")
+        if manager_id:
+            try:
+                manager = Employee.objects.get(id=manager_id)
+                department.manager = manager
+                department.save()
+                serializer = self.get_serializer(department)
+                return Response(serializer.data)
+            except Employee.DoesNotExist:
+                return Response(
+                    {"detail": "Manager not found"}, status=status.HTTP_404_NOT_FOUND
+                )
+        return super().partial_update(request, *args, **kwargs)
+
+class DepartmentEmployeeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if user.is_manager:
+            employees = Employee.objects.filter(department=user.department)
+            serializer = EmployeeBriefSerializer(employees, many=True)
+            return Response(serializer.data)
+        return Response({"detail": "Not authorized."}, status=status.HTTP_403_FORBIDDEN)
+    
 class DepartmentMemberListView(generics.ListAPIView):
     serializer_class = EmployeeBriefSerializer
     permission_classes = [IsAuthenticated]
@@ -257,10 +274,6 @@ class EmployeeRecordViewSet(viewsets.ModelViewSet):
     serializer_class = EmployeeRecordSerializer
 
 
-class PerformanceReviewViewSet(viewsets.ModelViewSet):
-    queryset = PerformanceReview.objects.all()
-    serializer_class = PerformanceReviewSerializer
-
 
 class AttendanceViewSet(viewsets.ModelViewSet):
     queryset = Attendance.objects.all()
@@ -268,14 +281,13 @@ class AttendanceViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return [IsAdminHRManagerHODOrManager()]
+            return [IsAdminOrHRManager()]
         return [IsAuthenticated()]
 
+    
     def get_queryset(self):
         if self.request.user.is_superuser or self.request.user.is_hr_manager:
             return Attendance.objects.all()
-        elif self.request.user.is_hod or self.request.user.is_manager:
-            return Attendance.objects.filter(employee__department=self.request.user.department)
         return Attendance.objects.filter(employee=self.request.user)
 
 class LeaveViewSet(viewsets.ModelViewSet):
@@ -420,6 +432,41 @@ class EmployeeAttendanceStatsView(APIView):
         }
         return Response(data)
 
+class LeaveManagementView(APIView):
+    permission_classes = [IsAuthenticated, IsManager]
+
+    def post(self, request, leave_id):
+        user = request.user
+        action = request.data.get('action')
+
+        try:
+            leave = Leave.objects.get(id=leave_id)
+        except Leave.DoesNotExist:
+            return Response({"detail": "Leave request not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if leave.employee.department != user.department:
+            return Response({"detail": "Not authorized to manage this leave request."}, status=status.HTTP_403_FORBIDDEN)
+
+        if action == 'approve':
+            leave.status = 'approved'
+        elif action == 'reject':
+            leave.status = 'rejected'
+        else:
+            return Response({"detail": "Invalid action."}, status=status.HTTP_400_BAD_REQUEST)
+
+        leave.save()
+        return Response({"detail": f"Leave request {action}d successfully."})
+class AttendanceCheckView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if user.is_manager:
+            attendance = Attendance.objects.filter(employee__department=user.department)
+            serializer = AttendanceSerializer(attendance, many=True)
+            return Response(serializer.data)
+        return Response({"detail": "Not authorized to view this information."}, status=status.HTTP_403_FORBIDDEN)
+
 class PayrollViewSet(viewsets.ModelViewSet):
     queryset = Payroll.objects.all()
     serializer_class = PayrollSerializer
@@ -490,3 +537,7 @@ class ApplicationListView(generics.ListAPIView):
     def get_queryset(self):
         job_id = self.kwargs['job_id']
         return Application.objects.filter(job_posting_id=job_id)
+
+class PerformanceReviewViewSet(viewsets.ModelViewSet):
+    queryset = PerformanceReview.objects.all()
+    serializer_class = PerformanceReviewSerializer

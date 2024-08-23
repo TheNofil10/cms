@@ -28,7 +28,6 @@ const EmployeeDepartment = () => {
         setError("Error fetching department data");
       } finally {
         setLoading(false);
-        console.log(department.manager.profile_image)
       }
     };
 
@@ -79,7 +78,7 @@ const EmployeeDepartment = () => {
             {/* Manager Section */}
             <div className="text-white">
               <h2 className="text-2xl font-semibold mb-4">Manager</h2>
-              {department?.manager_name !== "N/A" ? (
+              {department?.manager ? (
                 <ManagerCard
                   profileImage={`${imageBaseUrl}${department.manager.profile_image}`}
                   name={department.manager.name}

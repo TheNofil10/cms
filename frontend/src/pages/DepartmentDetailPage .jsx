@@ -72,11 +72,12 @@ const DepartmentDetailPage = () => {
   };
 
   const disabled = () => {
-    if (!currentUser.is_staff) {
-      return true;
-    } else if (department.manager.username !== currentUser.username) {
-      false;
+    if (currentUser.is_superuser || currentUser.is_hr_manager) {
+      return false;
+    } else if (department?.manager?.username === currentUser.username) {
+      return false;
     }
+    return true;
   };
   const handleUpdateDepartment = async () => {
     if (

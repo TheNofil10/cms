@@ -62,9 +62,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_hr_manager = models.BooleanField(default=False)  # Field to indicate HR manager
-    is_hod = models.BooleanField(default=False)
-    is_manager = models.BooleanField(default=False)
-    
+
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]
 
