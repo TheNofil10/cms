@@ -11,6 +11,7 @@ from django.db.models import Sum, Count, F, FloatField
 from django.db.models.functions import Cast
 from .permissions import IsAdminOrHRManager
 from rest_framework.viewsets import ModelViewSet
+from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .serializers import (
     ApplicantSerializer,
@@ -311,6 +312,8 @@ class CompanyAttendanceStatsView(APIView):
         
         start_date_str = request.query_params.get('start_date')
         end_date_str = request.query_params.get('end_date')
+        employee_id = request.query_params.get('employee_id')
+        username = request.query_params.get('username')
 
         if not start_date_str or not end_date_str:
             return Response({"detail": "Start date and end date are required."}, status=400)
@@ -321,27 +324,34 @@ class CompanyAttendanceStatsView(APIView):
         except ValueError:
             return Response({"detail": "Invalid date format. Use YYYY-MM-DD."}, status=400)
 
-        # Ensure dates are aware
         start_date = make_aware(datetime.combine(start_date, datetime.min.time()))
         end_date = make_aware(datetime.combine(end_date, datetime.max.time()))
 
-        total_days = Attendance.objects.values('date').distinct().count()
-        days_present = Attendance.objects.filter(status='Present').count()
-        days_absent = Attendance.objects.filter(status='Absent').count()
-        days_late = Attendance.objects.filter(status='Late').count()
-        overtime_hours = Attendance.objects.filter(is_overtime=True).aggregate(
+        # Base queryset
+        attendance_qs = Attendance.objects.filter(date__range=[start_date, end_date])
+
+        # Filter by employee_id or username
+        if employee_id:
+            attendance_qs = attendance_qs.filter(employee__id=employee_id)
+        if username:
+            attendance_qs = attendance_qs.filter(employee__username=username)
+
+        total_days = attendance_qs.values('date').distinct().count()
+        days_present = attendance_qs.filter(status='Present').count()
+        days_absent = attendance_qs.filter(status='Absent').count()
+        days_late = attendance_qs.filter(status='Late').count()
+        overtime_hours = attendance_qs.filter(is_overtime=True).aggregate(
             total_overtime=Sum(Cast('hours_worked', FloatField()))
         )['total_overtime'] or Decimal('0.00')
-        absent_without_leave = Attendance.objects.filter(status='Absent').count()
+        absent_without_leave = attendance_qs.filter(status='Absent').count()
 
-        total_hours = Attendance.objects.aggregate(
+        total_hours = attendance_qs.aggregate(
             total_hours=Sum(Cast('hours_worked', FloatField()))
         )['total_hours'] or Decimal('0.00')
         average_hours_per_day = Decimal(total_hours) / total_days if total_days else Decimal('0.00')
 
-        # Calculate leave days
-        sick_leave = Attendance.objects.filter(status='sick_leave').count()
-        casual_leave = Attendance.objects.filter(status='casual_leave').count()
+        sick_leave = attendance_qs.filter(status='sick_leave').count()
+        casual_leave = attendance_qs.filter(status='casual_leave').count()
 
         data = {
             'total_days': total_days,
@@ -357,6 +367,7 @@ class CompanyAttendanceStatsView(APIView):
         }
         serializer = AttendanceStatsSerializer(data)
         return Response(serializer.data)
+
 class EmployeeAttendanceStatsView(APIView):
     permission_classes = [IsAuthenticated]
 

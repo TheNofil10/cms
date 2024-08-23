@@ -5,6 +5,7 @@ import axios from "axios";
 import { useAuth } from "../../../contexts/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ClipLoader } from "react-spinners"; // Import a spinner from react-spinners
 
 Chart.register(...registerables);
 
@@ -16,9 +17,14 @@ const AttendanceDashboard = () => {
   const [endDate, setEndDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+  const [loading, setLoading] = useState(false);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
+  const [selectedEmployeeUsername, setSelectedEmployeeUsername] = useState("");
+  const [searchType, setSearchType] = useState("id");
 
   useEffect(() => {
     const fetchAttendanceData = async () => {
+      setLoading(true);
       try {
         const statsResponse = await axios.get(
           "http://127.0.0.1:8000/api/attendance/stats/company/",
@@ -29,13 +35,13 @@ const AttendanceDashboard = () => {
             params: {
               start_date: startDate,
               end_date: endDate,
+              employee_id: searchType === "id" ? selectedEmployeeId : "",
+              username:
+                searchType === "username" ? selectedEmployeeUsername : "",
             },
           }
         );
-        console.log(statsResponse.data)
         setStats(statsResponse.data);
-
-        // Fetching attendance data
         const attendanceResponse = await axios.get(
           "http://127.0.0.1:8000/api/attendance/",
           {
@@ -45,11 +51,13 @@ const AttendanceDashboard = () => {
             params: {
               start_date: startDate,
               end_date: endDate,
+              employee_id: searchType === "id" ? selectedEmployeeId : "",
+              username:
+                searchType === "username" ? selectedEmployeeUsername : "",
             },
           }
         );
 
-        // Filtering attendance data based on date range
         const filteredData = attendanceResponse.data.filter(
           (entry) =>
             new Date(entry.date) >= new Date(startDate) &&
@@ -60,11 +68,44 @@ const AttendanceDashboard = () => {
       } catch (error) {
         toast.error("Error fetching attendance data");
         console.error("Error fetching attendance data:", error);
+      } finally {
+        setLoading(false);
+        console.log(stats);
       }
     };
 
     fetchAttendanceData();
-  }, [currentUser, startDate, endDate]);
+  }, [
+    selectedEmployeeId,
+    selectedEmployeeUsername,
+    searchType,
+    startDate,
+    endDate,
+  ]);
+
+  const handleApply = () => {
+    if (!selectedEmployeeId && !selectedEmployeeUsername) {
+      toast.error("Please enter either Employee ID or Username.");
+      return;
+    }
+    if (selectedEmployeeId && selectedEmployeeUsername) {
+      toast.error(
+        "Please enter only one filter at a time (either ID or Username)."
+      );
+      return;
+    }
+    if (selectedEmployeeId) {
+      setSearchType("id");
+    } else if (selectedEmployeeUsername) {
+      setSearchType("username");
+    }
+  };
+
+  const handleClear = () => {
+    setSelectedEmployeeId("");
+    setSelectedEmployeeUsername("");
+    setSearchType("");
+  };
 
   const lineChartData = {
     labels: attendanceData.map((entry) => entry.date),
@@ -111,11 +152,29 @@ const AttendanceDashboard = () => {
         data: Array(attendanceData.length).fill(stats.casual_leave || 0),
         backgroundColor: "rgba(255, 159, 64, 0.6)",
       },
+      {
+        label: "Additional Metric 1", // Replace with actual metric name
+        data: Array(attendanceData.length).fill(stats.additional_metric_1 || 0),
+        backgroundColor: "rgba(255, 99, 71, 0.6)", // Example color
+      },
+      {
+        label: "Additional Metric 2", // Replace with actual metric name
+        data: Array(attendanceData.length).fill(stats.additional_metric_2 || 0),
+        backgroundColor: "rgba(0, 255, 255, 0.6)", // Example color
+      },
     ],
   };
 
   const pieChartData = {
-    labels: ["Present", "Absent", "Late", "Sick Leave", "Casual Leave"],
+    labels: [
+      "Present",
+      "Absent",
+      "Late",
+      "Sick Leave",
+      "Casual Leave",
+      "Additional Metric 1",
+      "Additional Metric 2",
+    ],
     datasets: [
       {
         data: [
@@ -124,6 +183,8 @@ const AttendanceDashboard = () => {
           stats.days_late || 0,
           stats.sick_leave || 0,
           stats.casual_leave || 0,
+          stats.additional_metric_1 || 0,
+          stats.additional_metric_2 || 0,
         ],
         backgroundColor: [
           "#36A2EB",
@@ -131,6 +192,8 @@ const AttendanceDashboard = () => {
           "#FFCE56",
           "#9966FF",
           "#FF9F40",
+          "#FF6F61",
+          "#6B5B95",
         ],
         hoverBackgroundColor: [
           "#36A2EB",
@@ -138,6 +201,8 @@ const AttendanceDashboard = () => {
           "#FFCE56",
           "#9966FF",
           "#FF9F40",
+          "#FF6F61",
+          "#6B5B95",
         ],
       },
     ],
@@ -147,6 +212,45 @@ const AttendanceDashboard = () => {
     <div className="max-w-7xl mx-auto space-y-8">
       <h1 className="text-2xl font-bold">HR Attendance Dashboard</h1>
 
+      {/* Employee Selector */}
+      <div className="bg-white p-4 rounded-lg shadow grid grid-cols-2 gap-4">
+        <div className="flex items-center space-x-4">
+          <input
+            type="text"
+            placeholder="Enter Employee ID"
+            value={selectedEmployeeId}
+            onChange={(e) => {
+              setSelectedEmployeeId(e.target.value);
+              setSearchType("id");
+            }}
+            className="border p-2 rounded-lg w-full"
+          />
+          <input
+            type="text"
+            placeholder="Enter Employee Username"
+            value={selectedEmployeeUsername}
+            onChange={(e) => {
+              setSelectedEmployeeUsername(e.target.value);
+              setSearchType("username");
+            }}
+            className="border p-2 rounded-lg w-full"
+          />
+          <button
+            onClick={handleApply}
+            className="bg-blue-500 text-white p-2 rounded-lg"
+          >
+            Apply
+          </button>
+          <button
+            onClick={handleClear}
+            className="bg-gray-500 text-white p-2 rounded-lg"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+
+      {/* Date Range Selector */}
       <div className="bg-white p-4 rounded-lg shadow grid grid-cols-2 gap-4">
         <div>
           <label htmlFor="start-date" className="block text-lg font-semibold">
@@ -174,57 +278,60 @@ const AttendanceDashboard = () => {
         </div>
       </div>
 
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-lg font-semibold">Days Present</h2>
-          <p className="text-2xl">{stats.days_present || 0}</p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-lg font-semibold">Days Absent</h2>
-          <p className="text-2xl">{stats.days_absent || 0}</p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-lg font-semibold">Sick Leaves</h2>
-          <p className="text-2xl">{stats.sick_leave || 0}</p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-lg font-semibold">Casual Leaves</h2>
-          <p className="text-2xl">{stats.casual_leave || 0}</p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-lg font-semibold">Days Late</h2>
-          <p className="text-2xl">{stats.days_late || 0}</p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-lg font-semibold">Overtime Hours</h2>
-          <p className="text-2xl">{stats.overtime_hours || 0}</p>
-        </div>
-      </section>
+      {/* Statistics Section */}
 
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-        <div className="py-5">
-          <div
-            className="bg-white p-4 "
-            style={{ height: "400px" }}
-          >
-            <h2 className="text-lg font-semibold">Hours Worked</h2>
-            <Line
-              data={lineChartData}
-              options={{ maintainAspectRatio: false }}
-            />
+      {/* Charts */}
+      <div className="bg-white p-4 rounded-lg shadow space-y-4">
+        {loading ? (
+          <div className="flex justify-center items-center">
+            <ClipLoader color="#36d7b7" size={100} />
           </div>
-        </div>
-        <div className="p-5">
-          <div
-            className="bg-white p-4 "
-            style={{ height: "400px" }}
-          >
-            <h2 className="text-lg font-semibold">Overview</h2>
-            <Pie data={pieChartData} options={{ maintainAspectRatio: false }} />
-          </div>
-        </div>
-      </section>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+              <div className="bg-white p-4 rounded-lg shadow">
+                <h2 className="text-lg font-semibold">Present</h2>
+                <p className="text-2xl">{stats.days_present || 0}</p>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow">
+                <h2 className="text-lg font-semibold">Absent</h2>
+                <p className="text-2xl">{stats.days_absent || 0}</p>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow">
+                <h2 className="text-lg font-semibold">Sick Leaves</h2>
+                <p className="text-2xl">{stats.sick_leave || 0}</p>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow">
+                <h2 className="text-lg font-semibold">Casual Leaves</h2>
+                <p className="text-2xl">{stats.casual_leave || 0}</p>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow">
+                <h2 className="text-lg font-semibold">Late</h2>
+                <p className="text-2xl">{stats.days_late || 0}</p>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow">
+                <h2 className="text-lg font-semibold">Overtime Hours</h2>
+                <p className="text-2xl">{stats.overtime_hours || 0}</p>
+              </div>
+            </div>
+            {/* <div>
+              <h2 className="text-xl font-semibold">Attendance Overview</h2>
+              <Bar data={barChartData} options={{ responsive: true }} />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold">Attendance Trends</h2>
+              <Line data={lineChartData} options={{ responsive: true }} />
+            </div> */}
 
+            <div classname="flex justify-center" style={{ height: "400px" }}>
+              <h2 className="text-xl text-center font-semibold">
+                Attendance Distribution
+              </h2>
+              <Pie data={pieChartData} options={{ responsive: true }} />
+            </div>
+          </div>
+        )}
+      </div>
       <ToastContainer />
     </div>
   );
