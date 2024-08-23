@@ -284,11 +284,11 @@ const AttendanceDashboard = () => {
       <div className="bg-white p-4 rounded-lg shadow space-y-4">
         {loading ? (
           <div className="flex justify-center items-center">
-            <ClipLoader color="#36d7b7" size={100} />
+            <ClipLoader color="black" size={100} />
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4">
               <div className="bg-white p-4 rounded-lg shadow">
                 <h2 className="text-lg font-semibold">Present</h2>
                 <p className="text-2xl">{stats.days_present || 0}</p>

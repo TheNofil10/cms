@@ -33,7 +33,7 @@ const JobApplicationsList = ({ jobId }) => {
   }, [jobId]);
 
   const handleApplicationClick = (id) => {
-    navigate.push(`/hr/applications/${id}`);
+    navigate(`/hr/applications/${id}`);
   };
 
   if (loading) return <p><FaSpinner className="animate-spin" /></p>;
