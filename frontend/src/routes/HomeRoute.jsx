@@ -17,6 +17,9 @@ const HomeRoute = () => {
   if (currentUser.is_hr_manager){
     return <Navigate to="/hr/dashboard" />
   }
+  if(currentUser.is_manager){
+    return <Navigate to="/manager/dashboard" />
+  }
   // If the user is logged in and not an admin, redirect to the employee dashboard
   return <Navigate to="/employee/dashboard" />;
 };

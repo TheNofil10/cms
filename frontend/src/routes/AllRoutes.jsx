@@ -46,6 +46,8 @@ import HrAttendanceLayout from "../components/hr/attendance/HrAttendanceLayout.j
 import AttendanceDahsboard from "../components/hr/attendance/AttendanceDahsboard.jsx";
 import AttendanceTable from "../components/hr/attendance/AttendanceTable.jsx";
 import LeaveApplications from "../components/hr/attendance/LeaveApplications.jsx";
+import ManagerLayout from "../components/manager/ManagerLayout.jsx";
+import ManagerRoute from "./ManagerRoute.jsx";
 const AllRoutes = () => {
   return (
     <Routes>
@@ -81,6 +83,34 @@ const AllRoutes = () => {
           <Route
             path="/employee/attendance/applications"
             element={<EmployeeAttendanceApplications />}
+          />
+        </Route>
+      </Route>
+          
+          {/* Manager Routes*/}
+          <Route
+        element={
+          <ManagerRoute element={<ManagerLayout />} managerOnly={true} />
+        }
+      >
+        <Route path="/manager/dashboard" element={<EmployeeDashboard />} />
+        <Route path="/manager/profile" element={<EmployeeProfile />} />
+        <Route path="/manager/settings" element={<EmployeeSettings />} />
+        <Route path="/manager/tasks" element={<EmployeeTasks />} />
+
+        <Route path="/manager/department" element={<EmployeeDepartment />} />
+        <Route
+          element={
+            <EmployeeRoute
+              element={<EmployeeAttendanceLayout />}
+              employeeOnly={true}
+            />
+          }
+        >
+          <Route path="/manager/attendance" element={<EmployeeAttendance />} />
+          <Route
+            path="/manager/attendance/details"
+            element={<EmployeeAttendanceTable />}
           />
         </Route>
       </Route>

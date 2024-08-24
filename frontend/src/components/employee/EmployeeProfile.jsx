@@ -49,6 +49,7 @@ const EmployeeProfile = () => {
       console.error("Error fetching Employee data:", error);
       setError("Unable to fetch Employee data.");
     } finally {
+      console.log(employee)
       setLoading(false);
     }
   };
