@@ -206,8 +206,10 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     serializer_class = DepartmentSerializer
 
     def get_permissions(self):
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+        if self.action in ['create', 'destroy']:
             return [IsAdminUser()]
+        elif self.action in ['update', 'partial_update']:
+            return [IsAuthenticated(), IsManager()]
         return [IsAuthenticated()]
 
     def get_queryset(self):

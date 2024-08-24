@@ -323,7 +323,7 @@ const AttendanceDashboard = () => {
               <Line data={lineChartData} options={{ responsive: true }} />
             </div> */}
 
-            <div classname="flex justify-center" style={{ height: "400px" }}>
+            <div className="flex justify-center" style={{ height: "400px" }}>
               <h2 className="text-xl text-center font-semibold">
                 Attendance Distribution
               </h2>
