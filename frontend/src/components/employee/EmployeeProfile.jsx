@@ -49,7 +49,7 @@ const EmployeeProfile = () => {
       console.error("Error fetching Employee data:", error);
       setError("Unable to fetch Employee data.");
     } finally {
-      console.log(employee)
+      console.log(employee);
       setLoading(false);
     }
   };
@@ -128,7 +128,10 @@ const EmployeeProfile = () => {
           Date of Birth: {employee.date_of_birth}
         </p>
         <p className="text-gray-700 text-lg">
-          Manager: {department.manager ? `${department.manager_name} ` : "N/A"}
+          Manager:{" "}
+          {department.manager
+            ? `${department.manager.first_name} ${department.manager.last_name}`
+            : "N/A"}
         </p>
       </div>
 

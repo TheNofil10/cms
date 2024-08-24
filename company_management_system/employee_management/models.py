@@ -61,13 +61,21 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     )
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    is_hr_manager = models.BooleanField(default=False)  # Field to indicate HR manager
-
+    is_hr_manager = models.BooleanField(default=False)  
+    is_manager = models.BooleanField(default=False)
+    
+    
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]
 
     objects = EmployeeManager()
+    
+    def save(self, *args, **kwargs):
+        if self.department and (self.manager is None):
+            self.manager = self.department.manager
+        super().save(*args, **kwargs)
 
+        
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
@@ -87,9 +95,27 @@ class Department(models.Model):
     budget = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     office_phone = models.CharField(max_length=20, blank=True)
 
+    def save(self, *args, **kwargs):
+        if self.pk: 
+            old_manager = Department.objects.get(pk=self.pk).manager
+            if old_manager and old_manager != self.manager:
+                old_manager.is_manager = False
+                old_manager.save()
+
+        super().save(*args, **kwargs)
+
+        if self.manager:
+            self.manager.is_manager = True
+            self.manager.save()
+
+        self.employees.exclude(pk=self.manager.pk).update(is_manager=False)
+        self.update_employee_managers()
+
+    def update_employee_managers(self):
+        Employee.objects.filter(department=self).update(manager=self.manager)
+
     def __str__(self):
         return self.name
-
 
 class EmployeeRecord(models.Model):
     employee = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)

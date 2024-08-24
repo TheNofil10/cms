@@ -27,7 +27,6 @@ const AdminEmployeeProfile = () => {
   const [employeeToDelete, setEmployeeToDelete] = useState(null);
 
   useEffect(() => {
-    
     const fetchEmployee = async () => {
       try {
         const employeeResponse = await axios.get(
@@ -39,7 +38,7 @@ const AdminEmployeeProfile = () => {
           }
         );
         setEmployee(employeeResponse.data);
-        
+
         // Fetch department details if needed
         if (employeeResponse.data.department) {
           const departmentResponse = await axios.get(
@@ -62,25 +61,22 @@ const AdminEmployeeProfile = () => {
     };
 
     fetchEmployee();
-    console.log(employee)
+    console.log(employee);
   }, [id]);
 
   const confirmDeleteEmployee = async () => {
     if (!employeeToDelete) return;
-    if (currentUser.is_hr_manager){
-      toast.error("HRs cant delete an employee")
-      setShowConfirmModal(false)
+    if (currentUser.is_hr_manager) {
+      toast.error("HRs cant delete an employee");
+      setShowConfirmModal(false);
       return;
     }
     try {
-      await axios.delete(
-        `http://127.0.0.1:8000/api/employees/${id}/`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
-        }
-      );
+      await axios.delete(`http://127.0.0.1:8000/api/employees/${id}/`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
       toast.error("Employee deleted successfully");
       navigate("/admin/employees");
     } catch (error) {
@@ -96,7 +92,10 @@ const AdminEmployeeProfile = () => {
   };
 
   const handleUpdateProfile = () => {
-    if ((currentUser) && (currentUser.is_superuser || currentUser.is_hr_manager) ) {
+    if (
+      currentUser &&
+      (currentUser.is_superuser || currentUser.is_hr_manager || currentUser.is_manager)
+    ) {
       toast.error("You cannot update profiles");
     } else {
       navigate(`/admin/employees/${id}/update`);
@@ -137,7 +136,8 @@ const AdminEmployeeProfile = () => {
             <FaUserTie className="mr-2" /> {employee.position}
           </p>
           <p className="text-gray-600 text-lg flex items-center justify-center">
-            <FaRegBuilding className="mr-2" /> {department ? department.name : "Loading..."}
+            <FaRegBuilding className="mr-2" />{" "}
+            {department ? department.name : "Loading..."}
           </p>
         </div>
         <div className="mt-4">
@@ -165,8 +165,8 @@ const AdminEmployeeProfile = () => {
         </p>
         <p className="text-gray-700 text-lg">
           Manager:{" "}
-          {employee.manager
-            ? `${employee.manager.first_name} ${employee.manager.last_name}`
+          {department.manager
+            ? `${department.manager.first_name} ${department.manager.last_name}`
             : "N/A"}
         </p>
       </div>
@@ -218,14 +218,21 @@ const AdminEmployeeProfile = () => {
         <p className="text-gray-700 text-lg">Salary: {employee.salary}</p>
       </div>
       {/* Delete Profile Button */}
-      <div className="text-center mt-8">
-        <button
-          onClick={() => handleDeleteEmployee(employee.id, `${employee.first_name} ${employee.last_name}`)}
-          className="bg-red-500 text-white px-4 py-2 rounded-full flex items-center hover:bg-red-600 transition-colors"
-        >
-          <FaTrash className="mr-2" /> Delete Profile
-        </button>
-      </div>
+      {!currentUser.is_manager && (
+        <div className="text-center mt-8">
+          <button
+            onClick={() =>
+              handleDeleteEmployee(
+                employee.id,
+                `${employee.first_name} ${employee.last_name}`
+              )
+            }
+            className="bg-red-500 text-white px-4 py-2 rounded-full flex items-center hover:bg-red-600 transition-colors"
+          >
+            <FaTrash className="mr-2" /> Delete Profile
+          </button>
+        </div>
+      )}
 
       {/* Confirmation Modal */}
       <ConfirmationModal

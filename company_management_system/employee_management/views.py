@@ -247,12 +247,32 @@ class DepartmentEmployeeView(APIView):
     
 class DepartmentMemberListView(generics.ListAPIView):
     serializer_class = EmployeeBriefSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsManager]
 
     def get_queryset(self):
-        current_employee = self.request.user
+        user = self.request.user
+        if user.is_manager:
+            return Employee.objects.filter(department=user.department)
+        return Employee.objects.none()
 
-        return Employee.objects.filter(department=current_employee.department)
+class ManageDepartmentView(generics.RetrieveUpdateAPIView):
+    serializer_class = DepartmentSerializer
+    permission_classes = [IsAuthenticated, IsManager]
+
+    def get_object(self):
+        user = self.request.user
+        return user.department
+
+class DepartmentEmployeeView(APIView):
+    permission_classes = [IsAuthenticated, IsManager]
+
+    def get(self, request):
+        user = request.user
+        if user.is_manager:
+            employees = Employee.objects.filter(department=user.department)
+            serializer = EmployeeBriefSerializer(employees, many=True)
+            return Response(serializer.data)
+        return Response({"detail": "Not authorized."}, status=status.HTTP_403_FORBIDDEN)
 
 class EmployeeDepartmentView(APIView):
     permission_classes = [IsAuthenticated]
