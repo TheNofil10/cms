@@ -99,7 +99,7 @@ class Department(models.Model):
         if self.pk: 
             old_manager = Department.objects.get(pk=self.pk).manager
             if old_manager and old_manager != self.manager:
-                old_manager.is_manager = False
+                old_manager.is_manager = False 
                 old_manager.save()
 
         super().save(*args, **kwargs)
