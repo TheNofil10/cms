@@ -4,7 +4,7 @@ from .views import (
     ApplicantViewSet, ApplicationListView, AttendanceCheckView, AttendanceViewSet, CompanyAttendanceStatsView, ComplianceReportViewSet,
     DepartmentEmployeeView, DepartmentMemberListView, DepartmentViewSet, EmployeeAttendanceStatsView, EmployeeAttendanceView,
     EmployeeDepartmentView, EmployeeViewSet, AdminEmployeeView, EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet,
-    LeaveManagementView, LeaveViewSet, PayrollViewSet, PerformanceReviewViewSet, apply_leave, generate_job_details, generate_post
+    LeaveManagementView, LeaveViewSet, PayrollViewSet, PerformanceReviewViewSet, apply_leave, approve_leave_manager, generate_job_details, generate_post
 )
 from rest_framework.routers import DefaultRouter
 
@@ -50,4 +50,5 @@ urlpatterns = [
     path('leaves/<int:leave_id>/manage/', LeaveManagementView.as_view(), name='manage-leave'),
     path('attendance/check/', AttendanceCheckView.as_view(), name='attendance-check'),
     path('apply-leave/', apply_leave, name='apply-leave'),
+    path('approve-leave-manager/<int:leave_id>/', approve_leave_manager, name='approve_leave_manager'),
 ]

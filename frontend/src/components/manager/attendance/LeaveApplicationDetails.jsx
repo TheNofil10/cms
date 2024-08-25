@@ -35,9 +35,9 @@ const LeaveApplicationDetails = ({
         <p>
           <strong>End Date:</strong> {selectedApplication.end_date}
         </p>
-        <p>
-          <strong>Status:</strong> {selectedApplication.status}
-        </p>
+       {selectedApplication.status!=='pending' && ( <p>
+          <strong>Status:</strong> <strong>{selectedApplication.status}</strong>
+        </p>)}
         <p>
           <strong>Reason:</strong> {selectedApplication.reason}
         </p>
