@@ -384,12 +384,18 @@ def approve_leave_hr(request, leave_id):
     if action == 'approve':
         leave.status = 'approved_by_hr'
         leave.hr_approval_date = timezone.now()
-        Attendance.objects.create(
-            employee=leave.employee,
-            date=leave.start_date,
-            status='leave',
-            comments=f"{leave.leave_type} leave approved."
-        )
+
+        # Create attendance records for each date from start_date to end_date
+        current_date = leave.start_date
+        while current_date <= leave.end_date:
+            Attendance.objects.create(
+                employee=leave.employee,
+                date=current_date,
+                status='leave',
+                comments=f"{leave.leave_type} leave approved."
+            )
+            current_date += timezone.timedelta(days=1)
+
     elif action == 'reject':
         leave.status = 'rejected'
     else:
@@ -397,6 +403,7 @@ def approve_leave_hr(request, leave_id):
 
     leave.save()
     return Response({"detail": f"Leave request {action}d successfully."}, status=status.HTTP_200_OK)
+
 
 class EmployeeAttendanceView(APIView):
     permission_classes = [IsAuthenticated]

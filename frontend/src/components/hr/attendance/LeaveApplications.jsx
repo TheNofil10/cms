@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import LeaveApplicationDetails from '../../LeaveApplicationDetails';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import LeaveApplicationDetails from "../../LeaveApplicationDetails";
 
 const LeaveApplications = () => {
   const [applications, setApplications] = useState([]);
   const [selectedApplication, setSelectedApplication] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -16,7 +17,14 @@ const LeaveApplications = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setApplications(response.data.filter(app => app.status === 'approved_by_manager'));
+        setApplications(
+          response.data.filter(
+            (app) =>
+              app.status === "approved_by_manager" ||
+              app.status === "approved_by_hr" || 
+              app.status === "rejected"
+          )
+        );
       } catch (error) {
         if (error.response.status === 401) {
           try {
@@ -44,16 +52,18 @@ const LeaveApplications = () => {
       const token = localStorage.getItem("access_token");
       await axios.post(
         `http://127.0.0.1:8000/api/approve-leave-hr/${id}/`,
-        { action: 'approve' },
+        { action: "approve" },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      setApplications(applications.map(app => 
-        app.id === id ? { ...app, status: 'approved_by_hr' } : app
-      ));
+      setApplications(
+        applications.map((app) =>
+          app.id === id ? { ...app, status: "approved_by_hr" } : app
+        )
+      );
       toast.success("Leave application approved.");
     } catch (error) {
       console.error("Error approving leave:", error);
@@ -66,21 +76,33 @@ const LeaveApplications = () => {
       const token = localStorage.getItem("access_token");
       await axios.post(
         `http://127.0.0.1:8000/api/approve-leave-hr/${id}/`,
-        { action: 'reject' },
+        { action: "reject" },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      setApplications(applications.map(app => 
-        app.id === id ? { ...app, status: 'rejected' } : app
-      ));
+      setApplications(
+        applications.map((app) =>
+          app.id === id ? { ...app, status: "rejected" } : app
+        )
+      );
       toast.success("Leave application rejected.");
     } catch (error) {
       console.error("Error rejecting leave:", error);
       toast.error("Error rejecting leave application.");
     }
+  };
+
+  const handleApplicationClick = (application) => {
+    setSelectedApplication(application);
+    setIsModalOpen(true);
+  };
+
+  const handleStatusModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedApplication(null);
   };
 
   return (
@@ -109,7 +131,11 @@ const LeaveApplications = () => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {applications.map((application) => (
-              <tr key={application.id}>
+              <tr
+                key={application.id}
+                className="cursor-pointer hover:bg-gray-100"
+                onClick={() => handleApplicationClick(application)}
+              >
                 <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">
                   {application.leave_type}
                 </td>
@@ -123,24 +149,41 @@ const LeaveApplications = () => {
                   {application.status}
                 </td>
                 <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">
-                  <button
-                    onClick={() => handleApprove(application.id)}
-                    className="bg-green-500 text-white px-2 py-1 rounded"
-                  >
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => handleReject(application.id)}
-                    className="bg-red-500 text-white px-2 py-1 rounded ml-2"
-                  >
-                    Reject
-                  </button>
+                  {(application.status !== "approved_by_hr" &&
+                    application.status !== "rejected") && (
+                    <>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleApprove(application.id);
+                        }}
+                        className="bg-green-500 text-white px-2 py-1 rounded"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleReject(application.id);
+                        }}
+                        className="bg-red-500 text-white px-2 py-1 rounded ml-2"
+                      >
+                        Reject
+                      </button>
+                    </>
+                  )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {isModalOpen && (
+        <LeaveApplicationDetails
+          selectedApplication={selectedApplication}
+          handleStatusModalClose={handleStatusModalClose}
+        />
+      )}
       <ToastContainer />
     </div>
   );
