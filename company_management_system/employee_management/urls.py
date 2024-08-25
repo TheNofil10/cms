@@ -3,7 +3,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import (
     ApplicantViewSet, ApplicationListView, AttendanceCheckView, AttendanceViewSet, CompanyAttendanceStatsView, ComplianceReportViewSet, DepartmentEmployeeView,
     DepartmentMemberListView, DepartmentViewSet, EmployeeAttendanceStatsView, EmployeeAttendanceView, EmployeeDepartmentView,
-    EmployeeViewSet, AdminEmployeeView, EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet, LeaveManagementView, LeaveViewSet, PayrollViewSet, PerformanceReviewViewSet, generate_job_details, generate_post
+    EmployeeViewSet, AdminEmployeeView, EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet, LeaveManagementView, LeaveViewSet, PayrollViewSet, PerformanceReviewViewSet, apply_leave, generate_job_details, generate_post
 )
 from rest_framework.routers import DefaultRouter
 
@@ -48,4 +48,5 @@ urlpatterns = [
     path('department/employees/', DepartmentEmployeeView.as_view(), name='department-employee-list'),
      path('leaves/<int:leave_id>/manage/', LeaveManagementView.as_view(), name='manage-leave'),
     path('attendance/check/', AttendanceCheckView.as_view(), name='attendance-check'),
+    path('apply-leave/', apply_leave, name='apply-leave'),
 ]

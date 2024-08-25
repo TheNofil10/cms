@@ -83,7 +83,7 @@ class LeaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Leave
         fields = '__all__'
-        
+
 class PayrollSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payroll
