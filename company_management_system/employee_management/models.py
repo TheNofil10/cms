@@ -224,6 +224,13 @@ class Attendance(models.Model):
     comments = models.TextField(blank=True)
 
 class Leave(models.Model):
+    LEAVE_STATUS = [
+        ('pending', 'Pending'),
+        ('approved_by_manager', 'Approved by Manager'),
+        ('approved_by_hr', 'Approved by HR'),
+        ('rejected', 'Rejected'),
+    ]
+    
     LEAVE_TYPES = [
         ('sick', 'Sick'),
         ('casual', 'Casual'),
@@ -231,17 +238,21 @@ class Leave(models.Model):
         ('maternity', 'Maternity'),
         ('paternity', 'Paternity'),
     ]
+    
     employee = models.ForeignKey('Employee', on_delete=models.CASCADE)
     leave_type = models.CharField(max_length=20, choices=LEAVE_TYPES)
     start_date = models.DateField()
     end_date = models.DateField()
-    status = models.CharField(max_length=20, choices=[
-        ('pending', 'Pending'),
-        ('approved', 'Approved'),
-        ('rejected', 'Rejected')
-    ], default='pending')
     reason = models.TextField()
-    
+    status = models.CharField(max_length=30, choices=LEAVE_STATUS, default='pending')
+    manager_approval_date = models.DateField(null=True, blank=True)
+    hr_approval_date = models.DateField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def total_days(self):
+        return (self.end_date - self.start_date).days + 1
+   
 class Payroll(models.Model):
     employee = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE, related_name="payrolls"

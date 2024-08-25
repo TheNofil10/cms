@@ -321,6 +321,75 @@ class LeaveViewSet(viewsets.ModelViewSet):
             return [IsAdminUser()]
         return [IsAuthenticated()]
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def apply_leave(request):
+    employee = request.user
+    data = request.data
+    leave = Leave.objects.create(
+        employee=employee,
+        leave_type=data['leave_type'],
+        start_date=data['start_date'],
+        end_date=data['end_date'],
+        reason=data['reason'],
+    )
+    return Response({"detail": "Leave request submitted successfully."}, status=status.HTTP_201_CREATED)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def approve_leave_manager(request, leave_id):
+    user = request.user
+
+    try:
+        leave = Leave.objects.get(id=leave_id, employee__department=user.department, status='pending')
+    except Leave.DoesNotExist:
+        return Response({"detail": "Leave request not found or already processed."}, status=status.HTTP_404_NOT_FOUND)
+
+    action = request.data.get('action')
+
+    if action == 'approve':
+        leave.status = 'approved_by_manager'
+        leave.manager_approval_date = timezone.now()
+    elif action == 'reject':
+        leave.status = 'rejected'
+    else:
+        return Response({"detail": "Invalid action."}, status=status.HTTP_400_BAD_REQUEST)
+
+    leave.save()
+    return Response({"detail": f"Leave request {action}d successfully."}, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def approve_leave_hr(request, leave_id):
+    user = request.user
+
+    if not user.is_hr_manager:
+        return Response({"detail": "Not authorized to approve leave requests."}, status=status.HTTP_403_FORBIDDEN)
+
+    try:
+        leave = Leave.objects.get(id=leave_id, status='approved_by_manager')
+    except Leave.DoesNotExist:
+        return Response({"detail": "Leave request not found or already processed."}, status=status.HTTP_404_NOT_FOUND)
+
+    action = request.data.get('action')
+
+    if action == 'approve':
+        leave.status = 'approved_by_hr'
+        leave.hr_approval_date = timezone.now()
+        Attendance.objects.create(
+            employee=leave.employee,
+            date=leave.start_date,
+            status='leave',
+            comments=f"{leave.leave_type} leave approved."
+        )
+    elif action == 'reject':
+        leave.status = 'rejected'
+    else:
+        return Response({"detail": "Invalid action."}, status=status.HTTP_400_BAD_REQUEST)
+
+    leave.save()
+    return Response({"detail": f"Leave request {action}d successfully."}, status=status.HTTP_200_OK)
+
 class EmployeeAttendanceView(APIView):
     permission_classes = [IsAuthenticated]
 

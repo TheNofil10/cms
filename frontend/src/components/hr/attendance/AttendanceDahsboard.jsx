@@ -210,7 +210,7 @@ const AttendanceDashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
-      <h1 className="text-2xl font-bold">HR Attendance Dashboard</h1>
+      <h1 className="text-2xl font-bold">Attendance Dashboard</h1>
 
       {/* Employee Selector */}
       <div className="bg-white p-4 rounded-lg shadow grid grid-cols-2 gap-4">
