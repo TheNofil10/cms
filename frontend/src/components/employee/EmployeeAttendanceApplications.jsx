@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import LeaveApplicationDetails from "./leaveApplicationDetails";
+import LeaveApplicationDetails from "../LeaveApplicationDetails";
 import NewLeaveApplicationForm from "./NewLeaveApplicationForm";
 import { ToastContainer } from "react-toastify";
 
@@ -37,10 +37,13 @@ const EmployeeAttendanceApplications = () => {
           console.error("Error fetching leave applications:", error);
         }
       }
+      finally {
+        console.log("Applications fetched successfully: ", applications[0]);
+      }
     };
 
     fetchApplications();
-  }, []);
+  }, [setIsFormOpen]);
 
   const handleApplicationClick = (application) => {
     setSelectedApplication(application);
@@ -107,9 +110,6 @@ const EmployeeAttendanceApplications = () => {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Employee
-              </th>
-              <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Leave Type
               </th>
               <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -130,9 +130,6 @@ const EmployeeAttendanceApplications = () => {
                 onClick={() => handleApplicationClick(application)}
                 className="cursor-pointer hover:bg-gray-100"
               >
-                <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {application.employee_name}
-                </td>
                 <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">
                   {application.leave_type}
                 </td>

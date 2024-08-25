@@ -316,6 +316,14 @@ class LeaveViewSet(viewsets.ModelViewSet):
     queryset = Leave.objects.all()
     serializer_class = LeaveSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_superuser or user.is_hr_manager:
+            return Leave.objects.all()
+        elif user.is_manager:
+            return Leave.objects.filter(employee__department=user.department)
+        return Leave.objects.filter(employee=user)
+
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [IsAdminUser()]

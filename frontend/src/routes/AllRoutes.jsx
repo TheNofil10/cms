@@ -50,6 +50,7 @@ import ManagerLayout from "../components/manager/ManagerLayout.jsx";
 import ManagerRoute from "./ManagerRoute.jsx";
 import ManagerDepartmentPage from "../pages/ManagerDepartmentPage.jsx";
 import ManagerAttendanceLayout from "../components/manager/attendance/ManagerAttendanceLayout.jsx";
+import ManagerLeaveApplications from "../components/manager/attendance/ManagerLeaveApplications.jsx";
 const AllRoutes = () => {
   return (
     <Routes>
@@ -112,7 +113,7 @@ const AllRoutes = () => {
         >
           <Route path="/manager/attendance" element={<AttendanceDahsboard />} />
           <Route path="/manager/attendance/table" element={<AttendanceTable />} />
-          <Route path="/manager/attendance/leaves" element={<LeaveApplications />} />
+          <Route path="/manager/attendance/leaves" element={<ManagerLeaveApplications />} />
         </Route>
       </Route>
 

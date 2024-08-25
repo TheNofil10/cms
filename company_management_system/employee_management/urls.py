@@ -1,9 +1,10 @@
 from django.urls import include, path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 from .views import (
-    ApplicantViewSet, ApplicationListView, AttendanceCheckView, AttendanceViewSet, CompanyAttendanceStatsView, ComplianceReportViewSet, DepartmentEmployeeView,
-    DepartmentMemberListView, DepartmentViewSet, EmployeeAttendanceStatsView, EmployeeAttendanceView, EmployeeDepartmentView,
-    EmployeeViewSet, AdminEmployeeView, EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet, LeaveManagementView, LeaveViewSet, PayrollViewSet, PerformanceReviewViewSet, apply_leave, generate_job_details, generate_post
+    ApplicantViewSet, ApplicationListView, AttendanceCheckView, AttendanceViewSet, CompanyAttendanceStatsView, ComplianceReportViewSet,
+    DepartmentEmployeeView, DepartmentMemberListView, DepartmentViewSet, EmployeeAttendanceStatsView, EmployeeAttendanceView,
+    EmployeeDepartmentView, EmployeeViewSet, AdminEmployeeView, EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet,
+    LeaveManagementView, LeaveViewSet, PayrollViewSet, PerformanceReviewViewSet, apply_leave, generate_job_details, generate_post
 )
 from rest_framework.routers import DefaultRouter
 
@@ -14,7 +15,7 @@ router.register(r'employee-records', EmployeeRecordViewSet)
 router.register(r'job-postings', JobPostingViewSet)
 router.register(r'performance-reviews', PerformanceReviewViewSet)
 router.register(r'attendance', AttendanceViewSet)
-router.register(r'leaves', LeaveViewSet)
+router.register(r'leaves', LeaveViewSet, basename='leave')
 router.register(r'payrolls', PayrollViewSet)
 router.register(r'compliance-reports', ComplianceReportViewSet)
 router.register(r'applications', ApplicationViewSet, basename='application')
@@ -35,7 +36,7 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('department-members/', DepartmentMemberListView.as_view(), name='department-member-list'),
-    path('department/me', EmployeeDepartmentView.as_view(), name='employee_department'),
+    path('department/me/', EmployeeDepartmentView.as_view(), name='employee_department'),
     path('applications/', application_list, name='application-list'),
     path('applications/<int:pk>/', application_detail, name='application-detail'),
     path('applications/<int:pk>/update_status/', application_status_update, name='application-update-status'),
@@ -46,7 +47,7 @@ urlpatterns = [
     path('admin/attendance/', AttendanceViewSet.as_view({'get': 'list'}), name='admin-attendance'),
     path('admin/attendance/update/<int:pk>/', AttendanceViewSet.as_view({'patch': 'partial_update'}), name='attendance-detail'),
     path('department/employees/', DepartmentEmployeeView.as_view(), name='department-employee-list'),
-     path('leaves/<int:leave_id>/manage/', LeaveManagementView.as_view(), name='manage-leave'),
+    path('leaves/<int:leave_id>/manage/', LeaveManagementView.as_view(), name='manage-leave'),
     path('attendance/check/', AttendanceCheckView.as_view(), name='attendance-check'),
     path('apply-leave/', apply_leave, name='apply-leave'),
 ]
