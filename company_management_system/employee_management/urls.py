@@ -21,8 +21,11 @@ router.register(r'compliance-reports', ComplianceReportViewSet)
 router.register(r'applications', ApplicationViewSet, basename='application')
 router.register(r'applicants', ApplicantViewSet)
 router.register(r'tasks', TaskViewSet)
-router.register(r'task-comments', TaskCommentViewSet)
+router.register(r'task-comments', TaskCommentViewSet, basename='task-comments')
 
+
+
+task_comment_list = TaskCommentViewSet.as_view({'get': 'list'})
 application_list = ApplicationViewSet.as_view({'get': 'list', 'post': 'create'})
 application_detail = ApplicationViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update'})
 application_status_update = ApplicationViewSet.as_view({'post': 'update_status'})
@@ -54,5 +57,6 @@ urlpatterns = [
     path('apply-leave/', apply_leave, name='apply-leave'),
     path('approve-leave-manager/<int:leave_id>/', approve_leave_manager, name='approve_leave_manager'),
     path('approve-leave-hr/<int:leave_id>/', approve_leave_hr, name='approve_leave_hr'),
-     path('employee-suggestions/', EmployeeSuggestionView.as_view({'get': 'list'}), name='employee-suggestions'),
+    path('employee-suggestions/', EmployeeSuggestionView.as_view({'get': 'list'}), name='employee-suggestions'),
+    path('tasks/<int:task_id>/comments/', task_comment_list, name='task-comments-list'),
 ]

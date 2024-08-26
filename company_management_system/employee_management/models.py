@@ -148,13 +148,11 @@ class Task(models.Model):
 
 class TaskComment(models.Model):
     task = models.ForeignKey(Task, related_name='comments', on_delete=models.CASCADE)
-    author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(Employee, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f'Comment by {self.author} on {self.task} at {self.created_at}'
-
+    
 class EmployeeRecord(models.Model):
     employee = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     contract_type = models.CharField(max_length=100)

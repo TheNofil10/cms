@@ -131,11 +131,12 @@ class LeaveSerializer(serializers.ModelSerializer):
 
 
 class TaskCommentSerializer(serializers.ModelSerializer):
+    created_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = TaskComment
-        fields = ["id", "task", "author", "comment", "created_at"]
-
-
+        fields = ['id', 'task', 'comment', 'created_at', 'created_by']
+     
 class TaskSerializer(serializers.ModelSerializer):
     comments = TaskCommentSerializer(many=True, read_only=True)
     assigned_to = serializers.PrimaryKeyRelatedField(

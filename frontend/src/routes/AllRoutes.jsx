@@ -52,6 +52,7 @@ import ManagerDepartmentPage from "../pages/ManagerDepartmentPage.jsx";
 import ManagerAttendanceLayout from "../components/manager/attendance/ManagerAttendanceLayout.jsx";
 import ManagerLeaveApplications from "../components/manager/attendance/ManagerLeaveApplications.jsx";
 import ManagerTasks from "../components/manager/tasks/ManagerTasks.jsx";
+import TaskDetail from "../components/manager/tasks/TaskDetail.jsx";
 const AllRoutes = () => {
   return (
     <Routes>
@@ -101,6 +102,7 @@ const AllRoutes = () => {
         <Route path="/manager/profile" element={<EmployeeProfile />} />
         <Route path="/manager/settings" element={<EmployeeSettings />} />
         <Route path="/manager/tasks" element={<ManagerTasks />} />
+        <Route path="/manager/tasks/:id" element={<TaskDetail />} />
         <Route path="/manager/employees/:id" element={<AdminEmployeeProfile />} />
         <Route path="/manager/employees" element={<EmployeesPage />} />
         <Route path="/manager/department" element={<ManagerDepartmentPage />} />

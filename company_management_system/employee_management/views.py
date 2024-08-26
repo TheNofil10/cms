@@ -790,9 +790,13 @@ class TaskViewSet(viewsets.ModelViewSet):
         return Task.objects.filter(assigned_to=user)
 
 class TaskCommentViewSet(viewsets.ModelViewSet):
-    queryset = TaskComment.objects.all()
     serializer_class = TaskCommentSerializer
-    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        task_id = self.kwargs.get('task_id')
+        if task_id:
+            return TaskComment.objects.filter(task_id=task_id)
+        return super().get_queryset()
     
 class ApplicantViewSet(viewsets.ModelViewSet):
     queryset = Applicant.objects.all()
@@ -854,3 +858,4 @@ class ApplicationListView(generics.ListAPIView):
 class PerformanceReviewViewSet(viewsets.ModelViewSet):
     queryset = PerformanceReview.objects.all()
     serializer_class = PerformanceReviewSerializer
+    

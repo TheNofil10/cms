@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../../contexts/AuthContext";
 import { FaPlus, FaTimes } from "react-icons/fa";
+import { ToastContainer } from "react-toastify";
 
 const CreateTaskModal = ({ onClose, onCreate }) => {
   const { currentUser } = useAuth();
@@ -94,7 +95,7 @@ const CreateTaskModal = ({ onClose, onCreate }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded shadow-lg w-full max-w-lg">
+      <div className="bg-white p-6 rounded shadow-lg w-full max-w-lg h-5/6 overflow-y-auto">
         <h2 className="text-xl font-bold mb-4">Create New Task</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -181,6 +182,7 @@ const CreateTaskModal = ({ onClose, onCreate }) => {
               onChange={(e) => setDepartment(e.target.value)}
               className="w-full px-3 py-2 border rounded"
               readOnly
+              disabled
             />
           </div>
           <div className="mb-4">
@@ -239,6 +241,7 @@ const CreateTaskModal = ({ onClose, onCreate }) => {
           </div>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 };
