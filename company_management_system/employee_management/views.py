@@ -1,6 +1,7 @@
 from datetime import datetime
 from django.conf import settings
 from decimal import Decimal
+from rest_framework import mixins
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
@@ -258,7 +259,18 @@ class DepartmentViewSet(viewsets.ModelViewSet):
                 )
         return super().partial_update(request, *args, **kwargs)
 
+class EmployeeSuggestionView(viewsets.GenericViewSet, mixins.ListModelMixin):
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
 
+    def get_queryset(self):
+        query = self.request.query_params.get('q', '')
+        if query:
+            return Employee.objects.filter(
+                Q(first_name__icontains=query) | Q(last_name__icontains=query)
+            )
+        return Employee.objects.none()
+       
 class DepartmentEmployeeView(APIView):
     permission_classes = [IsAuthenticated]
 

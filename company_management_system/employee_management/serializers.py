@@ -1,4 +1,3 @@
-from asyncio import Task
 from django.urls import reverse
 from rest_framework import serializers
 from .models import (
@@ -14,6 +13,7 @@ from .models import (
     Payroll,
     ComplianceReport,
     TaskComment,
+    Task,
 )
 
 
