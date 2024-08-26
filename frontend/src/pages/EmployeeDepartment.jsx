@@ -15,7 +15,7 @@ const EmployeeDepartment = () => {
     const fetchDepartment = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/department/me",
+          "http://127.0.0.1:8000/api/department/me/",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,

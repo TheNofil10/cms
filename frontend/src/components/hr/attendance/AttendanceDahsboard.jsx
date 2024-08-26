@@ -42,29 +42,29 @@ const AttendanceDashboard = () => {
           }
         );
         setStats(statsResponse.data);
-        const attendanceResponse = await axios.get(
-          "http://127.0.0.1:8000/api/attendance/",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-            },
-            params: {
-              start_date: startDate,
-              end_date: endDate,
-              employee_id: searchType === "id" ? selectedEmployeeId : "",
-              username:
-                searchType === "username" ? selectedEmployeeUsername : "",
-            },
-          }
-        );
+        // const attendanceResponse = await axios.get(
+        //   "http://127.0.0.1:8000/api/attendance/",
+        //   {
+        //     headers: {
+        //       Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        //     },
+        //     params: {
+        //       start_date: startDate,
+        //       end_date: endDate,
+        //       employee_id: searchType === "id" ? selectedEmployeeId : "",
+        //       username:
+        //         searchType === "username" ? selectedEmployeeUsername : "",
+        //     },
+        //   }
+        // );
 
-        const filteredData = attendanceResponse.data.filter(
-          (entry) =>
-            new Date(entry.date) >= new Date(startDate) &&
-            new Date(entry.date) <= new Date(endDate)
-        );
+        // const filteredData = attendanceResponse.data.filter(
+        //   (entry) =>
+        //     new Date(entry.date) >= new Date(startDate) &&
+        //     new Date(entry.date) <= new Date(endDate)
+        // );
 
-        setAttendanceData(filteredData);
+        // setAttendanceData(filteredData);
       } catch (error) {
         toast.error("Error fetching attendance data");
         console.error("Error fetching attendance data:", error);
@@ -166,44 +166,17 @@ const AttendanceDashboard = () => {
   };
 
   const pieChartData = {
-    labels: [
-      "Present",
-      "Absent",
-      "Late",
-      "Sick Leave",
-      "Casual Leave",
-      "Additional Metric 1",
-      "Additional Metric 2",
-    ],
+    labels: ["Present", "Absent", "Late", "Leaves"],
     datasets: [
       {
         data: [
           stats.days_present || 0,
           stats.days_absent || 0,
           stats.days_late || 0,
-          stats.sick_leave || 0,
-          stats.casual_leave || 0,
-          stats.additional_metric_1 || 0,
-          stats.additional_metric_2 || 0,
+          stats.total_leaves,
         ],
-        backgroundColor: [
-          "#36A2EB",
-          "#FF6384",
-          "#FFCE56",
-          "#9966FF",
-          "#FF9F40",
-          "#FF6F61",
-          "#6B5B95",
-        ],
-        hoverBackgroundColor: [
-          "#36A2EB",
-          "#FF6384",
-          "#FFCE56",
-          "#9966FF",
-          "#FF9F40",
-          "#FF6F61",
-          "#6B5B95",
-        ],
+        backgroundColor: ["#36A2EB", "#FF6384", "#FFCE56", "#9966FF"],
+        hoverBackgroundColor: ["#36A2EB", "#FF6384", "#FFCE56", "#9966FF"],
       },
     ],
   };
@@ -290,12 +263,24 @@ const AttendanceDashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4">
               <div className="bg-white p-4 rounded-lg shadow">
-                <h2 className="text-lg font-semibold">Present</h2>
+                <h2 className="text-lg font-semibold">Days Present</h2>
                 <p className="text-2xl">{stats.days_present || 0}</p>
               </div>
               <div className="bg-white p-4 rounded-lg shadow">
-                <h2 className="text-lg font-semibold">Absent</h2>
+                <h2 className="text-lg font-semibold">Days Absent</h2>
                 <p className="text-2xl">{stats.days_absent || 0}</p>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow">
+                <h2 className="text-lg font-semibold">Total Leaves</h2>
+                <p className="text-2xl">{stats.total_leaves || 0}</p>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow">
+                <h2 className="text-lg font-semibold">Days Late</h2>
+                <p className="text-2xl">{stats.days_late || 0}</p>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow">
+                <h2 className="text-lg font-semibold">Overtime Hours</h2>
+                <p className="text-2xl">{stats.overtime_hours || 0}</p>
               </div>
               <div className="bg-white p-4 rounded-lg shadow">
                 <h2 className="text-lg font-semibold">Sick Leaves</h2>
@@ -306,8 +291,12 @@ const AttendanceDashboard = () => {
                 <p className="text-2xl">{stats.casual_leave || 0}</p>
               </div>
               <div className="bg-white p-4 rounded-lg shadow">
-                <h2 className="text-lg font-semibold">Late</h2>
-                <p className="text-2xl">{stats.days_late || 0}</p>
+                <h2 className="text-lg font-semibold">Annual Leaves</h2>
+                <p className="text-2xl">{stats.annual_leave || 0}</p>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow">
+                <h2 className="text-lg font-semibold">Other Leaves</h2>
+                <p className="text-2xl">{stats.other_leaves || 0}</p>
               </div>
               <div className="bg-white p-4 rounded-lg shadow">
                 <h2 className="text-lg font-semibold">Overtime Hours</h2>
@@ -324,9 +313,6 @@ const AttendanceDashboard = () => {
             </div> */}
 
             <div className="flex justify-center" style={{ height: "400px" }}>
-              <h2 className="text-xl text-center font-semibold">
-                Attendance Distribution
-              </h2>
               <Pie data={pieChartData} options={{ responsive: true }} />
             </div>
           </div>

@@ -215,6 +215,8 @@ class Attendance(models.Model):
         ('sick_leave', 'Sick Leave'),
         ('casual_leave', 'Casual Leave'),
         ('annual_leave', 'Annual Leave'),
+        ('maternity_leave', 'Maternity Leave'),
+        ('paternity_leave', 'Paternity Leave'),
     ])
     
     time_in = models.TimeField(null=True, blank=True)
@@ -232,11 +234,11 @@ class Leave(models.Model):
     ]
     
     LEAVE_TYPES = [
-        ('sick', 'Sick'),
-        ('casual', 'Casual'),
-        ('annual', 'Annual'),
-        ('maternity', 'Maternity'),
-        ('paternity', 'Paternity'),
+        ('sick_leave', 'Sick Leave'),
+        ('casual_leave', 'Casual Leave'),
+        ('annual_leave', 'Annual Leave'),
+        ('maternity_leave', 'Maternity Leave'),
+        ('paternity_leave', 'Paternity Leave'),
     ]
     
     employee = models.ForeignKey('Employee', on_delete=models.CASCADE)

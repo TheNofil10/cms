@@ -77,7 +77,8 @@ class AttendanceStatsSerializer(serializers.Serializer):
     absent_without_leave = serializers.IntegerField()
     sick_leave = serializers.IntegerField()  
     casual_leave = serializers.IntegerField()  
-
+    total_leaves = serializers.IntegerField()  
+    other_leaves = serializers.IntegerField()  
     
 class LeaveSerializer(serializers.ModelSerializer):
     class Meta:

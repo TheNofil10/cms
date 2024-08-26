@@ -18,7 +18,7 @@ const NewLeaveApplicationForm = ({ handleFormClose }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      handleFormClose(); // Close the form after submission
+      handleFormClose();
       toast.success("Leave Application Sent Successfully");
     } catch (error) {
       console.error('Error submitting leave application:', error);

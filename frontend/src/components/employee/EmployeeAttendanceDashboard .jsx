@@ -33,6 +33,7 @@ const EmployeeAttendanceDashboard = () => {
           }
         );
         setStats(statsResponse.data);
+        console.log(statsResponse.data);
 
         // Fetching attendance data
         const attendanceResponse = await axios.get(
@@ -114,30 +115,17 @@ const EmployeeAttendanceDashboard = () => {
   };
 
   const pieChartData = {
-    labels: ["Present", "Absent", "Late", "Sick Leave", "Casual Leave"],
+    labels: ["Present", "Absent", "Late", "Leaves"],
     datasets: [
       {
         data: [
           stats.days_present || 0,
           stats.days_absent || 0,
           stats.days_late || 0,
-          stats.sick_leave || 0,
-          stats.casual_leave || 0,
+          stats.total_leaves,
         ],
-        backgroundColor: [
-          "#36A2EB",
-          "#FF6384",
-          "#FFCE56",
-          "#9966FF",
-          "#FF9F40",
-        ],
-        hoverBackgroundColor: [
-          "#36A2EB",
-          "#FF6384",
-          "#FFCE56",
-          "#9966FF",
-          "#FF9F40",
-        ],
+        backgroundColor: ["#36A2EB", "#FF6384", "#FFCE56", "#9966FF"],
+        hoverBackgroundColor: ["#36A2EB", "#FF6384", "#FFCE56", "#9966FF"],
       },
     ],
   };
@@ -183,12 +171,8 @@ const EmployeeAttendanceDashboard = () => {
           <p className="text-2xl">{stats.days_absent || 0}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-lg font-semibold">Sick Leaves</h2>
-          <p className="text-2xl">{stats.sick_leave || 0}</p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-lg font-semibold">Casual Leaves</h2>
-          <p className="text-2xl">{stats.casual_leave || 0}</p>
+          <h2 className="text-lg font-semibold">Total Leaves</h2>
+          <p className="text-2xl">{stats.total_leaves || 0}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
           <h2 className="text-lg font-semibold">Days Late</h2>
@@ -198,14 +182,39 @@ const EmployeeAttendanceDashboard = () => {
           <h2 className="text-lg font-semibold">Overtime Hours</h2>
           <p className="text-2xl">{stats.overtime_hours || 0}</p>
         </div>
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h2 className="text-lg font-semibold">Sick Leaves</h2>
+          <p className="text-2xl">{stats.sick_leave || 0}</p>
+        </div>
+        {stats.casual_leave && stats.casual_leave !== 0 && (
+          <div className="bg-white p-4 rounded-lg shadow">
+            <h2 className="text-lg font-semibold">Casual Leaves</h2>
+            <p className="text-2xl">{stats.casual_leave || 0}</p>
+          </div>
+        )}
+        {stats.annual_leave && stats.annual_leave !== 0 && (
+          <div className="bg-white p-4 rounded-lg shadow">
+            <h2 className="text-lg font-semibold">Annual Leaves</h2>
+            <p className="text-2xl">{stats.annual_leave || 0}</p>
+          </div>
+        )}
+        {stats.other_leaves && stats.other_leaves !== 0 && (
+          <div className="bg-white p-4 rounded-lg shadow">
+            <h2 className="text-lg font-semibold">Other Leaves</h2>
+            <p className="text-2xl">{stats.other_leaves || 0}</p>
+          </div>
+        )}
+        {stats.overtime_hours && stats.overtime_hours !== 0 && (
+          <div className="bg-white p-4 rounded-lg shadow">
+            <h2 className="text-lg font-semibold">Overtime Hours</h2>
+            <p className="text-2xl">{stats.overtime_hours || 0}</p>
+          </div>
+        )}
       </section>
 
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         <div className="py-5">
-          <div
-            className="bg-white p-4 "
-            style={{ height: "400px" }}
-          >
+          <div className="bg-white p-4 " style={{ height: "400px" }}>
             <h2 className="text-lg font-semibold">Hours Worked</h2>
             <Line
               data={lineChartData}
@@ -214,10 +223,7 @@ const EmployeeAttendanceDashboard = () => {
           </div>
         </div>
         <div className="p-5">
-          <div
-            className="bg-white p-4 "
-            style={{ height: "400px" }}
-          >
+          <div className="bg-white p-4 " style={{ height: "400px" }}>
             <h2 className="text-lg font-semibold">Overview</h2>
             <Pie data={pieChartData} options={{ maintainAspectRatio: false }} />
           </div>
