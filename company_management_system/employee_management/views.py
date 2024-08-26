@@ -28,6 +28,8 @@ from .serializers import (
     LeaveSerializer,
     PayrollSerializer,
     ComplianceReportSerializer,
+    TaskCommentSerializer,
+    TaskSerializer,
 )
 from .models import (
     Applicant,
@@ -41,6 +43,8 @@ from .models import (
     PerformanceReview,
     Payroll,
     ComplianceReport,
+    Task,
+    TaskComment,
 )
 from django.core.files.storage import default_storage
 
@@ -762,7 +766,22 @@ class JobPostingViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         instance.delete()
 
+class TaskViewSet(viewsets.ModelViewSet):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+    permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_manager:
+            return Task.objects.filter(department=user.department)
+        return Task.objects.filter(assigned_to=user)
+
+class TaskCommentViewSet(viewsets.ModelViewSet):
+    queryset = TaskComment.objects.all()
+    serializer_class = TaskCommentSerializer
+    permission_classes = [IsAuthenticated]
+    
 class ApplicantViewSet(viewsets.ModelViewSet):
     queryset = Applicant.objects.all()
     serializer_class = ApplicantSerializer
@@ -819,7 +838,6 @@ class ApplicationListView(generics.ListAPIView):
     def get_queryset(self):
         job_id = self.kwargs["job_id"]
         return Application.objects.filter(job_posting_id=job_id)
-
 
 class PerformanceReviewViewSet(viewsets.ModelViewSet):
     queryset = PerformanceReview.objects.all()

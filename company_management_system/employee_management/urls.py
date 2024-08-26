@@ -4,7 +4,7 @@ from .views import (
     ApplicantViewSet, ApplicationListView, AttendanceCheckView, AttendanceViewSet, CompanyAttendanceStatsView, ComplianceReportViewSet,
     DepartmentEmployeeView, DepartmentMemberListView, DepartmentViewSet, EmployeeAttendanceStatsView, EmployeeAttendanceView,
     EmployeeDepartmentView, EmployeeViewSet, AdminEmployeeView, EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet,
-    LeaveManagementView, LeaveViewSet, PayrollViewSet, PerformanceReviewViewSet, apply_leave, approve_leave_hr, approve_leave_manager, generate_job_details, generate_post
+    LeaveManagementView, LeaveViewSet, PayrollViewSet, PerformanceReviewViewSet, TaskCommentViewSet, TaskViewSet, apply_leave, approve_leave_hr, approve_leave_manager, generate_job_details, generate_post
 )
 from rest_framework.routers import DefaultRouter
 
@@ -20,6 +20,8 @@ router.register(r'payrolls', PayrollViewSet)
 router.register(r'compliance-reports', ComplianceReportViewSet)
 router.register(r'applications', ApplicationViewSet, basename='application')
 router.register(r'applicants', ApplicantViewSet)
+router.register(r'tasks', TaskViewSet)
+router.register(r'task-comments', TaskCommentViewSet)
 
 application_list = ApplicationViewSet.as_view({'get': 'list', 'post': 'create'})
 application_detail = ApplicationViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update'})

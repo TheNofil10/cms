@@ -117,6 +117,44 @@ class Department(models.Model):
     def __str__(self):
         return self.name
 
+class Task(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('on_hold', 'On Hold'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    PRIORITY_CHOICES = [
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High'),
+        ('urgent', 'Urgent'),
+    ]
+
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    assigned_to = models.ManyToManyField(get_user_model(), related_name='tasks')
+    department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='medium')
+    due_date = models.DateField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+class TaskComment(models.Model):
+    task = models.ForeignKey(Task, related_name='comments', on_delete=models.CASCADE)
+    author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Comment by {self.author} on {self.task} at {self.created_at}'
+
 class EmployeeRecord(models.Model):
     employee = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     contract_type = models.CharField(max_length=100)
