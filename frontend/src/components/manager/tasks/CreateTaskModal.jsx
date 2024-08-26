@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../../contexts/AuthContext";
-import { FaPlus, FaTimes } from "react-icons/fa";
+import { FaPlus, FaTimes, FaUserPlus, FaUserCheck, FaCalendarAlt } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 import { ToastContainer } from "react-toastify";
 
 const CreateTaskModal = ({ onClose, onCreate }) => {
@@ -15,7 +16,6 @@ const CreateTaskModal = ({ onClose, onCreate }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [noEmployeesMessage, setNoEmployeesMessage] = useState("");
   const [assignees, setAssignees] = useState([{ name: "", employee: null }]);
-  const [showAddField, setShowAddField] = useState(false);
 
   useEffect(() => {
     if (assignees[assignees.length - 1]?.name.length > 2) {
@@ -56,14 +56,12 @@ const CreateTaskModal = ({ onClose, onCreate }) => {
   };
 
   const handleAddAssigneeField = () => {
-    setShowAddField(true);
     setAssignees([...assignees, { name: "", employee: null }]);
   };
 
   const handleRemoveAssigneeField = (index) => {
     const newAssignees = assignees.filter((_, i) => i !== index);
     setAssignees(newAssignees);
-    setShowAddField(newAssignees.length < assignees.length);
   };
 
   const handleAssigneeChange = (index, value) => {
@@ -95,39 +93,41 @@ const CreateTaskModal = ({ onClose, onCreate }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded shadow-lg w-full max-w-lg h-5/6 overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4">Create New Task</h2>
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg h-5/6 overflow-y-auto">
+        <h2 className="text-2xl font-bold mb-4 flex items-center">
+          <FaUserPlus className="text-blue-500 mr-2" /> Create New Task
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700">Title</label>
+            <label className="block text-gray-700 font-semibold">Title</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 border rounded"
+              className="w-full px-3 py-2 border rounded-lg shadow-sm"
               required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Description</label>
+            <label className="block text-gray-700 font-semibold">Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3 py-2 border rounded"
+              className="w-full px-3 py-2 border rounded-lg shadow-sm"
               required
             ></textarea>
           </div>
           {assignees.map((assignee, index) => (
             <div key={index} className="mb-4 relative">
-              <label className="block text-gray-700">Assigned To</label>
+              <label className="block text-gray-700 font-semibold">Assigned To</label>
               <input
                 type="text"
                 value={assignee.name}
                 onChange={(e) => handleAssigneeChange(index, e.target.value)}
-                className="w-full px-3 py-2 border rounded"
+                className="w-full px-3 py-2 border rounded-lg shadow-sm"
               />
               {suggestions.length > 0 && (
-                <div className="absolute top-full left-0 w-full mt-2 max-h-60 overflow-y-auto bg-white border border-gray-300 rounded shadow-lg">
+                <div className="absolute top-full left-0 w-full mt-2 max-h-60 overflow-y-auto bg-white border border-gray-300 rounded-lg shadow-lg">
                   {suggestions.map((employee) => (
                     <div
                       key={employee.id}
@@ -163,34 +163,31 @@ const CreateTaskModal = ({ onClose, onCreate }) => {
               )}
             </div>
           ))}
-          {showAddField && (
-            <div className="mb-4 relative">
-              <button
-                type="button"
-                onClick={handleAddAssigneeField}
-                className="text-blue-500"
-              >
-                <FaPlus /> Add Another Assignee
-              </button>
-            </div>
-          )}
           <div className="mb-4">
-            <label className="block text-gray-700">Department</label>
+            <button
+              type="button"
+              onClick={handleAddAssigneeField}
+              className="flex items-center text-blue-500 hover:text-blue-700"
+            >
+              <FaPlus className="mr-2" /> Add Another Assignee
+            </button>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold">Department</label>
             <input
               type="text"
               value={department}
-              onChange={(e) => setDepartment(e.target.value)}
-              className="w-full px-3 py-2 border rounded"
+              className="w-full px-3 py-2 border rounded-lg shadow-sm"
               readOnly
               disabled
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Status</label>
+            <label className="block text-gray-700 font-semibold">Status</label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="w-full px-3 py-2 border rounded"
+              className="w-full px-3 py-2 border rounded-lg shadow-sm"
               required
             >
               <option value="pending">Pending</option>
@@ -201,11 +198,11 @@ const CreateTaskModal = ({ onClose, onCreate }) => {
             </select>
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Priority</label>
+            <label className="block text-gray-700 font-semibold">Priority</label>
             <select
               value={priority}
               onChange={(e) => setPriority(e.target.value)}
-              className="w-full px-3 py-2 border rounded"
+              className="w-full px-3 py-2 border rounded-lg shadow-sm"
               required
             >
               <option value="low">Low</option>
@@ -215,12 +212,12 @@ const CreateTaskModal = ({ onClose, onCreate }) => {
             </select>
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Due Date</label>
+            <label className="block text-gray-700 font-semibold">Due Date</label>
             <input
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="w-full px-3 py-2 border rounded"
+              className="w-full px-3 py-2 border rounded-lg shadow-sm"
               required
             />
           </div>
@@ -228,15 +225,15 @@ const CreateTaskModal = ({ onClose, onCreate }) => {
             <button
               type="button"
               onClick={onClose}
-              className="mr-2 px-4 py-2 bg-gray-300 text-black rounded"
+              className="mr-2 px-4 py-2 bg-gray-300 text-black rounded-lg flex items-center hover:bg-gray-400"
             >
-              Cancel
+              <IoMdClose className="mr-2" /> Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-black text-white rounded"
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg flex items-center hover:bg-blue-600"
             >
-              Create Task
+              <FaUserCheck className="mr-2" /> Create Task
             </button>
           </div>
         </form>

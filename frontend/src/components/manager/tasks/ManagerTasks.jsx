@@ -4,6 +4,8 @@ import { FaPlus, FaEdit, FaTrash, FaEye } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import UpdateTaskModal from './UpdateTaskModal'; // Make sure to import UpdateTaskModal
+import CreateTaskModal from './CreateTaskModal'; // Import CreateTaskModal
 
 const ManagerTasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -86,6 +88,15 @@ const ManagerTasks = () => {
     setShowUpdateTaskModal(true);
   };
 
+  const handleCloseUpdateModal = () => {
+    setShowUpdateTaskModal(false);
+    setSelectedTask(null); // Clear selected task on close
+  };
+
+  const handleCloseCreateModal = () => {
+    setShowTaskModal(false);
+  };
+
   return (
     <div className="p-4">
       <ToastContainer />
@@ -141,8 +152,24 @@ const ManagerTasks = () => {
           ))}
         </tbody>
       </table>
+      <ToastContainer />
 
-      {/* Modals for task creation and update can be left as is */}
+      {/* Conditionally render UpdateTaskModal */}
+      {showUpdateTaskModal && selectedTask && (
+        <UpdateTaskModal
+          task={selectedTask}
+          onClose={handleCloseUpdateModal}
+          onUpdate={handleUpdateTask}
+        />
+      )}
+
+      {/* Conditionally render CreateTaskModal */}
+      {showTaskModal && (
+        <CreateTaskModal
+          onClose={handleCloseCreateModal}
+          onCreate={handleCreateTask}
+        />
+      )}
     </div>
   );
 };
