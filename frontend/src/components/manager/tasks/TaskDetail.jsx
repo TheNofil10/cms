@@ -15,6 +15,7 @@ const TaskDetail = () => {
   const [department, setDepartment] = useState(null);
   const [assignedEmployees, setAssignedEmployees] = useState([]);
   const [comments, setComments] = useState([]);
+  const [employees, setEmployees] = useState({});
   const [newComment, setNewComment] = useState("");
 
   useEffect(() => {
@@ -69,7 +70,12 @@ const TaskDetail = () => {
           },
         }
       );
-      setComments(response.data);
+
+      const commentsData = response.data;
+      console.log("Comments Data:", commentsData); // Log comments data
+
+      setComments(commentsData);
+      
     } catch (error) {
       console.error("Error fetching comments:", error);
     }
@@ -81,7 +87,7 @@ const TaskDetail = () => {
     try {
       await axios.post(
         `http://127.0.0.1:8000/api/task-comments/`,
-        { task: id, comment: newComment }, 
+        { task: id, comment: newComment },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -187,22 +193,48 @@ const TaskDetail = () => {
         <h2 className="text-xl font-semibold mb-4">Comments</h2>
         <div className="space-y-4">
           {comments.map((comment) => (
-            <div key={comment.id} className="p-4 border border-gray-200 rounded-lg">
+            <div
+              key={comment.id}
+              className="p-4 border border-gray-200 rounded-lg"
+            >
+              <div className="flex items-center space-x-4 mb-2">
+                <img
+                  src={comment.created_by.profile_image}
+                  alt={comment.created_by.username}
+                  className="w-10 h-10 rounded-full"
+                />
+
+                <div>
+                  <p className="font-bold text-gray-800">
+                    {comment.created_by.first_name}{" "}
+                    {comment.created_by?.last_name}
+                  </p>
+                  <p className="text-gray-500">
+                    @{comment.created_by.username}
+                  </p>
+                </div>
+              </div>
               <p className="text-gray-800">{comment.comment}</p>
+
+              <p className="text-gray-500 text-sm mt-1">
+                {new Date(comment.created_at).toLocaleDateString()}
+                {new Date(comment.created_at).toLocaleTimeString()}
+              </p>
             </div>
           ))}
         </div>
 
-        <div className="mt-4">
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold mb-2">Add Comment</h3>
           <textarea
+            className="w-full p-2 border border-gray-300 rounded-lg"
+            rows="4"
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-lg"
-            placeholder="Add a comment..."
           />
           <button
+            className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg"
             onClick={handleAddComment}
-            className="mt-2 bg-blue-500 text-white py-2 px-4 rounded-lg"
           >
             Add Comment
           </button>
