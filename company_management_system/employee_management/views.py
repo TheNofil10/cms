@@ -10,7 +10,7 @@ from django.utils.timezone import make_aware
 from rest_framework.views import APIView
 from django.db.models import Sum, Count, F, FloatField
 from django.db.models.functions import Cast
-from .permissions import IsAdminOrHRManager, IsManager
+from .permissions import IsAdminHRManagerHODOrManager, IsAdminOrHRManager, IsManager
 from rest_framework.viewsets import ModelViewSet
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -228,7 +228,7 @@ class DepartmentViewSet(viewsets.ModelViewSet):
         if self.action in ["create", "destroy"]:
             return [IsAdminUser()]
         elif self.action in ["update", "partial_update"]:
-            return [IsAuthenticated(), IsManager()]
+            return [IsAuthenticated(), IsAdminHRManagerHODOrManager()]
         return [IsAuthenticated()]
 
     def get_queryset(self):
