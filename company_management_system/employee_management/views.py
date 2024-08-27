@@ -789,6 +789,17 @@ class TaskViewSet(viewsets.ModelViewSet):
             return Task.objects.filter(department=user.department)
         return Task.objects.filter(assigned_to=user)
 
+    def perform_update(self, serializer):
+        user = self.request.user
+        task = self.get_object()
+        if user in task.assigned_to.all() or user.is_manager:
+            serializer.save()
+        else:
+            return Response(
+            {"detail": "Not authorized to view this information."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+        
 class TaskCommentViewSet(viewsets.ModelViewSet):
     serializer_class = TaskCommentSerializer
 
@@ -800,7 +811,7 @@ class TaskCommentViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
-    
+ 
 class ApplicantViewSet(viewsets.ModelViewSet):
     queryset = Applicant.objects.all()
     serializer_class = ApplicantSerializer

@@ -1,10 +1,10 @@
 import React from 'react'
+import EmployeeTaskList from './EmployeeTaskList'
 
 const EmployeeTasks = () => {
   return (
     <div>
-      EmployeeTasks
-      EmployeeTasks
+      <EmployeeTaskList />
     </div>
   )
 }

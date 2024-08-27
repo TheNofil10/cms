@@ -53,6 +53,7 @@ import ManagerAttendanceLayout from "../components/manager/attendance/ManagerAtt
 import ManagerLeaveApplications from "../components/manager/attendance/ManagerLeaveApplications.jsx";
 import ManagerTasks from "../components/manager/tasks/ManagerTasks.jsx";
 import TaskDetail from "../components/manager/tasks/TaskDetail.jsx";
+import EmployeeTaskDetails from "../components/employee/EmployeeTaskDetails.jsx";
 const AllRoutes = () => {
   return (
     <Routes>
@@ -70,7 +71,7 @@ const AllRoutes = () => {
         <Route path="/employee/profile" element={<EmployeeProfile />} />
         <Route path="/employee/settings" element={<EmployeeSettings />} />
         <Route path="/employee/tasks" element={<EmployeeTasks />} />
-
+        <Route path="/employee/tasks/:id" element={<EmployeeTaskDetails />} />
         <Route path="/employee/department" element={<EmployeeDepartment />} />
         <Route
           element={
