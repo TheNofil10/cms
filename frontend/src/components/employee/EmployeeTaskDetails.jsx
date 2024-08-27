@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { FaRegUser, FaCalendarAlt, FaTasks, FaExclamationTriangle, FaCheckCircle } from 'react-icons/fa';
 import { useAuth } from '../../contexts/AuthContext';
-
+import { ToastContainer,toast } from 'react-toastify';
 const EmployeeTaskDetails = () => {
   const { id } = useParams();
   const { currentUser } = useAuth();
@@ -12,6 +12,7 @@ const EmployeeTaskDetails = () => {
   const [assignedEmployees, setAssignedEmployees] = useState([]);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
+  const [status, setStatus] = useState(""); // Added state for task status
   const SERVER_URL = "http://127.0.0.1:8000";
 
   useEffect(() => {
@@ -27,6 +28,7 @@ const EmployeeTaskDetails = () => {
         },
       });
       setTask(taskResponse.data);
+      setStatus(taskResponse.data.status); // Set initial status
 
       const departmentResponse = await axios.get(`http://127.0.0.1:8000/api/departments/${taskResponse.data.department}/`, {
         headers: {
@@ -82,6 +84,24 @@ const EmployeeTaskDetails = () => {
     }
   };
 
+  const handleStatusChange = async (newStatus) => {
+    try {
+      await axios.patch(`http://127.0.0.1:8000/api/tasks/${id}/`, {
+        status: newStatus,
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+      setStatus(newStatus);
+    } catch (error) {
+      console.error("Error updating status:", error.response?.data || error.message);
+    } finally {
+      fetchTaskDetails()
+      toast.success("Updated Succesfully")
+    }
+  };
+
   if (!task || !department) return <div>Loading...</div>;
 
   return (
@@ -93,7 +113,7 @@ const EmployeeTaskDetails = () => {
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="flex-1 bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-200">
           <div className="flex items-center mb-4">
-            <FaTasks className="text-gray-500 mr-2" />
+          <FaTasks className="text-gray-500 mr-2" />
             <h2 className="text-xl font-medium">Title:</h2>
           </div>
           <p className="text-gray-800">{task.title}</p>
@@ -145,6 +165,20 @@ const EmployeeTaskDetails = () => {
           <p className={`text-gray-800 ${task.status === 'completed' ? 'text-green-500' : 'text-red-500'}`}>
             {task.status}
           </p>
+
+          <div className="my-4">
+            <label className="block text-sm font-medium text-gray-700">Update Status:</label>
+            <select
+              value={status}
+              onChange={(e) => handleStatusChange(e.target.value)}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            >
+              <option value="pending">Pending</option>
+              <option value="in_progress">In Progress</option>
+              <option value="completed">Completed</option>
+              <option value="on_hold">On Hold</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -153,9 +187,7 @@ const EmployeeTaskDetails = () => {
         <div className="space-y-4">
           {comments.map((comment) => (
             <div key={comment.id} className="flex items-start space-x-4">
-              
-                <img src={`${SERVER_URL}${comment.commenter.profile_image}`} alt={comment.commenter.username} className="w-12 h-12 rounded-full" />
-
+              <img src={`${SERVER_URL}${comment.commenter.profile_image}`} alt={comment.commenter.username} className="w-12 h-12 rounded-full" />
               <div>
                 <p className="text-lg font-semibold">{comment.commenter.first_name} {comment.commenter.last_name}</p>
                 <p className="text-sm text-gray-600">@{comment.commenter.username}</p>
@@ -182,8 +214,10 @@ const EmployeeTaskDetails = () => {
           </button>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
 
 export default EmployeeTaskDetails;
+
