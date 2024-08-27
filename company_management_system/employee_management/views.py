@@ -798,6 +798,9 @@ class TaskCommentViewSet(viewsets.ModelViewSet):
             return TaskComment.objects.filter(task_id=task_id)
         return super().get_queryset()
     
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+    
 class ApplicantViewSet(viewsets.ModelViewSet):
     queryset = Applicant.objects.all()
     serializer_class = ApplicantSerializer

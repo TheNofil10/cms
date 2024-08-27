@@ -8,16 +8,17 @@ import {
   FaExclamationTriangle,
   FaCheckCircle,
 } from "react-icons/fa";
-
+import {useAuth} from '../../../contexts/AuthContext'
 const TaskDetail = () => {
   const { id } = useParams();
+  const {currentUser} = useAuth()
   const [task, setTask] = useState(null);
   const [department, setDepartment] = useState(null);
   const [assignedEmployees, setAssignedEmployees] = useState([]);
   const [comments, setComments] = useState([]);
   const [employees, setEmployees] = useState({});
   const [newComment, setNewComment] = useState("");
-
+  const SERVER_URL = "http://127.0.0.1:8000";
   useEffect(() => {
     fetchTaskDetails();
     fetchComments(); // Fetch comments when component mounts
@@ -75,7 +76,6 @@ const TaskDetail = () => {
       console.log("Comments Data:", commentsData); // Log comments data
 
       setComments(commentsData);
-      
     } catch (error) {
       console.error("Error fetching comments:", error);
     }
@@ -87,7 +87,11 @@ const TaskDetail = () => {
     try {
       await axios.post(
         `http://127.0.0.1:8000/api/task-comments/`,
-        { task: id, comment: newComment },
+        {
+          task: id, 
+          comment: newComment, // the comment text
+          // created_by: currentUser.id,
+        },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -95,9 +99,9 @@ const TaskDetail = () => {
         }
       );
       setNewComment("");
-      fetchComments(); // Refresh comments
+      fetchComments(); 
     } catch (error) {
-      console.error("Error adding comment:", error);
+      console.error("Error adding comment:", error.response?.data || error.message);
     }
   };
 
@@ -199,18 +203,18 @@ const TaskDetail = () => {
             >
               <div className="flex items-center space-x-4 mb-2">
                 <img
-                  src={comment.created_by.profile_image}
-                  alt={comment.created_by.username}
+                  src= {`${SERVER_URL}${comment.commenter.profile_image}`}
+                  alt={comment.commenter.username}
                   className="w-10 h-10 rounded-full"
                 />
 
                 <div>
                   <p className="font-bold text-gray-800">
-                    {comment.created_by.first_name}{" "}
-                    {comment.created_by?.last_name}
+                    {comment.commenter.first_name}
+                    {comment.commenter?.last_name}
                   </p>
                   <p className="text-gray-500">
-                    @{comment.created_by.username}
+                    @{comment.commenter.username}
                   </p>
                 </div>
               </div>

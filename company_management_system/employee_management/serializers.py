@@ -131,12 +131,23 @@ class LeaveSerializer(serializers.ModelSerializer):
 
 
 class TaskCommentSerializer(serializers.ModelSerializer):
-    created_by = EmployeeSerializer()  
+    commenter = serializers.SerializerMethodField()
 
     class Meta:
         model = TaskComment
-        fields = ['id', 'task', 'comment', 'created_at', 'created_by']
-        
+        fields = ['id', 'task', 'comment', 'created_at', 'commenter']
+        read_only_fields = ['created_at']
+
+    def get_commenter(self, obj):
+        employee = obj.created_by
+        return {
+            "id": employee.id,
+            "first_name": employee.first_name,
+            "last_name": employee.last_name,
+            "username": employee.username,
+            "profile_image": employee.profile_image.url if employee.profile_image else None
+        }
+
 class TaskSerializer(serializers.ModelSerializer):
     comments = TaskCommentSerializer(many=True, read_only=True)
     assigned_to = serializers.PrimaryKeyRelatedField(
