@@ -49,7 +49,7 @@ const EmployeeDashboard = () => {
           }
         );
         setEmployeeData(employeeResponse.data);
-
+  
         const tasksResponse = await axios.get(
           `${SERVER_URL}/api/tasks?assigned_to=${currentUser.id}`,
           {
@@ -59,7 +59,7 @@ const EmployeeDashboard = () => {
           }
         );
         setTasks(tasksResponse.data);
-
+  
         const attendanceResponse = await axios.get(
           `${SERVER_URL}/api/attendance/?employee=${currentUser.id}&limit=7&ordering=-date`,
           {
@@ -69,16 +69,23 @@ const EmployeeDashboard = () => {
           }
         );
         setAttendance(attendanceResponse.data);
-
+  
+        const todoResponse = await axios.get(
+          `${SERVER_URL}/api/todos/`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+        setTodoList(todoResponse.data);
+  
         setPerformanceMetrics({
           tasksCompleted: 12,
           goalsMet: 5,
           feedbackScore: 8.5,
         });
-
-        const storedTodos = JSON.parse(localStorage.getItem("todoList")) || [];
-        setTodoList(storedTodos);
-
+  
         setQuote(
           "If you seek truth, you will not seek victory by dishonorable means, and if you find truth you will become invincible."
         );
@@ -90,40 +97,91 @@ const EmployeeDashboard = () => {
         setLoading(false);
       }
     };
-
+  
     fetchData();
   }, [currentUser.id]);
+  
 
-  const handleAddTodo = () => {
+  const handleAddTodo = async () => {
     if (newTodo.trim()) {
-      const newTodoItem = { id: Date.now(), task: newTodo, status: "pending" };
-      const updatedTodoList = [...todoList, newTodoItem];
-      setTodoList(updatedTodoList);
-      localStorage.setItem("todoList", JSON.stringify(updatedTodoList));
-      setNewTodo("");
+      try {
+        console.log( { task: newTodo, status: "pending" })
+        const response = await axios.post(
+          `${SERVER_URL}/api/todos/`,
+          { task: newTodo, status: "pending", employee: currentUser.id},
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+        setTodoList([...todoList, response.data]);
+        setNewTodo("");
+       
+      } catch (error) {
+        console.log(error);
+        toast.error("Unable to add new task.");
+      }
     }
   };
-
-  const handleCompleteTodo = (id) => {
-    const updatedTodoList = todoList.map((todo) =>
-      todo.id === id ? { ...todo, status: "completed" } : todo
-    );
-    setTodoList(updatedTodoList);
-    localStorage.setItem("todoList", JSON.stringify(updatedTodoList));
+  
+  const handleCompleteTodo = async (id) => {
+    try {
+      const updatedTodo = todoList.find((todo) => todo.id === id);
+      const response = await axios.patch(
+        `${SERVER_URL}/api/todos/${id}/`,
+        { status: "completed" },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+      setTodoList(
+        todoList.map((todo) =>
+          todo.id === id ? { ...todo, status: response.data.status } : todo
+        )
+      );
+    } catch (error) {
+      console.log(error);
+      toast.error("Unable to update task status.");
+    }
   };
-
-  const handleCancelTodo = (id) => {
-    const updatedTodoList = todoList.map((todo) =>
-      todo.id === id ? { ...todo, status: "cancelled" } : todo
-    );
-    setTodoList(updatedTodoList);
-    localStorage.setItem("todoList", JSON.stringify(updatedTodoList));
+  
+  const handleCancelTodo = async (id) => {
+    try {
+      const response = await axios.patch(
+        `${SERVER_URL}/api/todos/${id}/`,
+        { status: "cancelled" },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+      setTodoList(
+        todoList.map((todo) =>
+          todo.id === id ? { ...todo, status: response.data.status } : todo
+        )
+      );
+    } catch (error) {
+      console.log(error);
+      toast.error("Unable to update task status.");
+    }
   };
-
-  const handleDeleteTodo = (id) => {
-    const updatedTodoList = todoList.filter((todo) => todo.id !== id);
-    setTodoList(updatedTodoList);
-    localStorage.setItem("todoList", JSON.stringify(updatedTodoList));
+  
+  const handleDeleteTodo = async (id) => {
+    try {
+      await axios.delete(`${SERVER_URL}/api/todos/${id}/`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+      setTodoList(todoList.filter((todo) => todo.id !== id));
+    } catch (error) {
+      console.log(error);
+      toast.error("Unable to delete task.");
+    }
   };
 
   const getAttendanceStats = () => {
@@ -258,7 +316,7 @@ const EmployeeDashboard = () => {
         {/* Profile Section */}
         <div className="flex items-center space-x-4 mb-6">
           <img
-            src={currentUser.profile_image || '/default-profile.png'}
+            src={currentUser.profile_image || "/default-profile.png"}
             alt="Profile"
             className="w-16 h-16 rounded-full object-cover"
           />
@@ -281,9 +339,9 @@ const EmployeeDashboard = () => {
             />
             <button
               onClick={handleAddTodo}
-              className="bg-green-500 text-white px-4 py-2 rounded-md mt-2"
+              className="bg-green-500 text-white items-center px-4 py-2 rounded-md mt-2"
             >
-              <FaPlus /> Add Task
+              <FaPlus className="inline-flex space-x-5" /> Add Task
             </button>
           </div>
           <ul className="space-y-4">
@@ -293,7 +351,11 @@ const EmployeeDashboard = () => {
                 className="flex justify-between items-center border-b border-gray-300 pb-2"
               >
                 <span
-                  className={`flex-1 ${todo.status === "completed" ? "line-through text-gray-500" : ""}`}
+                  className={`flex-1 ${
+                    todo.status === "completed"
+                      ? "line-through text-gray-500"
+                      : ""
+                  }`}
                 >
                   {todo.task}
                 </span>

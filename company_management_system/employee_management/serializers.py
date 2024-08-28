@@ -14,6 +14,7 @@ from .models import (
     ComplianceReport,
     TaskComment,
     Task,
+    Todo,
 )
 
 
@@ -209,4 +210,10 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Application
+        fields = "__all__"
+
+class TodoSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Todo
         fields = "__all__"

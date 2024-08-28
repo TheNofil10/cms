@@ -31,6 +31,7 @@ from .serializers import (
     ComplianceReportSerializer,
     TaskCommentSerializer,
     TaskSerializer,
+    TodoSerializer,
 )
 from .models import (
     Applicant,
@@ -46,6 +47,7 @@ from .models import (
     ComplianceReport,
     Task,
     TaskComment,
+    Todo,
 )
 from django.core.files.storage import default_storage
 
@@ -873,3 +875,13 @@ class PerformanceReviewViewSet(viewsets.ModelViewSet):
     queryset = PerformanceReview.objects.all()
     serializer_class = PerformanceReviewSerializer
     
+class TodoViewSet(viewsets.ModelViewSet):
+    queryset = Todo.objects.all()
+    serializer_class = TodoSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.queryset.filter(employee=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(employee=self.request.user)

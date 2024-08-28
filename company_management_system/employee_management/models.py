@@ -303,6 +303,21 @@ class Payroll(models.Model):
         return f"Payroll for {self.employee.first_name} {self.employee.last_name} on {self.payment_date}"
 
 
+
+class Todo(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    task = models.CharField(max_length=255)
+    status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('completed', 'Completed'), ('cancelled', 'Cancelled')])
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def perform_create(self, serializer):
+        try:
+            serializer.save(emmployee=self.request.user)
+        except Exception as e:
+            print(f"Error saving Todo: {e}")
+            raise e
+
+
 class ComplianceReport(models.Model):
     report_name = models.CharField(max_length=255)
     generated_on = models.DateTimeField(auto_now_add=True)
