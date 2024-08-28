@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.conf import settings
 from decimal import Decimal
 from rest_framework import mixins
@@ -352,12 +352,22 @@ class AttendanceViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        start_date = self.request.query_params.get('start_date')
+        end_date = self.request.query_params.get('end_date')
+        
+        if start_date and end_date:
+            try:
+                start_date = timezone.make_aware(datetime.fromisoformat(start_date))
+                end_date = timezone.make_aware(datetime.fromisoformat(end_date))
+            except ValueError:
+                return Attendance.objects.none()
+            return Attendance.objects.filter(date__range=[start_date, end_date])
+        
         if user.is_superuser or user.is_hr_manager:
             return Attendance.objects.all()
         elif user.is_manager:
             return Attendance.objects.filter(employee__department=user.department)
         return Attendance.objects.filter(employee=user)
-
 
 class LeaveViewSet(viewsets.ModelViewSet):
     queryset = Leave.objects.all()

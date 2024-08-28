@@ -13,6 +13,7 @@ import {
   FaCheck,
   FaTimes,
 } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import { Pie } from "react-chartjs-2";
 import "react-toastify/dist/ReactToastify.css";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
@@ -49,7 +50,7 @@ const EmployeeDashboard = () => {
           }
         );
         setEmployeeData(employeeResponse.data);
-  
+
         const tasksResponse = await axios.get(
           `${SERVER_URL}/api/tasks?assigned_to=${currentUser.id}`,
           {
@@ -59,33 +60,34 @@ const EmployeeDashboard = () => {
           }
         );
         setTasks(tasksResponse.data);
-  
+
         const attendanceResponse = await axios.get(
-          `${SERVER_URL}/api/attendance/?employee=${currentUser.id}&limit=7&ordering=-date`,
+          `${SERVER_URL}/api/attendance/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+            params: {
+              start_date: oneWeekAgo,
+              end_date: new Date().toISOString().split("T")[0],
             },
           }
         );
         setAttendance(attendanceResponse.data);
-  
-        const todoResponse = await axios.get(
-          `${SERVER_URL}/api/todos/`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-            },
-          }
-        );
+
+        const todoResponse = await axios.get(`${SERVER_URL}/api/todos/`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        });
         setTodoList(todoResponse.data);
-  
+
         setPerformanceMetrics({
           tasksCompleted: 12,
           goalsMet: 5,
           feedbackScore: 8.5,
         });
-  
+
         setQuote(
           "If you seek truth, you will not seek victory by dishonorable means, and if you find truth you will become invincible."
         );
@@ -97,18 +99,17 @@ const EmployeeDashboard = () => {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, [currentUser.id]);
-  
 
   const handleAddTodo = async () => {
     if (newTodo.trim()) {
       try {
-        console.log( { task: newTodo, status: "pending" })
+        console.log({ task: newTodo, status: "pending" });
         const response = await axios.post(
           `${SERVER_URL}/api/todos/`,
-          { task: newTodo, status: "pending", employee: currentUser.id},
+          { task: newTodo, status: "pending", employee: currentUser.id },
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -117,14 +118,13 @@ const EmployeeDashboard = () => {
         );
         setTodoList([...todoList, response.data]);
         setNewTodo("");
-       
       } catch (error) {
         console.log(error);
         toast.error("Unable to add new task.");
       }
     }
   };
-  
+
   const handleCompleteTodo = async (id) => {
     try {
       const updatedTodo = todoList.find((todo) => todo.id === id);
@@ -147,7 +147,7 @@ const EmployeeDashboard = () => {
       toast.error("Unable to update task status.");
     }
   };
-  
+
   const handleCancelTodo = async (id) => {
     try {
       const response = await axios.patch(
@@ -169,7 +169,7 @@ const EmployeeDashboard = () => {
       toast.error("Unable to update task status.");
     }
   };
-  
+
   const handleDeleteTodo = async (id) => {
     try {
       await axios.delete(`${SERVER_URL}/api/todos/${id}/`, {
@@ -300,12 +300,11 @@ const EmployeeDashboard = () => {
             <h2 className="text-xl font-semibold mb-4">Attendance Summary</h2>
             <Pie data={pieChartData} />
             <div className="mt-4 text-center">
-              <button
-                onClick={() => navigate("/employee/attendance")}
-                className="bg-blue-500 text-white px-4 py-2 rounded-md"
-              >
-                View Attendance
-              </button>
+              <Link to="/admin/attendance">
+                <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
+                  View Attendance
+                </button>
+              </Link>
             </div>
           </div>
         </div>

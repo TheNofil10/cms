@@ -145,7 +145,7 @@ const AllRoutes = () => {
       <Route
         element={<HRRoute element={<HRLayout />} adminOnly={false} hrOnly />}
       >
-        <Route path="/hr/dashboard" element={<HRDashboard />} />
+        <Route path="/hr/dashboard" element={<EmployeeDashboard />} />
         {/*JOb Posting*/}
         <Route
           element={
