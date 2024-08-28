@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState } from "react";
 import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
-import logo from '../../assets/logo.png';
-import defaultProfilePic from '../../assets/profile.png'; // Replace with your default profile image
+import logo from '/logo.png';
+import defaultProfilePic from '../../assets/profile.png'; 
 import { useNavigate } from "react-router-dom";
 
 const SidebarContext = createContext();
