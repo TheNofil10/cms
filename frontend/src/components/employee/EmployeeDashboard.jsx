@@ -61,6 +61,9 @@ const EmployeeDashboard = () => {
         );
         setTasks(tasksResponse.data);
 
+        const today = new Date();
+        const oneWeekAgo = new Date(today.setDate(today.getDate() - 7)).toISOString().split('T')[0];
+
         const attendanceResponse = await axios.get(
           `${SERVER_URL}/api/attendance/`,
           {
@@ -69,11 +72,14 @@ const EmployeeDashboard = () => {
             },
             params: {
               start_date: oneWeekAgo,
-              end_date: new Date().toISOString().split("T")[0],
+              end_date: new Date().toISOString().split('T')[0],
             },
           }
         );
-        setAttendance(attendanceResponse.data);
+        console.log(attendanceResponse.data)
+        const attendnaceFilter = attendanceResponse.data.filter((record) => record.employee_id === currentUser.id);
+       
+        setAttendance(attendnaceFilter);
 
         const todoResponse = await axios.get(`${SERVER_URL}/api/todos/`, {
           headers: {
