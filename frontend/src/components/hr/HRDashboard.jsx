@@ -12,6 +12,9 @@ import {
   FaPlus,
   FaCheck,
   FaTimes,
+  FaBriefcase,
+  FaUsers,
+  FaRegBuilding,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { Pie } from "react-chartjs-2";
@@ -62,7 +65,9 @@ const HRDashboard = () => {
         setTasks(tasksResponse.data);
 
         const today = new Date();
-        const oneWeekAgo = new Date(today.setDate(today.getDate() - 7)).toISOString().split('T')[0];
+        const oneWeekAgo = new Date(today.setDate(today.getDate() - 7))
+          .toISOString()
+          .split("T")[0];
 
         const attendanceResponse = await axios.get(
           `${SERVER_URL}/api/attendance/`,
@@ -72,7 +77,7 @@ const HRDashboard = () => {
             },
             params: {
               start_date: oneWeekAgo,
-              end_date: new Date().toISOString().split('T')[0],
+              end_date: new Date().toISOString().split("T")[0],
             },
           }
         );
@@ -247,30 +252,30 @@ const HRDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-6">
-          {/* Tasks Summary */}
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">Tasks</h2>
-            <ul className="space-y-4">
-              {tasks.slice(0, 3).map((task) => (
-                <li key={task.id} className="border-b border-gray-300 pb-2">
-                  <h3
-                    className="text-lg font-medium hover:text-blue-500 cursor-pointer"
-                    onClick={() => navigate(`/employee/tasks/${task.id}`)}
-                  >
-                    {task.title}
-                  </h3>
-                  <p className="text-gray-600">{task.description}</p>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-4 text-center">
-              <button
-                onClick={() => navigate("/employee/tasks")}
-                className="bg-green-500 text-white px-4 py-2 rounded-md"
-              >
-                View All Tasks
-              </button>
-            </div>
+          {/* Navigation Buttons */}
+          <div className="bg-white p-4 rounded-lg shadow-md space-y-4">
+            <h2 className="text-xl font-semibold mb-4">HR Management</h2>
+            <Link
+              to="/hr/employees"
+              className="text-center bg-black text-white px-4 py-2 rounded-md flex items-center justify-center space-x-2"
+            >
+              <FaUsers className="text-xl" />
+              <span>Manage Employees</span>
+            </Link>
+            <Link
+              to="/hr/departments"
+              className="text-center bg-black text-white px-4 py-2 rounded-md flex items-center justify-center space-x-2"
+            >
+              <FaRegBuilding className="text-xl" />
+              <span>Manage Departments</span>
+            </Link>
+            <Link
+              to="/hr/job-postings"
+              className="text-center bg-black text-white px-4 py-2 rounded-md flex items-center justify-center space-x-2"
+            >
+              <FaBriefcase className="text-xl" />
+              <span>Job Postings</span>
+            </Link>
           </div>
 
           {/* Notifications */}
