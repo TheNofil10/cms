@@ -38,6 +38,20 @@ class EmployeeSerializer(serializers.ModelSerializer):
             instance.set_password(password)
             instance.save()
         return instance
+    
+    def perform_update(self, serializer):
+        try:
+            instance = serializer.save()
+            if "profile_image" in self.request.FILES:
+                instance.profile_image = self.request.FILES["profile_image"]
+                instance.save()
+        except  Exception as e:
+            print(f"Validation error: {e}")
+            raise
+        except Exception as e:
+            print(f"Error during update: {e}")
+            raise
+
 
 
 class AdminEmployeeSerializer(serializers.ModelSerializer):

@@ -151,6 +151,73 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     serializer_class = EmployeeSerializer
 
     def get_permissions(self):
+        if self.action in ["destroy"]:
+            return [IsAdminUser()]
+        elif self.action in ["create"]:
+           if self.request.user.is_hr_manager or self.request.user.is_superuser:
+                return [IsAuthenticated()]
+        elif self.action in ["update", "partial_update"]:
+            if self.request.user.is_superuser or self.request.user.is_hr_manager:
+                return [IsAuthenticated()]
+            return [IsAuthenticated()]
+        return [IsAuthenticated()]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_superuser:
+            return Employee.objects.all()
+        if (
+            user.is_authenticated
+            and hasattr(user, "is_hr_manager")
+            and user.is_hr_manager
+        ):
+            return Employee.objects.all()
+        if user.is_authenticated:
+            return Employee.objects.filter(department=user.department)
+        return Employee.objects.none()
+
+    def perform_create(self, serializer):
+        employee = serializer.save(is_active=True)
+        if "profile_image" in self.request.FILES:
+            employee.profile_image = self.request.FILES["profile_image"]
+            employee.save()
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        if "profile_image" in self.request.FILES:
+            instance.profile_image = self.request.FILES["profile_image"]
+            instance.save()
+
+    def update(self, request, *args, **kwargs):
+        employee = self.get_object()
+
+        if request.user.is_superuser or (
+            request.user.is_hr_manager and not (request.user == employee)
+        ):
+            return super().update(request, *args, **kwargs)
+
+        if request.user != employee:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.get_serializer(employee, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        employee = self.get_object()
+
+        if request.user.is_superuser and (request.user != employee):
+            return super().destroy(request, *args, **kwargs)
+
+        if employee.is_superuser and (request.user != employee):
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        return super().destroy(request, *args, **kwargs)
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
+
+    def get_permissions(self):
         if self.action == "destroy":
             return [IsAdminUser()]
         elif self.action in ["create", "update", "partial_update"]:
@@ -173,10 +240,14 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             employee.save()
 
     def perform_update(self, serializer):
-        instance = serializer.save()
-        if "profile_image" in self.request.FILES:
-            instance.profile_image = self.request.FILES["profile_image"]
-            instance.save()
+        try:
+            instance = serializer.save()
+            if "profile_image" in self.request.FILES:
+                instance.profile_image = self.request.FILES["profile_image"]
+                instance.save()
+        except Exception as e:
+            print(f"Error during update: {e}")
+            raise
 
     def destroy(self, request, *args, **kwargs):
         employee = self.get_object()
