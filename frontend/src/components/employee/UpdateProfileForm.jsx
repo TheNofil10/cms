@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
@@ -73,7 +73,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
         formDataToSend.append(key, formData[key]);
       }
     });
-  
+    console.log(formDataToSend)
     try {
       await axios.put(
         `http://127.0.0.1:8000/api/employees/${employee.id}/`,
@@ -305,7 +305,6 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
           </div>
         </form>
       </div>
-      <ToastContainer />
     </div>
   );
 };

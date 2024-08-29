@@ -14,7 +14,7 @@ import {
 } from "react-icons/fa";
 import { useAuth } from "../../contexts/AuthContext";
 import ConfirmationModal from "./ConfirmationModal";
-
+import AdminUpdateProfileForm from "./AdminUpdateProfileForm";
 const AdminEmployeeProfile = () => {
   const { id } = useParams();
   const [employee, setEmployee] = useState(null);
@@ -25,6 +25,7 @@ const AdminEmployeeProfile = () => {
   const navigate = useNavigate();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [employeeToDelete, setEmployeeToDelete] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const fetchEmployee = async () => {
@@ -64,10 +65,36 @@ const AdminEmployeeProfile = () => {
     console.log(employee);
   }, [id]);
 
+  const handleUpdateProfile = () => {
+    if (
+      currentUser &&
+      (currentUser.is_superuser || currentUser.is_hr_manager || currentUser.is_manager)
+    ) {
+
+      toast.error("You cannot Update Profiles")
+    } else {
+      toast.error("You cannot update profiles");
+    }
+  };
+
+  const handleCloseUpdateForm = () => {
+    setIsEditing(false); // Close the modal
+  };
+
+  const handleProfileUpdated = async () => {
+    await fetchEmployee(); // Refresh employee data
+    setIsEditing(false); // Close the modal
+  };
+
+  const handleDeleteEmployee = (employeeId, employeeName) => {
+    setEmployeeToDelete({ id: employeeId, name: employeeName });
+    setShowConfirmModal(true);
+  };
+
   const confirmDeleteEmployee = async () => {
     if (!employeeToDelete) return;
     if (currentUser.is_hr_manager) {
-      toast.error("HRs cant delete an employee");
+      toast.error("HRs can't delete an employee");
       setShowConfirmModal(false);
       return;
     }
@@ -91,24 +118,6 @@ const AdminEmployeeProfile = () => {
     }
   };
 
-  const handleUpdateProfile = () => {
-    if (
-      currentUser &&
-      (currentUser.is_superuser ||
-        currentUser.is_hr_manager ||
-        currentUser.is_manager)
-    ) {
-      toast.error("You cannot update profiles");
-    } else {
-      navigate(`/admin/employees/${id}/update`);
-    }
-  };
-
-  const handleDeleteEmployee = (employeeId, employeeName) => {
-    setEmployeeToDelete({ id: employeeId, name: employeeName });
-    setShowConfirmModal(true);
-  };
-
   if (loading)
     return <div className="text-center p-6 text-black">Loading...</div>;
   if (error) return <div className="text-center p-6 text-red-500">{error}</div>;
@@ -122,7 +131,7 @@ const AdminEmployeeProfile = () => {
           alt={`${employee.first_name} ${
             employee.middle_name ? employee.middle_name + " " : ""
           }${employee.last_name}'s profile`}
-          className="w-40 h-40 rounded-full border-4 border-white shadow-lg object-cover"
+          className="w-40 h-40 rounded-full border-4 border-white shadow-lg"
         />
       </div>
 
@@ -244,7 +253,13 @@ const AdminEmployeeProfile = () => {
         title="Confirm Deletion"
         message={`Are you sure you want to delete ${employeeToDelete?.name}?`}
       />
-
+       {isEditing && (
+        <AdminUpdateProfileForm
+          employee={employee}
+          onClose={handleCloseUpdateForm}
+          onUpdate={handleProfileUpdated}
+        />
+      )}
       <ToastContainer />
     </div>
   );
