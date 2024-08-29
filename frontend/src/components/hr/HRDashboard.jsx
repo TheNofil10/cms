@@ -245,7 +245,7 @@ const HRDashboard = () => {
     <div className="flex bg-gray-100 min-h-screen">
       {/* Main Content */}
       <main className="flex-1 p-6 overflow-auto">
-        <h1 className="text-3xl font-bold mb-6">Employee Dashboard</h1>
+        <h1 className="text-3xl font-bold mb-6">HR Dashboard</h1>
         <div className="text-xl font-semibold mb-4">{getGreeting()}</div>
         <div className="bg-gray-200 p-4 rounded-lg mb-6">
           <p className="italic">"{quote}"</p>
@@ -275,6 +275,13 @@ const HRDashboard = () => {
             >
               <FaBriefcase className="text-xl" />
               <span>Job Postings</span>
+            </Link>
+            <Link
+              to="/hr/attendance"
+              className="text-center bg-black text-white px-4 py-2 rounded-md flex items-center justify-center space-x-2"
+            >
+              <FaCalendar className="text-xl" />
+              <span>Manage Attendance</span>
             </Link>
           </div>
 
@@ -307,13 +314,6 @@ const HRDashboard = () => {
           <div className="bg-white p-4 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-4">Attendance Summary</h2>
             <Pie data={pieChartData} />
-            <div className="mt-4 text-center">
-              <Link to="/admin/attendance">
-                <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
-                  View Attendance
-                </button>
-              </Link>
-            </div>
           </div>
         </div>
       </main>

@@ -94,7 +94,9 @@ const AdminEmployeeProfile = () => {
   const handleUpdateProfile = () => {
     if (
       currentUser &&
-      (currentUser.is_superuser || currentUser.is_hr_manager || currentUser.is_manager)
+      (currentUser.is_superuser ||
+        currentUser.is_hr_manager ||
+        currentUser.is_manager)
     ) {
       toast.error("You cannot update profiles");
     } else {
@@ -120,7 +122,7 @@ const AdminEmployeeProfile = () => {
           alt={`${employee.first_name} ${
             employee.middle_name ? employee.middle_name + " " : ""
           }${employee.last_name}'s profile`}
-          className="w-40 h-40 rounded-full border-4 border-white shadow-lg"
+          className="w-40 h-40 rounded-full border-4 border-white shadow-lg object-cover"
         />
       </div>
 

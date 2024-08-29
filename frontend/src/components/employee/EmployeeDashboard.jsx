@@ -306,8 +306,9 @@ const EmployeeDashboard = () => {
             <h2 className="text-xl font-semibold mb-4">Attendance Summary</h2>
             <Pie data={pieChartData} />
             <div className="mt-4 text-center">
-              <Link to="/admin/attendance">
-                <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
+              <Link to="/employee/attendance">
+                <button className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                onClick={() => navigate("/employee/tasks")}>
                   View Attendance
                 </button>
               </Link>

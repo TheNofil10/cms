@@ -84,7 +84,7 @@ const EmployeeProfile = () => {
           alt={`${employee.first_name} ${
             employee.middle_name ? employee.middle_name + " " : ""
           }${employee.last_name}'s profile`}
-          className="w-40 h-40 rounded-full border-4 border-white shadow-lg"
+          className="w-40 h-40 rounded-full border-4 border-white shadow-lg object-cover"
         />
       </div>
 

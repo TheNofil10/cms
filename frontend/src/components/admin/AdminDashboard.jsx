@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { ToastContainer, toast } from "react-toastify";
 import {
@@ -285,29 +285,30 @@ const AdminDashboard = () => {
               </div>
             </div>
             <div className="space-y-4">
-              <div className="bg-white p-4 mt-5 rounded-lg shadow-md">
-                <h2 className="text-xl font-semibold mb-4">Tasks</h2>
-                {notifications.length > 0 ? (
-                  <ul className="space-y-4">
-                    {notifications.map((note, index) => (
-                      <li
-                        key={index}
-                        className="flex justify-between items-center border-b border-gray-300 pb-2"
-                      >
-                        <p>{note.message}</p>
-                        <button
-                          onClick={() => handleDismissNotification(index)}
-                          className="text-red-500"
-                        >
-                          <FaTimes />
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No Tasks</p>
-                )}
-              </div>
+            <div className="bg-white p-4 rounded-lg shadow-md space-y-4">
+            
+            <Link
+              to="/admin/employees"
+              className="text-center bg-black text-white px-4 py-2 rounded-md flex items-center justify-center space-x-2"
+            >
+              <FaUsers className="text-xl" />
+              <span>Manage Employees</span>
+            </Link>
+            <Link
+              to="/admin/departments"
+              className="text-center bg-black text-white px-4 py-2 rounded-md flex items-center justify-center space-x-2"
+            >
+              <FaRegBuilding className="text-xl" />
+              <span>Manage Departments</span>
+            </Link>
+            <Link
+              to="/admin/attendance"
+              className="text-center bg-black text-white px-4 py-2 rounded-md flex items-center justify-center space-x-2"
+            >
+              <FaCalendar className="text-xl" />
+              <span>Manage Attendance</span>
+            </Link>
+          </div>
             </div>
           </div>
 

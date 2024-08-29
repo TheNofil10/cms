@@ -151,9 +151,8 @@ const DepartmentsPage = () => {
   );
 
   const handleViewDepartment = (department) => {
-    if (currentUser.is_hr_manager) 
-      navigate(`/hr/departments/${department.id}`);
-    else if(currentUser.is_staff)
+    if (currentUser.is_hr_manager) navigate(`/hr/departments/${department.id}`);
+    else if (currentUser.is_staff)
       navigate(`/admin/departments/${department.id}`);
   };
 
@@ -166,7 +165,8 @@ const DepartmentsPage = () => {
     if (!departmentToDelete) return;
 
     try {
-      await axios.delete(
+      console.log("Deleting department:", departmentToDelete.id); // Debugging
+      const response = await axios.delete(
         `http://127.0.0.1:8000/api/departments/${departmentToDelete.id}/`,
         {
           headers: {
@@ -174,6 +174,7 @@ const DepartmentsPage = () => {
           },
         }
       );
+      console.log("Delete response:", response); // Debugging
       toast.success("Department deleted successfully");
       setDepartments(
         departments.filter((dep) => dep.id !== departmentToDelete.id)
@@ -182,7 +183,7 @@ const DepartmentsPage = () => {
         filteredData.filter((dep) => dep.id !== departmentToDelete.id)
       );
     } catch (error) {
-      console.error("Error deleting department:", error);
+      console.error("Error deleting department:", error); // Debugging
       toast.error("There was an error deleting the department.");
     } finally {
       setShowConfirmModal(false);
@@ -221,32 +222,36 @@ const DepartmentsPage = () => {
     const docDefinition = {
       content: [
         {
-          text: 'Departments List',
-          style: 'header',
-          alignment: 'center',
+          text: "Departments List",
+          style: "header",
+          alignment: "center",
         },
         {
           table: {
             headerRows: 1,
-            widths: ['auto', '*', '*'],
+            widths: ["auto", "*", "*"],
             body: [
               // Table Headers
               [
-                { text: 'ID', style: 'tableHeader', alignment: 'center' },
-                { text: 'Name', style: 'tableHeader', alignment: 'center' },
-                { text: 'Description', style: 'tableHeader', alignment: 'center' },
+                { text: "ID", style: "tableHeader", alignment: "center" },
+                { text: "Name", style: "tableHeader", alignment: "center" },
+                {
+                  text: "Description",
+                  style: "tableHeader",
+                  alignment: "center",
+                },
               ],
               // Table Body
               ...filteredData.map((department) => [
-                { text: department.id, alignment: 'center' },
-                { text: department.name, alignment: 'center' },
-                { text: department.description, alignment: 'center' },
+                { text: department.id, alignment: "center" },
+                { text: department.name, alignment: "center" },
+                { text: department.description, alignment: "center" },
               ]),
             ],
           },
           layout: {
             fillColor: function (rowIndex) {
-              return rowIndex % 2 === 0 ? '#F0F0F0' : null;
+              return rowIndex % 2 === 0 ? "#F0F0F0" : null;
             },
           },
         },
@@ -260,13 +265,13 @@ const DepartmentsPage = () => {
         tableHeader: {
           bold: true,
           fontSize: 12,
-          color: 'black',
+          color: "black",
         },
       },
       pageMargins: [40, 40, 40, 40],
     };
-  
-    pdfMake.createPdf(docDefinition).download('departments.pdf');
+
+    pdfMake.createPdf(docDefinition).download("departments.pdf");
   };
 
   const handleExportSelection = (format) => {
@@ -310,7 +315,6 @@ const DepartmentsPage = () => {
             <button
               onClick={applyFilters}
               className="bg-black text-white border-none font-medium py-1 px-4 rounded text-sm flex items-center"
-
             >
               Apply
             </button>
@@ -473,9 +477,10 @@ const DepartmentsPage = () => {
         </div>
         {showConfirmModal && (
           <DepartmentConfirmationModal
-            departmentName={departmentToDelete.name}
+            isOpen={showConfirmModal}
             onConfirm={confirmDeleteDepartment}
             onCancel={() => setShowConfirmModal(false)}
+            message={`Are you sure you want to delete the department "${departmentToDelete.name}"?`}
           />
         )}
       </div>

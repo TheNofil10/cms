@@ -50,7 +50,7 @@ export default function Sidebar({ children }) {
                             <img
                                 src={userProfilePic}
                                 alt="Profile"
-                                className="w-10 h-10 rounded-md"
+                                className="w-10 h-10 rounded-md object-cover"
                             />
                             <div className={`flex-1 ml-3 transition-all ${expanded ? "opacity-100" : "opacity-0"}`}>
                                 <h4 className="font-semibold">{currentUser?.username || "User"}</h4>
