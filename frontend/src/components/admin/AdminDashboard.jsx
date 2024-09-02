@@ -260,9 +260,7 @@ const AdminDashboard = () => {
           {getGreeting()} {currentUser.first_name}
           {currentUser.last_name}
         </div>
-        <div className="bg-gray-200 p-4 rounded-lg mb-6">
-          <p className="italic">"{quote}"</p>
-        </div>
+        
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-6">
           {/* Tasks Summary */}
@@ -341,14 +339,7 @@ const AdminDashboard = () => {
           <div className="bg-white p-4 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-4">Attendance Summary</h2>
             <Pie data={pieChartData} />
-            <div className="mt-4 text-center">
-              <button
-                onClick={() => handleViewAttendance()}
-                className="bg-green-500 text-white px-4 py-2 rounded-md"
-              >
-                View Attendance
-              </button>
-            </div>
+            
           </div>
         </div>
       </main>

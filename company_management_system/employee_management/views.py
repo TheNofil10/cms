@@ -534,7 +534,6 @@ def approve_leave_hr(request, leave_id):
         leave.status = "approved_by_hr"
         leave.hr_approval_date = timezone.now()
 
-        # Create attendance records for each date from start_date to end_date
         current_date = leave.start_date
         while current_date <= leave.end_date:
             Attendance.objects.create(
@@ -602,18 +601,15 @@ class CompanyAttendanceStatsView(APIView):
         start_date = make_aware(datetime.combine(start_date, datetime.min.time()))
         end_date = make_aware(datetime.combine(end_date, datetime.max.time()))
 
-        # Base queryset
         attendance_qs = Attendance.objects.filter(date__range=[start_date, end_date])
 
         if user.is_manager:
-            # Limit data to manager's department
             attendance_qs = attendance_qs.filter(employee__department=user.department)
         elif employee_id:
             attendance_qs = attendance_qs.filter(employee__id=employee_id)
         elif username:
             attendance_qs = attendance_qs.filter(employee__username=username)
 
-        # Calculate stats
         total_days = attendance_qs.values("date").distinct().count()
         days_present = attendance_qs.filter(status="Present").count()
         days_absent = attendance_qs.filter(status="Absent").count()
@@ -725,7 +721,6 @@ class EmployeeAttendanceStatsView(APIView):
     def get(self, request):
         employee = request.user
 
-        # Extract dates from request query parameters
         start_date_str = request.query_params.get("start_date")
         end_date_str = request.query_params.get("end_date")
 
@@ -742,7 +737,6 @@ class EmployeeAttendanceStatsView(APIView):
                 {"detail": "Invalid date format. Use YYYY-MM-DD."}, status=400
             )
 
-        # Ensure dates are aware
         start_date = make_aware(datetime.combine(start_date, datetime.min.time()))
         end_date = make_aware(datetime.combine(end_date, datetime.max.time()))
 
@@ -766,7 +760,6 @@ class EmployeeAttendanceStatsView(APIView):
             Decimal(total_hours) / total_days if total_days else Decimal("0.00")
         )
 
-        # Calculate leave days
         sick_leave = attendance_records.filter(status="sick_leave").count()
         casual_leave = attendance_records.filter(status="casual_leave").count()
 
@@ -923,7 +916,6 @@ class ApplicationViewSet(viewsets.ModelViewSet):
         application = self.get_object()
         new_status = request.data.get("status")
 
-        # Define valid status transitions
         valid_statuses = [
             "Applied",
             "Reviewed",
@@ -937,7 +929,6 @@ class ApplicationViewSet(viewsets.ModelViewSet):
                 {"error": "Invalid status"}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Update the status and save
         application.status = new_status
         application.save()
 

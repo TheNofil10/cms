@@ -132,9 +132,7 @@ const EmployeeAttendanceDashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
-      <h1 className="text-2xl font-bold">Employee Attendance Dashboard</h1>
-
-      <div className="bg-white p-4 rounded-lg shadow grid grid-cols-2 gap-4">
+      <div className="bg-white pt-4 rounded-lg grid grid-cols-2 gap-4">
         <div>
           <label htmlFor="start-date" className="block text-lg font-semibold">
             Start Date:
@@ -161,30 +159,30 @@ const EmployeeAttendanceDashboard = () => {
         </div>
       </div>
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+        <section className="grid grid-cols-1 md:grid-cols-2 text-center lg:grid-cols-2 gap-4">
           <div className="bg-white p-4 rounded-lg shadow">
-            <h2 className="text-lg font-semibold">Days Present</h2>
-            <p className="text-2xl">{stats.days_present || 0}</p>
+            <h2 className="text-md font-semibold">Days Present</h2>
+            <p className="text-lg">{stats.days_present || 0}</p>
           </div>
           <div className="bg-white p-4 rounded-lg shadow">
-            <h2 className="text-lg font-semibold">Days Absent</h2>
-            <p className="text-2xl">{stats.days_absent || 0}</p>
+            <h2 className="text-md font-semibold">Days Absent</h2>
+            <p className="text-lg">{stats.days_absent || 0}</p>
           </div>
           <div className="bg-white p-4 rounded-lg shadow">
-            <h2 className="text-lg font-semibold">Total Leaves</h2>
-            <p className="text-2xl">{stats.total_leaves || 0}</p>
+            <h2 className="text-md font-semibold">Total Leaves</h2>
+            <p className="text-lg">{stats.total_leaves || 0}</p>
           </div>
           <div className="bg-white p-4 rounded-lg shadow">
-            <h2 className="text-lg font-semibold">Days Late</h2>
-            <p className="text-2xl">{stats.days_late || 0}</p>
+            <h2 className="text-md font-semibold">Days Late</h2>
+            <p className="text-lg">{stats.days_late || 0}</p>
           </div>
           <div className="bg-white p-4 rounded-lg shadow">
-            <h2 className="text-lg font-semibold">Overtime Hours</h2>
-            <p className="text-2xl">{stats.overtime_hours || 0}</p>
+            <h2 className="text-md font-semibold">Overtime Hours</h2>
+            <p className="text-lg">{stats.overtime_hours || 0}</p>
           </div>
           <div className="bg-white p-4 rounded-lg shadow">
-            <h2 className="text-lg font-semibold">Sick Leaves</h2>
-            <p className="text-2xl">{stats.sick_leave || 0}</p>
+            <h2 className="text-md font-semibold">Sick Leaves</h2>
+            <p className="text-lg">{stats.sick_leave || 0}</p>
           </div>
         </section>
 
@@ -198,7 +196,7 @@ const EmployeeAttendanceDashboard = () => {
           </div>
         </div> */}
         <div className="p-5">
-          <div className="bg-white p-4 " style={{ height: "400px" }}>
+          <div className="bg-white p-4 " style={{ height: "300px" }}>
             <h2 className="text-lg font-semibold">Overview</h2>
             <Pie data={pieChartData} options={{ maintainAspectRatio: false }} />
           </div>
