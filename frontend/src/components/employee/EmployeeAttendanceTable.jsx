@@ -153,7 +153,11 @@ const EmployeeAttendanceTable = () => {
                 { text: "Time Out", style: "tableHeader" },
                 { text: "Status", style: "tableHeader" },
                 { text: "Hours", style: "tableHeader" },
-                { text: "Overtime", style: "tableHeader" },
+                {
+                  Header: "Overtime",
+                  accessor: "is_overtime",
+                  Cell: ({ value }) => (value ? "true" : "false"), 
+                }
               ],
               ...filteredData.map((record) => [
                 { text: record.date, style: "tableData" },
@@ -379,7 +383,9 @@ const EmployeeAttendanceTable = () => {
                   ? "bg-green-100"
                   : status === "leave" ||
                     status === "sick_leave" ||
-                    status === "casual_leave"
+                    status === "casual_leave" ||
+                    status === "Sick Leave" ||
+                    status === "Casual Leave"
                   ? "bg-yellow-100"
                   : status === "absent"
                   ? "bg-red-100"

@@ -396,7 +396,9 @@ const AttendanceTable = () => {
                   ? "bg-green-100"
                   : status === "leave" ||
                     status === "sick_leave" ||
-                    status === "casual_leave"
+                    status === "casual_leave" ||
+                    status === "Sick Leave" ||
+                    status === "Casual Leave"
                   ? "bg-yellow-100"
                   : status === "absent"
                   ? "bg-red-100"
