@@ -24,6 +24,8 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const EmployeeDashboard = () => {
   const [employeeData, setEmployeeData] = useState(null);
   const [tasks, setTasks] = useState([]);
+  const [attendanceStats, setAttendanceStats] = useState({});
+  const [stats, setStats] = useState({})
   const [attendance, setAttendance] = useState([]);
   const [todoList, setTodoList] = useState([]);
   const [newTodo, setNewTodo] = useState("");
@@ -61,25 +63,16 @@ const EmployeeDashboard = () => {
         );
         setTasks(tasksResponse.data);
 
-        const today = new Date();
-        const oneWeekAgo = new Date(today.setDate(today.getDate() - 7)).toISOString().split('T')[0];
-
-        const attendanceResponse = await axios.get(
-          `${SERVER_URL}/api/attendance/`,
+        const statsResponse = await axios.get(
+          "http://127.0.0.1:8000/api/attendance/stats/employee/",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
-            params: {
-              start_date: oneWeekAgo,
-              end_date: new Date().toISOString().split('T')[0],
-            },
           }
         );
-        console.log(attendanceResponse.data)
-        const attendnaceFilter = attendanceResponse.data.filter((record) => record.employee_id === currentUser.id);
-       
-        setAttendance(attendnaceFilter);
+        setStats(statsResponse.data);
+        console.log(statsResponse.data);
 
         const todoResponse = await axios.get(`${SERVER_URL}/api/todos/`, {
           headers: {
@@ -190,36 +183,19 @@ const EmployeeDashboard = () => {
     }
   };
 
-  const getAttendanceStats = () => {
-    const stats = {
-      days_present: 0,
-      days_absent: 0,
-      days_late: 0,
-      total_leaves: 0,
-    };
-    attendance.forEach((record) => {
-      if (record.status === "present") stats.days_present += 1;
-      else if (record.status === "absent") stats.days_absent += 1;
-      else if (record.status === "late") stats.days_late += 1;
-      else if (record.status === "leave") stats.total_leaves += 1;
-    });
-    return stats;
-  };
-
-  const stats = getAttendanceStats();
 
   const pieChartData = {
     labels: ["Present", "Absent", "Late", "Leaves"],
     datasets: [
       {
         data: [
-          stats.days_present,
-          stats.days_absent,
-          stats.days_late,
+          stats.days_present || 0,
+          stats.days_absent || 0,
+          stats.days_late || 0,
           stats.total_leaves,
         ],
-        backgroundColor: ["#1DB954", "#FF6384", "#FFCE56", "#ACD8AA"],
-        hoverBackgroundColor: ["#1DB954", "#FF6384", "#FFCE56", "#ACD8AA"],
+        backgroundColor: ["#36A2EB", "#FF6384", "#FFCE56", "#9966FF"],
+        hoverBackgroundColor: ["#36A2EB", "#FF6384", "#FFCE56", "#9966FF"],
       },
     ],
   };
@@ -307,8 +283,10 @@ const EmployeeDashboard = () => {
             <Pie data={pieChartData} />
             <div className="mt-4 text-center">
               <Link to="/employee/attendance">
-                <button className="bg-green-500 text-white px-4 py-2 rounded-md"
-                onClick={() => navigate("/employee/tasks")}>
+                <button
+                  className="bg-green-500 text-white px-4 py-2 rounded-md"
+                  onClick={() => navigate("/employee/tasks")}
+                >
                   View Attendance
                 </button>
               </Link>

@@ -51,6 +51,9 @@ from .models import (
     Todo,
 )
 from django.core.files.storage import default_storage
+from datetime import timedelta
+from django.utils import timezone
+from django.utils.dateparse import parse_date
 
 import cohere
 
@@ -155,7 +158,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         if self.action in ["destroy"]:
             return [IsAdminUser()]
         elif self.action in ["create"]:
-           if self.request.user.is_hr_manager or self.request.user.is_superuser:
+            if self.request.user.is_hr_manager or self.request.user.is_superuser:
                 return [IsAuthenticated()]
         elif self.action in ["update", "partial_update"]:
             if self.request.user.is_superuser or self.request.user.is_hr_manager:
@@ -215,6 +218,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         return super().destroy(request, *args, **kwargs)
+
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
 
@@ -333,18 +337,20 @@ class DepartmentViewSet(viewsets.ModelViewSet):
                 )
         return super().partial_update(request, *args, **kwargs)
 
+
 class EmployeeSuggestionView(viewsets.GenericViewSet, mixins.ListModelMixin):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
 
     def get_queryset(self):
-        query = self.request.query_params.get('q', '')
+        query = self.request.query_params.get("q", "")
         if query:
             return Employee.objects.filter(
                 Q(first_name__icontains=query) | Q(last_name__icontains=query)
             )
         return Employee.objects.none()
-       
+
+
 class DepartmentEmployeeView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -413,12 +419,6 @@ class EmployeeRecordViewSet(viewsets.ModelViewSet):
     serializer_class = EmployeeRecordSerializer
 
 
-
-
-from datetime import timedelta
-from django.utils import timezone
-from django.utils.dateparse import parse_date
-
 class AttendanceViewSet(viewsets.ModelViewSet):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
@@ -430,45 +430,44 @@ class AttendanceViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        start_date = self.request.query_params.get('start_date')
-        end_date = self.request.query_params.get('end_date')
-        date_filter = self.request.query_params.get('dateFilter')
+        start_date = self.request.query_params.get("start_date")
+        end_date = self.request.query_params.get("end_date")
+        date_filter = self.request.query_params.get("dateFilter")
         today = timezone.now().date()
-        week_start = today - timedelta(days=today.weekday())  # Start of the week
-        week_end = week_start + timedelta(days=6)  # End of the week
-        month_start = today.replace(day=1)  # Start of the month
-        month_end = (today.replace(day=1) + timedelta(days=31)).replace(day=1) - timedelta(days=1)  # End of the month
-        year_start = today.replace(month=1, day=1)  # Start of the year
-        year_end = today.replace(month=12, day=31)  # End of the year
+        week_start = today - timedelta(days=today.weekday())
+        week_end = week_start + timedelta(days=6)
+        month_start = today.replace(day=1)
+        month_end = (today.replace(day=1) + timedelta(days=31)).replace(day=1) - timedelta(days=1)
+        year_start = today.replace(month=1, day=1)
+        year_end = today.replace(month=12, day=31)
 
         if date_filter:
-            if date_filter == 'today':
+            if date_filter == "today":
                 return Attendance.objects.filter(date=today)
-            elif date_filter == 'yesterday':
+            elif date_filter == "yesterday":
                 return Attendance.objects.filter(date=today - timedelta(days=1))
-            elif date_filter == 'this_week':
+            elif date_filter == "this_week":
                 return Attendance.objects.filter(date__range=[week_start, week_end])
-            elif date_filter == 'this_month':
+            elif date_filter == "this_month":
                 return Attendance.objects.filter(date__range=[month_start, month_end])
-            elif date_filter == 'this_year':
+            elif date_filter == "this_year":
                 return Attendance.objects.filter(date__range=[year_start, year_end])
-            
-            elif date_filter == 'custom':
-                start_date_str = str(start_date)
-                end_date_str = str(end_date)
-                start_date = parse_date(start_date_str)
-                end_date = parse_date(end_date_str)
+            elif date_filter == "custom":
+                start_date = parse_date(start_date)
+                end_date = parse_date(end_date)
                 if not start_date or not end_date:
                     return Attendance.objects.none()
                 return Attendance.objects.filter(date__range=[start_date, end_date])
             else:
-                return Attendance.objects.none()
-            
+                return Attendance.objects.filter(date__range=[start_date, end_date])
+
         if user.is_superuser or user.is_hr_manager:
-            return Attendance.objects.filter(date=today)
+            return Attendance.objects.all()  # Allow full access for superuser and HR managers
         elif user.is_manager:
-            return Attendance.objects.filter(employee__department=user.department).filter(date__range=[week_start, today])
-        return Attendance.objects.filter(employee=user).filter(date__range=[week_start, today])
+            return Attendance.objects.filter(employee__department=user.department, date__range=[week_start, today])
+        else:  # Regular employees
+            return Attendance.objects.filter(employee=user, date__range=[month_start, month_end])
+
 class LeaveViewSet(viewsets.ModelViewSet):
     queryset = Leave.objects.all()
     serializer_class = LeaveSerializer
@@ -485,6 +484,7 @@ class LeaveViewSet(viewsets.ModelViewSet):
         if self.action in ["create", "update", "partial_update", "destroy"]:
             return [IsAdminUser()]
         return [IsAuthenticated()]
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -748,30 +748,37 @@ class EmployeeAttendanceStatsView(APIView):
 
     def get(self, request):
         employee = request.user
-
         start_date_str = request.query_params.get("start_date")
         end_date_str = request.query_params.get("end_date")
 
+        # Default to the last 30 days if no date parameters are provided
         if not start_date_str or not end_date_str:
-            return Response(
-                {"detail": "Start date and end date are required."}, status=400
-            )
+            end_date = timezone.now().date()
+            start_date = end_date - timedelta(days=30)
+        else:
+            try:
+                start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
+                end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+            except ValueError:
+                return Response({"detail": "Invalid date format. Use YYYY-MM-DD."}, status=400)
 
-        try:
-            start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
-            end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
-        except ValueError:
-            return Response(
-                {"detail": "Invalid date format. Use YYYY-MM-DD."}, status=400
-            )
-
+        # Make the dates timezone-aware
         start_date = make_aware(datetime.combine(start_date, datetime.min.time()))
         end_date = make_aware(datetime.combine(end_date, datetime.max.time()))
 
+        # Query attendance records for the employee within the given date range
         attendance_records = Attendance.objects.filter(
             employee=employee, date__range=[start_date, end_date]
         )
 
+        # Compute various attendance statistics
+        total_leaves = attendance_records.filter(
+            Q(status="maternity_leave") |
+            Q(status="paternity_leave") |
+            Q(status="sick_leave") |
+            Q(status="casual_leave") |
+            Q(status="annual_leave")
+        ).count()
         total_days = attendance_records.values("date").distinct().count()
         days_present = attendance_records.filter(status="Present").count()
         days_absent = attendance_records.filter(status="Absent").count()
@@ -790,6 +797,11 @@ class EmployeeAttendanceStatsView(APIView):
 
         sick_leave = attendance_records.filter(status="sick_leave").count()
         casual_leave = attendance_records.filter(status="casual_leave").count()
+        annual_leave = attendance_records.filter(status="annual_leave").count()
+
+        other_leaves = attendance_records.filter(
+            Q(status="maternity_leave") | Q(status="paternity_leave")
+        ).count()
 
         data = {
             "total_days": total_days,
@@ -802,10 +814,10 @@ class EmployeeAttendanceStatsView(APIView):
             "average_hours_per_day": round(average_hours_per_day, 2),
             "overtime_hours": round(overtime_hours, 2),
             "absent_without_leave": absent_without_leave,
+            "other_leaves": other_leaves,
+            "total_leaves": total_leaves,
         }
         return Response(data)
-
-
 class LeaveManagementView(APIView):
     permission_classes = [IsAuthenticated, IsManager]
 
@@ -882,6 +894,7 @@ class JobPostingViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         instance.delete()
 
+
 class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
@@ -900,22 +913,24 @@ class TaskViewSet(viewsets.ModelViewSet):
             serializer.save()
         else:
             return Response(
-            {"detail": "Not authorized to view this information."},
-            status=status.HTTP_403_FORBIDDEN,
-        )
-        
+                {"detail": "Not authorized to view this information."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+
 class TaskCommentViewSet(viewsets.ModelViewSet):
     serializer_class = TaskCommentSerializer
 
     def get_queryset(self):
-        task_id = self.kwargs.get('task_id')
+        task_id = self.kwargs.get("task_id")
         if task_id:
             return TaskComment.objects.filter(task_id=task_id)
         return super().get_queryset()
-    
+
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
- 
+
+
 class ApplicantViewSet(viewsets.ModelViewSet):
     queryset = Applicant.objects.all()
     serializer_class = ApplicantSerializer
@@ -971,10 +986,12 @@ class ApplicationListView(generics.ListAPIView):
         job_id = self.kwargs["job_id"]
         return Application.objects.filter(job_posting_id=job_id)
 
+
 class PerformanceReviewViewSet(viewsets.ModelViewSet):
     queryset = PerformanceReview.objects.all()
     serializer_class = PerformanceReviewSerializer
-    
+
+
 class TodoViewSet(viewsets.ModelViewSet):
     queryset = Todo.objects.all()
     serializer_class = TodoSerializer

@@ -1,14 +1,14 @@
 import React from "react";
 import Sidebar, { SidebarItem } from "./Sidebar";
-import { FaHome, FaUsers, FaUserPlus, FaCalendarAlt, FaBuilding, FaHouseUser, FaFolderPlus } from 'react-icons/fa';
+import { FaHome, FaUsers, FaUserPlus, FaCalendarAlt, FaBuilding, FaFolderPlus } from 'react-icons/fa';
 import { Settings, LogOut } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
-const AdminSideBar = () => {
+const AdminSideBar = ({ expanded, onToggle }) => {
   const { logout } = useAuth();
 
   return (
-    <Sidebar>
+    <Sidebar expanded={expanded} onToggle={onToggle}>
       <SidebarItem icon={<FaHome />} text="Dashboard" to="/admin/dashboard" />
       <SidebarItem icon={<FaUsers />} text="Employees List" to="/admin/employees" />
       <SidebarItem icon={<FaUserPlus />} text="Add Employee" to="/admin/employees/add" />
