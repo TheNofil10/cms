@@ -1,7 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Login from "../pages/Login";
-import SignUp from "../components/admin/SignUp";
 import ForgetPass from "../pages/ForgetPass";
 import EmployeeDashboard from "../components/employee/EmployeeDashboard";
 import AdminDashboard from "../components/admin/AdminDashboard";
@@ -54,6 +53,7 @@ import ManagerLeaveApplications from "../components/manager/attendance/ManagerLe
 import ManagerTasks from "../components/manager/tasks/ManagerTasks.jsx";
 import TaskDetail from "../components/manager/tasks/TaskDetail.jsx";
 import EmployeeTaskDetails from "../components/employee/EmployeeTaskDetails.jsx";
+import EmployeeSignupPage from '../components/admin/EmployeeSignupPage.jsx'
 const AllRoutes = () => {
   return (
     <Routes>
@@ -125,7 +125,7 @@ const AllRoutes = () => {
       <Route element={<ProtectedRoute element={<AdminLayout />} adminOnly />}>
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/employees" element={<EmployeesPage />} />
-        <Route path="/admin/employees/add" element={<SignUp />} />
+        <Route path="/admin/employees/add" element={<EmployeeSignupPage />} />
         <Route path="/admin/attendance" element={<AttendanceTable />} />
         <Route path="/admin/employees/:id" element={<AdminEmployeeProfile />} />
         <Route path="/settings" element={<AdminSettings />} />
@@ -188,7 +188,7 @@ const AllRoutes = () => {
         </Route>
 
         <Route path="/hr/employees" element={<EmployeesPage />} />
-        <Route path="/hr/employees/add" element={<SignUp />} />
+        <Route path="/hr/employees/add" element={<EmployeeSignupPage />} />
         <Route path="/hr/employees/:id" element={<AdminEmployeeProfile />} />
         <Route path="/hr/departments/:id" element={<DepartmentDetailPage />} />
         <Route path="/hr/departments" element={<DepartmentsPage />} />
