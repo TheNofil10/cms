@@ -39,7 +39,7 @@ const EmployeeAttendanceTable = () => {
     const fetchAttendanceData = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/attendance/`,
+          `http://127.0.0.1:8000/api/attendance/?start_date=${filters.startDate}&end_date=${filters.endDate}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -48,15 +48,16 @@ const EmployeeAttendanceTable = () => {
         );
         setAttendanceData(response.data || []);
         setFilteredData(response.data || []);
-        console.log(response.data)
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching attendance data:", error);
         setError("Unable to fetch attendance data.");
       } finally {
         setLoading(false);
-        console.log(attendanceData)
+        console.log(attendanceData);
       }
     };
+    
 
     fetchAttendanceData();
   }, [currentUser.id]);
@@ -226,11 +227,20 @@ const EmployeeAttendanceTable = () => {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: value,
-    }));
+    if (name === 'startDate' || name === 'endDate') {
+      const formattedDate = new Date(value).toISOString().split('T')[0]; 
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        [name]: formattedDate,
+      }));
+    } else {
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        [name]: value,
+      }));
+    }
   };
+  
 
   const handleFilterByChange = (e) => {
     setFilters((prevFilters) => ({

@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from django.conf import settings
+from django.utils.dateparse import parse_date
 from decimal import Decimal
 from rest_framework import mixins
 from rest_framework.decorators import api_view, permission_classes, action
@@ -412,6 +413,12 @@ class EmployeeRecordViewSet(viewsets.ModelViewSet):
     serializer_class = EmployeeRecordSerializer
 
 
+
+
+from datetime import timedelta
+from django.utils import timezone
+from django.utils.dateparse import parse_date
+
 class AttendanceViewSet(viewsets.ModelViewSet):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
@@ -425,21 +432,43 @@ class AttendanceViewSet(viewsets.ModelViewSet):
         user = self.request.user
         start_date = self.request.query_params.get('start_date')
         end_date = self.request.query_params.get('end_date')
-        
-        if start_date and end_date:
-            try:
-                start_date = timezone.make_aware(datetime.fromisoformat(start_date))
-                end_date = timezone.make_aware(datetime.fromisoformat(end_date))
-            except ValueError:
-                return Attendance.objects.none()
-            return Attendance.objects.filter(date__range=[start_date, end_date])
-        
-        if user.is_superuser or user.is_hr_manager:
-            return Attendance.objects.all()
-        elif user.is_manager:
-            return Attendance.objects.filter(employee__department=user.department)
-        return Attendance.objects.filter(employee=user)
+        date_filter = self.request.query_params.get('dateFilter')
+        today = timezone.now().date()
+        week_start = today - timedelta(days=today.weekday())  # Start of the week
+        week_end = week_start + timedelta(days=6)  # End of the week
+        month_start = today.replace(day=1)  # Start of the month
+        month_end = (today.replace(day=1) + timedelta(days=31)).replace(day=1) - timedelta(days=1)  # End of the month
+        year_start = today.replace(month=1, day=1)  # Start of the year
+        year_end = today.replace(month=12, day=31)  # End of the year
 
+        if date_filter:
+            if date_filter == 'today':
+                return Attendance.objects.filter(date=today)
+            elif date_filter == 'yesterday':
+                return Attendance.objects.filter(date=today - timedelta(days=1))
+            elif date_filter == 'this_week':
+                return Attendance.objects.filter(date__range=[week_start, week_end])
+            elif date_filter == 'this_month':
+                return Attendance.objects.filter(date__range=[month_start, month_end])
+            elif date_filter == 'this_year':
+                return Attendance.objects.filter(date__range=[year_start, year_end])
+            
+            elif date_filter == 'custom':
+                start_date_str = str(start_date)
+                end_date_str = str(end_date)
+                start_date = parse_date(start_date_str)
+                end_date = parse_date(end_date_str)
+                if not start_date or not end_date:
+                    return Attendance.objects.none()
+                return Attendance.objects.filter(date__range=[start_date, end_date])
+            else:
+                return Attendance.objects.none()
+            
+        if user.is_superuser or user.is_hr_manager:
+            return Attendance.objects.filter(date=today)
+        elif user.is_manager:
+            return Attendance.objects.filter(employee__department=user.department).filter(date__range=[week_start, today])
+        return Attendance.objects.filter(employee=user).filter(date__range=[week_start, today])
 class LeaveViewSet(viewsets.ModelViewSet):
     queryset = Leave.objects.all()
     serializer_class = LeaveSerializer
@@ -456,7 +485,6 @@ class LeaveViewSet(viewsets.ModelViewSet):
         if self.action in ["create", "update", "partial_update", "destroy"]:
             return [IsAdminUser()]
         return [IsAuthenticated()]
-
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])

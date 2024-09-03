@@ -10,9 +10,9 @@ const EmployeeAttendanceLayout = () => {
     { name: "Applications", path: "/employee/attendance/applications" },
   ];
   return (
-    <div className="flex-grow mt-8 rounded-md md:px-20 sm:px-20 bg-white">
+    <div className="flex-grow mt-8 rounded-md md:px-16 sm:px-16 bg-white">
       <Navbar navItems={navItems} />
-      <div className="py-8">
+      <div className="py-7">
         <Outlet />
       </div>
       <ToastContainer />

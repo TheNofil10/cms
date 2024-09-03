@@ -131,7 +131,7 @@ const EmployeeAttendanceDashboard = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <div className="max-w-7xl shadow-lg rounded p-5 px-8 mx-auto space-y-8">
       <div className="bg-white pt-4 rounded-lg grid grid-cols-2 gap-4">
         <div>
           <label htmlFor="start-date" className="block text-lg font-semibold">

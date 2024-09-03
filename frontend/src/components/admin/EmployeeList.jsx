@@ -69,6 +69,7 @@ const EmployeeList = () => {
         );
         setEmployees(response.data.results || response.data || []);
         setFilteredData(response.data.results || response.data || []);
+        console.log(response.data.results);
       } catch (error) {
         console.error("Error fetching employees:", error);
         setError("There was an error fetching the employee data.");
