@@ -54,6 +54,7 @@ import ManagerTasks from "../components/manager/tasks/ManagerTasks.jsx";
 import TaskDetail from "../components/manager/tasks/TaskDetail.jsx";
 import EmployeeTaskDetails from "../components/employee/EmployeeTaskDetails.jsx";
 import EmployeeSignupPage from '../components/admin/EmployeeSignupPage.jsx'
+import ManagerDashboard from "../components/manager/ManagerDashboard.jsx";
 const AllRoutes = () => {
   return (
     <Routes>
@@ -99,7 +100,7 @@ const AllRoutes = () => {
           <ManagerRoute element={<ManagerLayout />} managerOnly={true} />
         }
       >
-        <Route path="/manager/dashboard" element={<EmployeeDashboard />} />
+        <Route path="/manager/dashboard" element={<ManagerDashboard />} />
         <Route path="/manager/profile" element={<EmployeeProfile />} />
         <Route path="/manager/settings" element={<EmployeeSettings />} />
         <Route path="/manager/tasks" element={<ManagerTasks />} />

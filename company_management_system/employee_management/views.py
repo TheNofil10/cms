@@ -452,17 +452,17 @@ class AttendanceViewSet(viewsets.ModelViewSet):
                 return Attendance.objects.filter(date__range=[month_start, month_end])
             elif date_filter == "this_year":
                 return Attendance.objects.filter(date__range=[year_start, year_end])
-            elif date_filter == "custom":
+            elif date_filter == "custom" or (start_date and end_date):
                 start_date = parse_date(start_date)
                 end_date = parse_date(end_date)
                 if not start_date or not end_date:
                     return Attendance.objects.none()
                 return Attendance.objects.filter(date__range=[start_date, end_date])
-            else:
-                return Attendance.objects.filter(date__range=[start_date, end_date])
+        else:
+            return Attendance.objects.filter(date__range=[week_start, week_end])
 
         if user.is_superuser or user.is_hr_manager:
-            return Attendance.objects.all()  # Allow full access for superuser and HR managers
+            return Attendance.objects.all() 
         elif user.is_manager:
             return Attendance.objects.filter(employee__department=user.department, date__range=[week_start, today])
         else:  # Regular employees
@@ -596,13 +596,13 @@ class EmployeeAttendanceView(APIView):
         serializer = AttendanceSerializer(attendance, many=True)
         return Response(serializer.data)
 
-
 class CompanyAttendanceStatsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user
 
+        # Ensure the user has the appropriate permissions to view company-wide stats
         if not user.is_hr_manager and not user.is_superuser and not user.is_manager:
             return Response(
                 {"detail": "Not authorized to view company-wide stats"}, status=403
@@ -613,24 +613,27 @@ class CompanyAttendanceStatsView(APIView):
         employee_id = request.query_params.get("employee_id")
         username = request.query_params.get("username")
 
+        # Default to the last 30 days if no date parameters are provided
         if not start_date_str or not end_date_str:
-            return Response(
-                {"detail": "Start date and end date are required."}, status=400
-            )
+            end_date = timezone.now().date()
+            start_date = end_date - timedelta(days=30)
+        else:
+            try:
+                start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
+                end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+            except ValueError:
+                return Response(
+                    {"detail": "Invalid date format. Use YYYY-MM-DD."}, status=400
+                )
 
-        try:
-            start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
-            end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
-        except ValueError:
-            return Response(
-                {"detail": "Invalid date format. Use YYYY-MM-DD."}, status=400
-            )
-
+        # Make the dates timezone-aware
         start_date = make_aware(datetime.combine(start_date, datetime.min.time()))
         end_date = make_aware(datetime.combine(end_date, datetime.max.time()))
 
+        # Query attendance records within the given date range
         attendance_qs = Attendance.objects.filter(date__range=[start_date, end_date])
 
+        # Filter by department if the user is a manager, or by employee ID/username if provided
         if user.is_manager:
             attendance_qs = attendance_qs.filter(employee__department=user.department)
         elif employee_id:
@@ -638,6 +641,7 @@ class CompanyAttendanceStatsView(APIView):
         elif username:
             attendance_qs = attendance_qs.filter(employee__username=username)
 
+        # Compute various attendance statistics
         total_days = attendance_qs.values("date").distinct().count()
         days_present = attendance_qs.filter(status="Present").count()
         days_absent = attendance_qs.filter(status="Absent").count()
@@ -645,7 +649,6 @@ class CompanyAttendanceStatsView(APIView):
         overtime_hours = attendance_qs.filter(is_overtime=True).aggregate(
             total_overtime=Sum(Cast("hours_worked", FloatField()))
         )["total_overtime"] or Decimal("0.00")
-
         absent_without_leave = attendance_qs.filter(status="Absent").count()
 
         total_hours = attendance_qs.aggregate(
@@ -656,11 +659,11 @@ class CompanyAttendanceStatsView(APIView):
         )
 
         total_leaves = attendance_qs.filter(
-            Q(status="maternity_leave")
-            | Q(status="paternity_leave")
-            | Q(status="sick_leave")
-            | Q(status="casual_leave")
-            | Q(status="annual_leave")
+            Q(status="maternity_leave") |
+            Q(status="paternity_leave") |
+            Q(status="sick_leave") |
+            Q(status="casual_leave") |
+            Q(status="annual_leave")
         ).count()
         sick_leave = attendance_qs.filter(status="sick_leave").count()
         casual_leave = attendance_qs.filter(status="casual_leave").count()
@@ -670,6 +673,7 @@ class CompanyAttendanceStatsView(APIView):
             Q(status="maternity_leave") | Q(status="paternity_leave")
         ).count()
 
+        # Prepare data for the response
         data = {
             "total_days": total_days,
             "days_present": days_present,
@@ -687,62 +691,6 @@ class CompanyAttendanceStatsView(APIView):
         }
         return Response(data)
 
-
-class DepartmentAttendanceStatsView(APIView):
-    permission_classes = [IsAuthenticated, IsManager]
-
-    def get(self, request):
-        user = request.user
-        start_date_str = request.query_params.get("start_date")
-        end_date_str = request.query_params.get("end_date")
-
-        if not start_date_str or not end_date_str:
-            return Response(
-                {"detail": "Start date and end date are required."}, status=400
-            )
-
-        try:
-            start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
-            end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
-        except ValueError:
-            return Response(
-                {"detail": "Invalid date format. Use YYYY-MM-DD."}, status=400
-            )
-
-        start_date = make_aware(datetime.combine(start_date, datetime.min.time()))
-        end_date = make_aware(datetime.combine(end_date, datetime.max.time()))
-
-        attendance_records = Attendance.objects.filter(
-            employee__department=user.department, date__range=[start_date, end_date]
-        )
-
-        total_days = attendance_records.values("date").distinct().count()
-        days_present = attendance_records.filter(status="Present").count()
-        days_absent = attendance_records.filter(status="Absent").count()
-        days_late = attendance_records.filter(status="Late").count()
-        overtime_hours = attendance_records.filter(is_overtime=True).aggregate(
-            total_overtime=Sum(Cast("hours_worked", FloatField()))
-        )["total_overtime"] or Decimal("0.00")
-
-        total_hours = attendance_records.aggregate(
-            total_hours=Sum(Cast("hours_worked", FloatField()))
-        )["total_hours"] or Decimal("0.00")
-        average_hours_per_day = (
-            Decimal(total_hours) / total_days if total_days else Decimal("0.00")
-        )
-
-        data = {
-            "total_days": total_days,
-            "days_present": days_present,
-            "days_absent": days_absent,
-            "days_late": days_late,
-            "hours_worked": round(total_hours, 2),
-            "average_hours_per_day": round(average_hours_per_day, 2),
-            "overtime_hours": round(overtime_hours, 2),
-        }
-        return Response(data)
-
-
 class EmployeeAttendanceStatsView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -751,10 +699,10 @@ class EmployeeAttendanceStatsView(APIView):
         start_date_str = request.query_params.get("start_date")
         end_date_str = request.query_params.get("end_date")
 
-        # Default to the last 30 days if no date parameters are provided
+        
         if not start_date_str or not end_date_str:
             end_date = timezone.now().date()
-            start_date = end_date - timedelta(days=30)
+            start_date = end_date - timedelta(days=7)
         else:
             try:
                 start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
