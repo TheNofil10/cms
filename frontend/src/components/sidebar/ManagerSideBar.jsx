@@ -4,11 +4,11 @@ import { FaHome, FaUser, FaCalendarAlt, FaTasks, FaBuilding, FaUsers } from 'rea
 import { Settings, LogOut } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
-const ManagerSideBar = () => {
+const ManagerSideBar = ({ expanded, onToggle }) => {
   const { logout } = useAuth();
 
   return (
-    <Sidebar>
+    <Sidebar expanded={expanded} onToggle={onToggle}>
       <SidebarItem icon={<FaHome />} text="Dashboard" to="/manager/dashboard" />
       <SidebarItem icon={<FaUser />} text="Profile" to="/manager/profile" />
       <SidebarItem icon={<FaUsers/>} text="Employees List" to="/manager/employees" />

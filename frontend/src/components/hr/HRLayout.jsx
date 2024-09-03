@@ -12,7 +12,7 @@ const HRLayout = () => {
   return (
     <div className="min-h-screen flex bg-white text-black">
       <HRSideBar expanded={sidebarExpanded} onToggle={handleToggleSidebar} />
-      <div className={`flex-grow transition-all duration-300 ml-${sidebarExpanded ? "64" : "16"} px-6 md:px-20 sm:px-30 bg-white`}>
+      <div className={`flex-grow transition-all duration-300 ml-${sidebarExpanded ? "64" : "16"} bg-white`}>
         <Outlet />
       </div>
     </div>
