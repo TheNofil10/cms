@@ -8,7 +8,7 @@ const SmallEmployeeCard = ({ employee }) => {
       <img
         src={profile_image || "default-profile.png"}
         alt={`${first_name} ${last_name}`}
-        className="w-4 h-4 rounded-full object-cover"
+        className="w-8 h-8 rounded-full object-cover"
       />
       <div className="flex flex-col">
         <h3 className="text-sm font-semibold">{`${first_name} ${last_name}`}</h3>
