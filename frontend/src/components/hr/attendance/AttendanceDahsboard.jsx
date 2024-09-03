@@ -5,8 +5,8 @@ import axios from "axios";
 import { useAuth } from "../../../contexts/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ClipLoader } from "react-spinners"; // Import a spinner from react-spinners
-
+import { ClipLoader } from "react-spinners";
+const api = 'http://127.0.0.1:8000'
 Chart.register(...registerables);
 
 const AttendanceDashboard = () => {
@@ -21,7 +21,8 @@ const AttendanceDashboard = () => {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
   const [selectedEmployeeUsername, setSelectedEmployeeUsername] = useState("");
   const [searchType, setSearchType] = useState("id");
-
+  const [employeeSuggestions, setEmployeeSuggestions] = useState([]);
+  
   useEffect(() => {
     const fetchAttendanceData = async () => {
       setLoading(true);
@@ -66,7 +67,6 @@ const AttendanceDashboard = () => {
 
         // setAttendanceData(filteredData);
       } catch (error) {
-        toast.error("Error fetching attendance data");
         console.error("Error fetching attendance data:", error);
       } finally {
         setLoading(false);
@@ -81,7 +81,33 @@ const AttendanceDashboard = () => {
     searchType,
     startDate,
     endDate,
-  ]);
+  ]);;
+
+  const handleEmployeeSearch = async (query) => {
+    if (!query) {
+      setEmployeeSuggestions([]);
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `http://127.0.0.1:8000/api/employee-suggestions/`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+          params: {
+            q: query,
+          },
+        }
+      );
+      console.log(response.data)
+      setEmployeeSuggestions(response.data);
+    } catch (error) {
+      console.log(employeeSuggestions)
+      console.error("Error fetching employee suggestions:", error);
+    }
+  };
 
   const handleApply = () => {
     if (!selectedEmployeeId && !selectedEmployeeUsername) {
@@ -104,65 +130,8 @@ const AttendanceDashboard = () => {
   const handleClear = () => {
     setSelectedEmployeeId("");
     setSelectedEmployeeUsername("");
+    setEmployeeSuggestions([]);
     setSearchType("");
-  };
-
-  const lineChartData = {
-    labels: attendanceData.map((entry) => entry.date),
-    datasets: [
-      {
-        label: "Hours Worked",
-        data: attendanceData.map((entry) => entry.hours_worked),
-        borderColor: "rgba(75, 192, 192, 1)",
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
-        fill: true,
-      },
-    ],
-  };
-
-  const barChartData = {
-    labels: attendanceData.map((entry) => entry.date),
-    datasets: [
-      {
-        label: "Days Present",
-        data: attendanceData.map((entry) =>
-          entry.status === "Present" ? 1 : 0
-        ),
-        backgroundColor: "rgba(54, 162, 235, 0.6)",
-      },
-      {
-        label: "Days Absent",
-        data: attendanceData.map((entry) =>
-          entry.status === "Absent" ? 1 : 0
-        ),
-        backgroundColor: "rgba(255, 99, 132, 0.6)",
-      },
-      {
-        label: "Days Late",
-        data: attendanceData.map((entry) => (entry.status === "Late" ? 1 : 0)),
-        backgroundColor: "rgba(255, 206, 86, 0.6)",
-      },
-      {
-        label: "Sick Leave",
-        data: Array(attendanceData.length).fill(stats.sick_leave || 0),
-        backgroundColor: "rgba(153, 102, 255, 0.6)",
-      },
-      {
-        label: "Casual Leave",
-        data: Array(attendanceData.length).fill(stats.casual_leave || 0),
-        backgroundColor: "rgba(255, 159, 64, 0.6)",
-      },
-      {
-        label: "Additional Metric 1", // Replace with actual metric name
-        data: Array(attendanceData.length).fill(stats.additional_metric_1 || 0),
-        backgroundColor: "rgba(255, 99, 71, 0.6)", // Example color
-      },
-      {
-        label: "Additional Metric 2", // Replace with actual metric name
-        data: Array(attendanceData.length).fill(stats.additional_metric_2 || 0),
-        backgroundColor: "rgba(0, 255, 255, 0.6)", // Example color
-      },
-    ],
   };
 
   const pieChartData = {
@@ -182,32 +151,55 @@ const AttendanceDashboard = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <div className="max-w-7xl px-5 mx-auto space-y-8">
       <h1 className="text-2xl font-bold">Attendance Dashboard</h1>
 
       {/* Employee Selector */}
-      <div className="bg-white p-4 rounded-lg shadow grid grid-cols-2 gap-4">
+      <div className="bg-white p-4 rounded-lg shadow">
         <div className="flex items-center space-x-4">
-          <input
-            type="text"
-            placeholder="Enter Employee ID"
-            value={selectedEmployeeId}
-            onChange={(e) => {
-              setSelectedEmployeeId(e.target.value);
-              setSearchType("id");
-            }}
-            className="border p-2 rounded-lg w-full"
-          />
-          <input
-            type="text"
-            placeholder="Enter Employee Username"
-            value={selectedEmployeeUsername}
-            onChange={(e) => {
-              setSelectedEmployeeUsername(e.target.value);
-              setSearchType("username");
-            }}
-            className="border p-2 rounded-lg w-full"
-          />
+          <div className="relative w-full">
+            <input
+              type="text"
+              placeholder="Enter Employee ID or Name"
+              value={selectedEmployeeId || selectedEmployeeUsername}
+              onChange={(e) => {
+                const query = e.target.value;
+                setSelectedEmployeeId(query);
+                setSelectedEmployeeUsername(query);
+                handleEmployeeSearch(query);
+              }}
+              className="border p-2 rounded-lg w-full"
+            />
+            {employeeSuggestions.length > 0 && (
+              <ul className="absolute bg-white border rounded-lg w-full mt-1 z-10 max-h-60 overflow-y-auto">
+                {employeeSuggestions.map((employee) => (
+                  (!employee.is_superuser && <li
+                    key={employee.id}
+                    onClick={() => {
+                      setSelectedEmployeeId(employee.id);
+                      setSelectedEmployeeUsername("");
+                      setEmployeeSuggestions([]);
+                    }}
+                    className="p-2 cursor-pointer hover:bg-gray-200 flex items-center space-x-2"
+                  >
+                    <img
+                      src={employee.profile_image}
+                      alt="Profile"
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                    <div>
+                      <p className="font-semibold">
+                        {employee.first_name} {employee.last_name}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {employee.position}
+                      </p>
+                    </div>
+                  </li>)
+                ))}
+              </ul>
+            )}
+          </div>
           <button
             onClick={handleApply}
             className="bg-blue-500 text-white p-2 rounded-lg"

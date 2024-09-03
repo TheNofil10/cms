@@ -346,7 +346,7 @@ class EmployeeSuggestionView(viewsets.GenericViewSet, mixins.ListModelMixin):
         query = self.request.query_params.get("q", "")
         if query:
             return Employee.objects.filter(
-                Q(first_name__icontains=query) | Q(last_name__icontains=query)
+                Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(username__icontains=query) |Q(id__icontains=query)
             )
         return Employee.objects.none()
 
