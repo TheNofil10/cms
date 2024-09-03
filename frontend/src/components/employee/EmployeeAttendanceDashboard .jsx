@@ -131,10 +131,14 @@ const EmployeeAttendanceDashboard = () => {
   };
 
   return (
-    <div className="max-w-7xl shadow-lg rounded p-5 px-8 mx-auto space-y-8">
-      <div className="bg-white pt-4 rounded-lg grid grid-cols-2 gap-4">
+    <div className="max-w-full mx-auto space-y-2 overflow-hidden">
+      {/* Date Range Selector */}
+      <div className="bg-white p-2 rounded-lg shadow-sm mb-2 grid grid-cols-1 md:grid-cols-2 gap-2">
         <div>
-          <label htmlFor="start-date" className="block text-lg font-semibold">
+          <label
+            htmlFor="start-date"
+            className="block text-sm font-semibold mb-1"
+          >
             Start Date:
           </label>
           <input
@@ -142,11 +146,14 @@ const EmployeeAttendanceDashboard = () => {
             id="start-date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="border p-2 rounded-lg w-full"
+            className="border p-2 rounded-lg w-full text-sm"
           />
         </div>
         <div>
-          <label htmlFor="end-date" className="block text-lg font-semibold">
+          <label
+            htmlFor="end-date"
+            className="block text-sm font-semibold mb-1"
+          >
             End Date:
           </label>
           <input
@@ -154,54 +161,64 @@ const EmployeeAttendanceDashboard = () => {
             id="end-date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="border p-2 rounded-lg w-full"
+            className="border p-2 rounded-lg w-full text-sm"
           />
         </div>
       </div>
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-        <section className="grid grid-cols-1 md:grid-cols-2 text-center lg:grid-cols-2 gap-4">
-          <div className="bg-white p-4 rounded-lg shadow">
-            <h2 className="text-md font-semibold">Days Present</h2>
-            <p className="text-lg">{stats.days_present || 0}</p>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow">
-            <h2 className="text-md font-semibold">Days Absent</h2>
-            <p className="text-lg">{stats.days_absent || 0}</p>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow">
-            <h2 className="text-md font-semibold">Total Leaves</h2>
-            <p className="text-lg">{stats.total_leaves || 0}</p>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow">
-            <h2 className="text-md font-semibold">Days Late</h2>
-            <p className="text-lg">{stats.days_late || 0}</p>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow">
-            <h2 className="text-md font-semibold">Overtime Hours</h2>
-            <p className="text-lg">{stats.overtime_hours || 0}</p>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow">
-            <h2 className="text-md font-semibold">Sick Leaves</h2>
-            <p className="text-lg">{stats.sick_leave || 0}</p>
-          </div>
-        </section>
 
-        {/* <div className="py-5">
-          <div className="bg-white p-4 " style={{ height: "400px" }}>
-            <h2 className="text-lg font-semibold">Hours Worked</h2>
-            <Line
-              data={lineChartData}
-              options={{ maintainAspectRatio: true }}
-            />
-          </div>
-        </div> */}
-        <div className="p-5">
-          <div className="bg-white p-4 " style={{ height: "300px" }}>
-            <h2 className="text-lg font-semibold">Overview</h2>
-            <Pie data={pieChartData} options={{ maintainAspectRatio: false }} />
+      {/* Statistics and Chart */}
+      <div className="bg-white p-2 rounded-lg shadow-sm flex flex-col md:flex-row md:space-x-2 space-y-2 md:space-y-0">
+        <div className="flex-1 space-y-2">
+          <div className="grid grid-cols-3 gap-2">
+            <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
+              <h2 className="font-semibold">Total Days</h2>
+              <p className="text-lg">{stats.total_days || 0}</p>
+            </div>
+            <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
+              <h2 className="font-semibold">Present Days</h2>
+              <p className="text-lg">{stats.days_present || 0}</p>
+            </div>
+            <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
+              <h2 className="font-semibold">Days Absent</h2>
+              <p className="text-lg">{stats.days_absent || 0}</p>
+            </div>
+            <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
+              <h2 className="font-semibold">Days Late</h2>
+              <p className="text-lg">{stats.days_late || 0}</p>
+            </div>
+            <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
+              <h2 className="font-semibold">Hours Worked</h2>
+              <p className="text-lg">{stats.hours_worked || 0}</p>
+            </div>
+            <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
+              <h2 className="font-semibold">Average Hours/Day</h2>
+              <p className="text-lg">{stats.average_hours_per_day || 0}</p>
+            </div>
+            <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
+              <h2 className="font-semibold">Overtime Hours</h2>
+              <p className="text-lg">{stats.overtime_hours || 0}</p>
+            </div>
+            <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
+              <h2 className="font-semibold">Total Leave</h2>
+              <p className="text-lg">{stats.total_leaves || 0}</p>
+            </div>
+            <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
+              <h2 className="font-semibold">Sick Leave</h2>
+              <p className="text-lg">{stats.sick_leave || 0}</p>
+            </div>
+            <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
+              <h2 className="font-semibold">Casual Leave</h2>
+              <p className="text-lg">{stats.casual_leave || 0}</p>
+            </div>
           </div>
         </div>
-      </section>
+        <div
+          className="flex-1 flex items-center justify-center"
+          style={{ height: "300px" }}
+        >
+          <Pie data={pieChartData} />
+        </div>
+      </div>
 
       <ToastContainer />
     </div>
