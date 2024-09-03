@@ -48,6 +48,7 @@ const AttendanceDashboard = () => {
         console.error("Error fetching attendance data:", error);
       } finally {
         setLoading(false);
+        console.log(stats);
       }
     };
 
@@ -126,8 +127,7 @@ const AttendanceDashboard = () => {
   };
 
   return (
-    <div className="max-w-full mx-auto px-2 py-2 space-y-2 overflow-hidden">
-      <h1 className="text-xl font-bold mb-2">Attendance Dashboard</h1>
+    <div className="max-w-full mx-auto px-5 space-y-2 overflow-hidden">
       <div className="grid grid-cols-2">
         {/* Employee Selector */}
         <div className="bg-white p-2 rounded-lg shadow-sm mb-2">
@@ -230,45 +230,45 @@ const AttendanceDashboard = () => {
             </div>
           ) : (
             <div className="grid grid-cols-3 gap-2">
-              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
                 <h2 className="font-semibold">Total Days</h2>
-                <p className="text-md">{stats.total_days || 0}</p>
+                <p className="text-lg">{stats.total_days || 0}</p>
               </div>
-              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
                 <h2 className="font-semibold">Present Days</h2>
-                <p className="text-md">{stats.present_days || 0}</p>
+                <p className="text-lg">{stats.days_present || 0}</p>
               </div>
-              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
                 <h2 className="font-semibold">Days Absent</h2>
-                <p className="text-md">{stats.absent_days || 0}</p>
+                <p className="text-lg">{stats.days_absent || 0}</p>
               </div>
-              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
                 <h2 className="font-semibold">Days Late</h2>
-                <p className="text-md">{stats.days_late || 0}</p>
+                <p className="text-lg">{stats.days_late || 0}</p>
               </div>
-              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
                 <h2 className="font-semibold">Hours Worked</h2>
-                <p className="text-md">{stats.hours_worked || 0}</p>
+                <p className="text-lg">{stats.hours_worked || 0}</p>
               </div>
-              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
                 <h2 className="font-semibold">Average Hours/Day</h2>
-                <p className="text-md">{stats.average_hours_per_day || 0}</p>
+                <p className="text-lg">{stats.average_hours_per_day || 0}</p>
               </div>
-              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
                 <h2 className="font-semibold">Overtime Hours</h2>
-                <p className="text-md">{stats.overtime_hours || 0}</p>
+                <p className="text-lg">{stats.overtime_hours || 0}</p>
               </div>
-              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
                 <h2 className="font-semibold">Total Leave</h2>
-                <p className="text-md">{stats.total_leaves || 0}</p>
+                <p className="text-lg">{stats.total_leaves || 0}</p>
               </div>
-              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
                 <h2 className="font-semibold">Sick Leave</h2>
-                <p className="text-md">{stats.sick_leaves || 0}</p>
+                <p className="text-lg">{stats.sick_leave || 0}</p>
               </div>
-              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-md">
                 <h2 className="font-semibold">Casual Leave</h2>
-                <p className="text-md">{stats.casual_leaves || 0}</p>
+                <p className="text-lg">{stats.casual_leave || 0}</p>
               </div>
             </div>
           )}
