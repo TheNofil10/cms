@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Bar, Line, Pie } from "react-chartjs-2";
+import { Pie } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import axios from "axios";
 import { useAuth } from "../../../contexts/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ClipLoader } from "react-spinners";
-const api = 'http://127.0.0.1:8000'
+
+const api = "http://127.0.0.1:8000";
 Chart.register(...registerables);
 
 const AttendanceDashboard = () => {
@@ -22,7 +23,7 @@ const AttendanceDashboard = () => {
   const [selectedEmployeeUsername, setSelectedEmployeeUsername] = useState("");
   const [searchType, setSearchType] = useState("id");
   const [employeeSuggestions, setEmployeeSuggestions] = useState([]);
-  
+
   useEffect(() => {
     const fetchAttendanceData = async () => {
       setLoading(true);
@@ -43,34 +44,10 @@ const AttendanceDashboard = () => {
           }
         );
         setStats(statsResponse.data);
-        // const attendanceResponse = await axios.get(
-        //   "http://127.0.0.1:8000/api/attendance/",
-        //   {
-        //     headers: {
-        //       Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        //     },
-        //     params: {
-        //       start_date: startDate,
-        //       end_date: endDate,
-        //       employee_id: searchType === "id" ? selectedEmployeeId : "",
-        //       username:
-        //         searchType === "username" ? selectedEmployeeUsername : "",
-        //     },
-        //   }
-        // );
-
-        // const filteredData = attendanceResponse.data.filter(
-        //   (entry) =>
-        //     new Date(entry.date) >= new Date(startDate) &&
-        //     new Date(entry.date) <= new Date(endDate)
-        // );
-
-        // setAttendanceData(filteredData);
       } catch (error) {
         console.error("Error fetching attendance data:", error);
       } finally {
         setLoading(false);
-        console.log(stats);
       }
     };
 
@@ -81,7 +58,7 @@ const AttendanceDashboard = () => {
     searchType,
     startDate,
     endDate,
-  ]);;
+  ]);
 
   const handleEmployeeSearch = async (query) => {
     if (!query) {
@@ -101,10 +78,8 @@ const AttendanceDashboard = () => {
           },
         }
       );
-      console.log(response.data)
       setEmployeeSuggestions(response.data);
     } catch (error) {
-      console.log(employeeSuggestions)
       console.error("Error fetching employee suggestions:", error);
     }
   };
@@ -151,165 +126,161 @@ const AttendanceDashboard = () => {
   };
 
   return (
-    <div className="max-w-7xl px-5 mx-auto space-y-8">
-      <h1 className="text-2xl font-bold">Attendance Dashboard</h1>
+    <div className="max-w-full mx-auto px-2 py-2 space-y-2 overflow-hidden">
+      <h1 className="text-xl font-bold mb-2">Attendance Dashboard</h1>
+      <div className="grid grid-cols-2">
+        {/* Employee Selector */}
+        <div className="bg-white p-2 rounded-lg shadow-sm mb-2">
+          <div className="flex flex-col md:flex-row items-center md:space-x-2 space-y-2 md:space-y-0">
+            <div className="relative w-full md:w-2/3">
+              <label
+                htmlFor="start-date"
+                className="block text-sm font-semibold mb-1"
+              >
+                Search:
+              </label>
+              <input
+                type="text"
+                placeholder="Enter Employee ID or Name"
+                value={selectedEmployeeId || selectedEmployeeUsername}
+                onChange={(e) => {
+                  const query = e.target.value;
+                  setSelectedEmployeeId(query);
+                  setSelectedEmployeeUsername(query);
+                  handleEmployeeSearch(query);
+                }}
+                className="border p-2 rounded-lg w-full text-sm"
+              />
+              {employeeSuggestions.length > 0 && (
+                <ul className="absolute bg-white border rounded-lg w-full mt-1 z-10 max-h-40 overflow-y-auto text-sm">
+                  {employeeSuggestions.map(
+                    (employee) =>
+                      !employee.is_superuser && (
+                        <li
+                          key={employee.id}
+                          onClick={() => {
+                            setSelectedEmployeeId(employee.id);
+                            setSelectedEmployeeUsername("");
+                            setEmployeeSuggestions([]);
+                          }}
+                          className="p-2 cursor-pointer hover:bg-gray-100 flex items-center space-x-2"
+                        >
+                          <img
+                            src={employee.profile_image}
+                            alt="Profile"
+                            className="w-6 h-6 rounded-full object-cover"
+                          />
+                          <div>
+                            <p className="font-semibold text-sm">
+                              {employee.first_name} {employee.last_name}
+                            </p>
+                            <p className="text-xs text-gray-600">
+                              {employee.position}
+                            </p>
+                          </div>
+                        </li>
+                      )
+                  )}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
 
-      {/* Employee Selector */}
-      <div className="bg-white p-4 rounded-lg shadow">
-        <div className="flex items-center space-x-4">
-          <div className="relative w-full">
+        {/* Date Range Selector */}
+        <div className="bg-white p-2 rounded-lg shadow-sm mb-2 grid grid-cols-1 md:grid-cols-2 gap-2">
+          <div>
+            <label
+              htmlFor="start-date"
+              className="block text-sm font-semibold mb-1"
+            >
+              Start Date:
+            </label>
             <input
-              type="text"
-              placeholder="Enter Employee ID or Name"
-              value={selectedEmployeeId || selectedEmployeeUsername}
-              onChange={(e) => {
-                const query = e.target.value;
-                setSelectedEmployeeId(query);
-                setSelectedEmployeeUsername(query);
-                handleEmployeeSearch(query);
-              }}
-              className="border p-2 rounded-lg w-full"
+              type="date"
+              id="start-date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="border p-2 rounded-lg w-full text-sm"
             />
-            {employeeSuggestions.length > 0 && (
-              <ul className="absolute bg-white border rounded-lg w-full mt-1 z-10 max-h-60 overflow-y-auto">
-                {employeeSuggestions.map((employee) => (
-                  (!employee.is_superuser && <li
-                    key={employee.id}
-                    onClick={() => {
-                      setSelectedEmployeeId(employee.id);
-                      setSelectedEmployeeUsername("");
-                      setEmployeeSuggestions([]);
-                    }}
-                    className="p-2 cursor-pointer hover:bg-gray-200 flex items-center space-x-2"
-                  >
-                    <img
-                      src={employee.profile_image}
-                      alt="Profile"
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
-                    <div>
-                      <p className="font-semibold">
-                        {employee.first_name} {employee.last_name}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        {employee.position}
-                      </p>
-                    </div>
-                  </li>)
-                ))}
-              </ul>
-            )}
           </div>
-          <button
-            onClick={handleApply}
-            className="bg-blue-500 text-white p-2 rounded-lg"
-          >
-            Apply
-          </button>
-          <button
-            onClick={handleClear}
-            className="bg-gray-500 text-white p-2 rounded-lg"
-          >
-            Clear
-          </button>
+          <div>
+            <label
+              htmlFor="end-date"
+              className="block text-sm font-semibold mb-1"
+            >
+              End Date:
+            </label>
+            <input
+              type="date"
+              id="end-date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="border p-2 rounded-lg w-full text-sm"
+            />
+          </div>
+        </div>
+      </div>
+      {/* Statistics and Chart */}
+      <div className="bg-white p-2 rounded-lg shadow-sm flex flex-col md:flex-row md:space-x-2 space-y-2 md:space-y-0">
+        <div className="flex-1 space-y-2">
+          {loading ? (
+            <div className="flex justify-center items-center">
+              <ClipLoader color="black" size={30} />
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 gap-2">
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+                <h2 className="font-semibold">Total Days</h2>
+                <p className="text-md">{stats.total_days || 0}</p>
+              </div>
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+                <h2 className="font-semibold">Present Days</h2>
+                <p className="text-md">{stats.present_days || 0}</p>
+              </div>
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+                <h2 className="font-semibold">Days Absent</h2>
+                <p className="text-md">{stats.absent_days || 0}</p>
+              </div>
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+                <h2 className="font-semibold">Days Late</h2>
+                <p className="text-md">{stats.days_late || 0}</p>
+              </div>
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+                <h2 className="font-semibold">Hours Worked</h2>
+                <p className="text-md">{stats.hours_worked || 0}</p>
+              </div>
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+                <h2 className="font-semibold">Average Hours/Day</h2>
+                <p className="text-md">{stats.average_hours_per_day || 0}</p>
+              </div>
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+                <h2 className="font-semibold">Overtime Hours</h2>
+                <p className="text-md">{stats.overtime_hours || 0}</p>
+              </div>
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+                <h2 className="font-semibold">Total Leave</h2>
+                <p className="text-md">{stats.total_leaves || 0}</p>
+              </div>
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+                <h2 className="font-semibold">Sick Leave</h2>
+                <p className="text-md">{stats.sick_leaves || 0}</p>
+              </div>
+              <div className="bg-gray-50 p-2 rounded-lg shadow-sm text-sm">
+                <h2 className="font-semibold">Casual Leave</h2>
+                <p className="text-md">{stats.casual_leaves || 0}</p>
+              </div>
+            </div>
+          )}
+        </div>
+        <div
+          className="flex-1 flex items-center justify-center"
+          style={{ height: "300px" }}
+        >
+          <Pie data={pieChartData} />
         </div>
       </div>
 
-      {/* Date Range Selector */}
-      <div className="bg-white p-4 rounded-lg shadow grid grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="start-date" className="block text-lg font-semibold">
-            Start Date:
-          </label>
-          <input
-            type="date"
-            id="start-date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="border p-2 rounded-lg w-full"
-          />
-        </div>
-        <div>
-          <label htmlFor="end-date" className="block text-lg font-semibold">
-            End Date:
-          </label>
-          <input
-            type="date"
-            id="end-date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="border p-2 rounded-lg w-full"
-          />
-        </div>
-      </div>
-
-      {/* Statistics Section */}
-
-      {/* Charts */}
-      <div className="bg-white p-4 rounded-lg shadow space-y-4">
-        {loading ? (
-          <div className="flex justify-center items-center">
-            <ClipLoader color="black" size={100} />
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4">
-              <div className="bg-white p-4 rounded-lg shadow">
-                <h2 className="text-lg font-semibold">Days Present</h2>
-                <p className="text-2xl">{stats.days_present || 0}</p>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow">
-                <h2 className="text-lg font-semibold">Days Absent</h2>
-                <p className="text-2xl">{stats.days_absent || 0}</p>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow">
-                <h2 className="text-lg font-semibold">Total Leaves</h2>
-                <p className="text-2xl">{stats.total_leaves || 0}</p>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow">
-                <h2 className="text-lg font-semibold">Days Late</h2>
-                <p className="text-2xl">{stats.days_late || 0}</p>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow">
-                <h2 className="text-lg font-semibold">Overtime Hours</h2>
-                <p className="text-2xl">{stats.overtime_hours || 0}</p>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow">
-                <h2 className="text-lg font-semibold">Sick Leaves</h2>
-                <p className="text-2xl">{stats.sick_leave || 0}</p>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow">
-                <h2 className="text-lg font-semibold">Casual Leaves</h2>
-                <p className="text-2xl">{stats.casual_leave || 0}</p>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow">
-                <h2 className="text-lg font-semibold">Annual Leaves</h2>
-                <p className="text-2xl">{stats.annual_leave || 0}</p>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow">
-                <h2 className="text-lg font-semibold">Other Leaves</h2>
-                <p className="text-2xl">{stats.other_leaves || 0}</p>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow">
-                <h2 className="text-lg font-semibold">Overtime Hours</h2>
-                <p className="text-2xl">{stats.overtime_hours || 0}</p>
-              </div>
-            </div>
-            {/* <div>
-              <h2 className="text-xl font-semibold">Attendance Overview</h2>
-              <Bar data={barChartData} options={{ responsive: true }} />
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold">Attendance Trends</h2>
-              <Line data={lineChartData} options={{ responsive: true }} />
-            </div> */}
-
-            <div className="flex justify-center" style={{ height: "400px" }}>
-              <Pie data={pieChartData} options={{ responsive: true }} />
-            </div>
-          </div>
-        )}
-      </div>
       <ToastContainer />
     </div>
   );

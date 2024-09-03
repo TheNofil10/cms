@@ -222,6 +222,91 @@ const AttendanceTable = () => {
     useSortBy,
     usePagination
   );
+  const handleExportToPdf = () => {
+    const docDefinition = {
+      content: [
+        { text: "Employee Attendance", style: "header" },
+        {
+          table: {
+            headerRows: 1,
+            widths: ["*", "*", "*", "*", "*", "*"],
+            body: [
+              [
+                { text: "Date", style: "tableHeader" },
+                { text: "Time In", style: "tableHeader" },
+                { text: "Time Out", style: "tableHeader" },
+                { text: "Status", style: "tableHeader" },
+                { text: "Hours Worked", style: "tableHeader" },
+                { text: "Overtime", style: "tableHeader" },
+              ],
+              ...filteredData.map((record) => [
+                { text: record.date, style: "tableData" },
+                { text: record.time_in, style: "tableData" },
+                { text: record.time_out, style: "tableData" },
+                { text: record.status, style: "tableData" },
+                { text: record.hours_worked || "", style: "tableData" },
+                { text: record.is_overtime ? "Yes" : "No", style: "tableData" },
+              ]),
+            ],
+          },
+          layout: {
+            fillColor: (rowIndex) => {
+              if (filteredData[rowIndex - 1]?.status === "present")
+                return "#d4edda";
+              if (filteredData[rowIndex - 1]?.status === "late")
+                return "#aaaaaa";
+              if (
+                filteredData[rowIndex - 1]?.status === "leave" ||
+                filteredData[rowIndex - 1]?.status === "sick_leave" ||
+                filteredData[rowIndex - 1]?.status === "casual_leave"
+              )
+                return "#fff3cd";
+              if (filteredData[rowIndex - 1]?.status === "absent")
+                return "#f8d7da";
+              return null;
+            },
+          },
+        },
+      ],
+      styles: {
+        header: {
+          fontSize: 16,
+          bold: true,
+          margin: [0, 0, 0, 10],
+        },
+        tableHeader: {
+          bold: true,
+          fontSize: 10,
+          color: "black",
+          fillColor: "#4CAF50",
+          alignment: "center",
+        },
+        tableData: {
+          fontSize: 8,
+          margin: [0, 2, 0, 2],
+          alignment: "center",
+        },
+      },
+      pageMargins: [40, 60, 40, 40],
+    };
+
+    pdfMake.createPdf(docDefinition).download("attendance.pdf");
+  };
+
+  const handleExportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(filteredData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Attendance");
+    XLSX.writeFile(workbook, "attendance.xlsx");
+  };
+  const handleExportSelection = (format) => {
+    if (format === "excel") {
+      handleExportToExcel();
+    } else if (format === "pdf") {
+      handleExportToPdf();
+    }
+    setIsDropdownOpen(false);
+  };
 
   return (
     <div className="max-w-7xl mx-auto p-1">
@@ -283,12 +368,28 @@ const AttendanceTable = () => {
           )}
         </div>
         <div className="relative">
-          <FaSearch className="absolute left-2 top-2" />
-          <input
-            type="text"
-            placeholder="Search"
-            className="border px-8 py-1 rounded-md"
-          />
+          <button
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="flex items-center space-x-2 bg-black text-white py-2 px-3 rounded-md"
+          >
+            Export <FaChevronDown />
+          </button>
+          {isDropdownOpen && (
+            <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded-md shadow-lg">
+              <button
+                onClick={() => handleExportSelection("excel")}
+                className="w-full py-1 px-3 text-sm text-left hover:bg-gray-100"
+              >
+                Export to Excel
+              </button>
+              <button
+                onClick={() => handleExportSelection("pdf")}
+                className="w-full py-1 px-3 text-sm text-left hover:bg-gray-100"
+              >
+                Export to PDF
+              </button>
+            </div>
+          )}
         </div>
       </div>
       <div className="overflow-x-auto">
@@ -437,7 +538,9 @@ const AttendanceTable = () => {
         <ToastContainer />
         <UpdateAttendanceModal
           isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false).then(setFilteredData(filteredData))}
+          onClose={() =>
+            setIsModalOpen(false).then(setFilteredData(filteredData))
+          }
           record={selectedRecord}
         />
       </div>
