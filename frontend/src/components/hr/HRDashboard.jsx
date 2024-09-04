@@ -228,7 +228,7 @@ const HRDashboard = () => {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Good Morning";
+    if (hour <= 12) return "Good Morning";
     else if (hour < 18) return "Good Afternoon";
     else return "Good Evening";
   };
@@ -246,7 +246,7 @@ const HRDashboard = () => {
       {/* Main Content */}
       <main className="flex-1 p-6 overflow-auto">
         <h1 className="text-3xl font-bold mb-6">HR Dashboard</h1>
-        <div className="text-xl font-semibold mb-4">{getGreeting()}</div>
+        <div className="text-xl font-semibold mb-4">{getGreeting()} {currentUser.first_name} {currentUser.last_name}!</div>
         <div className="bg-gray-200 p-4 rounded-lg mb-6">
                 </div>
 

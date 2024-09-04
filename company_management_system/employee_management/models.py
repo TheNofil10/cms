@@ -294,11 +294,39 @@ class Payroll(models.Model):
         get_user_model(), on_delete=models.CASCADE, related_name="payrolls"
     )
     payment_date = models.DateField()
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    details = models.TextField(blank=True)
+    base_salary = models.DecimalField(max_digits=10, decimal_places=2)  
+    bonus = models.DecimalField(max_digits=10, decimal_places=2, default=0)  
+    deductions = models.DecimalField(max_digits=10, decimal_places=2, default=0) 
+    net_salary = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)  
+    details = models.TextField(blank=True)  
+    overtime_hours = models.DecimalField(max_digits=5, decimal_places=2, default=0) 
+    overtime_rate = models.DecimalField(max_digits=10, decimal_places=2, default=0) 
+
+    def save(self, *args, **kwargs):
+        self.net_salary = self.base_salary + self.bonus - self.deductions
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Payroll for {self.employee.first_name} {self.employee.last_name} on {self.payment_date}"
+    
+class Benefit(models.Model):
+    employee = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="benefits")
+    type = models.CharField(max_length=100)  
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.type} - {self.amount}"
+
+class Deduction(models.Model):
+    employee = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="deductions")
+    type = models.CharField(max_length=100) 
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    effective_from = models.DateField()
+    effective_to = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.type} - {self.amount}"
 
 class Todo(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)

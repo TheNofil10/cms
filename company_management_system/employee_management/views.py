@@ -474,7 +474,7 @@ class AttendanceViewSet(viewsets.ModelViewSet):
             return Attendance.objects.filter(
                 employee__department=user.department, date__range=[week_start, today]
             )
-        else:  
+        else:
             return Attendance.objects.filter(
                 employee=user, date__range=[month_start, month_end]
             )
@@ -835,6 +835,12 @@ class PayrollViewSet(viewsets.ModelViewSet):
     queryset = Payroll.objects.all()
     serializer_class = PayrollSerializer
 
+    def perform_create(self, serializer):
+        serializer.save()
+
+    def perform_update(self, serializer):
+        serializer.save()
+
 
 class ComplianceReportViewSet(viewsets.ModelViewSet):
     queryset = ComplianceReport.objects.all()
@@ -967,3 +973,5 @@ class TodoViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(employee=self.request.user)
+
+

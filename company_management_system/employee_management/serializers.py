@@ -226,6 +226,11 @@ class ApplicationSerializer(serializers.ModelSerializer):
         model = Application
         fields = "__all__"
 
+class PayrollSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payroll
+        fields = ['id', 'employee', 'payment_date', 'base_salary', 'bonus', 'deductions', 'net_salary', 'details', 'overtime_hours', 'overtime_rate']
+
 class TodoSerializer(serializers.ModelSerializer):
     
     class Meta:
