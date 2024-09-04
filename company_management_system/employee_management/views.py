@@ -447,7 +447,6 @@ class AttendanceViewSet(viewsets.ModelViewSet):
         year_start = today.replace(month=1, day=1)
         year_end = today.replace(month=12, day=31)
 
-        # Filter by date range or predefined date filters
         if date_filter:
             if date_filter == "today":
                 return Attendance.objects.filter(date=today)
@@ -467,17 +466,15 @@ class AttendanceViewSet(viewsets.ModelViewSet):
                 else:
                     return Attendance.objects.none()
         else:
-            # Default to current week's attendance if no filter is provided
             return Attendance.objects.filter(date__range=[week_start, week_end])
 
-        # Additional filtering based on user role
         if user.is_superuser or user.is_hr_manager:
             return Attendance.objects.all()
         elif user.is_manager:
             return Attendance.objects.filter(
                 employee__department=user.department, date__range=[week_start, today]
             )
-        else:  # Regular employees
+        else:  
             return Attendance.objects.filter(
                 employee=user, date__range=[month_start, month_end]
             )

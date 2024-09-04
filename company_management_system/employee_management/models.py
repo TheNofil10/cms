@@ -79,7 +79,6 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-
 class Department(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
@@ -151,8 +150,7 @@ class TaskComment(models.Model):
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(Employee, on_delete=models.CASCADE)
-
-    
+ 
 class EmployeeRecord(models.Model):
     employee = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     contract_type = models.CharField(max_length=100)
@@ -257,7 +255,7 @@ class Attendance(models.Model):
     
     time_in = models.TimeField(null=True, blank=True)
     time_out = models.TimeField(null=True, blank=True)
-    hours_worked = models.FloatField(default=0)
+    hours_worked = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     is_overtime = models.BooleanField(default=False)
     comments = models.TextField(blank=True)
 
@@ -302,8 +300,6 @@ class Payroll(models.Model):
     def __str__(self):
         return f"Payroll for {self.employee.first_name} {self.employee.last_name} on {self.payment_date}"
 
-
-
 class Todo(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     task = models.CharField(max_length=255)
@@ -316,7 +312,6 @@ class Todo(models.Model):
         except Exception as e:
             print(f"Error saving Todo: {e}")
             raise e
-
 
 class ComplianceReport(models.Model):
     report_name = models.CharField(max_length=255)
