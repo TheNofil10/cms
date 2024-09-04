@@ -346,7 +346,10 @@ class EmployeeSuggestionView(viewsets.GenericViewSet, mixins.ListModelMixin):
         query = self.request.query_params.get("q", "")
         if query:
             return Employee.objects.filter(
-                Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(username__icontains=query) |Q(id__icontains=query)
+                Q(first_name__icontains=query)
+                | Q(last_name__icontains=query)
+                | Q(username__icontains=query)
+                | Q(id__icontains=query)
             )
         return Employee.objects.none()
 
@@ -433,14 +436,18 @@ class AttendanceViewSet(viewsets.ModelViewSet):
         start_date = self.request.query_params.get("start_date")
         end_date = self.request.query_params.get("end_date")
         date_filter = self.request.query_params.get("dateFilter")
+
         today = timezone.now().date()
         week_start = today - timedelta(days=today.weekday())
         week_end = week_start + timedelta(days=6)
         month_start = today.replace(day=1)
-        month_end = (today.replace(day=1) + timedelta(days=31)).replace(day=1) - timedelta(days=1)
+        month_end = (today.replace(day=1) + timedelta(days=31)).replace(
+            day=1
+        ) - timedelta(days=1)
         year_start = today.replace(month=1, day=1)
         year_end = today.replace(month=12, day=31)
 
+        # Filter by date range or predefined date filters
         if date_filter:
             if date_filter == "today":
                 return Attendance.objects.filter(date=today)
@@ -452,21 +459,29 @@ class AttendanceViewSet(viewsets.ModelViewSet):
                 return Attendance.objects.filter(date__range=[month_start, month_end])
             elif date_filter == "this_year":
                 return Attendance.objects.filter(date__range=[year_start, year_end])
-            elif date_filter == "custom" or (start_date and end_date):
+            elif date_filter == "custom" and start_date and end_date:
                 start_date = parse_date(start_date)
                 end_date = parse_date(end_date)
-                if not start_date or not end_date:
+                if start_date and end_date:
+                    return Attendance.objects.filter(date__range=[start_date, end_date])
+                else:
                     return Attendance.objects.none()
-                return Attendance.objects.filter(date__range=[start_date, end_date])
         else:
+            # Default to current week's attendance if no filter is provided
             return Attendance.objects.filter(date__range=[week_start, week_end])
 
+        # Additional filtering based on user role
         if user.is_superuser or user.is_hr_manager:
-            return Attendance.objects.all() 
+            return Attendance.objects.all()
         elif user.is_manager:
-            return Attendance.objects.filter(employee__department=user.department, date__range=[week_start, today])
+            return Attendance.objects.filter(
+                employee__department=user.department, date__range=[week_start, today]
+            )
         else:  # Regular employees
-            return Attendance.objects.filter(employee=user, date__range=[month_start, month_end])
+            return Attendance.objects.filter(
+                employee=user, date__range=[month_start, month_end]
+            )
+
 
 class LeaveViewSet(viewsets.ModelViewSet):
     queryset = Leave.objects.all()
@@ -596,6 +611,7 @@ class EmployeeAttendanceView(APIView):
         serializer = AttendanceSerializer(attendance, many=True)
         return Response(serializer.data)
 
+
 class CompanyAttendanceStatsView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -659,11 +675,11 @@ class CompanyAttendanceStatsView(APIView):
         )
 
         total_leaves = attendance_qs.filter(
-            Q(status="maternity_leave") |
-            Q(status="paternity_leave") |
-            Q(status="sick_leave") |
-            Q(status="casual_leave") |
-            Q(status="annual_leave")
+            Q(status="maternity_leave")
+            | Q(status="paternity_leave")
+            | Q(status="sick_leave")
+            | Q(status="casual_leave")
+            | Q(status="annual_leave")
         ).count()
         sick_leave = attendance_qs.filter(status="sick_leave").count()
         casual_leave = attendance_qs.filter(status="casual_leave").count()
@@ -691,6 +707,7 @@ class CompanyAttendanceStatsView(APIView):
         }
         return Response(data)
 
+
 class EmployeeAttendanceStatsView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -699,7 +716,6 @@ class EmployeeAttendanceStatsView(APIView):
         start_date_str = request.query_params.get("start_date")
         end_date_str = request.query_params.get("end_date")
 
-        
         if not start_date_str or not end_date_str:
             end_date = timezone.now().date()
             start_date = end_date - timedelta(days=7)
@@ -708,7 +724,9 @@ class EmployeeAttendanceStatsView(APIView):
                 start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
                 end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
             except ValueError:
-                return Response({"detail": "Invalid date format. Use YYYY-MM-DD."}, status=400)
+                return Response(
+                    {"detail": "Invalid date format. Use YYYY-MM-DD."}, status=400
+                )
 
         # Make the dates timezone-aware
         start_date = make_aware(datetime.combine(start_date, datetime.min.time()))
@@ -721,11 +739,11 @@ class EmployeeAttendanceStatsView(APIView):
 
         # Compute various attendance statistics
         total_leaves = attendance_records.filter(
-            Q(status="maternity_leave") |
-            Q(status="paternity_leave") |
-            Q(status="sick_leave") |
-            Q(status="casual_leave") |
-            Q(status="annual_leave")
+            Q(status="maternity_leave")
+            | Q(status="paternity_leave")
+            | Q(status="sick_leave")
+            | Q(status="casual_leave")
+            | Q(status="annual_leave")
         ).count()
         total_days = attendance_records.values("date").distinct().count()
         days_present = attendance_records.filter(status="Present").count()
@@ -766,6 +784,8 @@ class EmployeeAttendanceStatsView(APIView):
             "total_leaves": total_leaves,
         }
         return Response(data)
+
+
 class LeaveManagementView(APIView):
     permission_classes = [IsAuthenticated, IsManager]
 
