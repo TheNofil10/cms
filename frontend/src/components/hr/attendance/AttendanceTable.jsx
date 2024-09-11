@@ -36,7 +36,7 @@ const AttendanceTable = () => {
     endDate: "",
     employee_id: "",
     employee_name: "",
-    dateFilter: "today",
+    dateFilter: "yestreday",
   });
   const [pageSize, setPageSize] = useState(10);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -92,12 +92,7 @@ const AttendanceTable = () => {
     );
     const startOfYear = new Date(currentDate.getFullYear(), 0, 1);
 
-    if (filters.dateFilter === "today") {
-      filtered = filtered.filter((record) => {
-        const recordDate = new Date(record.date);
-        return recordDate.toDateString() === new Date().toDateString();
-      });
-    } else if (filters.dateFilter === "yesterday") {
+    if (filters.dateFilter === "yesterday") {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
       filtered = filtered.filter((record) => {
@@ -341,7 +336,7 @@ const AttendanceTable = () => {
             onChange={handleFilterChange}
             className="border px-2 py-1 rounded-md mr-2"
           >
-            <option value="today">Today</option>
+            
             <option value="yesterday">Yesterday</option>
             <option value="this_week">This Week</option>
             <option value="this_month">This Month</option>

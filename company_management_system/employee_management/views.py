@@ -438,20 +438,18 @@ class AttendanceViewSet(viewsets.ModelViewSet):
         date_filter = self.request.query_params.get("dateFilter")
 
         today = timezone.now().date()
-        week_start = today - timedelta(days=today.weekday())
-        week_end = week_start + timedelta(days=6)
+        yesterday = today - timedelta(days=1)
+        week_start = today - timedelta(days=today.weekday() + 1)  # till yesterday
+        week_end = yesterday
         month_start = today.replace(day=1)
-        month_end = (today.replace(day=1) + timedelta(days=31)).replace(
-            day=1
-        ) - timedelta(days=1)
+        month_end = yesterday
         year_start = today.replace(month=1, day=1)
-        year_end = today.replace(month=12, day=31)
+        year_end = yesterday
 
         if date_filter:
-            if date_filter == "today":
-                return Attendance.objects.filter(date=today)
-            elif date_filter == "yesterday":
-                return Attendance.objects.filter(date=today - timedelta(days=1))
+            
+            if date_filter == "yesterday":
+                return Attendance.objects.filter(date=yesterday)
             elif date_filter == "this_week":
                 return Attendance.objects.filter(date__range=[week_start, week_end])
             elif date_filter == "this_month":
@@ -462,21 +460,22 @@ class AttendanceViewSet(viewsets.ModelViewSet):
                 start_date = parse_date(start_date)
                 end_date = parse_date(end_date)
                 if start_date and end_date:
-                    return Attendance.objects.filter(date__range=[start_date, end_date])
+                    return Attendance.objects.filter(date__range=[start_date, end_date]).exclude(date=today)
                 else:
                     return Attendance.objects.none()
         else:
+            # Default case: filter attendance up to yesterday for this week
             return Attendance.objects.filter(date__range=[week_start, week_end])
 
         if user.is_superuser or user.is_hr_manager:
-            return Attendance.objects.all()
+            return Attendance.objects.filter(date__lt=today)  # Only till yesterday
         elif user.is_manager:
             return Attendance.objects.filter(
-                employee__department=user.department, date__range=[week_start, today]
+                employee__department=user.department, date__lt=today
             )
         else:
             return Attendance.objects.filter(
-                employee=user, date__range=[month_start, month_end]
+                employee=user, date__lt=today
             )
 
 
