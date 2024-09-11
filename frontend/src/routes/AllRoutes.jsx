@@ -55,6 +55,7 @@ import TaskDetail from "../components/manager/tasks/TaskDetail.jsx";
 import EmployeeTaskDetails from "../components/employee/EmployeeTaskDetails.jsx";
 import EmployeeSignupPage from '../components/admin/EmployeeSignupPage.jsx'
 import ManagerDashboard from "../components/manager/ManagerDashboard.jsx";
+import LiveAttendance from "../components/hr/attendance/LiveAttendance.jsx";
 const AllRoutes = () => {
   return (
     <Routes>
@@ -186,6 +187,7 @@ const AllRoutes = () => {
           <Route path="/hr/attendance" element={<AttendanceDahsboard />} />
           <Route path="/hr/attendance/table" element={<AttendanceTable />} />
           <Route path="/hr/attendance/leaves" element={<LeaveApplications />} />
+          <Route path="/hr/attendance/live" element={<LiveAttendance />} />
         </Route>
 
         <Route path="/hr/employees" element={<EmployeesPage />} />

@@ -7,6 +7,9 @@ from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from django.utils import timezone
+from django.http import JsonResponse
+from django.db import connection
+from django.views.decorators.http import require_GET
 from django.utils.timezone import make_aware
 from rest_framework.views import APIView
 from django.db.models import Sum, Count, F, FloatField
@@ -421,6 +424,17 @@ class EmployeeRecordViewSet(viewsets.ModelViewSet):
     queryset = EmployeeRecord.objects.all()
     serializer_class = EmployeeRecordSerializer
 
+@require_GET
+def live_attendance(request):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM rawdata")
+        rows = cursor.fetchall()
+        
+        columns = [col[0] for col in cursor.description]
+        
+        data = [dict(zip(columns, row)) for row in rows]
+        
+    return JsonResponse(data, safe=False)
 
 class AttendanceViewSet(viewsets.ModelViewSet):
     queryset = Attendance.objects.all()
@@ -439,7 +453,7 @@ class AttendanceViewSet(viewsets.ModelViewSet):
 
         today = timezone.now().date()
         yesterday = today - timedelta(days=1)
-        week_start = today - timedelta(days=today.weekday() + 1)  # till yesterday
+        week_start = today - timedelta(days=today.weekday())
         week_end = yesterday
         month_start = today.replace(day=1)
         month_end = yesterday
@@ -447,8 +461,9 @@ class AttendanceViewSet(viewsets.ModelViewSet):
         year_end = yesterday
 
         if date_filter:
-            
-            if date_filter == "yesterday":
+            if date_filter == "today":
+                return Attendance.objects.filter(date=today)
+            elif date_filter == "yesterday":
                 return Attendance.objects.filter(date=yesterday)
             elif date_filter == "this_week":
                 return Attendance.objects.filter(date__range=[week_start, week_end])
@@ -460,24 +475,20 @@ class AttendanceViewSet(viewsets.ModelViewSet):
                 start_date = parse_date(start_date)
                 end_date = parse_date(end_date)
                 if start_date and end_date:
-                    return Attendance.objects.filter(date__range=[start_date, end_date]).exclude(date=today)
+                    return Attendance.objects.filter(date__range=[start_date, end_date])
                 else:
                     return Attendance.objects.none()
         else:
-            # Default case: filter attendance up to yesterday for this week
+            # Default filter when no date_filter is specified
             return Attendance.objects.filter(date__range=[week_start, week_end])
 
+        # User-based filtering logic
         if user.is_superuser or user.is_hr_manager:
-            return Attendance.objects.filter(date__lt=today)  # Only till yesterday
+            return Attendance.objects.all()  # Return all records if superuser or HR manager
         elif user.is_manager:
-            return Attendance.objects.filter(
-                employee__department=user.department, date__lt=today
-            )
+            return Attendance.objects.filter(employee__department=user.department)
         else:
-            return Attendance.objects.filter(
-                employee=user, date__lt=today
-            )
-
+            return Attendance.objects.filter(employee=user)
 
 class LeaveViewSet(viewsets.ModelViewSet):
     queryset = Leave.objects.all()

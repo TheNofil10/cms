@@ -8,6 +8,7 @@ const HrAttendanceLayout = () => {
     { name: "Dashboard", path: "/hr/attendance" },
     { name: "Table", path: "/hr/attendance/table" },
     { name: "Leave Applications", path: "/hr/attendance/leaves" },
+    { name: "Today", path: "/hr/attendance/live" },
   ];
   return (
     <div className="flex-grow  bg-white">
