@@ -41,7 +41,7 @@ const LiveAttendance = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [employeeData, setEmployeeData] = useState({});
+  const [employeeData, setEmployeeData] = useState([]);
 
   useEffect(() => {
     const fetchAttendanceData = async () => {
