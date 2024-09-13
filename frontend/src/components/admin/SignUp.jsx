@@ -90,7 +90,7 @@ const Signup = () => {
           formData.date_of_birth && formData.department && formData.position
         );
       case 5:
-        return true; // Always validate for the last step
+        return true; 
       default:
         return true;
     }
