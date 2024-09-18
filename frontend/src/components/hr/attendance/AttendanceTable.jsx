@@ -3,7 +3,7 @@ import axios from "axios";
 import { useAuth } from "../../../contexts/AuthContext";
 import * as XLSX from "xlsx";
 import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+import * as pdfFonts from "pdfmake/build/vfs_fonts";
 import { useTable, useSortBy, usePagination } from "react-table";
 import {
   FaFilter,
@@ -36,7 +36,7 @@ const AttendanceTable = () => {
     endDate: "",
     employee_id: "",
     employee_name: "",
-    dateFilter: "yestreday",
+    dateFilter: "today",
   });
   const [pageSize, setPageSize] = useState(10);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -91,8 +91,15 @@ const AttendanceTable = () => {
       1
     );
     const startOfYear = new Date(currentDate.getFullYear(), 0, 1);
-
-    if (filters.dateFilter === "yesterday") {
+    if (filters.dateFilter === "today") {
+      const today = new Date();
+      today.setDate(today.getDate());
+      filtered = filtered.filter((record) => {
+        const recordDate = new Date(record.date);
+        return recordDate.toDateString() === today.toDateString();
+      });
+    } 
+    else if (filters.dateFilter === "yesterday") {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
       filtered = filtered.filter((record) => {
@@ -334,9 +341,9 @@ const AttendanceTable = () => {
             name="dateFilter"
             value={filters.dateFilter}
             onChange={handleFilterChange}
-            className="border px-2 py-1 rounded-md mr-2"
+            className="border px-2 py-1 rounded-md mr-2" 
           >
-            
+             <option value="today">Today</option>
             <option value="yesterday">Yesterday</option>
             <option value="this_week">This Week</option>
             <option value="this_month">This Month</option>

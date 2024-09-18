@@ -32,7 +32,7 @@ import EmployeeCard from "./EmployeeCard";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+import * as pdfFonts from "pdfmake/build/vfs_fonts";
 import ConfirmationModal from "./ConfirmationModal"; // Import the ConfirmationModal component
 import { useAuth } from "../../contexts/AuthContext";
 
