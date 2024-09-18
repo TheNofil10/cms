@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import MembersCard from "../components/employee/MembersCard";
 import ManagerCard from "../components/employee/ManagerCard";
+import API from "../api/api";
 
 const imageBaseUrl = "http://127.0.0.1:8000";
 
@@ -15,7 +16,7 @@ const EmployeeDepartment = () => {
     const fetchDepartment = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/department/me/",
+          `${API}/department/me/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,

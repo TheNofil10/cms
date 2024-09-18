@@ -29,7 +29,7 @@ import {
   usePagination,
 } from "react-table";
 import { useAuth } from "../../contexts/AuthContext";
-
+import API from "../../api/api";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const JobApplicationsPage = () => {
@@ -51,7 +51,7 @@ const JobApplicationsPage = () => {
     const fetchApplications = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/applications/",
+          `${API}/applications/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,

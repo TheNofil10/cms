@@ -3,7 +3,8 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { FaToggleOn, FaToggleOff } from "react-icons/fa";
-import { FaSpinner } from "react-icons/fa"; // Import spinner icon
+import { FaSpinner } from "react-icons/fa"; 
+import API from "../../api/api";
 import { useAuth } from "../../contexts/AuthContext";
 const CreateJobPostingPage = () => {
   const {currentUser} = useAuth()
@@ -37,7 +38,7 @@ const CreateJobPostingPage = () => {
     setLoading(true); // Start loading
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/generate-job-details/`,
+        `${API}/generate-job-details/`,
         {
           title: formData.title,
           qualifications: formData.qualifications,
@@ -74,7 +75,7 @@ const CreateJobPostingPage = () => {
     setLoading(true); // Start loading
     try {
       await axios.post(
-        'http://127.0.0.1:8000/api/job-postings/',
+        `${API}/job-postings/`,
         formData,
         {
           headers: {

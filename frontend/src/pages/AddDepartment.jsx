@@ -3,6 +3,7 @@ import axios from "axios";
 import { FaBuilding, FaSpinner } from "react-icons/fa";
 import AddDepartmentForm from "../components/admin/AddDepartmentForm";
 import SmallEmployeeCard from "../components/admin/SmallEmployeeCard";
+import API from "../api/api";
 const AddDepartment = () => {
   const [employees, setEmployees] = useState([]);
   const [departments, setDepartments] = useState([]);
@@ -13,7 +14,7 @@ const AddDepartment = () => {
     const fetchEmployees = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/employees/",
+          `${API}/employees/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -33,7 +34,7 @@ const AddDepartment = () => {
     const fetchDepartments = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/departments/",
+          `${API}/departments/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,

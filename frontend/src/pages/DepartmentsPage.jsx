@@ -33,7 +33,7 @@ import {
   usePagination,
 } from "react-table";
 import { useAuth } from "../contexts/AuthContext";
-
+import API from "../api/api";
 // Initialize pdfMake with fonts
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -57,7 +57,7 @@ const DepartmentsPage = () => {
     const fetchDepartments = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/departments/",
+            `${API}/departments/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -167,7 +167,7 @@ const DepartmentsPage = () => {
     try {
       console.log("Deleting department:", departmentToDelete.id); // Debugging
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/departments/${departmentToDelete.id}/`,
+        `${API}/departments/${departmentToDelete.id}/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,

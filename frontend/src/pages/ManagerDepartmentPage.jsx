@@ -8,7 +8,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import AssignManagerModal from "../components/admin/AssignManagerModal";
 import { useAuth } from "../contexts/AuthContext";
-const imageBaseUrl = "http://127.0.0.1:8000";
+import API from "../api/api";
+import { SERVER_URL } from "../api/api";
 
 const ManagerDepartmentPage = () => {
  
@@ -36,7 +37,7 @@ const ManagerDepartmentPage = () => {
     const fetchDepartment = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/departments/${id}/`,
+          `${API}/departments/${id}/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -88,7 +89,7 @@ const ManagerDepartmentPage = () => {
     ) {
       try {
         await axios.put(
-          `http://127.0.0.1:8000/api/departments/${id}/`,
+          `${API}/departments/${id}/`,
           formData,
           {
             headers: {

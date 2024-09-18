@@ -11,7 +11,7 @@ import {
 } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import API from "../api/api";
 const ManageMembersPage = () => {
   const { id } = useParams();
   const [department, setDepartment] = useState(null);
@@ -24,7 +24,7 @@ const ManageMembersPage = () => {
     const fetchDepartment = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/departments/${id}/`,
+          `${API}/departments/${id}/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -40,7 +40,7 @@ const ManageMembersPage = () => {
     const fetchEmployees = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/employees/`,
+          `${API}/employees/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -66,7 +66,7 @@ const ManageMembersPage = () => {
   const handleAddMember = async (employeeId) => {
     try {
       await axios.patch(
-        `http://127.0.0.1:8000/api/employees/${employeeId}/`,
+        `${API}/employees/${employeeId}/`,
         { department: id },
         {
           headers: {
@@ -76,7 +76,7 @@ const ManageMembersPage = () => {
       );
       setEmployees(employees.filter((emp) => emp.id !== employeeId));
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/departments/${id}/`,
+        `${API}/departments/${id}/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -93,7 +93,7 @@ const ManageMembersPage = () => {
   const handleRemoveMember = async (employeeId) => {
     try {
       await axios.patch(
-        `http://127.0.0.1:8000/api/employees/${employeeId}/`,
+        `${API}/employees/${employeeId}/`,
         { department: null },
         {
           headers: {
@@ -102,7 +102,7 @@ const ManageMembersPage = () => {
         }
       );
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/departments/${id}/`,
+        `${API}/departments/${id}/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
