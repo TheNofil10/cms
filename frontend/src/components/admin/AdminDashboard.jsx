@@ -91,7 +91,7 @@ const AdminDashboard = () => {
         );
         setAttendance(attendanceResponse.data);
 
-        const todoResponse = await axios.get(`${SERVER_URL}/api/todos/`, {
+        const todoResponse = await axios.get(`${SERVER_URL}/todos/`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           },

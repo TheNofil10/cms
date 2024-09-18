@@ -70,7 +70,7 @@ const EmployeeSignupPage = () => {
         </div>
       </div>
       <div className="w-1/4 flex flex-col">
-        <div className="bg-white p-4 rounded-lg shadow-lg flex-1 overflow-y-auto mb-4">
+        <div className="bg-white p-4 rounded-lg h-64 shadow-lg flex-1 overflow-y-auto mb-4">
           <h2 className="text-xl font-bold mb-2">Latest Employees</h2>
           <div className="grid grid-cols-1 gap-4">
             {employees.map(
@@ -82,7 +82,7 @@ const EmployeeSignupPage = () => {
             )}
           </div>
         </div>
-        <div className="bg-white p-4 shadow-lg rounded-lg flex-1 overflow-y-auto">
+        <div className="bg-white p-4 shadow-lg h-64 rounded-lg flex-1 overflow-y-auto">
           <h2 className="text-xl font-bold mb-2">Departments</h2>
           {departments.length === 0 ? (
             <p>No departments available</p>
