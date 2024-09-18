@@ -63,16 +63,16 @@ const EmployeeSignupPage = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="flex p-4 bg-white max-h-screen">
-      <div className="w-3/4">
-        <div className="bg-white rounded-lg">
+    <div className="flex h-screen bg-white">
+      <div className="w-3/4 flex flex-col">
+        <div className="bg-white rounded-lg flex-1">
           <Signup />
         </div>
       </div>
-      <div className="w-1/4 max-h-fit flex flex-col">
+      <div className="w-1/4 flex flex-col">
         <div className="bg-white p-4 rounded-lg shadow-lg flex-1 overflow-y-auto mb-4">
           <h2 className="text-xl font-bold mb-2">Latest Employees</h2>
-          <div className="grid grid-cols-1  gap-4">
+          <div className="grid grid-cols-1 gap-4">
             {employees.map(
               (employee) =>
                 !employee.is_hr_manager &&
