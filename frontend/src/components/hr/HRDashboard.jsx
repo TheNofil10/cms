@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
 import { ToastContainer, toast } from "react-toastify";
+import API from "../../api/api";
 import {
   FaTasks,
   FaCalendarAlt,
@@ -39,13 +40,12 @@ const HRDashboard = () => {
   );
   const { currentUser } = useAuth();
   const navigate = useNavigate();
-  const SERVER_URL = "http://127.0.0.1:8000";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const employeeResponse = await axios.get(
-          `${SERVER_URL}/api/employees/${currentUser.id}`,
+          `${API}/employees/${currentUser.id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -55,7 +55,7 @@ const HRDashboard = () => {
         setEmployeeData(employeeResponse.data);
 
         const tasksResponse = await axios.get(
-          `${SERVER_URL}/api/tasks?assigned_to=${currentUser.id}`,
+          `${API}/tasks?assigned_to=${currentUser.id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -70,7 +70,7 @@ const HRDashboard = () => {
           .split("T")[0];
 
         const attendanceResponse = await axios.get(
-          `${SERVER_URL}/api/attendance/`,
+          `${API}/attendance/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -83,7 +83,7 @@ const HRDashboard = () => {
         );
         setAttendance(attendanceResponse.data);
 
-        const todoResponse = await axios.get(`${SERVER_URL}/api/todos/`, {
+        const todoResponse = await axios.get(`${API}/todos/`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           },
@@ -116,7 +116,7 @@ const HRDashboard = () => {
       try {
         console.log({ task: newTodo, status: "pending" });
         const response = await axios.post(
-          `${SERVER_URL}/api/todos/`,
+          `${API}/todos/`,
           { task: newTodo, status: "pending", employee: currentUser.id },
           {
             headers: {
@@ -137,7 +137,7 @@ const HRDashboard = () => {
     try {
       const updatedTodo = todoList.find((todo) => todo.id === id);
       const response = await axios.patch(
-        `${SERVER_URL}/api/todos/${id}/`,
+        `${API}/todos/${id}/`,
         { status: "completed" },
         {
           headers: {
@@ -159,7 +159,7 @@ const HRDashboard = () => {
   const handleCancelTodo = async (id) => {
     try {
       const response = await axios.patch(
-        `${SERVER_URL}/api/todos/${id}/`,
+        `${API}/todos/${id}/`,
         { status: "cancelled" },
         {
           headers: {
@@ -180,7 +180,7 @@ const HRDashboard = () => {
 
   const handleDeleteTodo = async (id) => {
     try {
-      await axios.delete(`${SERVER_URL}/api/todos/${id}/`, {
+      await axios.delete(`${API}/todos/${id}/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },

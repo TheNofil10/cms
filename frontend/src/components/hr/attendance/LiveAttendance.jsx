@@ -4,6 +4,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 import * as XLSX from "xlsx";
 import pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from "pdfmake/build/vfs_fonts";
+import API from "../../../api/api";
 import { useTable, useSortBy, usePagination } from "react-table";
 import {
   FaFilter,
@@ -48,7 +49,7 @@ const LiveAttendance = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/admin/live-attendance/`,
+          `${API}/admin/live-attendance/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -69,7 +70,7 @@ const LiveAttendance = () => {
     const fetchEmployeeData = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/employees/",
+          `${API}/employees/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,

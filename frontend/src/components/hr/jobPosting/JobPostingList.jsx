@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import JobPostingCard from './JobPostingCard';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-
+import API from '../../../api/api';
 const JobPostingList = () => {
   const [jobPostings, setJobPostings] = useState([]);
 
   useEffect(() => {
     const fetchJobPostings = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/job-postings/', {
+        const response = await axios.get( `${API}/job-postings/`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('access_token')}`,
           },
@@ -26,7 +26,7 @@ const JobPostingList = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/job-postings/${id}/`, {
+      await axios.delete(`${API}/job-postings/${id}/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
@@ -42,7 +42,7 @@ const JobPostingList = () => {
   const handleToggleStatus = async (id, newStatus) => {
     try {
       await axios.patch(
-        `http://127.0.0.1:8000/api/job-postings/${id}/`,
+        `${API}/job-postings/${id}/`,
         { is_active: newStatus },
         {
           headers: {

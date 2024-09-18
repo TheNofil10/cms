@@ -5,7 +5,7 @@ import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import API from "../../api/api";
 Chart.register(...registerables);
 
 const EmployeeAttendanceDashboard = () => {
@@ -21,7 +21,7 @@ const EmployeeAttendanceDashboard = () => {
     const fetchAttendanceData = async () => {
       try {
         const statsResponse = await axios.get(
-          "http://127.0.0.1:8000/api/attendance/stats/employee/",
+          `${API}/attendance/stats/employee/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -37,7 +37,7 @@ const EmployeeAttendanceDashboard = () => {
 
         // Fetching attendance data
         const attendanceResponse = await axios.get(
-          "http://127.0.0.1:8000/api/attendance/",
+           ` ${API}/attendance/ `,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,

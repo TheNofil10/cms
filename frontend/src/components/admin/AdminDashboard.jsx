@@ -19,7 +19,7 @@ import {
 import { Pie } from "react-chartjs-2";
 import "react-toastify/dist/ReactToastify.css";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-
+import API from "../../api/api";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const AdminDashboard = () => {
@@ -39,13 +39,13 @@ const AdminDashboard = () => {
   );
   const { currentUser } = useAuth();
   const navigate = useNavigate();
-  const SERVER_URL = "http://127.0.0.1:8000";
+  const SERVER_URL = API;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const employeeResponse = await axios.get(
-          `${SERVER_URL}/api/employees/${currentUser.id}`,
+          `${SERVER_URL}/employees/${currentUser.id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -55,7 +55,7 @@ const AdminDashboard = () => {
         setEmployeeData(employeeResponse.data);
 
         const employeesResponse = await axios.get(
-          `${SERVER_URL}/api/employees/`,
+          `${SERVER_URL}/employees/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -65,7 +65,7 @@ const AdminDashboard = () => {
         setEmployeeCount(employeesResponse.data.length);
 
         const departmentResponse = await axios.get(
-          `${SERVER_URL}/api/departments/`,
+          `${SERVER_URL}/departments/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -78,7 +78,7 @@ const AdminDashboard = () => {
         const oneWeekAgo = new Date(today.setDate(today.getDate() - 7)).toISOString().split('T')[0];
 
         const attendanceResponse = await axios.get(
-          `${SERVER_URL}/api/attendance/`,
+          `${SERVER_URL}/attendance/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -124,7 +124,7 @@ const AdminDashboard = () => {
       try {
         console.log({ task: newTodo, status: "pending" });
         const response = await axios.post(
-          `${SERVER_URL}/api/todos/`,
+          `${SERVER_URL}/todos/`,
           { task: newTodo, status: "pending", employee: currentUser.id },
           {
             headers: {
@@ -145,7 +145,7 @@ const AdminDashboard = () => {
     try {
       const updatedTodo = todoList.find((todo) => todo.id === id);
       const response = await axios.patch(
-        `${SERVER_URL}/api/todos/${id}/`,
+        `${SERVER_URL}/todos/${id}/`,
         { status: "completed" },
         {
           headers: {
@@ -167,7 +167,7 @@ const AdminDashboard = () => {
   const handleCancelTodo = async (id) => {
     try {
       const response = await axios.patch(
-        `${SERVER_URL}/api/todos/${id}/`,
+        `${SERVER_URL}/todos/${id}/`,
         { status: "cancelled" },
         {
           headers: {
@@ -188,7 +188,7 @@ const AdminDashboard = () => {
 
   const handleDeleteTodo = async (id) => {
     try {
-      await axios.delete(`${SERVER_URL}/api/todos/${id}/`, {
+      await axios.delete(`${SERVER_URL}/todos/${id}/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },

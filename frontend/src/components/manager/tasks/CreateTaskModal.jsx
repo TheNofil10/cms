@@ -4,7 +4,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 import { FaPlus, FaTimes, FaUserPlus, FaUserCheck, FaCalendarAlt } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { ToastContainer } from "react-toastify";
-
+import API from "../../../api/api";
 const CreateTaskModal = ({ onClose, onCreate }) => {
   const { currentUser } = useAuth();
   const [title, setTitle] = useState("");
@@ -29,7 +29,7 @@ const CreateTaskModal = ({ onClose, onCreate }) => {
   const fetchSuggestions = async (query) => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/employee-suggestions/",
+        `${API}/employee-suggestions/`,
         {
           params: { q: query },
           headers: {

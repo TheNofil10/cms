@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import API from "../../../api/api";
 import {
   FaRegUser,
   FaCalendarAlt,
@@ -27,7 +28,7 @@ const TaskDetail = () => {
   const fetchTaskDetails = async () => {
     try {
       const taskResponse = await axios.get(
-        `http://127.0.0.1:8000/api/tasks/${id}/`,
+        `${API}/tasks/${id}/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -37,7 +38,7 @@ const TaskDetail = () => {
       setTask(taskResponse.data);
 
       const departmentResponse = await axios.get(
-        `http://127.0.0.1:8000/api/departments/${taskResponse.data.department}/`,
+        `${API}departments/${taskResponse.data.department}/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -48,7 +49,7 @@ const TaskDetail = () => {
 
       const employeeResponses = await Promise.all(
         taskResponse.data.assigned_to.map((employeeId) =>
-          axios.get(`http://127.0.0.1:8000/api/employees/${employeeId}/`, {
+          axios.get(`${API}/employees/${employeeId}/`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
@@ -64,7 +65,7 @@ const TaskDetail = () => {
   const fetchComments = async () => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/tasks/${id}/comments/`,
+        `${API}/tasks/${id}/comments/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -73,7 +74,7 @@ const TaskDetail = () => {
       );
 
       const commentsData = response.data;
-      console.log("Comments Data:", commentsData); // Log comments data
+      console.log("Comments Data:", commentsData); 
 
       setComments(commentsData);
     } catch (error) {
@@ -86,11 +87,11 @@ const TaskDetail = () => {
 
     try {
       await axios.post(
-        `http://127.0.0.1:8000/api/task-comments/`,
+        `${API}/task-comments/`,
         {
           task: id, 
-          comment: newComment, // the comment text
-          // created_by: currentUser.id,
+          comment: newComment, 
+          
         },
         {
           headers: {

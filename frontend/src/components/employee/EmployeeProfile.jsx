@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import API from "../../api/api";
 import { useAuth } from "../../contexts/AuthContext";
 import {
   FaUserTie,
@@ -29,7 +30,7 @@ const EmployeeProfile = () => {
   const fetchEmployee = async () => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/employees/${currentUser.id}/`,
+        `${API}/employees/${currentUser.id}/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -39,7 +40,7 @@ const EmployeeProfile = () => {
       setEmployee(response.data);
 
       const departmentResponse = await axios.get(
-        `http://127.0.0.1:8000/api/department/me/`,
+        `${API}/department/me/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,

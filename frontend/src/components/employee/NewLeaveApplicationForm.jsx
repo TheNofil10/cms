@@ -8,7 +8,7 @@ const NewLeaveApplicationForm = ({ handleFormClose }) => {
 
     try {
       const token = localStorage.getItem('access_token');
-      const response = await axios.post('http://127.0.0.1:8000/api/apply-leave/', {
+      const response = await axios.post(`${API}/apply-leave/`, {
         leave_type: formData.get('leaveType'),
         start_date: formData.get('startDate'),
         end_date: formData.get('endDate'),

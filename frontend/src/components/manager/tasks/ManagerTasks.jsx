@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import UpdateTaskModal from './UpdateTaskModal'; // Make sure to import UpdateTaskModal
 import CreateTaskModal from './CreateTaskModal'; // Import CreateTaskModal
-
+import API from '../../../api/api';
 const ManagerTasks = () => {
   const [tasks, setTasks] = useState([]);
   const [showTaskModal, setShowTaskModal] = useState(false);
@@ -20,7 +20,7 @@ const ManagerTasks = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/tasks/', {
+      const response = await axios.get(`${API}/tasks/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
@@ -34,7 +34,7 @@ const ManagerTasks = () => {
 
   const handleCreateTask = async (taskData) => {
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/tasks/', taskData, {
+      const response = await axios.post(`${API}/tasks/`, taskData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
@@ -50,7 +50,7 @@ const ManagerTasks = () => {
 
   const handleUpdateTask = async (taskId, updatedTaskData) => {
     try {
-      const response = await axios.put(`http://127.0.0.1:8000/api/tasks/${taskId}/`, updatedTaskData, {
+      const response = await axios.put(`${API}/tasks/${taskId}/`, updatedTaskData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
@@ -66,7 +66,7 @@ const ManagerTasks = () => {
 
   const handleDeleteTask = async (taskId) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/tasks/${taskId}/`, {
+      await axios.delete(`${API}/tasks/${taskId}/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },

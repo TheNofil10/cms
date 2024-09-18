@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import { Outlet } from "react-router-dom";
 import ManagerSideBar from "../sidebar/ManagerSideBar";
-
 const ManagerLayout = () => {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
 

@@ -3,6 +3,7 @@ import axios from "axios";
 import LeaveApplicationDetails from "../LeaveApplicationDetails";
 import NewLeaveApplicationForm from "./NewLeaveApplicationForm";
 import { ToastContainer } from "react-toastify";
+import API from "../../api/api";
 
 const EmployeeAttendanceApplications = () => {
   const [applications, setApplications] = useState([]);
@@ -14,7 +15,7 @@ const EmployeeAttendanceApplications = () => {
     const fetchApplications = async () => {
       try {
         const token = localStorage.getItem("access_token");
-        const response = await axios.get("http://127.0.0.1:8000/api/leaves/", {
+        const response = await axios.get(`${API}/leaves/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -25,7 +26,7 @@ const EmployeeAttendanceApplications = () => {
           try {
             const refreshToken = localStorage.getItem("refresh_token");
             const refreshResponse = await axios.post(
-              "http://127.0.0.1:8000/api/token/refresh/",
+              `${API}/token/refresh/`,
               { refresh: refreshToken }
             );
             localStorage.setItem("access_token", refreshResponse.data.access);
@@ -70,7 +71,7 @@ const EmployeeAttendanceApplications = () => {
     try {
       const token = localStorage.getItem("access_token");
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/apply-leave/",
+        `${API}/apply-leave/`,
         {
           leave_type: formData.get("leaveType"),
           start_date: formData.get("startDate"),

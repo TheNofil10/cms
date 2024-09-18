@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
 import axios from "axios";
+import API from "../../api/api";
 
 const UpdateEmployeeModal = ({ isOpen, onClose, employee, onUpdate }) => {
   const [formData, setFormData] = useState({
@@ -22,7 +23,7 @@ const UpdateEmployeeModal = ({ isOpen, onClose, employee, onUpdate }) => {
     e.preventDefault();
     try {
       await axios.put(
-        `http://127.0.0.1:8000/api/employees/${employee.id}/`,
+        `${API}/employees/${employee.id}/`,
         formData,
         {
           headers: {

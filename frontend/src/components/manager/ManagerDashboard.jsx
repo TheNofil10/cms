@@ -18,7 +18,7 @@ import { Pie } from "react-chartjs-2";
 import "react-toastify/dist/ReactToastify.css";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useNavigate } from "react-router-dom";
-
+import API from "../../api/api";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const ManagerDashboard = () => {
@@ -38,13 +38,13 @@ const ManagerDashboard = () => {
   );
   const { currentUser } = useAuth();
   const navigate = useNavigate();
-  const SERVER_URL = "http://127.0.0.1:8000";
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const employeeResponse = await axios.get(
-          `${SERVER_URL}/api/employees/${currentUser.id}`,
+          `${API}/employees/${currentUser.id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -54,7 +54,7 @@ const ManagerDashboard = () => {
         setEmployeeData(employeeResponse.data);
 
         const tasksResponse = await axios.get(
-          `${SERVER_URL}/api/tasks?assigned_to=${currentUser.id}`,
+          `${API}/tasks?assigned_to=${currentUser.id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -64,7 +64,7 @@ const ManagerDashboard = () => {
         setTasks(tasksResponse.data);
 
         const statsResponse = await axios.get(
-          "http://127.0.0.1:8000/api/attendance/stats/company/",
+          `${API}/attendance/stats/company/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -74,7 +74,7 @@ const ManagerDashboard = () => {
         setStats(statsResponse.data);
         console.log(statsResponse.data);
 
-        const todoResponse = await axios.get(`${SERVER_URL}/api/todos/`, {
+        const todoResponse = await axios.get(`${API}/todos/`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           },
@@ -107,7 +107,7 @@ const ManagerDashboard = () => {
       try {
         console.log({ task: newTodo, status: "pending" });
         const response = await axios.post(
-          `${SERVER_URL}/api/todos/`,
+          `${API}/todos/`,
           { task: newTodo, status: "pending", employee: currentUser.id },
           {
             headers: {
@@ -128,7 +128,7 @@ const ManagerDashboard = () => {
     try {
       const updatedTodo = todoList.find((todo) => todo.id === id);
       const response = await axios.patch(
-        `${SERVER_URL}/api/todos/${id}/`,
+        `${API}/todos/${id}/`,
         { status: "completed" },
         {
           headers: {
@@ -150,7 +150,7 @@ const ManagerDashboard = () => {
   const handleCancelTodo = async (id) => {
     try {
       const response = await axios.patch(
-        `${SERVER_URL}/api/todos/${id}/`,
+        `${API}/todos/${id}/`,
         { status: "cancelled" },
         {
           headers: {
@@ -171,7 +171,7 @@ const ManagerDashboard = () => {
 
   const handleDeleteTodo = async (id) => {
     try {
-      await axios.delete(`${SERVER_URL}/api/todos/${id}/`, {
+      await axios.delete(`${API}/todos/${id}/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },

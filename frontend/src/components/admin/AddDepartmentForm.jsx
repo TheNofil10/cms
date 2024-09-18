@@ -14,7 +14,7 @@ import {
 import { Line } from "rc-progress";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
-
+import API from "../../api/api";
 const AddDepartmentForm = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -40,7 +40,7 @@ const AddDepartmentForm = () => {
     setLoading(true);
     setError("");
     try {
-      await axios.post("http://127.0.0.1:8000/api/departments/", formData, {
+      await axios.post(`${API}/departments/`, formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },

@@ -22,7 +22,7 @@ import {
 import { useAuth } from "../../contexts/AuthContext";
 import ConfirmationModal from "./ConfirmationModal";
 import AdminUpdateProfileForm from "./AdminUpdateProfileForm";
-
+import API from "../../api/api";
 const AdminEmployeeProfile = () => {
   const { id } = useParams();
   const [employee, setEmployee] = useState(null);
@@ -40,7 +40,7 @@ const AdminEmployeeProfile = () => {
     const fetchEmployee = async () => {
       try {
         const employeeResponse = await axios.get(
-          `http://127.0.0.1:8000/api/employees/${id}/`,
+          `${API}/employees/${id}/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -51,7 +51,7 @@ const AdminEmployeeProfile = () => {
 
         if (employeeResponse.data.department) {
           const departmentResponse = await axios.get(
-            `http://127.0.0.1:8000/api/departments/${employeeResponse.data.department}/`,
+            `${API}/departments/${employeeResponse.data.department}/`,
             {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -63,7 +63,7 @@ const AdminEmployeeProfile = () => {
 
         if (employeeResponse.data.manager) {
           const managerResponse = await axios.get(
-            `http://127.0.0.1:8000/api/employees/${employeeResponse.data.manager}/`,
+            `${API}/employees/${employeeResponse.data.manager}/`,
             {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -101,7 +101,7 @@ const AdminEmployeeProfile = () => {
       return;
     }
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/employees/${id}/`, {
+      await axios.delete(`${API}/employees/${id}/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },

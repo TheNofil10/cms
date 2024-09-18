@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import API from "../../api/api";
 
 const AdminUpdateProfileForm = ({ employee, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
@@ -76,7 +77,7 @@ const AdminUpdateProfileForm = ({ employee, onClose, onUpdate }) => {
     console.log(formDataToSend)
     try {
       await axios.put(
-        `http://127.0.0.1:8000/api/employees/${employee.id}/`,
+        `${API}/employees/${employee.id}/`,
         formDataToSend,
         {
           headers: {

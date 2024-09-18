@@ -20,6 +20,7 @@ import {
 } from "react-icons/fa";
 import UpdateAttendanceModal from "./UpdateAttendanceModal"; // Import your modal
 import { ToastContainer } from "react-toastify";
+import API from "../../../api/api";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -57,7 +58,7 @@ const AttendanceTable = () => {
         }
 
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/admin/attendance/?${queryParams}`,
+          `${API}/admin/attendance/?${queryParams}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,

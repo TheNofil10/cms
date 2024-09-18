@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import LeaveApplicationDetails from "../../LeaveApplicationDetails";
-
+import API from "../../../api/api";
 const LeaveApplications = () => {
   const [applications, setApplications] = useState([]);
   const [selectedApplication, setSelectedApplication] = useState(null);
@@ -12,7 +12,7 @@ const LeaveApplications = () => {
     const fetchApplications = async () => {
       try {
         const token = localStorage.getItem("access_token");
-        const response = await axios.get("http://127.0.0.1:8000/api/leaves/", {
+        const response = await axios.get(`${API}/leaves/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -30,7 +30,7 @@ const LeaveApplications = () => {
           try {
             const refreshToken = localStorage.getItem("refresh_token");
             const refreshResponse = await axios.post(
-              "http://127.0.0.1:8000/api/token/refresh/",
+              `${API}/token/refresh/`,
               { refresh: refreshToken }
             );
             localStorage.setItem("access_token", refreshResponse.data.access);
@@ -51,7 +51,7 @@ const LeaveApplications = () => {
     try {
       const token = localStorage.getItem("access_token");
       await axios.post(
-        `http://127.0.0.1:8000/api/approve-leave-hr/${id}/`,
+        `${API}/approve-leave-hr/${id}/`,
         { action: "approve" },
         {
           headers: {
@@ -75,7 +75,7 @@ const LeaveApplications = () => {
     try {
       const token = localStorage.getItem("access_token");
       await axios.post(
-        `http://127.0.0.1:8000/api/approve-leave-hr/${id}/`,
+        `${API}/approve-leave-hr/${id}/`,
         { action: "reject" },
         {
           headers: {

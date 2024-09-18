@@ -13,7 +13,7 @@ import {
   TwitterIcon,
   FacebookIcon,
 } from "react-share";
-
+import API from "../../../api/api";
 const ShareJobModal = ({ job, onClose }) => {
   const [postContent, setPostContent] = useState("");
   const [editing, setEditing] = useState(false);
@@ -24,7 +24,7 @@ const ShareJobModal = ({ job, onClose }) => {
       try {
         setLoading(true);
         const response = await axios.post(
-          "http://127.0.0.1:8000/api/generate-post/",
+          `${API}/generate-post/`,
           { job },
           {
             headers: {

@@ -35,6 +35,7 @@ import pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from "pdfmake/build/vfs_fonts";
 import ConfirmationModal from "./ConfirmationModal"; // Import the ConfirmationModal component
 import { useAuth } from "../../contexts/AuthContext";
+import API from "../../api/api";
 
 // Initialize pdfMake with fonts
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -60,7 +61,7 @@ const EmployeeList = () => {
     const fetchEmployees = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/employees/",
+          `${API}/employees/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -190,7 +191,7 @@ const EmployeeList = () => {
 
     try {
       await axios.delete(
-        `http://127.0.0.1:8000/api/employees/${employeeToDelete.id}/`,
+        `${API}/employees/${employeeToDelete.id}/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,

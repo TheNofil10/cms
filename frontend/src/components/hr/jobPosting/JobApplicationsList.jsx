@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FaSpinner } from 'react-icons/fa';
+import API from '../../../api/api';
 
 const JobApplicationsList = ({ jobId }) => {
   const [applications, setApplications] = useState([]);
@@ -14,7 +15,7 @@ const JobApplicationsList = ({ jobId }) => {
     const fetchApplications = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/job-postings/${jobId}/applications/`,
+          `${API}/job-postings/${jobId}/applications/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('access_token')}`,

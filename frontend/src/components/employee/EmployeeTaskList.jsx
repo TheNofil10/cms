@@ -3,6 +3,7 @@ import axios from 'axios';
 import { FaEdit, FaEye } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import API from '../../api/api';
 
 const EmployeeTaskList = () => {
   const [tasks, setTasks] = useState([]);
@@ -14,7 +15,7 @@ const EmployeeTaskList = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/tasks/', {
+      const response = await axios.get(`${API}/tasks/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },

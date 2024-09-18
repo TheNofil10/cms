@@ -4,6 +4,7 @@ import axios from 'axios';
 import { FaRegUser, FaCalendarAlt, FaTasks, FaExclamationTriangle, FaCheckCircle } from 'react-icons/fa';
 import { useAuth } from '../../contexts/AuthContext';
 import { ToastContainer,toast } from 'react-toastify';
+import API, { SERVER_URL } from '../../api/api';
 const EmployeeTaskDetails = () => {
   const { id } = useParams();
   const { currentUser } = useAuth();
@@ -13,7 +14,7 @@ const EmployeeTaskDetails = () => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [status, setStatus] = useState(""); // Added state for task status
-  const SERVER_URL = "http://127.0.0.1:8000";
+
 
   useEffect(() => {
     fetchTaskDetails();
@@ -22,7 +23,7 @@ const EmployeeTaskDetails = () => {
 
   const fetchTaskDetails = async () => {
     try {
-      const taskResponse = await axios.get(`http://127.0.0.1:8000/api/tasks/${id}/`, {
+      const taskResponse = await axios.get(`${API}/tasks/${id}/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
@@ -30,7 +31,7 @@ const EmployeeTaskDetails = () => {
       setTask(taskResponse.data);
       setStatus(taskResponse.data.status); // Set initial status
 
-      const departmentResponse = await axios.get(`http://127.0.0.1:8000/api/departments/${taskResponse.data.department}/`, {
+      const departmentResponse = await axios.get(`${API}/departments/${taskResponse.data.department}/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
@@ -39,7 +40,7 @@ const EmployeeTaskDetails = () => {
 
       const employeeResponses = await Promise.all(
         taskResponse.data.assigned_to.map((employeeId) =>
-          axios.get(`http://127.0.0.1:8000/api/employees/${employeeId}/`, {
+          axios.get(`${API}/employees/${employeeId}/`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
@@ -54,7 +55,7 @@ const EmployeeTaskDetails = () => {
 
   const fetchComments = async () => {
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/api/tasks/${id}/comments/`, {
+      const response = await axios.get(`${API}/tasks/${id}/comments/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
@@ -69,7 +70,7 @@ const EmployeeTaskDetails = () => {
     if (newComment.trim() === "") return;
 
     try {
-      await axios.post(`http://127.0.0.1:8000/api/task-comments/`, {
+      await axios.post(`${API}/task-comments/`, {
         task: id,
         comment: newComment,
       }, {
@@ -86,7 +87,7 @@ const EmployeeTaskDetails = () => {
 
   const handleStatusChange = async (newStatus) => {
     try {
-      await axios.patch(`http://127.0.0.1:8000/api/tasks/${id}/`, {
+      await axios.patch(`${API}/tasks/${id}/`, {
         status: newStatus,
       }, {
         headers: {
@@ -187,7 +188,7 @@ const EmployeeTaskDetails = () => {
         <div className="space-y-4">
           {comments.map((comment) => (
             <div key={comment.id} className="flex items-start space-x-4">
-              <img src={`${SERVER_URL}${comment.commenter.profile_image}`} alt={comment.commenter.username} className="w-12 h-12 rounded-full" />
+              <img src={`${SERVER_URL}/${comment.commenter.profile_image}`} alt={comment.commenter.username} className="w-12 h-12 rounded-full" />
               <div>
                 <p className="text-lg font-semibold">{comment.commenter.first_name} {comment.commenter.last_name}</p>
                 <p className="text-sm text-gray-600">@{comment.commenter.username}</p>

@@ -10,6 +10,7 @@ import {
   FaCheckCircle,
   FaShareAlt
 } from 'react-icons/fa';
+import API from '../../../api/api';
 import { toast } from 'react-toastify';
 import EditJobPostingModal from './EditJobPostingModal';
 import ShareJobModal from './ShareJobModal';
@@ -28,7 +29,7 @@ const JobPostingDetails = () => {
     const fetchJobDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/job-postings/${id}/`,
+          `${API}/job-postings/${id}/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('access_token')}`,
@@ -48,7 +49,7 @@ const JobPostingDetails = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/job-postings/${id}/`, {
+      await axios.delete(`${API}/job-postings/${id}/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },

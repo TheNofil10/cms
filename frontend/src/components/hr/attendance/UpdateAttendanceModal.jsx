@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { toast, ToastContainer } from 'react-toastify';
 import axios from "axios";
-
+import API from "../../../api/api";
 const UpdateAttendanceModal = ({ isOpen, onClose, record }) => {
   const [updatedRecord, setUpdatedRecord] = useState({});
 
@@ -30,7 +30,7 @@ const UpdateAttendanceModal = ({ isOpen, onClose, record }) => {
 
     try {
       await axios.patch(
-        `http://127.0.0.1:8000/api/admin/attendance/update/${updatedRecord.id}/`,
+        `${API}/admin/attendance/update/${updatedRecord.id}/`,
         updatedRecord,
         {
           headers: {

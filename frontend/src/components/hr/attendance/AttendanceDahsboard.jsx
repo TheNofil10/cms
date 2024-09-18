@@ -7,7 +7,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ClipLoader } from "react-spinners";
 
-const api = "http://127.0.0.1:8000";
+import API from "../../../api/api";
 Chart.register(...registerables);
 
 const AttendanceDashboard = () => {
@@ -29,7 +29,7 @@ const AttendanceDashboard = () => {
       setLoading(true);
       try {
         const statsResponse = await axios.get(
-          "http://127.0.0.1:8000/api/attendance/stats/company/",
+          `${API}/attendance/stats/company/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -69,7 +69,7 @@ const AttendanceDashboard = () => {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/employee-suggestions/`,
+        `${API}/employee-suggestions/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,

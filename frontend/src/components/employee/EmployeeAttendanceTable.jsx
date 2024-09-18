@@ -5,6 +5,7 @@ import * as XLSX from "xlsx";
 import pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from "pdfmake/build/vfs_fonts";
 import { useTable, useSortBy, usePagination } from "react-table";
+import API from "../../api/api";
 import {
   FaFilter,
   FaSearch,
@@ -39,7 +40,7 @@ const EmployeeAttendanceTable = () => {
     const fetchAttendanceData = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/attendance/?start_date=${filters.startDate}&end_date=${filters.endDate}`,
+          `${API}/attendance/?start_date=${filters.startDate}&end_date=${filters.endDate}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,

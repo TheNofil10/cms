@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import axios from "axios";
-import {jwtDecode} from "jwt-decode"; // Ensure the correct import
+import {jwtDecode} from "jwt-decode"; 
 
 const AuthContext = createContext();
 
@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
       const userId = decodedToken.user_id;
 
       // Fetch user details with the token in the headers
-      axios.get(`http://localhost:8000/api/employees/${userId}/`, {
+      axios.get(`${API}/employees/${userId}/`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      const response = await axios.post("http://localhost:8000/api/token/", {
+      const response = await axios.post(`${API}/token/`, {
         username,
         password,
       });
@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
       const userId = decodedToken.user_id;
 
       // Fetch user details with the token in the headers
-      const userResponse = await axios.get(`http://localhost:8000/api/employees/${userId}/`, {
+      const userResponse = await axios.get(`${API}/employees/${userId}/`, {
         headers: {
           Authorization: `Bearer ${access}`
         }

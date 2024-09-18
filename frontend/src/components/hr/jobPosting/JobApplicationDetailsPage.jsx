@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import API from "../../../api/api";
 const JobApplicationDetailsPage = () => {
   const { id } = useParams();
   const [application, setApplication] = useState(null);
@@ -16,7 +16,7 @@ const JobApplicationDetailsPage = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/applications/${id}/`,
+          `${API}/applications/${id}/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -43,7 +43,7 @@ const JobApplicationDetailsPage = () => {
     setLoading(true);
     try {
       const response = await axios.patch(
-        `http://127.0.0.1:8000/api/applications/${id}/update_status/`,
+        `${API}/applications/${id}/update_status/`,
         { status: newStatus },
         {
           headers: {

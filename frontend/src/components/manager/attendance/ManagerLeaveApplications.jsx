@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import LeaveApplicationDetails from "./LeaveApplicationDetails";
+import API from "../../../api/api";
 
 const ManagerLeaveApplications = () => {
   const [applications, setApplications] = useState([]);
@@ -12,7 +13,7 @@ const ManagerLeaveApplications = () => {
     const fetchApplications = async () => {
       try {
         const token = localStorage.getItem("access_token");
-        const response = await axios.get("http://127.0.0.1:8000/api/leaves/", {
+        const response = await axios.get(`${API}/leaves/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -22,7 +23,7 @@ const ManagerLeaveApplications = () => {
           response.data.map(async (application) => {
             try {
               const employeeResponse = await axios.get(
-                `http://127.0.0.1:8000/api/employees/${application.employee}/`,
+                `${API}/employees/${application.employee}/`,
                 {
                   headers: {
                     Authorization: `Bearer ${token}`,
@@ -48,7 +49,7 @@ const ManagerLeaveApplications = () => {
           try {
             const refreshToken = localStorage.getItem("refresh_token");
             const refreshResponse = await axios.post(
-              "http://127.0.0.1:8000/api/token/refresh/",
+              `${API}/token/refresh/`,
               { refresh: refreshToken }
             );
             localStorage.setItem("access_token", refreshResponse.data.access);
@@ -69,7 +70,7 @@ const ManagerLeaveApplications = () => {
     try {
       const token = localStorage.getItem("access_token");
       await axios.post(
-        `http://127.0.0.1:8000/api/approve-leave-manager/${id}/`,
+        `${API}/approve-leave-manager/${id}/`,
         { action: "approve" },
         {
           headers: {
@@ -93,7 +94,7 @@ const ManagerLeaveApplications = () => {
     try {
       const token = localStorage.getItem("access_token");
       await axios.post(
-        `http://127.0.0.1:8000/api/approve-leave-manager/${id}/`,
+        `${API}/approve-leave-manager/${id}/`,
         { action: "reject" },
         {
           headers: {

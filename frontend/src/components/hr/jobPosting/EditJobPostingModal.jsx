@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { FaSpinner } from "react-icons/fa";
+import API from "../../../api/api";
 
 const EditJobPostingModal = ({ job, setIsModalOpen, setJob }) => {
   const [loading,setLoading] = useState(false)
@@ -35,7 +36,7 @@ const EditJobPostingModal = ({ job, setIsModalOpen, setJob }) => {
     console.log("Form Data Before Submit:", formData); 
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/job-postings/${job.id}/`,
+        `${API}/job-postings/${job.id}/`,
         formData,
         {
           headers: {
@@ -58,7 +59,7 @@ const EditJobPostingModal = ({ job, setIsModalOpen, setJob }) => {
     setLoading(true); // Start loading
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/generate-job-details/`,
+        `${API}/generate-job-details/`,
         {
           title: formData.title,
           qualifications: formData.qualifications,
