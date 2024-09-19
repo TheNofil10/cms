@@ -38,7 +38,7 @@ const TaskDetail = () => {
       setTask(taskResponse.data);
 
       const departmentResponse = await axios.get(
-        `${API}departments/${taskResponse.data.department}/`,
+        `${API}/departments/${taskResponse.data.department}/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
