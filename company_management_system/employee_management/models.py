@@ -255,7 +255,7 @@ class Attendance(models.Model):
     
     time_in = models.TimeField(null=True, blank=True)
     time_out = models.TimeField(null=True, blank=True)
-    hours_worked = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    hours_worked = models.DecimalField(max_digits=5, decimal_places=2, default=0,null=True, blank=True)
     is_overtime = models.BooleanField(default=False)
     comments = models.TextField(blank=True)
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import {toast} from 'react-toastify'
+import API from '../../api/api';
 const NewLeaveApplicationForm = ({ handleFormClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
