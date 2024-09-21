@@ -1,11 +1,16 @@
-#!/usr/bin/env python
-"""Django's command-line utility for administrative tasks."""
 import os
 import sys
 
 
 def main():
     """Run administrative tasks."""
+
+    # Check if sys.stdout and sys.stderr are None (common issue in EXE files)
+    if sys.stdout is None:
+        sys.stdout = open("stdout.log", "w")
+    if sys.stderr is None:
+        sys.stderr = open("stderr.log", "w")
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'company_management_system.settings')
     try:
         from django.core.management import execute_from_command_line
