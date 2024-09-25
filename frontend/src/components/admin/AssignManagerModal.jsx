@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaUser, FaSpinner } from "react-icons/fa";
 import { toast } from "react-toastify";
-
+import API from "../../api/api";
 const AssignManagerModal = ({ isOpen, onClose, departmentId }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [employees, setEmployees] = useState([]);
@@ -13,6 +13,7 @@ const AssignManagerModal = ({ isOpen, onClose, departmentId }) => {
     if (searchQuery.length > 2) {
       const fetchEmployees = async () => {
         setLoading(true);
+        console.log(`${API}/employee-suggestions/`)
         try {
           const response = await axios.get(
             `${API}/employee-suggestions/`,
@@ -28,6 +29,7 @@ const AssignManagerModal = ({ isOpen, onClose, departmentId }) => {
           setEmployees(response.data);
         } catch (error) {
           toast.error("Error fetching employees");
+          console.log("error:",error)
         } finally {
           setLoading(false);
         }
