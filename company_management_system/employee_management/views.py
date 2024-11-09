@@ -158,31 +158,21 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     serializer_class = EmployeeSerializer
 
     def get_permissions(self):
-        if self.action in ["destroy"]:
+        if self.action == "destroy":
             return [IsAdminUser()]
-        elif self.action in ["create"]:
+        elif self.action in ["create", "update", "partial_update"]:
             if self.request.user.is_hr_manager or self.request.user.is_superuser:
                 return [IsAuthenticated()]
-        elif self.action in ["update", "partial_update"]:
-            if self.request.user.is_superuser or self.request.user.is_hr_manager:
-                return [IsAuthenticated()]
-            return [IsAuthenticated()]
         return [IsAuthenticated()]
 
     def get_queryset(self):
         user = self.request.user
         if user.is_superuser:
             return Employee.objects.all()
-        if (
-            user.is_authenticated
-            and hasattr(user, "is_hr_manager")
-            and user.is_hr_manager
-        ):
-            return Employee.objects.all()
-        if user.is_authenticated:
-            return Employee.objects.filter(department=user.department)
-        return Employee.objects.none()
-
+        elif user.is_hr_manager:
+            return Employee.objects.filter(is_superuser=False)
+        return Employee.objects.filter(department=user.department, is_superuser=False)
+        
     def perform_create(self, serializer):
         employee = serializer.save(is_active=True)
         if "profile_image" in self.request.FILES:
