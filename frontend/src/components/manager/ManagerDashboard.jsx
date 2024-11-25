@@ -219,7 +219,7 @@ const ManagerDashboard = () => {
     <div className="flex bg-gray-100 min-h-screen">
       {/* Main Content */}
       <main className="flex-1 p-6 overflow-auto">
-        <h1 className="text-3xl font-bold mb-6">Employee Dashboard</h1>
+        <h1 className="text-3xl font-bold mb-6">Manager Dashboard</h1>
         <div className="text-xl font-semibold mb-4">{getGreeting()}</div>
         <div className="bg-gray-200 p-4 rounded-lg mb-6">
           <p className="italic">"{quote}"</p>

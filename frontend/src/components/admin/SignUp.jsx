@@ -39,9 +39,10 @@ const Signup = () => {
     emergency_contact: "",
     profile_image: null,
     imagePreview: null,
-    is_staff: false,
+    is_staff: true,
     is_active: true,
     is_hr_manager: false,
+    is_manager: false,
   });
 
   const [step, setStep] = useState(1);
@@ -136,9 +137,10 @@ const Signup = () => {
           emergency_contact: "",
           profile_image: null,
           imagePreview: null,
-          is_staff: false,
+          is_staff: true,
           is_active: true,
           is_hr_manager: false,
+          is_manager: false,
         });
         setStep(1);
         toast.success("Successfully Signed Up")
@@ -524,9 +526,9 @@ const Signup = () => {
                 <label className="block text-sm mb-2">Manager</label>
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaUserShield className="m-2" />
-                  <select
-                    name="is_staff"
-                    value={formData.is_staff}
+                  <select 
+                    name="is_manager"
+                    value={formData.is_manager}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
                   >
