@@ -284,8 +284,12 @@ const DepartmentsPage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-4">Departments </h1>
+    <div className=" mx-auto p-0">
+    <header className="bg-black text-white p-5 shadow-md w-full">
+      <div className="w-full flex justify-between items-center">
+        <h1 className="text-2xl font-semibold">Departments</h1>
+      </div>
+    </header>
       <div className="p-6">
         <ToastContainer />
         <div className="flex justify-between mb-4">

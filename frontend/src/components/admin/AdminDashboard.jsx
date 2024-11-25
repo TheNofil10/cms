@@ -252,166 +252,172 @@ const AdminDashboard = () => {
   if (error) return <div className="text-center p-4 text-red-500">{error}</div>;
 
   return (
-    <div className="flex bg-gray-100 min-h-screen">
-      {/* Main Content */}
-      <main className="flex-1 p-6 overflow-auto rounded-xl">
-        <h1 className="text-3xl font-bold text-center  mb-6">Admin Dashboard</h1>
-        <div className="text-xl font-semibold mb-4">
-          {getGreeting()} {currentUser.first_name}
-          {currentUser.last_name}
+    <div className="flex bg-gray-100 min-h-screen flex-col">
+      {/* Top Nav Bar */}
+      <header className="bg-black text-white p-5 shadow-md">
+      <div className="w-full flex justify-between items-center">
+      <h1 className="text-2xl font-semibold">Admin Dashboard</h1>
         </div>
-        
+      </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-6">
-          {/* Tasks Summary */}
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">
-              Employees & Departments
-            </h2>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center border-b border-gray-300 pb-2">
-                <p className="text-gray-600">
-                  <FaUsers className="mb-1 inline" /> Employees:
-                </p>
-                <p className="font-bold">{employeeCount} </p>
-              </div>
-              <div className="flex justify-between items-center border-b border-gray-300 pb-2">
-                <p className="text-gray-600">
-                  <FaRegBuilding className="mb-1 inline" /> Departments:
-                </p>
-                <p className="font-bold">{departmentCount}</p>
-              </div>
-            </div>
-            <div className="space-y-4">
-            <div className="bg-white p-4 rounded-lg shadow-md space-y-4">
-            
-            <Link
-              to="/admin/employees"
-              className="text-center bg-black text-white px-4 py-2 rounded-md flex items-center justify-center space-x-2"
-            >
-              <FaUsers className="text-xl" />
-              <span>Manage Employees</span>
-            </Link>
-            <Link
-              to="/admin/departments"
-              className="text-center bg-black text-white px-4 py-2 rounded-md flex items-center justify-center space-x-2"
-            >
-              <FaRegBuilding className="text-xl" />
-              <span>Manage Departments</span>
-            </Link>
-            <Link
-              to="/admin/attendance"
-              className="text-center bg-black text-white px-4 py-2 rounded-md flex items-center justify-center space-x-2"
-            >
-              <FaCalendar className="text-xl" />
-              <span>Manage Attendance</span>
-            </Link>
-          </div>
-            </div>
+      <div className="flex flex-1">
+        {/* Main Content */}
+        <main className="flex-1 p-6 overflow-auto rounded-xl">
+          <div className="text-xl font-semibold mb-4">
+            {getGreeting()} {currentUser.first_name} {currentUser.last_name}
           </div>
 
-          {/* Notifications */}
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">Notifications</h2>
-            {notifications.length > 0 ? (
-              <ul className="space-y-4">
-                {notifications.map((note, index) => (
-                  <li
-                    key={index}
-                    className="flex justify-between items-center border-b border-gray-300 pb-2"
+
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-6">
+            {/* Tasks Summary */}
+            <div className="bg-white p-4 rounded-lg shadow-md">
+              <h2 className="text-xl font-semibold mb-4">
+                Employees & Departments
+              </h2>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center border-b border-gray-300 pb-2">
+                  <p className="text-gray-600">
+                    <FaUsers className="mb-1 inline" /> Employees:
+                  </p>
+                  <p className="font-bold">{employeeCount} </p>
+                </div>
+                <div className="flex justify-between items-center border-b border-gray-300 pb-2">
+                  <p className="text-gray-600">
+                    <FaRegBuilding className="mb-1 inline" /> Departments:
+                  </p>
+                  <p className="font-bold">{departmentCount}</p>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div className="bg-white p-4 rounded-lg shadow-md space-y-4">
+
+                  <Link
+                    to="/admin/employees"
+                    className="text-center bg-black text-white px-4 py-2 rounded-md flex items-center justify-center space-x-2"
                   >
-                    <p>{note.message}</p>
-                    <button
-                      onClick={() => handleDismissNotification(index)}
-                      className="text-red-500"
+                    <FaUsers className="text-xl" />
+                    <span>Manage Employees</span>
+                  </Link>
+                  <Link
+                    to="/admin/departments"
+                    className="text-center bg-black text-white px-4 py-2 rounded-md flex items-center justify-center space-x-2"
+                  >
+                    <FaRegBuilding className="text-xl" />
+                    <span>Manage Departments</span>
+                  </Link>
+                  <Link
+                    to="/admin/attendance"
+                    className="text-center bg-black text-white px-4 py-2 rounded-md flex items-center justify-center space-x-2"
+                  >
+                    <FaCalendar className="text-xl" />
+                    <span>Manage Attendance</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Notifications */}
+            <div className="bg-white p-4 rounded-lg shadow-md">
+              <h2 className="text-xl font-semibold mb-4">Notifications</h2>
+              {notifications.length > 0 ? (
+                <ul className="space-y-4">
+                  {notifications.map((note, index) => (
+                    <li
+                      key={index}
+                      className="flex justify-between items-center border-b border-gray-300 pb-2"
                     >
-                      <FaTimes />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>No notifications</p>
-            )}
-          </div>
-
-          {/* Attendance Summary */}
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">Attendance Summary</h2>
-            <Pie data={pieChartData} />
-            
-          </div>
-        </div>
-      </main>
-
-      {/* Sidebar */}
-      <aside className="bg-white p-2 max-w-64">
-        {/* Profile Section */}
-
-        {/* To-Do List */}
-        <div className="bg-gray-200 p-4 rounded-lg">
-          <h2 className="text-xl font-semibold">To-Do List</h2>
-          <div className="mb-4">
-            <input
-              type="text"
-              value={newTodo}
-              onChange={(e) => setNewTodo(e.target.value)}
-              placeholder="Add new task..."
-              className="border rounded-lg p-2 w-full"
-            />
-            <button
-              onClick={handleAddTodo}
-              className="bg-green-500 text-white items-center px-4 py-2 rounded-md mt-2"
-            >
-              <FaPlus className="inline-flex space-x-5" /> Add Task
-            </button>
-          </div>
-          <ul className="space-y-4">
-            {todoList.map((todo) => (
-              <li
-                key={todo.id}
-                className="flex justify-between items-center border-b border-gray-300 pb-2"
-              >
-                <span
-                  className={`flex-1 ${
-                    todo.status === "completed"
-                      ? "line-through text-gray-500"
-                      : ""
-                  }`}
-                >
-                  {todo.task}
-                </span>
-                <div className="flex items-center space-x-2">
-                  {todo.status === "pending" && (
-                    <>
+                      <p>{note.message}</p>
                       <button
-                        onClick={() => handleCompleteTodo(todo.id)}
-                        className="text-green-500"
-                      >
-                        <FaCheck />
-                      </button>
-                      <button
-                        onClick={() => handleCancelTodo(todo.id)}
+                        onClick={() => handleDismissNotification(index)}
                         className="text-red-500"
                       >
                         <FaTimes />
                       </button>
-                    </>
-                  )}
-                  <button
-                    onClick={() => handleDeleteTodo(todo.id)}
-                    className="text-red-500"
-                  >
-                    <FaTrash />
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </aside>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No notifications</p>
+              )}
+            </div>
 
-      <ToastContainer />
+            {/* Attendance Summary */}
+            <div className="bg-white p-4 rounded-lg shadow-md">
+              <h2 className="text-xl font-semibold mb-4">Attendance Summary</h2>
+              <Pie data={pieChartData} />
+
+            </div>
+          </div>
+        </main>
+
+        {/* Sidebar */}
+        <aside className="bg-white p-2 max-w-64">
+          {/* Profile Section */}
+
+          {/* To-Do List */}
+          <div className="bg-gray-200 p-4 rounded-lg">
+            <h2 className="text-xl font-semibold">To-Do List</h2>
+            <div className="mb-4">
+              <input
+                type="text"
+                value={newTodo}
+                onChange={(e) => setNewTodo(e.target.value)}
+                placeholder="Add new task..."
+                className="border rounded-lg p-2 w-full"
+              />
+              <button
+                onClick={handleAddTodo}
+                className="bg-green-500 text-white items-center px-4 py-2 rounded-md mt-2"
+              >
+                <FaPlus className="inline-flex space-x-5" /> Add Task
+              </button>
+            </div>
+            <ul className="space-y-4">
+              {todoList.map((todo) => (
+                <li
+                  key={todo.id}
+                  className="flex justify-between items-center border-b border-gray-300 pb-2"
+                >
+                  <span
+                    className={`flex-1 ${todo.status === "completed"
+                        ? "line-through text-gray-500"
+                        : ""
+                      }`}
+                  >
+                    {todo.task}
+                  </span>
+                  <div className="flex items-center space-x-2">
+                    {todo.status === "pending" && (
+                      <>
+                        <button
+                          onClick={() => handleCompleteTodo(todo.id)}
+                          className="text-green-500"
+                        >
+                          <FaCheck />
+                        </button>
+                        <button
+                          onClick={() => handleCancelTodo(todo.id)}
+                          className="text-red-500"
+                        >
+                          <FaTimes />
+                        </button>
+                      </>
+                    )}
+                    <button
+                      onClick={() => handleDeleteTodo(todo.id)}
+                      className="text-red-500"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+
+        <ToastContainer />
+      </div>
     </div>
   );
 };

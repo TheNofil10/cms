@@ -86,7 +86,7 @@ const AddDepartmentForm = () => {
   const getProgress = () => (step / 4) * 100;
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-white">
+    <div className="min-h-screen flex flex-col justify-start items-center mt-10 rounded shadow-xl bg-white text-gray-900">
       <div className="w-full max-w-md">
         <h2 className="text-3xl mb-6 text-black text-center">
           Add New Department

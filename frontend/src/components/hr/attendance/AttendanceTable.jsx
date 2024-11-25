@@ -99,7 +99,7 @@ const AttendanceTable = () => {
         const recordDate = new Date(record.date);
         return recordDate.toDateString() === today.toDateString();
       });
-    } 
+    }
     else if (filters.dateFilter === "yesterday") {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
@@ -312,232 +312,219 @@ const AttendanceTable = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-1">
-      <div className="flex justify-between mb-4">
-        <h1 className="text-2xl font-semibold">Attendance Summary</h1>
-      </div>
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <input
-            type="text"
-            name="employee_id"
-            value={filters.employee_id}
-            onChange={handleFilterChange}
-            placeholder="Filter by Employee ID"
-            className="border px-2 py-1 rounded-md mr-2"
-          />
+    <div className="mx-auto p-0">
+      {/* Header Section */}
+      <header className="bg-black text-white p-5 shadow-md w-full">
+        <div className="w-full flex justify-between items-center">
+          <h1 className="text-2xl font-semibold">Attendance Summary</h1>
         </div>
-        <div>
-          <input
-            type="text"
-            name="employee_name"
-            value={filters.employee_name}
-            onChange={handleFilterChange}
-            placeholder="Filter by Employee Name"
-            className="border px-2 py-1 rounded-md mr-2"
-          />
+      </header>
+
+      {/* Body Section with Padding */}
+      <div className="p-6"> {/* Added padding here to wrap the content */}
+        <div className="flex items-center justify-between mb-4 mt-3">
+          <div>
+            <input
+              type="text"
+              name="employee_id"
+              value={filters.employee_id}
+              onChange={handleFilterChange}
+              placeholder="Filter by Employee ID"
+              className="border px-2 py-1 rounded-md mr-2"
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              name="employee_name"
+              value={filters.employee_name}
+              onChange={handleFilterChange}
+              placeholder="Filter by Employee Name"
+              className="border px-2 py-1 rounded-md mr-2"
+            />
+          </div>
+          <div className="relative">
+            <select
+              name="dateFilter"
+              value={filters.dateFilter}
+              onChange={handleFilterChange}
+              className="border px-2 py-1 rounded-md mr-2"
+            >
+              <option value="today">Today</option>
+              <option value="yesterday">Yesterday</option>
+              <option value="this_week">This Week</option>
+              <option value="this_month">This Month</option>
+              <option value="this_year">This Year</option>
+              <option value="custom">Custom</option>
+            </select>
+            {filters.dateFilter === "custom" && (
+              <>
+                <input
+                  type="date"
+                  name="startDate"
+                  value={filters.startDate}
+                  onChange={handleFilterChange}
+                  className="border px-2 py-1 rounded-md mr-2"
+                />
+                <input
+                  type="date"
+                  name="endDate"
+                  value={filters.endDate}
+                  onChange={handleFilterChange}
+                  className="border px-2 py-1 rounded-md"
+                />
+              </>
+            )}
+          </div>
+          <div className="relative">
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="flex items-center space-x-2 bg-black text-white py-2 px-3 rounded-md"
+            >
+              Export <FaChevronDown />
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded-md shadow-lg">
+                <button
+                  onClick={() => handleExportSelection("excel")}
+                  className="w-full py-1 px-3 text-sm text-left hover:bg-gray-100"
+                >
+                  Export to Excel
+                </button>
+                <button
+                  onClick={() => handleExportSelection("pdf")}
+                  className="w-full py-1 px-3 text-sm text-left hover:bg-gray-100"
+                >
+                  Export to PDF
+                </button>
+              </div>
+            )}
+          </div>
         </div>
-        <div className="relative">
-          <select
-            name="dateFilter"
-            value={filters.dateFilter}
-            onChange={handleFilterChange}
-            className="border px-2 py-1 rounded-md mr-2" 
-          >
-             <option value="today">Today</option>
-            <option value="yesterday">Yesterday</option>
-            <option value="this_week">This Week</option>
-            <option value="this_month">This Month</option>
-            <option value="this_year">This Year</option>
-            <option value="custom">Custom</option>
-          </select>
-          {filters.dateFilter === "custom" && (
-            <>
-              <input
-                type="date"
-                name="startDate"
-                value={filters.startDate}
-                onChange={handleFilterChange}
-                className="border px-2 py-1 rounded-md mr-2"
-              />
-              <input
-                type="date"
-                name="endDate"
-                value={filters.endDate}
-                onChange={handleFilterChange}
-                className="border px-2 py-1 rounded-md"
-              />
-            </>
-          )}
-        </div>
-        <div className="relative">
-          <button
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="flex items-center space-x-2 bg-black text-white py-2 px-3 rounded-md"
-          >
-            Export <FaChevronDown />
-          </button>
-          {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded-md shadow-lg">
+
+        <div className="overflow-x-auto">
+          <table {...getTableProps()} className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              {headerGroups.map((headerGroup) => (
+                <tr {...headerGroup.getHeaderGroupProps()}>
+                  {headerGroup.headers.map((column) => (
+                    <th
+                      {...column.getHeaderProps(column.getSortByToggleProps())}
+                      className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                    >
+                      {column.render("Header")}
+                      <span>
+                        {column.isSorted ? (
+                          column.isSortedDesc ? (
+                            <FaSortDown />
+                          ) : (
+                            <FaSortUp />
+                          )
+                        ) : (
+                          <FaSort />
+                        )}
+                      </span>
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody {...getTableBodyProps()} className="bg-white divide-y divide-gray-200">
+              {loading ? (
+                <tr>
+                  <td colSpan={columns.length} className="text-center py-4 text-sm text-gray-600">
+                    <FaSpinner className="animate-spin text-gray-600 text-xl" />
+                  </td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td colSpan={columns.length} className="text-center py-4 text-sm text-red-600">
+                    {error}
+                  </td>
+                </tr>
+              ) : (
+                page.map((row) => {
+                  prepareRow(row);
+                  const status = row.values.status;
+                  const rowBgColor =
+                    status === "present"
+                      ? "bg-green-200"
+                      : status === "late"
+                      ? "bg-green-100"
+                      : status === "leave" ||
+                        status === "sick_leave" ||
+                        status === "casual_leave"
+                      ? "bg-yellow-100"
+                      : status === "absent"
+                      ? "bg-red-100"
+                      : "bg-white";
+
+                  return (
+                    <tr {...row.getRowProps()} className={`text-sm ${rowBgColor}`}>
+                      {row.cells.map((cell) => (
+                        <td {...cell.getCellProps()} className="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {cell.render("Cell")}
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+
+          {/* Pagination Section */}
+          <div className="mt-4 flex items-center justify-between">
+            <div className="flex items-center justify-between">
               <button
-                onClick={() => handleExportSelection("excel")}
-                className="w-full py-1 px-3 text-sm text-left hover:bg-gray-100"
+                onClick={() => gotoPage(0)}
+                disabled={!canPreviousPage}
+                className="px-3 py-1 bg-gray-300 rounded text-sm ml-3 disabled:bg-gray-200 disabled:text-gray-300"
               >
-                Export to Excel
+                <FaAngleDoubleLeft />
               </button>
               <button
-                onClick={() => handleExportSelection("pdf")}
-                className="w-full py-1 px-3 text-sm text-left hover:bg-gray-100"
+                onClick={() => previousPage()}
+                disabled={!canPreviousPage}
+                className="px-3 py-1 bg-gray-300 rounded text-sm ml-3 disabled:bg-gray-200 disabled:text-gray-300"
               >
-                Export to PDF
+                <FaAngleLeft />
+              </button>
+              <button
+                onClick={() => nextPage()}
+                disabled={!canNextPage}
+                className="px-3 py-1 bg-gray-300 rounded text-sm ml-3 disabled:bg-gray-200 disabled:text-gray-300"
+              >
+                <FaAngleRight />
+              </button>
+              <button
+                onClick={() => gotoPage(pageOptions.length - 1)}
+                disabled={!canNextPage}
+                className="px-3 py-1 bg-gray-300 rounded text-sm ml-3 disabled:bg-gray-200 disabled:text-gray-300"
+              >
+                <FaAngleDoubleRight />
               </button>
             </div>
-          )}
-        </div>
-      </div>
-      <div className="overflow-x-auto">
-        <table
-          {...getTableProps()}
-          className="min-w-full divide-y divide-gray-200"
-        >
-          <thead className="bg-gray-50">
-            {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <th
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-                  >
-                    {column.render("Header")}
-                    <span>
-                      {column.isSorted ? (
-                        column.isSortedDesc ? (
-                          <FaSortDown />
-                        ) : (
-                          <FaSortUp />
-                        )
-                      ) : (
-                        <FaSort />
-                      )}
-                    </span>
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody
-            {...getTableBodyProps()}
-            className="bg-white divide-y divide-gray-200"
-          >
-            {loading ? (
-              <tr>
-                <td
-                  colSpan={columns.length}
-                  className="text-center py-4 text-sm text-gray-600"
-                >
-                  <FaSpinner className="animate-spin text-gray-600 text-xl" />
-                </td>
-              </tr>
-            ) : error ? (
-              <tr>
-                <td
-                  colSpan={columns.length}
-                  className="text-center py-4 text-sm text-red-600"
-                >
-                  {error}
-                </td>
-              </tr>
-            ) : (
-              page.map((row) => {
-                prepareRow(row);
-                const status = row.values.status;
-                const rowBgColor =
-                  status === "present"
-                    ? "bg-green-200"
-                    : status === "late"
-                    ? "bg-green-100"
-                    : status === "leave" ||
-                      status === "sick_leave" ||
-                      status === "casual_leave" ||
-                      status === "Sick Leave" ||
-                      status === "Casual Leave"
-                    ? "bg-yellow-100"
-                    : status === "absent"
-                    ? "bg-red-100"
-                    : "bg-white";
-
-                return (
-                  <tr
-                    {...row.getRowProps()}
-                    className={`text-sm ${rowBgColor}`}
-                  >
-                    {row.cells.map((cell) => (
-                      <td
-                        {...cell.getCellProps()}
-                        className="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900"
-                      >
-                        {cell.render("Cell")}
-                      </td>
-                    ))}
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
-
-        <div className="mt-4 flex items-center justify-between">
-          <div className="flex items-center justify-between">
-            <button
-              onClick={() => gotoPage(0)}
-              disabled={!canPreviousPage}
-              className="px-3 py-1 bg-gray-300 rounded text-sm ml-3 disabled:bg-gray-200 disabled:text-gray-300"
+            <div className="text-sm">
+              Page <strong>{pageIndex + 1} of {pageOptions.length}</strong>
+            </div>
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setTablePageSize(Number(e.target.value));
+                setPageSize(Number(e.target.value));
+              }}
+              className="ml-4 py-1 px-2 border border-gray-400 rounded text-xs"
             >
-              <FaAngleDoubleLeft />
-            </button>
-            <button
-              onClick={() => previousPage()}
-              disabled={!canPreviousPage}
-              className="px-3 py-1 bg-gray-300 rounded text-sm ml-3 disabled:bg-gray-200 disabled:text-gray-300"
-            >
-              <FaAngleLeft />
-            </button>
-            <button
-              onClick={() => nextPage()}
-              disabled={!canNextPage}
-              className="px-3 py-1 bg-gray-300 rounded text-sm ml-3 disabled:bg-gray-200 disabled:text-gray-300"
-            >
-              <FaAngleRight />
-            </button>
-            <button
-              onClick={() => gotoPage(pageOptions.length - 1)}
-              disabled={!canNextPage}
-              className="px-3 py-1 bg-gray-300 rounded text-sm ml-3 disabled:bg-gray-200 disabled:text-gray-300"
-            >
-              <FaAngleDoubleRight />
-            </button>
+              {[10, 25, 50, 100].map((size) => (
+                <option key={size} value={size}>
+                  Show {size}
+                </option>
+              ))}
+            </select>
           </div>
-          <div className="text-sm">
-            Page{" "}
-            <strong>
-              {pageIndex + 1} of {pageOptions.length}
-            </strong>{" "}
-          </div>
-          <select
-            value={pageSize}
-            onChange={(e) => {
-              setTablePageSize(Number(e.target.value));
-              setPageSize(Number(e.target.value));
-            }}
-            className="ml-4 py-1 px-2 border border-gray-400 rounded text-xs"
-          >
-            {[10, 25, 50, 100].map((size) => (
-              <option key={size} value={size}>
-                Show {size}
-              </option>
-            ))}
-          </select>
         </div>
+        
         <ToastContainer />
         <UpdateAttendanceModal
           isOpen={isModalOpen}
@@ -549,6 +536,7 @@ const AttendanceTable = () => {
       </div>
     </div>
   );
+
 };
 
 export default AttendanceTable;

@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import UpdateTaskModal from './UpdateTaskModal'; // Make sure to import UpdateTaskModal
 import CreateTaskModal from './CreateTaskModal'; // Import CreateTaskModal
 import API from '../../../api/api';
+
 const ManagerTasks = () => {
   const [tasks, setTasks] = useState([]);
   const [showTaskModal, setShowTaskModal] = useState(false);

@@ -20,13 +20,18 @@ export default function Sidebar({ children, expanded, onToggle }) {
   return (
     <SidebarContext.Provider value={{ expanded }}>
       <aside
-        className={`fixed top-0 left-0 h-screen bg-white shadow-lg transition-transform duration-300 ease-in-out ${
-          expanded ? "w-64" : "w-16"
-        } z-20`}
+        style={{ backgroundColor: "#92363E" }}
+        className={`fixed top-0 left-0 h-screen text-white shadow-lg transition-transform duration-300 ease-in-out ${expanded ? "w-64" : "w-16"
+          } z-20`}
       >
+
+
         <nav className="h-full flex flex-col">
-          <div className="p-4 pb-0 flex items-center justify-between">
-            <div className="flex-grow flex justify-center">
+          <div
+            className={`p-4 flex items-center justify-between bg-black ${expanded ? "" : "pb-4" // Add padding-bottom only when collapsed
+              }`}
+          >
+            <div className="flex-grow flex justify-center mb-3">
               <img
                 src={logo}
                 alt="Logo"
@@ -37,28 +42,30 @@ export default function Sidebar({ children, expanded, onToggle }) {
             {/* Toggle button on the right */}
             <button
               onClick={onToggle}
-              className="p-1.5 rounded-lg bg-gray-50  hover:bg-gray-100"
+              style={{ color: "#92363E" }} // Changed arrow color to primary color
+              className={`p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 ${expanded ? "" : "mb-1" // Add bottom margin when sidebar is collapsed
+                }`}
             >
               {expanded ? <ChevronLeft /> : <ChevronRight />}
             </button>
           </div>
-          {expanded && (<hr className="mx-3" />)}
+
+
+
+          {expanded && <hr className=" border-white" />}
           <ul className="flex-1 px-3">{children}</ul>
-          <div className="border-t flex p-3 items-center">
+          <div className="border-t border-white flex p-3 items-center">
             <img
               src={userProfilePic}
               alt="Profile"
               className="w-10 h-10 rounded-md object-cover"
             />
             <div
-              className={`flex-1 ml-3 transition-all ${
-                expanded ? "opacity-100" : "opacity-0"
-              }`}
+              className={`flex-1 ml-3 transition-all ${expanded ? "opacity-100" : "opacity-0"
+                }`}
             >
-              <h4 className="font-semibold">
-                {currentUser?.username || "User"}
-              </h4>
-              <span className="text-xs text-gray-600">
+              <h4 className="font-semibold">{currentUser?.username || "User"}</h4>
+              <span className="text-xs text-gray-300">
                 {currentUser?.email || "user@example.com"}
               </span>
             </div>
@@ -91,9 +98,8 @@ export function SidebarItem({ icon, text, to, onClick }) {
   return (
     <li
       onClick={handleClick}
-      className={`relative flex items-center py-1 px-2 my-1 font-medium rounded-md cursor-pointer transition-colors group hover:bg-indigo-50 ${
-        expanded ? "text-gray-600" : ""
-      }`}
+      className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-all duration-200 group hover:bg-opacity-90 hover:bg-maroon-light transform hover:scale-105 ${expanded ? "text-white" : ""
+        }`}
     >
       <span className="text-xl">{icon}</span>
       {expanded && <span className="ml-3">{text}</span>}
@@ -107,3 +113,4 @@ export function SidebarItem({ icon, text, to, onClick }) {
     </li>
   );
 }
+

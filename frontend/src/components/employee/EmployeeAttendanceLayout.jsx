@@ -9,12 +9,23 @@ const EmployeeAttendanceLayout = () => {
     { name: "Details", path: "/employee/attendance/details" },
     { name: "Applications", path: "/employee/attendance/applications" },
   ];
+
   return (
-    <div className="flex-grow mt-8 rounded-md md:px-16 sm:px-16 bg-white">
+    <div>
+      {/* Header Section */}
+      <header className="bg-black text-white p-5 shadow-md w-full">
+        <h1 className="text-2xl font-semibold">Employee Attendance</h1>
+      </header>
+
+      {/* Navbar */}
       <Navbar navItems={navItems} />
+      
+      {/* Outlet for nested routes */}
       <div className="py-7">
         <Outlet />
       </div>
+
+      {/* Toast Container for notifications */}
       <ToastContainer />
     </div>
   );

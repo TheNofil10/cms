@@ -62,44 +62,56 @@ const AddDepartment = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="flex p-4 bg-white max-h-screen">
-      <div className="w-3/4">
-        <div className="bg-white rounded-lg">
-          <AddDepartmentForm />
+    <div className="w-full">
+      {/* Header */}
+      <header className="bg-black text-white p-5 shadow-md w-full">
+        <div className="w-full flex justify-between items-center">
+          <h1 className="text-2xl font-semibold">Add Department</h1>
         </div>
-      </div>
-      <div className="w-1/4 max-h-fit flex flex-col">
-        <div className="bg-white p-4 rounded-lg shadow-lg flex-1 overflow-y-auto mb-4">
-          <h2 className="text-xl font-bold mb-2">Latest Employees</h2>
-          <div className="grid grid-cols-1  gap-4">
-            {employees.map(
-              (employee) =>
-                !employee.is_hr_manager &&
-                !employee.is_superuser && (
-                  <SmallEmployeeCard key={employee.id} employee={employee} />
-                )
-            )}
+      </header>
+  
+      {/* Main Content */}
+      <div className="flex h-screen bg-white">
+        <div className="w-3/4 flex flex-col">
+          <div className="bg-white rounded-lg flex-1">
+            <AddDepartmentForm />
           </div>
         </div>
-        <div className="bg-white p-4 shadow-lg rounded-lg flex-1 overflow-y-auto">
-          <h2 className="text-xl font-bold mb-2">Departments</h2>
-          {departments.length === 0 ? (
-            <p>No departments available</p>
-          ) : (
-            <ul>
-              {departments.map((department) => (
-                <li key={department.id} className="flex items-center mb-2">
-                  <FaBuilding className="mr-2" />
-                  {department.name || "No Department Name"} {" "}
-                  ID: {department.id}
-                </li>
-              ))}
-            </ul>
-          )}
+        <div className="w-1/4 flex flex-col">
+          <div className="bg-white p-4 rounded-lg h-64 shadow-lg flex-1 overflow-y-auto mb-4">
+            <h2 className="text-xl font-bold mb-2">Latest Employees</h2>
+            <div className="grid grid-cols-1 gap-4">
+              {employees.map(
+                (employee) =>
+                  !employee.is_hr_manager &&
+                  !employee.is_superuser && (
+                    <SmallEmployeeCard key={employee.id} employee={employee} />
+                  )
+              )}
+            </div>
+          </div>
+          <div className="bg-white p-4 shadow-lg h-64 rounded-lg flex-1 overflow-y-auto">
+            <h2 className="text-xl font-bold mb-2">Departments</h2>
+            {departments.length === 0 ? (
+              <p>No departments available</p>
+            ) : (
+              <ul>
+                {departments.map((department) => (
+                  <li key={department.id} className="flex items-center mb-2">
+                    <FaBuilding className="mr-2" />
+                    {department.name || "No Department Name"} {" "}
+                    ID: {department.id}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
+  
+  
 };
 
 export default AddDepartment;

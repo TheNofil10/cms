@@ -90,7 +90,7 @@ const Signup = () => {
           formData.date_of_birth && formData.department && formData.position
         );
       case 5:
-        return true; 
+        return true;
       default:
         return true;
     }
@@ -115,7 +115,7 @@ const Signup = () => {
         },
       })
       .then((response) => {
-        
+
         toast.success("Signed Up Successfully");
         setFormData({
           first_name: "",
@@ -154,10 +154,10 @@ const Signup = () => {
   const getProgress = () => (step / 6) * 100;
 
   return (
-    <div className="min-h-screen flex flex-col justify-center rounded shadow-xl items-center bg-white text-gray-900">
+    <div className="min-h-screen flex flex-col justify-start items-center mt-10 rounded shadow-xl bg-white text-gray-900">
       <div className="w-full max-w-md">
         <h2 className="text-3xl mb-6 text-black text-center">
-          Employee Signup
+          Employee Details
         </h2>
         <Line percent={getProgress()} strokeWidth="2" strokeColor="black" />
         <form
