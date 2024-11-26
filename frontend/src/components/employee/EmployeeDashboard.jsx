@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useAuth } from "../../contexts/AuthContext"; 
- import API from "../../api/api";
+import { useAuth } from "../../contexts/AuthContext";
+import API from "../../api/api";
 import { ToastContainer, toast } from "react-toastify";
 import {
   FaTasks,
@@ -223,7 +223,7 @@ const EmployeeDashboard = () => {
       <header className="bg-black text-white p-5 shadow-md w-full">
         <h1 className="text-2xl font-semibold">Employee Dashboard</h1>
       </header>
-  
+
       <div className="flex flex-grow">
         {/* Main Content */}
         <main className="flex-1 p-6 overflow-auto">
@@ -231,23 +231,51 @@ const EmployeeDashboard = () => {
           <div className="bg-gray-200 p-4 rounded-lg mb-6">
             <p className="italic">"{quote}"</p>
           </div>
-  
+
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-6">
             {/* Tasks Summary */}
             <div className="bg-white p-4 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold mb-4">Tasks</h2>
               <ul className="space-y-4">
-                {tasks.slice(0, 3).map((task) => (
-                  <li key={task.id} className="border-b border-gray-300 pb-2">
-                    <h3
-                      className="text-lg font-medium hover:text-blue-500 cursor-pointer"
-                      onClick={() => navigate(`/employee/tasks/${task.id}`)}
+                {tasks.slice(0, 3).map((task) => {
+                  // Determine the class for the card based on the status
+                  const statusClasses = {
+                    pending: "bg-yellow-100 border-yellow-400",
+                    in_progress: "bg-blue-100 border-blue-400",
+                    completed: "bg-green-100 border-green-400",
+                    on_hold: "bg-red-100 border-red-400",
+                  };
+
+                  const cardClass = statusClasses[task.status] || "bg-gray-100 border-gray-400";
+
+                  return (
+                    <li
+                      key={task.id}
+                      className={`border-l-4 p-4 rounded-md ${cardClass}`}
                     >
-                      {task.title}
-                    </h3>
-                    <p className="text-gray-600">{task.description}</p>
-                  </li>
-                ))}
+                      <h3
+                        className="text-lg font-medium hover:text-blue-500 cursor-pointer"
+                        onClick={() => navigate(`/employee/tasks/${task.id}`)}
+                      >
+                        <strong>Title:</strong>{" "}
+                        {task.title.length > 20 ? `${task.title.slice(0, 20)}...` : task.title}
+                      </h3>
+                      <hr className="my-2 border-gray-300" />
+                      <p>
+                        <strong>Description:</strong> {task.description}
+                      </p>
+                      <hr className="my-2 border-gray-300" />
+                      <div>
+                        <span className="block">
+                          <strong>Status:</strong> {task.status}
+                        </span>
+                        <span className="block">
+                          <strong>Priority:</strong> {task.priority}
+                        </span>
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
               <div className="mt-4 text-center">
                 <button
@@ -258,7 +286,11 @@ const EmployeeDashboard = () => {
                 </button>
               </div>
             </div>
-  
+
+
+
+
+
             {/* Notifications */}
             <div className="bg-white p-4 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold mb-4">Notifications</h2>
@@ -283,7 +315,7 @@ const EmployeeDashboard = () => {
                 <p>No notifications</p>
               )}
             </div>
-  
+
             {/* Attendance Summary */}
             <div className="bg-white p-4 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold mb-4">Attendance Summary</h2>
@@ -301,7 +333,7 @@ const EmployeeDashboard = () => {
             </div>
           </div>
         </main>
-  
+
         {/* Sidebar */}
         <aside className="bg-white p-2 max-w-64">
           {/* Profile Section */}
@@ -316,7 +348,7 @@ const EmployeeDashboard = () => {
               <p className="text-gray-600">{employeeData?.position}</p>
             </div>
           </div>
-  
+
           {/* To-Do List */}
           <div className="bg-gray-200 p-4 rounded-lg">
             <h2 className="text-xl font-semibold">To-Do List</h2>
@@ -342,11 +374,10 @@ const EmployeeDashboard = () => {
                   className="flex justify-between items-center border-b border-gray-300 pb-2"
                 >
                   <span
-                    className={`flex-1 ${
-                      todo.status === "completed"
-                        ? "line-through text-gray-500"
-                        : ""
-                    }`}
+                    className={`flex-1 ${todo.status === "completed"
+                      ? "line-through text-gray-500"
+                      : ""
+                      }`}
                   >
                     {todo.task}
                   </span>
@@ -380,11 +411,11 @@ const EmployeeDashboard = () => {
           </div>
         </aside>
       </div>
-  
+
       <ToastContainer />
     </div>
   );
-  
+
 };
 
 export default EmployeeDashboard;

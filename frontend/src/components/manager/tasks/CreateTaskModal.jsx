@@ -80,16 +80,25 @@ const CreateTaskModal = ({ onClose, onCreate }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onCreate({
+  
+    const submittedData = {
       title,
       description,
-      assigned_to: assignees.map(a => a.employee?.id).filter(id => id !== undefined),
+      assigned_to: assignees.map((a) => a.employee?.id).filter((id) => id !== undefined),
       department,
       status,
       priority,
       due_date: dueDate,
-    });
+    };
+  
+    // Log the data to the console
+    console.log("Assignees:", assignees);
+    console.log("Submitting data:", submittedData);
+  
+    // Call the onCreate function with the prepared data
+    onCreate(submittedData);
   };
+  
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

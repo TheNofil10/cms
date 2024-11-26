@@ -60,6 +60,17 @@ from django.utils.dateparse import parse_date
 
 import cohere
 
+import logging
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser
+from .models import Employee
+from .serializers import AdminEmployeeSerializer
+
+
+logger = logging.getLogger(__name__)
+
+
 co = cohere.Client(settings.COHERE_API_KEY)
 
 

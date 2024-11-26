@@ -56,9 +56,29 @@ const EmployeeTaskList = () => {
             {tasks.map((task) => (
               <tr key={task.id}>
                 <td className="p-2 border-b">{task.title}</td>
-                <td className={`p-2 border-b ${task.status === 'completed' ? 'text-green-500' : ''}`}>
-                  {task.status}
+                <td
+                  className={`p-2 border-b ${task.status === "completed"
+                      ? "text-green-500"
+                      : task.status === "on_hold"
+                        ? "text-red-500"
+                        : task.status === "in_progress"
+                          ? "text-blue-500"
+                          : task.status === "pending"
+                            ? "text-yellow-500"
+                            : ""
+                    }`}
+                >
+                  {task.status === "completed"
+                    ? "Completed"
+                    : task.status === "on_hold"
+                      ? "On Hold"
+                      : task.status === "in_progress"
+                        ? "In Progress"
+                        : task.status === "pending"
+                          ? "Pending"
+                          : task.status}
                 </td>
+
                 <td className="p-2 border-b">{task.priority}</td>
                 <td className="p-2 border-b">{task.due_date}</td>
                 <td className="p-2 border-b flex space-x-2">
