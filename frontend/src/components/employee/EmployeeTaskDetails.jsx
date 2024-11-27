@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { FaRegUser, FaCalendarAlt, FaTasks, FaExclamationTriangle, FaCheckCircle } from 'react-icons/fa';
 import { useAuth } from '../../contexts/AuthContext';
-import { ToastContainer,toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import API, { SERVER_URL } from '../../api/api';
 const EmployeeTaskDetails = () => {
   const { id } = useParams();
@@ -106,15 +106,17 @@ const EmployeeTaskDetails = () => {
   if (!task || !department) return <div>Loading...</div>;
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="flex flex-col bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold">Task Details</h1>
+        <header className="bg-black text-white p-5 shadow-md w-full">
+          <h1 className="text-2xl font-semibold">Employee Dashboard</h1>
+        </header>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="flex-1 bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-200">
           <div className="flex items-center mb-4">
-          <FaTasks className="text-gray-500 mr-2" />
+            <FaTasks className="text-gray-500 mr-2" />
             <h2 className="text-xl font-medium">Title:</h2>
           </div>
           <p className="text-gray-800">{task.title}</p>

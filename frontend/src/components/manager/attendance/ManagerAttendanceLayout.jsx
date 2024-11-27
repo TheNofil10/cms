@@ -11,6 +11,11 @@ const ManagerAttendanceLayout = () => {
   ];
   return (
     <div className="flex-grow  bg-white">
+      <div>
+        <header className="bg-black text-white p-5 shadow-md w-full mb-4">
+          <h1 className="text-2xl font-semibold">Attendence</h1>
+        </header>
+      </div>
       <Navbar navItems={navItems} />
       <div className="py-20">
         <Outlet />

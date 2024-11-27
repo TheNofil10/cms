@@ -293,7 +293,7 @@ const HRDashboard = () => {
             </div>
   
             {/* Notifications */}
-            <div className="bg-white p-4 rounded-lg shadow-md">
+            {/* <div className="bg-white p-4 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold mb-4">Notifications</h2>
               {notifications.length > 0 ? (
                 <ul className="space-y-4">
@@ -315,7 +315,7 @@ const HRDashboard = () => {
               ) : (
                 <p>No notifications</p>
               )}
-            </div>
+            </div> */}
   
             {/* Attendance Summary */}
             <div className="bg-white p-4 rounded-lg shadow-md">

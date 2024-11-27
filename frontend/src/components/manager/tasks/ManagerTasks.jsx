@@ -99,79 +99,88 @@ const ManagerTasks = () => {
   };
 
   return (
-    <div className="p-4">
-      <ToastContainer />
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Tasks</h1>
-        <button
-          onClick={() => setShowTaskModal(true)}
-          className="px-4 py-2 bg-black text-white rounded flex items-center"
-        >
-          <FaPlus className="mr-2" /> New Task
-        </button>
+    <div>
+      <div>
+        <header className="bg-black text-white p-5 shadow-md w-full mb-4">
+          <h1 className="text-2xl font-semibold">Tasks</h1>
+        </header>
       </div>
-      <table className="w-full bg-white shadow-md rounded mb-4">
-        <thead>
-          <tr>
-            <th className="p-2 border-b">Title</th>
-            <th className="p-2 border-b">Status</th>
-            <th className="p-2 border-b">Priority</th>
-            <th className="p-2 border-b">Due Date</th>
-            <th className="p-2 border-b">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tasks.map((task) => (
-            <tr key={task.id}>
-              <td className="p-2 border-b">{task.title}</td>
-              <td className={`p-2 border-b ${task.status === 'completed' ? 'text-green-500' : ''}`}>
-                {task.status}
-              </td>
-              <td className="p-2 border-b">{task.priority}</td>
-              <td className="p-2 border-b">{task.due_date}</td>
-              <td className="p-2 border-b flex space-x-2">
-                <button
-                  onClick={() => handleViewTaskDetails(task.id)}
-                  className="px-2 py-1 bg-blue-500 text-white rounded"
-                >
-                  <FaEye />
-                </button>
-                <button
-                  onClick={() => handleEditTask(task)}
-                  className="px-2 py-1 bg-yellow-500 text-white rounded"
-                >
-                  <FaEdit />
-                </button>
-                <button
-                  onClick={() => handleDeleteTask(task.id)}
-                  className="px-2 py-1 bg-red-500 text-white rounded"
-                >
-                  <FaTrash />
-                </button>
-              </td>
+
+      <div className="p-4">
+
+        <ToastContainer />
+        <div className="flex justify-between items-center mb-4">
+          <button
+            onClick={() => setShowTaskModal(true)}
+            className="px-4 py-2 bg-black text-white rounded flex items-center"
+          >
+            <FaPlus className="mr-2" /> New Task
+          </button>
+        </div>
+        <table className="w-full bg-white shadow-md rounded mb-4">
+          <thead>
+            <tr>
+              <th className="p-2 border-b">Title</th>
+              <th className="p-2 border-b">Status</th>
+              <th className="p-2 border-b">Priority</th>
+              <th className="p-2 border-b">Due Date</th>
+              <th className="p-2 border-b">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <ToastContainer />
+          </thead>
+          <tbody>
+            {tasks.map((task) => (
+              <tr key={task.id}>
+                <td className="p-2 border-b">{task.title}</td>
+                <td className={`p-2 border-b ${task.status === 'completed' ? 'text-green-500' : ''}`}>
+                  {task.status}
+                </td>
+                <td className="p-2 border-b">{task.priority}</td>
+                <td className="p-2 border-b">{task.due_date}</td>
+                <td className="p-2 border-b flex space-x-2">
+                  <button
+                    onClick={() => handleViewTaskDetails(task.id)}
+                    className="px-2 py-1 bg-blue-500 text-white rounded"
+                  >
+                    <FaEye />
+                  </button>
+                  <button
+                    onClick={() => handleEditTask(task)}
+                    className="px-2 py-1 bg-yellow-500 text-white rounded"
+                  >
+                    <FaEdit />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteTask(task.id)}
+                    className="px-2 py-1 bg-red-500 text-white rounded"
+                  >
+                    <FaTrash />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <ToastContainer />
 
-      {/* Conditionally render UpdateTaskModal */}
-      {showUpdateTaskModal && selectedTask && (
-        <UpdateTaskModal
-          task={selectedTask}
-          onClose={handleCloseUpdateModal}
-          onUpdate={handleUpdateTask}
-        />
-      )}
+        {/* Conditionally render UpdateTaskModal */}
+        {showUpdateTaskModal && selectedTask && (
+          <UpdateTaskModal
+            task={selectedTask}
+            onClose={handleCloseUpdateModal}
+            onUpdate={handleUpdateTask}
+          />
+        )}
 
-      {/* Conditionally render CreateTaskModal */}
-      {showTaskModal && (
-        <CreateTaskModal
-          onClose={handleCloseCreateModal}
-          onCreate={handleCreateTask}
-        />
-      )}
+        {/* Conditionally render CreateTaskModal */}
+        {showTaskModal && (
+          <CreateTaskModal
+            onClose={handleCloseCreateModal}
+            onCreate={handleCreateTask}
+          />
+        )}
+      </div>
     </div>
+
   );
 };
 

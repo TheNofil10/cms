@@ -12,7 +12,7 @@ import API from "../api/api";
 import { SERVER_URL } from "../api/api";
 
 const ManagerDepartmentPage = () => {
- 
+
   const [showModal, setShowModal] = useState(false);
   const [department, setDepartment] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -26,7 +26,7 @@ const ManagerDepartmentPage = () => {
     location: "",
   });
   const { currentUser } = useAuth();
-  const  id  = currentUser.department
+  const id = currentUser.department
   const navigate = useNavigate();
   const getRole = () => {
     if (currentUser.is_staff) return "admin";
@@ -122,29 +122,26 @@ const ManagerDepartmentPage = () => {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto mt-5">
       {/* Tabs */}
-      <div className="flex justify-center mb-6">
+      <div className="flex justify-center mb-0">
         <button
-          className={`px-6 py-2 rounded-t-lg ${
-            activeTab === "overview" ? "bg-black text-white" : "bg-gray-100"
-          }`}
+          className={`px-6 py-2 rounded-t-lg ${activeTab === "overview" ? "bg-black text-white" : "bg-gray-100"
+            }`}
           onClick={() => setActiveTab("overview")}
         >
           Overview
         </button>
         <button
-          className={`px-6 py-2 rounded-t-lg ml-2 ${
-            activeTab === "members" ? "bg-black text-white" : "bg-gray-200"
-          }`}
+          className={`px-6 py-2 rounded-t-lg ml-2 ${activeTab === "members" ? "bg-black text-white" : "bg-gray-200"
+            }`}
           onClick={() => setActiveTab("members")}
         >
           Members
         </button>
         <button
-          className={`px-6 py-2 rounded-t-lg ml-2 ${
-            activeTab === "update" ? "bg-black text-white" : "bg-gray-200"
-          }`}
+          className={`px-6 py-2 rounded-t-lg ml-2 ${activeTab === "update" ? "bg-black text-white" : "bg-gray-200"
+            }`}
           onClick={() => setActiveTab("update")}
         >
           Update
@@ -170,7 +167,7 @@ const ManagerDepartmentPage = () => {
             {/* Manager Section */}
             <div>
               <h2 className="text-2xl font-semibold text-balc mb-4">Manager</h2>
-              {department.manager? (
+              {department.manager ? (
                 <ManagerCard
                   profileImage={department.manager.profile_image}
                   name={department.manager.name}
@@ -190,7 +187,7 @@ const ManagerDepartmentPage = () => {
         {activeTab === "members" && (
           <div>
             <h2 className="text-2xl font-semibold text-white mb-4">Members</h2>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1  gap-6">
               {department?.members?.map((member) => (
                 <>
