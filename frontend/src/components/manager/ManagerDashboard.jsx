@@ -217,13 +217,14 @@ const ManagerDashboard = () => {
 
   return (
     <div>
-      <header className="bg-black text-white p-5 shadow-md w-full">
+      <header className="bg-black text-white p-5 shadow-md w-full fixed top-0 z-10">
         <div className="w-full flex justify-between items-center">
           <h1 className="text-2xl font-semibold">Manager Dashboard</h1>
         </div>
       </header>
 
-      <div className="flex bg-gray-100 min-h-screen">
+
+      <div className="flex bg-gray-100 min-h-screen pt-20">
         {/* Main Content */}
         <main className="flex-1 p-6 overflow-auto">
 

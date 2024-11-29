@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FaUser, FaLock, FaSpinner } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import logo from "/logo.png"; // Import your logo
+import logo from "../../public/logo.png"; 
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -43,24 +43,34 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white text-white">
+    <div
+      className="min-h-screen flex flex-col text-white"
+      style={{
+        backgroundImage: `url('../../public/loginbg.jpg')`, // Replace with the actual path to your image
+        backgroundSize: 'cover', // Ensures the image covers the entire area
+        backgroundPosition: 'center', // Centers the image
+        backgroundRepeat: 'no-repeat', // Prevents repeating the image
+      }}
+    >
+
       {/* Top Navbar */}
-      <nav className="w-full bg-black py-3 px-6 flex items-center justify-between">
-        <img src={logo} alt="Logo" className="h-10" />
+      <nav className="w-ful py-3 px-6 flex items-center justify-between">
+        <img src={logo} alt="Logo" className="h-20" />
       </nav>
 
       {/* Login Form */}
       <div className="flex-grow flex justify-center items-center">
         <div className="w-full max-w-md">
-          <h2 className="text-3xl mb-6 text-black text-center">Employee Login</h2>
           <form
             onSubmit={handleLogin}
             className="bg-white text-black p-8 rounded-lg shadow-lg shadow-black mt-4"
           >
+            <h2 className="text-3xl mb-6 text-black text-center">Employee Login</h2>
+
             <div className="mb-4">
               <label className="block text-sm mb-2">Username</label>
               <div className="flex items-center bg-gray-200 rounded">
-              <FaUser className="m-2" style={{ color: "#92363E" }} />
+                <FaUser className="m-2" style={{ color: "#92363E" }} />
 
                 <input
                   type="text"
