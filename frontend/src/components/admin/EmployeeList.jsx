@@ -198,7 +198,6 @@ const EmployeeList = () => {
           },
         }
       );
-      toast.error("Employee deleted successfully");
       setEmployees(employees.filter((emp) => emp.id !== employeeToDelete.id));
       setFilteredData(
         filteredData.filter((emp) => emp.id !== employeeToDelete.id)

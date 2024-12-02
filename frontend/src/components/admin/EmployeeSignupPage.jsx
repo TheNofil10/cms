@@ -85,7 +85,16 @@ const EmployeeSignupPage = () => {
                 (employee) =>
                   !employee.is_hr_manager &&
                   !employee.is_superuser && (
-                    <SmallEmployeeCard key={employee.id} employee={employee} />
+                    <div key={employee.id} className="flex items-center mb-2">
+                      <div className="flex-1">
+                        <SmallEmployeeCard employee={employee} />
+                      </div>
+                      {/* Display Employee Name and ID */}
+                      <div className="ml-4">
+                        <p className="font-semibold">{employee.name}</p>
+                        <p className="text-gray-500">ID: {employee.id}</p>
+                      </div>
+                    </div>
                   )
               )}
             </div>
@@ -99,8 +108,10 @@ const EmployeeSignupPage = () => {
                 {departments.map((department) => (
                   <li key={department.id} className="flex items-center mb-2">
                     <FaBuilding className="mr-2" />
-                    {department.name || "No Department Name"} {" "}
-                    ID: {department.id}
+                    <div className="flex-1">{department.name || "No Department Name"}</div>
+                    <span className="text-gray-500 ml-2">
+                      ID: {department.id}
+                    </span>
                   </li>
                 ))}
               </ul>

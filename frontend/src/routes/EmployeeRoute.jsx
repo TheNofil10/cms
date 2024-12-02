@@ -9,6 +9,7 @@ const EmployeeRoute = ({ element, employeeOnly }) => {
   if (!currentUser) {
     return <Navigate to="/login" />;
   }
+  console.log("emojfdhf",employeeOnly);
 
   if (employeeOnly && currentUser.is_staff) {
     toast.error("cAN'T ACCESS THIS PAGE")

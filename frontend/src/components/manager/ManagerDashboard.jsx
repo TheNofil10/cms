@@ -242,7 +242,7 @@ const ManagerDashboard = () => {
                   <li key={task.id} className="border-b border-gray-300 pb-2">
                     <h3
                       className="text-lg font-medium hover:text-blue-500 cursor-pointer"
-                      onClick={() => navigate(`/employee/tasks/${task.id}`)}
+                      onClick={() => navigate(`/manager/tasks/${task.id}`)}
                     >
                       {task.title}
                     </h3>
@@ -252,7 +252,7 @@ const ManagerDashboard = () => {
               </ul>
               <div className="mt-4 text-center">
                 <button
-                  onClick={() => navigate("/employee/tasks")}
+                  onClick={() => navigate("/manager/tasks")}
                   className="bg-green-500 text-white px-4 py-2 rounded-md"
                 >
                   View All Tasks
@@ -290,10 +290,10 @@ const ManagerDashboard = () => {
               <h2 className="text-xl font-semibold mb-4">Attendance Summary</h2>
               <Pie data={pieChartData} />
               <div className="mt-4 text-center">
-                <Link to="/employee/attendance">
+                <Link to="/manager/attendance">
                   <button
                     className="bg-green-500 text-white px-4 py-2 rounded-md"
-                    onClick={() => navigate("/employee/tasks")}
+                    onClick={() => navigate("/manager/attendance")}
                   >
                     View Attendance
                   </button>
