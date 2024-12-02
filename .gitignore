@@ -163,3 +163,5 @@ node_modules/
 # Testing
 coverage/
 .nyc_output/
+
+company_management_system\company_management_system\settings.py
