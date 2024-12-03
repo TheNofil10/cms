@@ -95,26 +95,35 @@ class Department(models.Model):
     office_phone = models.CharField(max_length=20, blank=True)
 
     def save(self, *args, **kwargs):
-        if self.pk: 
+        # Check if the department already exists (update case)
+        if self.pk:
             old_manager = Department.objects.get(pk=self.pk).manager
             if old_manager and old_manager != self.manager:
-                old_manager.is_manager = False 
+                # If the manager changed, set the old manager's is_manager to False
+                old_manager.is_manager = False
                 old_manager.save()
 
+        # Save the department object itself
         super().save(*args, **kwargs)
 
+        # Handle the new manager if one is assigned
         if self.manager:
             self.manager.is_manager = True
             self.manager.save()
 
-        self.employees.exclude(pk=self.manager.pk).update(is_manager=False)
+            # Ensure other employees are not set as manager
+            self.employees.exclude(pk=self.manager.pk).update(is_manager=False)
+
+        # Update employee managers for the department
         self.update_employee_managers()
 
     def update_employee_managers(self):
+        # Update the employees' manager field to the new department's manager
         Employee.objects.filter(department=self).update(manager=self.manager)
 
     def __str__(self):
         return self.name
+
 
 class Task(models.Model):
     STATUS_CHOICES = [
