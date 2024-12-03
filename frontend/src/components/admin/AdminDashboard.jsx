@@ -416,7 +416,7 @@ const AdminDashboard = () => {
           </div>
         </aside>
 
-        <ToastContainer />
+        
       </div>
     </div>
   );

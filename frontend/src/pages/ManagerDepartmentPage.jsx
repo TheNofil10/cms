@@ -299,7 +299,7 @@ const ManagerDepartmentPage = () => {
           onClose={() => setShowModal(false)}
           departmentId={id}
         />
-        <ToastContainer />
+        
       </div>
     </div>
   );

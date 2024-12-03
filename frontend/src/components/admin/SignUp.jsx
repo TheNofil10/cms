@@ -143,7 +143,7 @@ const Signup = () => {
           is_manager: false,
         });
         setStep(1);
-        toast.success("Successfully Signed Up")
+        navigate("/admin/employees");
       })
       .catch((error) => {
         toast.error("An error occurred. Please try again.");
@@ -574,7 +574,6 @@ const Signup = () => {
             </>
           )}
 
-          <ToastContainer />
         </form>
       </div>
     </div>

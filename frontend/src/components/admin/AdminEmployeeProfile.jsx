@@ -234,7 +234,7 @@ const AdminEmployeeProfile = () => {
         onCancel={() => setShowConfirmModal(false)}
         message={`Are you sure you want to delete ${employeeToDelete?.name}? This action cannot be undone.`}
       />
-      <ToastContainer />
+      
     </div>
   );
 };

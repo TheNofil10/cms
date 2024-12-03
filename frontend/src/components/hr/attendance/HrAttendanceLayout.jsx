@@ -23,7 +23,7 @@ const HrAttendanceLayout = () => {
         <div className="py-20">
           <Outlet />
         </div>
-        <ToastContainer />
+        
       </div>
     </div>
   );

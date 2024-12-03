@@ -138,7 +138,7 @@ const UpdateAttendanceModal = ({ isOpen, onClose, record }) => {
           </div>
         </div>
       </div>
-      <ToastContainer />
+      
     </>
   );
 };

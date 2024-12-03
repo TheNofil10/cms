@@ -40,7 +40,7 @@ const EmployeeTaskList = () => {
 
       {/* Body Section with Padding */}
       <div className="p-6"> {/* Added padding only to the body */}
-        <ToastContainer />
+        
         <h2 className="text-xl font-bold mb-4">Your Tasks</h2>
         <table className="w-full bg-white shadow-md rounded mb-4">
           <thead>

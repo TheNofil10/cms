@@ -291,7 +291,7 @@ const DepartmentsPage = () => {
       </div>
     </header>
       <div className="p-6">
-        <ToastContainer />
+        
         <div className="flex justify-between mb-4">
           <h1 className="text-2xl font-semibold">Departments List</h1>
         </div>

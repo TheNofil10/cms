@@ -213,7 +213,7 @@ const ManagerLeaveApplications = () => {
           </tbody>
         </table>
       </div>
-      <ToastContainer />
+      
       {isModalOpen && selectedApplication && (
         <LeaveApplicationDetails
           selectedApplication={selectedApplication}

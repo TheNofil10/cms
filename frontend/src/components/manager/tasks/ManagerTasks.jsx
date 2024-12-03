@@ -108,7 +108,7 @@ const ManagerTasks = () => {
 
       <div className="p-4">
 
-        <ToastContainer />
+        
         <div className="flex justify-between items-center mb-4">
           <button
             onClick={() => setShowTaskModal(true)}
@@ -160,7 +160,7 @@ const ManagerTasks = () => {
             ))}
           </tbody>
         </table>
-        <ToastContainer />
+        
 
         {/* Conditionally render UpdateTaskModal */}
         {showUpdateTaskModal && selectedTask && (

@@ -103,7 +103,7 @@ const UpdateTaskModal = ({ task, onClose, onUpdate }) => {
           </div>
         </form>
       </div>
-      <ToastContainer />
+      
     </div>
   );
 };

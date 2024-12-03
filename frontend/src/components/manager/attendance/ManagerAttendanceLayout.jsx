@@ -20,7 +20,7 @@ const ManagerAttendanceLayout = () => {
       <div className="py-20">
         <Outlet />
       </div>
-      <ToastContainer />
+      
     </div>
   );
 };

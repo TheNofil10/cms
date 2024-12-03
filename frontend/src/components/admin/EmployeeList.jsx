@@ -270,7 +270,7 @@ const EmployeeList = () => {
 
   return (
     <div className="container mx-auto p-4 bg-white text-black">
-      <ToastContainer />
+      
       <div className="flex justify-between mb-4">
         <div className="flex items-center space-x-2">
           <div className="relative">
@@ -488,7 +488,7 @@ const EmployeeList = () => {
           onClose={() => setSelectedEmployee(null)}
         />
       )}
-      <ToastContainer />
+      
       <ConfirmationModal
         isOpen={showConfirmModal}
         onClose={() => setShowConfirmModal(false)}

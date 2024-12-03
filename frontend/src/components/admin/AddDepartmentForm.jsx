@@ -45,8 +45,9 @@ const AddDepartmentForm = () => {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
       });
-      navigate("/admin/departments");
       toast.success("Department added successfully!");
+      navigate("/admin/departments");
+   
     } catch (error) {
       setError("Failed to add department. Please try again.");
       console.error("Error creating department", error);
@@ -270,7 +271,7 @@ const AddDepartmentForm = () => {
       </div>
       {loading && <p className="mt-4 text-gray-500">Submitting...</p>}
       {error && <p className="mt-4 text-red-500">{error}</p>}
-      <ToastContainer />
+      
     </div>
   );
 };

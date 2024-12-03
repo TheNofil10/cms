@@ -17,7 +17,7 @@ const EmployeeLayout = () => {
       <main className={`flex-grow transition-all duration-300 ml-${sidebarExpanded ? "64" : "16"} bg-white`}>
         <Outlet />
       </main>
-      <ToastContainer />
+      
     </div>
   );
 };

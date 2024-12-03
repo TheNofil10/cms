@@ -26,7 +26,7 @@ const EmployeeAttendanceLayout = () => {
       </div>
 
       {/* Toast Container for notifications */}
-      <ToastContainer />
+      
     </div>
   );
 };

@@ -120,7 +120,7 @@ const ManageMembersPage = () => {
 
   return (
     <div className="container mx-auto">
-      <ToastContainer />
+      
       <h1 className="text-4xl font-bold mb-6">Manage Department Members</h1>
       <button
         onClick={() => setModalOpen(true)}

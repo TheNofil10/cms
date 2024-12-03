@@ -525,7 +525,7 @@ const AttendanceTable = () => {
           </div>
         </div>
         
-        <ToastContainer />
+        
         <UpdateAttendanceModal
           isOpen={isModalOpen}
           onClose={() =>

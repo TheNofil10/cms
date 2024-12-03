@@ -204,7 +204,7 @@ const EmployeeProfile = () => {
           </p>
         </div>
       </div>
-      <ToastContainer />
+      
       {isEditing && (
         <UpdateProfileForm
           employee={employee}

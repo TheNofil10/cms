@@ -220,7 +220,7 @@ const EmployeeAttendanceDashboard = () => {
         </div>
       </div>
 
-      <ToastContainer />
+      
     </div>
   );
 };

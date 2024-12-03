@@ -247,7 +247,7 @@ const CreateTaskModal = ({ onClose, onCreate }) => {
           </div>
         </form>
       </div>
-      <ToastContainer />
+      
     </div>
   );
 };

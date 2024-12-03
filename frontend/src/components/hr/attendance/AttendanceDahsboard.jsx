@@ -283,7 +283,7 @@ const AttendanceDashboard = () => {
           </div>
         </div>
 
-        <ToastContainer />
+        
       </div>
 
     </div>

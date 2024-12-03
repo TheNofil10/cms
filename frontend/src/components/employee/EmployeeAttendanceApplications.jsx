@@ -159,7 +159,7 @@ const EmployeeAttendanceApplications = () => {
           handleStatusModalClose={handleStatusModalClose}
         />
       )}
-      <ToastContainer />
+      
     </div>
   );
 };

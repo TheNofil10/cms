@@ -380,7 +380,7 @@ const ManagerDashboard = () => {
           </div>
         </aside>
 
-        <ToastContainer />
+        
       </div>
 
     </div>

@@ -184,7 +184,7 @@ const LeaveApplications = () => {
           handleStatusModalClose={handleStatusModalClose}
         />
       )}
-      <ToastContainer />
+      
     </div>
   );
 };

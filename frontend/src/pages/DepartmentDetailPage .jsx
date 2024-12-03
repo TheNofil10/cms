@@ -327,7 +327,7 @@ const DepartmentDetailPage = () => {
             onClose={() => setShowModal(false)}
             departmentId={id}
           />
-          <ToastContainer />
+          
         </div>
       </div>
 
