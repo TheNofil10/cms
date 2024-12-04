@@ -1,0 +1,30 @@
+
+DROP TABLE IF EXISTS `employee_management_temp_appattendance`;
+CREATE TABLE `employee_management_temp_appattendance` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,        -- Primary key
+  `employee_id` INT NOT NULL,                -- Employee ID (Foreign key potential)
+  `time` TIME NOT NULL,                      -- Time of attendance log
+  `date` DATE NOT NULL,                      -- Date of attendance log
+  `log_type` ENUM('IN', 'OUT') NOT NULL,     -- Type of log (IN/OUT)
+  `x_coordinate` VARCHAR(50) NOT NULL,       -- X coordinate as string
+  `y_coordinate` VARCHAR(50) NOT NULL,       -- Y coordinate as string
+  `location_address` VARCHAR(255),           -- Location address (optional)
+  PRIMARY KEY (`id`),
+    FOREIGN KEY (`employee_id`) 
+    REFERENCES `employee_management_employee` (`id`) 
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
+
+Select * from employee_management_temp_appattendance;
+Select * from employee_management_attendance;
+truncate employee_management_temp_appattendance
+RENAME TABLE `employee_management_temp_app_attendance` TO `employee_management_employeeappattendance`;
+
+
+
+ALTER TABLE `employee_management_temp_appattendance`
+ADD COLUMN   `status` varchar(30)  NOT NULL
