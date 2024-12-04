@@ -4,8 +4,8 @@ from .views import (
     ApplicantViewSet, ApplicationListView, AttendanceCheckView, AttendanceViewSet, CompanyAttendanceStatsView, ComplianceReportViewSet,
     DepartmentEmployeeView, DepartmentMemberListView, DepartmentViewSet, EmployeeAttendanceStatsView, EmployeeAttendanceView,
     EmployeeDepartmentView, EmployeeSuggestionView, EmployeeViewSet, AdminEmployeeView, EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet,
-    LeaveManagementView, LeaveViewSet, PayrollViewSet, PerformanceReviewViewSet, TaskCommentViewSet, TaskViewSet, TodoViewSet, apply_leave, approve_leave_hr, approve_leave_manager, generate_job_details, generate_post, live_attendance
-)
+    LeaveManagementView, LeaveViewSet, PayrollViewSet, PerformanceReviewViewSet, TaskCommentViewSet, TaskViewSet, TodoViewSet, apply_leave, approve_leave_hr, approve_leave_manager, generate_job_details, generate_post, live_attendance,approve_app_attendance_manager,AppAttendanceViewSet
+    )
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -23,6 +23,7 @@ router.register(r'applicants', ApplicantViewSet)
 router.register(r'tasks', TaskViewSet)
 router.register(r'task-comments', TaskCommentViewSet, basename='task-comments')
 router.register(r'todos', TodoViewSet, basename='todo')
+router.register(r'app-attendance', AppAttendanceViewSet, basename='app-attendance')
 
 
 task_comment_list = TaskCommentViewSet.as_view({'get': 'list'})
@@ -56,6 +57,7 @@ urlpatterns = [
     path('attendance/check/', AttendanceCheckView.as_view(), name='attendance-check'),
     path('apply-leave/', apply_leave, name='apply-leave'),
     path('approve-leave-manager/<int:leave_id>/', approve_leave_manager, name='approve_leave_manager'),
+    path('approve_app_attendance_manager/<int:application_id>/', approve_app_attendance_manager, name='approve_app_attendance_manager'),
     path('approve-leave-hr/<int:leave_id>/', approve_leave_hr, name='approve_leave_hr'),
     path('employee-suggestions/', EmployeeSuggestionView.as_view({'get': 'list'}), name='employee-suggestions'),
     path('tasks/<int:task_id>/comments/', task_comment_list, name='task-comments-list'),

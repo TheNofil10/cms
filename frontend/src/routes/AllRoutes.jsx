@@ -56,6 +56,7 @@ import EmployeeTaskDetails from "../components/employee/EmployeeTaskDetails.jsx"
 import EmployeeSignupPage from '../components/admin/EmployeeSignupPage.jsx'
 import ManagerDashboard from "../components/manager/ManagerDashboard.jsx";
 import LiveAttendance from "../components/hr/attendance/LiveAttendance.jsx";
+import MabagerAppAttendance from "../components/manager/attendance/ManagerAppAttendance.jsx";
 const AllRoutes = () => {
   return (
     <Routes>
@@ -120,6 +121,8 @@ const AllRoutes = () => {
           <Route path="/manager/attendance" element={<AttendanceDahsboard />} />
           <Route path="/manager/attendance/table" element={<AttendanceTable />} />
           <Route path="/manager/attendance/leaves" element={<ManagerLeaveApplications />} />
+          <Route path="/manager/app_attendance" element={<MabagerAppAttendance />} />
+          
         </Route>
       </Route>
 

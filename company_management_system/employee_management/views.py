@@ -18,6 +18,7 @@ from .permissions import IsAdminHRManagerHODOrManager, IsAdminOrHRManager, IsMan
 from rest_framework.viewsets import ModelViewSet
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from django.shortcuts import get_object_or_404
 from .serializers import (
     ApplicantSerializer,
     AttendanceStatsSerializer,
@@ -36,6 +37,7 @@ from .serializers import (
     TaskCommentSerializer,
     TaskSerializer,
     TodoSerializer,
+    AppattendanceSerializer,
 )
 from .models import (
     Applicant,
@@ -52,6 +54,7 @@ from .models import (
     Task,
     TaskComment,
     Todo,
+    EmployeeAppAttendance,
 )
 from django.core.files.storage import default_storage
 from datetime import timedelta
@@ -507,6 +510,24 @@ class LeaveViewSet(viewsets.ModelViewSet):
         if self.action in ["create", "update", "partial_update", "destroy"]:
             return [IsAdminUser()]
         return [IsAuthenticated()]
+    
+    
+class AppAttendanceViewSet(viewsets.ModelViewSet):
+    queryset = EmployeeAppAttendance.objects.all()
+    serializer_class = AppattendanceSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_superuser or user.is_hr_manager:
+            return EmployeeAppAttendance.objects.all()
+        elif user.is_manager:
+            return EmployeeAppAttendance.objects.filter(employee__department=user.department)
+        return EmployeeAppAttendance.objects.filter(employee=user)
+
+    def get_permissions(self):
+        if self.action in ["create", "update", "partial_update", "destroy"]:
+            return [IsAdminUser()]
+        return [IsAuthenticated()]
 
 
 @api_view(["POST"])
@@ -525,6 +546,37 @@ def apply_leave(request):
         {"detail": "Leave request submitted successfully."},
         status=status.HTTP_201_CREATED,
     )
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def approve_app_attendance_manager(request, application_id):
+        if request.method == "POST":
+            try:
+                # Get the record from AppAttendance
+                app_attendance = get_object_or_404(EmployeeAppAttendance, id=application_id)
+
+                # Create a new Attendance record with the same details
+                Attendance.objects.create(
+                    employee_id=app_attendance.employee_id,
+                    time=app_attendance.time,
+                    date=app_attendance.date,
+                    log_type=app_attendance.log_type,
+                    x_coordinate=app_attendance.x_coordinate,
+                    y_coordinate=app_attendance.y_coordinate,
+                    location_address=app_attendance.location_address,
+                    status="approved_by_manager",
+                )
+
+                # Update status in AppAttendance
+                app_attendance.status = "approved_by_manager"
+                app_attendance.save()
+
+                return JsonResponse({"success": True, "message": "Attendance approved and migrated."}, status=200)
+            except Exception as e:
+                return JsonResponse({"success": False, "error": str(e)}, status=400)
+        return JsonResponse({"success": False, "error": "Invalid request method."}, status=405)
+
 
 
 @api_view(["POST"])

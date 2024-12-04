@@ -15,6 +15,7 @@ from .models import (
     TaskComment,
     Task,
     Todo,
+    EmployeeAppAttendance,
 )
 
 
@@ -144,6 +145,10 @@ class LeaveSerializer(serializers.ModelSerializer):
         model = Leave
         fields = "__all__"
 
+class AppattendanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmployeeAppAttendance
+        fields = "__all__"
 
 class TaskCommentSerializer(serializers.ModelSerializer):
     commenter = serializers.SerializerMethodField()

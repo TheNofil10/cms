@@ -8,19 +8,19 @@ const ManagerAttendanceLayout = () => {
     { name: "Dashboard", path: "/manager/attendance" },
     { name: "Table", path: "/manager/attendance/table" },
     { name: "Leave Applications", path: "/manager/attendance/leaves" },
+    { name: "App Attendance", path: "/manager/app_attendance" },
   ];
   return (
-    <div className="flex-grow  bg-white">
+    <div className="flex-grow bg-white">
       <div>
-        <header className="bg-black text-white p-5 shadow-md w-full mb-4">
-          <h1 className="text-2xl font-semibold">Attendence</h1>
+        <header className="bg-black text-white p-5 shadow-md w-full mb-4 flex justify-between items-center">
+          <h1 className="text-2xl font-semibold mr-6">Attendance</h1>
         </header>
       </div>
-      <Navbar navItems={navItems} />
+      <Navbar  navItems={navItems} />
       <div className="py-20">
         <Outlet />
       </div>
-      
     </div>
   );
 };

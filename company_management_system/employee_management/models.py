@@ -298,6 +298,33 @@ class Leave(models.Model):
     def total_days(self):
         return (self.end_date - self.start_date).days + 1
    
+   
+
+class EmployeeAppAttendance(models.Model):
+    # Fields corresponding to the table columns
+    employee = models.ForeignKey('Employee', on_delete=models.CASCADE)
+
+    time = models.TimeField()  # Time of attendance log
+    date = models.DateField()  # Date of attendance log
+    log_type = models.CharField(
+        max_length=3, choices=[('IN', 'IN'), ('OUT', 'OUT')]
+    )  # Type of log (IN/OUT)
+    status = models.CharField(max_length=30)
+
+    x_coordinate = models.CharField(max_length=50)  # X coordinate as string
+    y_coordinate = models.CharField(max_length=50)  # Y coordinate as string
+    location_address = models.CharField(
+        max_length=255, blank=True, null=True
+    )  # Location address (optional)
+        # Metadata
+    class Meta:
+        db_table = 'employee_management_temp_appattendance'  # Custom table name
+        verbose_name = 'Employee Attendance'
+        verbose_name_plural = 'Employee Attendances'
+
+
+
+   
 class Payroll(models.Model):
     employee = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE, related_name="payrolls"

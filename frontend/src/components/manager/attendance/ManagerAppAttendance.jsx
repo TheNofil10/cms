@@ -13,12 +13,13 @@ const ManagerLeaveApplications = () => {
     const fetchApplications = async () => {
       try {
         const token = localStorage.getItem("access_token");
-        const response = await axios.get(`${API}/leaves/`, {
+        const response = await axios.get(`${API}/app-attendance/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log("response leave = >   ",response.data);
+        
+
         const applicationsWithEmployeeDetails = await Promise.all(
           response.data.map(async (application) => {
             try {
@@ -42,6 +43,7 @@ const ManagerLeaveApplications = () => {
             }
           })
         );
+        console.log("Applications with employee details:", applicationsWithEmployeeDetails); // Log enriched applications
 
         setApplications(applicationsWithEmployeeDetails);
       } catch (error) {
@@ -70,7 +72,7 @@ const ManagerLeaveApplications = () => {
     try {
       const token = localStorage.getItem("access_token");
       await axios.post(
-        `${API}/approve-leave-manager/${id}/`,
+        `${API}/approve_app_attendance_manager/${id}/`,
         { action: "approve" },
         {
           headers: {
@@ -126,7 +128,7 @@ const ManagerLeaveApplications = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold">Leave Applications</h1>
+      <h1 className="text-2xl font-semibold">App Attendance Applications</h1>
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -138,13 +140,16 @@ const ManagerLeaveApplications = () => {
                 Employee Name
               </th>
               <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Leave Type
+                Location
               </th>
               <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Start Date
+                Date
               </th>
               <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                End Date
+                Time
+              </th>
+              <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Log_type
               </th>
               <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Status
@@ -169,19 +174,22 @@ const ManagerLeaveApplications = () => {
                     {application.employee_username}
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">
-                    {application.leave_type}
+                    {application.location_address}
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">
-                    {application.start_date}
+                    {application.date}
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">
-                    {application.end_date}
+                    {application.time}
+                  </td>
+                  <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">
+                    {application.log_type}
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">
                     {application.status}
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">
-                    {application.status == "pending" && (
+                    {application.status == "Pending" && (
                       <>
                         <button
                           onClick={() => handleApprove(application.id)}
@@ -206,7 +214,7 @@ const ManagerLeaveApplications = () => {
                   colSpan="7"
                   className="px-4 py-2 text-center text-sm text-gray-600"
                 >
-                  No leave applications available.
+                  No Attendance applications available.
                 </td>
               </tr>
             )}
