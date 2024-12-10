@@ -464,35 +464,40 @@ class AttendanceViewSet(viewsets.ModelViewSet):
         year_start = today.replace(month=1, day=1)
         year_end = yesterday
 
+        # Start with the base queryset
+        queryset = Attendance.objects.all()
+
+        # Apply date filter if provided
         if date_filter:
             if date_filter == "today":
-                return Attendance.objects.filter(date=today)
+                queryset = queryset.filter(date=today)
             elif date_filter == "yesterday":
-                return Attendance.objects.filter(date=yesterday)
+                queryset = queryset.filter(date=yesterday)
             elif date_filter == "this_week":
-                return Attendance.objects.filter(date__range=[week_start, week_end])
+                queryset = queryset.filter(date__range=[week_start, week_end])
             elif date_filter == "this_month":
-                return Attendance.objects.filter(date__range=[month_start, month_end])
+                queryset = queryset.filter(date__range=[month_start, month_end])
             elif date_filter == "this_year":
-                return Attendance.objects.filter(date__range=[year_start, year_end])
+                queryset = queryset.filter(date__range=[year_start, year_end])
             elif date_filter == "custom" and start_date and end_date:
                 start_date = parse_date(start_date)
                 end_date = parse_date(end_date)
                 if start_date and end_date:
-                    return Attendance.objects.filter(date__range=[start_date, end_date])
+                    queryset = queryset.filter(date__range=[start_date, end_date])
                 else:
-                    return Attendance.objects.none()
-        else:
-            # Default filter when no date_filter is specified
-            return Attendance.objects.filter(date__range=[week_start, week_end])
+                    queryset = Attendance.objects.none()
 
-        # User-based filtering logic
+        # Apply user-based filtering
         if user.is_superuser or user.is_hr_manager:
-            return Attendance.objects.all()  # Return all records if superuser or HR manager
+            # Superusers or HR managers can view all records
+            return queryset
         elif user.is_manager:
-            return Attendance.objects.filter(employee__department=user.department)
+            # Managers can only see attendance records for their department
+            return queryset.filter(employee__department=user.department)
         else:
-            return Attendance.objects.filter(employee=user)
+            # Regular users can only see their own attendance records
+            return queryset.filter(employee=user)
+
 
 class LeaveViewSet(viewsets.ModelViewSet):
     queryset = Leave.objects.all()
@@ -548,35 +553,76 @@ def apply_leave(request):
     )
 
 
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def approve_app_attendance_manager(request, application_id):
-        if request.method == "POST":
-            try:
-                # Get the record from AppAttendance
-                app_attendance = get_object_or_404(EmployeeAppAttendance, id=application_id)
+    # Get the attendance record by ID
+    app_attendance = get_object_or_404(EmployeeAppAttendance, id=application_id)
 
-                # Create a new Attendance record with the same details
-                Attendance.objects.create(
-                    employee_id=app_attendance.employee_id,
-                    time=app_attendance.time,
-                    date=app_attendance.date,
-                    log_type=app_attendance.log_type,
-                    x_coordinate=app_attendance.x_coordinate,
-                    y_coordinate=app_attendance.y_coordinate,
-                    location_address=app_attendance.location_address,
-                    status="approved_by_manager",
-                )
+    # Extract date and time from the log
+    log_date = app_attendance.date
+    log_time = datetime.combine(log_date, app_attendance.time)  # Combine date and time for calculations
 
-                # Update status in AppAttendance
-                app_attendance.status = "approved_by_manager"
-                app_attendance.save()
+    # Ensure log_time includes microseconds (this will include milliseconds as well)
+    log_time_with_microseconds = log_time.replace(microsecond=log_time.microsecond)  # Ensure microseconds included
 
-                return JsonResponse({"success": True, "message": "Attendance approved and migrated."}, status=200)
-            except Exception as e:
-                return JsonResponse({"success": False, "error": str(e)}, status=400)
-        return JsonResponse({"success": False, "error": "Invalid request method."}, status=405)
+    # Print log time to confirm microseconds are included (will show in microsecond format)
+    print(f"Log time with microseconds: {log_time_with_microseconds}")
 
+    # Check if an attendance record exists for the employee on the given date
+    attendance_record = Attendance.objects.filter(
+        employee=app_attendance.employee,
+        date=log_date
+    ).first()  # Get the first record if exists
+
+    if not attendance_record:  # No attendance record for the day
+        if app_attendance.log_type == "IN":
+            # Create a new attendance record for time-in
+            Attendance.objects.create(
+                employee=app_attendance.employee,
+                date=log_date,
+                time_in=log_time_with_microseconds,  # Store datetime with microseconds
+                status="Present",
+                comments="Logged in from app",
+                hours_worked=None,  # Will calculate when out is logged
+                is_overtime=False,
+            )
+            print(f"Time-in logged for {app_attendance.employee} at {log_time_with_microseconds}.")
+    else:
+        print("Processing time-out...")
+        time_in = attendance_record.time_in
+        if app_attendance.log_type == "OUT":
+            if time_in:  # Ensure time-in exists
+                # Combine time-in with date for proper calculations
+                time_in_datetime = datetime.combine(log_date, time_in)
+                time_diff = log_time_with_microseconds - time_in_datetime  # Calculate time difference
+
+                worked = time_diff.total_seconds() / 3600  # Worked hours in decimal
+                overtime = max(0, worked - 8)  # Calculate overtime hours
+
+                # Update attendance record
+                attendance_record.time_out = log_time_with_microseconds  # Store datetime for time_out with microseconds
+                attendance_record.hours_worked = round(worked, 2)  # Rounded to 2 decimal places
+                attendance_record.is_overtime = overtime > 0  # Boolean field
+                attendance_record.comments += " | Logged out from app"
+                attendance_record.save()
+
+                print(f"Time-out logged for {app_attendance.employee} at {log_time_with_microseconds}.")
+            else:
+                print(f"Time-in is missing for {app_attendance.employee} on {log_date}.")
+        else:
+            print(f"Log type '{app_attendance.log_type}' is not handled.")
+
+    # Optionally update the app attendance status
+    app_attendance.status = "approved_by_manager"
+    app_attendance.save()
+
+    # Respond back to the frontend
+    return Response(
+        {"message": "Attendance application approved successfully."},
+        status=status.HTTP_200_OK
+    )
 
 
 @api_view(["POST"])
