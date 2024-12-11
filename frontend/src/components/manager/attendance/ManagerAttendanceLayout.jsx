@@ -18,7 +18,7 @@ const ManagerAttendanceLayout = () => {
         </header>
       </div>
       <Navbar  navItems={navItems} />
-      <div className="py-20">
+      <div className="py-10 px-10">
         <Outlet />
       </div>
     </div>
