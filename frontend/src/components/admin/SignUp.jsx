@@ -18,6 +18,9 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { Line } from "rc-progress";
 import axios from "axios";
+import API from "../../api/api";
+
+const SERVER_URL = API;
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -43,6 +46,7 @@ const Signup = () => {
     is_active: false,
     is_hr_manager: false,
     is_manager: false,
+    documents: [],
   });
 
   const [step, setStep] = useState(1);
@@ -59,13 +63,23 @@ const Signup = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    setFormData({
-      ...formData,
-      profile_image: file,
-      imagePreview: URL.createObjectURL(file),
-    });
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        profileImage: file,
+        imagePreview: URL.createObjectURL(file),
+      }));
+    }
   };
 
+  const handleDocumentsChange = (e) => {
+    const files = Array.from(e.target.files);
+    setFormData((prev) => ({
+      ...prev,
+      documents: files,
+    }));
+  };
+  
   const handleNextStep = () => {
     if (validateStep(step)) {
       setStep(step + 1);
@@ -109,7 +123,7 @@ const Signup = () => {
     });
     console.log(formData)
     axios
-      .post("http://localhost:8000/api/employees/", formDataObj, {
+      .post(`${SERVER_URL}/employees/`, formDataObj, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           "Content-Type": "multipart/form-data",
@@ -146,6 +160,7 @@ const Signup = () => {
         navigate("/admin/employees");
       })
       .catch((error) => {
+        console.log(error);
         toast.error("An error occurred. Please try again.");
       })
       .finally(() => {
@@ -486,6 +501,33 @@ const Signup = () => {
                   />
                 )}
               </div>
+
+              {/* Document Upload */}
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Upload Documents</label>
+                <input
+                  type="file"
+                  name="documents"
+                  accept=".pdf,.doc,.docx,.jpg,.png"
+                  multiple
+                  onChange={handleDocumentsChange}
+                  className="w-full"
+                />
+                {formData.documents.length > 0 && (
+                  <div className="mt-2">
+                    <h4 className="text-sm font-medium mb-2">Selected Documents:</h4>
+                    <ul className="list-disc pl-5">
+                      {formData.documents.map((doc, index) => (
+                        <li key={index} className="text-sm">
+                          {doc.name}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              {/* Navigation Buttons */}
               <div className="flex justify-between">
                 <button
                   type="button"
@@ -526,7 +568,7 @@ const Signup = () => {
                 <label className="block text-sm mb-2">Manager</label>
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaUserShield className="m-2" />
-                  <select 
+                  <select
                     name="is_manager"
                     value={formData.is_manager}
                     onChange={handleInputChange}
