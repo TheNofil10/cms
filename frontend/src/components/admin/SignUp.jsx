@@ -73,10 +73,10 @@ const Signup = () => {
   };
 
   const handleDocumentsChange = (e) => {
-    const files = e.target.files[0]; 
+    const files = Array.from(e.target.files); // Convert FileList to Array
     setFormData((prev) => ({
       ...prev,
-      documents: files,
+      documents: files, // Store multiple files in documents array
     }));
   };
   
@@ -111,62 +111,71 @@ const Signup = () => {
     }
   };
 
-  const handleSignup = (e) => {
-    e.preventDefault();
-    setLoading(true);
+ 
+const handleSignup = (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-    const formDataObj = new FormData();
-    Object.keys(formData).forEach((key) => {
-      if (formData[key] !== null) {
+  const formDataObj = new FormData();
+  Object.keys(formData).forEach((key) => {
+    if (formData[key] !== null) {
+      // Append the other form data
+      if (key === "documents" && formData[key].length > 0) {
+        // Append multiple documents if they exist
+        formData[key].forEach((file) => {
+          formDataObj.append("documents", file);
+        });
+      } else {
         formDataObj.append(key, formData[key]);
       }
-    });
-    console.log(formData)
-    axios
-      .post(`${SERVER_URL}/employees/`, formDataObj, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
+    }
+  });
 
-        toast.success("Signed Up Successfully");
-        setFormData({
-          first_name: "",
-          middle_name: "",
-          last_name: "",
-          username: "",
-          email: "",
-          password: "",
-          phone: "",
-          alternate_phone: "",
-          address: "",
-          date_of_birth: "",
-          employment_date: "",
-          department: "",
-          position: "",
-          salary: "",
-          manager: "",
-          emergency_contact: "",
-          profile_image: null,
-          imagePreview: null,
-          is_staff: false,
-          is_active: true,
-          is_hr_manager: false,
-          is_manager: false,
-        });
-        setStep(1);
-        navigate("/admin/employees");
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error("An error occurred. Please try again.");
-      })
-      .finally(() => {
-        setLoading(false);
+  axios
+    .post(`${SERVER_URL}/employees/`, formDataObj, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((response) => {
+      toast.success("Signed Up Successfully");
+      setFormData({
+        first_name: "",
+        middle_name: "",
+        last_name: "",
+        username: "",
+        email: "",
+        password: "",
+        phone: "",
+        alternate_phone: "",
+        address: "",
+        date_of_birth: "",
+        employment_date: "",
+        department: "",
+        position: "",
+        salary: "",
+        manager: "",
+        emergency_contact: "",
+        profile_image: null,
+        imagePreview: null,
+        is_staff: false,
+        is_active: true,
+        is_hr_manager: false,
+        is_manager: false,
+        documents: [], // Reset documents array
       });
-  };
+      setStep(1);
+      navigate("/admin/employees");
+    })
+    .catch((error) => {
+      console.log(error);
+      toast.error("An error occurred. Please try again.");
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+};
 
   const getProgress = () => (step / 6) * 100;
 
