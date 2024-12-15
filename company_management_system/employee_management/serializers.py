@@ -16,6 +16,7 @@ from .models import (
     Task,
     Todo,
     EmployeeAppAttendance,
+    EmployeeDocuments,
 )
 
 
@@ -54,6 +55,12 @@ class EmployeeSerializer(serializers.ModelSerializer):
             raise
 
 
+class EmployeeDocumentsSerializer(serializers.ModelSerializer):
+    document = serializers.FileField()  # This field is required for document upload
+
+    class Meta:
+        model = EmployeeDocuments
+        fields = ["employee", "document", "uploaded_at"]
 
 class AdminEmployeeSerializer(serializers.ModelSerializer):
     class Meta:

@@ -66,14 +66,14 @@ const Signup = () => {
     if (file) {
       setFormData((prev) => ({
         ...prev,
-        profileImage: file,
+        profile_image: file,
         imagePreview: URL.createObjectURL(file),
       }));
     }
   };
 
   const handleDocumentsChange = (e) => {
-    const files = Array.from(e.target.files);
+    const files = e.target.files[0]; 
     setFormData((prev) => ({
       ...prev,
       documents: files,

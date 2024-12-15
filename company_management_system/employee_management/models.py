@@ -79,6 +79,15 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+
+class EmployeeDocuments(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="documents")
+    document = models.FileField(upload_to="employee_documents/")
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Document for {self.employee.first_name} {self.employee.last_name}"
+
 class Department(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)

@@ -38,6 +38,7 @@ from .serializers import (
     TaskSerializer,
     TodoSerializer,
     AppattendanceSerializer,
+    EmployeeDocumentsSerializer,
 )
 from .models import (
     Applicant,
@@ -55,6 +56,7 @@ from .models import (
     TaskComment,
     Todo,
     EmployeeAppAttendance,
+    EmployeeDocuments,
 )
 from django.core.files.storage import default_storage
 from datetime import timedelta
@@ -188,10 +190,33 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         return Employee.objects.filter(department=user.department, is_superuser=False)
         
     def perform_create(self, serializer):
+        print(self.request.FILES)
+        # Save the employee instance
         employee = serializer.save(is_active=True)
+        
+        # Handle profile image upload
         if "profile_image" in self.request.FILES:
             employee.profile_image = self.request.FILES["profile_image"]
             employee.save()
+        print("here")
+        # Handle employee documents upload
+        if "documents" in self.request.data:
+            print("found")
+            # Loop through each document and create an EmployeeDocuments entry
+            for document in self.request.data.getlist("documents"):
+                # Assuming you have the EmployeeDocumentsViewSet set up for the employee
+                print("document is ",document)
+                document_data = {
+                    'employee': employee.id,
+                    'document': document
+                }
+                print("document data are ",document_data)
+                # Create the document using EmployeeDocumentsViewSet logic
+                document_serializer = EmployeeDocumentsSerializer(data=document_data)
+                if document_serializer.is_valid():
+                    document_serializer.save()
+                else:
+                    print(f"Error with document upload: {document_serializer.errors}")
 
     def perform_update(self, serializer):
         instance = serializer.save()
@@ -246,10 +271,34 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         return Employee.objects.filter(department=user.department)
 
     def perform_create(self, serializer):
+        # Save the employee instance
         employee = serializer.save(is_active=True)
+        print(self.request.data)
+        print(self.request.FILES)
+        # Handle profile image upload
         if "profile_image" in self.request.FILES:
             employee.profile_image = self.request.FILES["profile_image"]
             employee.save()
+        print("here")
+        # Handle employee documents upload
+        if "documents" in self.request.data:
+            print("found ")
+            # Loop through each document and create an EmployeeDocuments entry
+            for document in self.request.data.getlist("documents"):
+                # Assuming you have the EmployeeDocumentsViewSet set up for the employee\
+                print("document is ",document)
+                document_data = {
+                    'employee': employee.id,
+                    'document': document
+                }
+                # Create the document using EmployeeDocumentsViewSet logic
+                print("document data are ",document_data)
+
+                document_serializer = EmployeeDocumentsSerializer(data=document_data)
+                if document_serializer.is_valid():
+                    document_serializer.save()
+                else:
+                    print(f"Error with document upload: {document_serializer.errors}")
 
     def perform_update(self, serializer):
         try:
@@ -267,6 +316,17 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             return super().destroy(request, *args, **kwargs)
         return Response(status=status.HTTP_403_FORBIDDEN)
 
+class EmployeeDocumentsViewSet(viewsets.ModelViewSet):
+    queryset = EmployeeDocuments.objects.all()
+    serializer_class = EmployeeDocumentsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        employee = serializer.validated_data['employee']
+        if "document" in self.request.FILES:
+            document = self.request.FILES["document"]
+            # Save the document
+            serializer.save(document=document, employee=employee)
 
 class AdminEmployeeView(viewsets.ViewSet):
     serializer_class = AdminEmployeeSerializer
