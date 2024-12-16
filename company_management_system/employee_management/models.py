@@ -10,6 +10,9 @@ from django.utils import timezone
 def employee_image_path(instance, filename):
     return f"profile_images/employees/{instance.id}/{filename}"
 
+def employee_documents_path(instance, filename):
+    print("instance ==> ",instance)
+    return f"employee_documents/employees/{instance}/{filename}"
 class EmployeeManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
         if not email:
@@ -82,7 +85,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):
 
 class EmployeeDocuments(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="documents")
-    document = models.FileField(upload_to="employee_documents/")
+    document = models.FileField(upload_to=employee_documents_path)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
