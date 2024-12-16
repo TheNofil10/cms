@@ -73,12 +73,21 @@ const Signup = () => {
   };
 
   const handleDocumentsChange = (e) => {
-    const files = Array.from(e.target.files); // Convert FileList to Array
-    setFormData((prev) => ({
-      ...prev,
-      documents: files, // Store multiple files in documents array
-    }));
+    const newFiles = Array.from(e.target.files);
+    setFormData((prev) => {
+      const uniqueFiles = newFiles.filter(
+        (newFile) =>
+          !prev.documents.some(
+            (doc) => doc.name === newFile.name && doc.size === newFile.size
+          )
+      );
+      return {
+        ...prev,
+        documents: [...prev.documents, ...uniqueFiles],
+      };
+    });
   };
+  
   
   const handleNextStep = () => {
     if (validateStep(step)) {
@@ -130,7 +139,7 @@ const handleSignup = (e) => {
       }
     }
   });
-
+  console.log(formDataObj);
   axios
     .post(`${SERVER_URL}/employees/`, formDataObj, {
       headers: {
@@ -528,13 +537,14 @@ const handleSignup = (e) => {
                     <ul className="list-disc pl-5">
                       {formData.documents.map((doc, index) => (
                         <li key={index} className="text-sm">
-                          {doc.name}
+                          {doc.name} - {(doc.size / 1024).toFixed(2)} KB
                         </li>
                       ))}
                     </ul>
                   </div>
                 )}
               </div>
+
 
               {/* Navigation Buttons */}
               <div className="flex justify-between">
