@@ -719,3 +719,20 @@ CREATE TABLE `token_blacklist_outstandingtoken` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2024-09-18 10:30:21
+
+
+
+
+
+
+CREATE TABLE employee_management_employeedocuments (
+    id INT AUTO_INCREMENT,
+    employee_id INT NOT NULL,
+    document VARCHAR(255) NOT NULL,
+    uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+    FOREIGN KEY (`employee_id`) 
+    REFERENCES `employee_management_employee` (`id`) 
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
