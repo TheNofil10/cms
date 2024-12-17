@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import API from "../../../api/api";
+import SERVER_URL from "../../../api/api";
 import {
   FaRegUser,
   FaCalendarAlt,
@@ -19,7 +20,7 @@ const TaskDetail = () => {
   const [comments, setComments] = useState([]);
   const [employees, setEmployees] = useState({});
   const [newComment, setNewComment] = useState("");
-  const SERVER_URL = "http://127.0.0.1:8000";
+  
   useEffect(() => {
     fetchTaskDetails();
     fetchComments(); // Fetch comments when component mounts

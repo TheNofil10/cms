@@ -81,7 +81,7 @@ const EmployeeDepartment = () => {
               <h2 className="text-2xl font-semibold mb-4">Manager</h2>
               {department?.manager ? (
                 <ManagerCard
-                  profileImage={`${imageBaseUrl}${department.manager.profile_image}`}
+                  profileImage={`${API}${department.manager.profile_image}`}
                   name={department.manager.name}
                   department={department.name}
                   position="Manager"
@@ -103,7 +103,7 @@ const EmployeeDepartment = () => {
               {department?.members?.map((member) => (
                 <MembersCard
                   key={member.username}
-                  profileImage={`${imageBaseUrl}${member.profile_image}`}
+                  profileImage={`${API}${member.profile_image}`}
                   name={`${member.first_name} ${member.last_name}`}
                   position={member.position}
                   username={member.username}

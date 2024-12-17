@@ -70,7 +70,7 @@ const EmployeeList = () => {
         );
         setEmployees(response.data.results || response.data || []);
         setFilteredData(response.data.results || response.data || []);
-        
+
       } catch (error) {
         console.error("Error fetching employees:", error);
         setError("There was an error fetching the employee data.");
@@ -169,7 +169,7 @@ const EmployeeList = () => {
   };
   // const handleDeleteEmployee = async (employeeId) => {
   //   try {
-  //     await axios.delete(`http://127.0.0.1:8000/api/employees/${employeeId}/`, {
+  //     await axios.delete(`${API}/employees/${employeeId}/`, {
   //       headers: {
   //         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
   //       },
@@ -186,6 +186,7 @@ const EmployeeList = () => {
   //     }
   //   }
   // };
+
   const confirmDeleteEmployee = async () => {
     if (!employeeToDelete) return;
 
@@ -270,65 +271,9 @@ const EmployeeList = () => {
 
   return (
     <div className="container mx-auto p-4 bg-white text-black">
-      
-      <div className="flex justify-between mb-4">
-        <div className="flex items-center space-x-2">
-          <div className="relative">
-            <button
-              className="bg-black text-white border-none font-medium py-1 px-3 rounded text-xs flex items-center"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            >
-              <FaBox className="inline mr-1" /> Export
-              {isDropdownOpen ? (
-                <FaChevronUp className="ml-1" />
-              ) : (
-                <FaChevronDown className="ml-1" />
-              )}
-            </button>
-            {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 bg-white border border-gray-300 shadow-lg rounded-lg">
-                <button
-                  className="w-full py-2 px-4 text-left hover:bg-gray-100"
-                  onClick={() => handleExportSelection("excel")}
-                >
-                  <FaBox className="inline mr-1" /> Excel
-                </button>
-                <button
-                  className="w-full py-2 px-4 text-left hover:bg-gray-100"
-                  onClick={() => handleExportSelection("pdf")}
-                >
-                  <FaBox className="inline mr-1" /> PDF
-                </button>
-              </div>
-            )}
-          </div>
-          <button
-            className="bg-black text-white border-none font-medium py-1 px-3 rounded text-xs"
-            onClick={() => setView(view === "table" ? "card" : "table")}
-          >
-            {view === "table" ? (
-              <>
-                <CardIcon className="inline mr-1" /> Card
-              </>
-            ) : (
-              <>
-                <TableIcon className="inline mr-1" /> Table
-              </>
-            )}
-          </button>
-        </div>
-      </div>
-      <div className="flex justify-between mb-4">
-        {currentUser.is_hr_manager && (
-          <button
-            className="bg-black text-white border-none font-medium py-1 px-3 rounded text-sm"
-            onClick={() => navigate("/hr/employees/add")}
-          >
-            <FaPlus className="inline mr-1" /> Add Employee
-          </button>
-        )}
-      </div>
-      <div className="flex justify-between mb-4">
+
+      <div className="flex justify-between items-center mb-4">
+        {/* Left Section: Filters */}
         <div className="flex items-center space-x-2">
           <FaFilter className="text-sm" />
           <select
@@ -359,7 +304,68 @@ const EmployeeList = () => {
             Apply
           </button>
         </div>
+
+        {/* Right Section: Export, View Toggle, Add Employee */}
+        <div className="flex items-center space-x-2">
+          {/* Export Dropdown */}
+          <div className="relative">
+            <button
+              className="bg-black text-white border-none font-medium py-1 px-3 rounded text-sm flex items-center"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              <FaBox className="inline mr-1" /> Export
+              {isDropdownOpen ? (
+                <FaChevronUp className="ml-1" />
+              ) : (
+                <FaChevronDown className="ml-1" />
+              )}
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 bg-white border border-gray-300 shadow-lg rounded-lg">
+                <button
+                  className="w-full py-2 px-4 text-left hover:bg-gray-100"
+                  onClick={() => handleExportSelection("excel")}
+                >
+                  <FaBox className="inline mr-1" /> Excel
+                </button>
+                <button
+                  className="w-full py-2 px-4 text-left hover:bg-gray-100"
+                  onClick={() => handleExportSelection("pdf")}
+                >
+                  <FaBox className="inline mr-1" /> PDF
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* View Toggle Button */}
+          <button
+            className="bg-black text-white border-none font-medium py-1 px-3 rounded text-sm"
+            onClick={() => setView(view === "table" ? "card" : "table")}
+          >
+            {view === "table" ? (
+              <>
+                <CardIcon className="inline mr-1" /> Card
+              </>
+            ) : (
+              <>
+                <TableIcon className="inline mr-1" /> Table
+              </>
+            )}
+          </button>
+
+          {/* Add Employee Button */}
+          {currentUser.is_hr_manager && (
+            <button
+              className="bg-black text-white border-none font-medium py-1 px-3 rounded text-sm"
+              onClick={() => navigate("/hr/employees/add")}
+            >
+              <FaPlus className="inline mr-1" /> Add Employee
+            </button>
+          )}
+        </div>
       </div>
+
       {loading && <p>Loading...</p>}
       {error && <p>{error}</p>}
       {view === "table" && (
@@ -488,7 +494,7 @@ const EmployeeList = () => {
           onClose={() => setSelectedEmployee(null)}
         />
       )}
-      
+
       <ConfirmationModal
         isOpen={showConfirmModal}
         onClose={() => setShowConfirmModal(false)}
