@@ -18,6 +18,7 @@ import {
   FaBriefcase,
   FaUserCircle,
   FaTrash,
+  FaFileAlt,
 } from "react-icons/fa";
 import { useAuth } from "../../contexts/AuthContext";
 import ConfirmationModal from "./ConfirmationModal";
@@ -49,6 +50,7 @@ const AdminEmployeeProfile = () => {
           }
         );
         setEmployee(employeeResponse.data);
+        console.log("Employee data: ", employeeResponse.data);
 
         if (employeeResponse.data.department) {
           const departmentResponse = await axios.get(
@@ -126,6 +128,12 @@ const AdminEmployeeProfile = () => {
     }
   };
 
+  
+  const getDocumentName = (url) => {
+    const urlParts = url.split('/');
+    return decodeURIComponent(urlParts[urlParts.length - 1]);
+  };
+
   if (loading)
     return <div className="text-center p-6 text-black">Loading...</div>;
   if (error) return <div className="text-center p-6 text-red-500">{error}</div>;
@@ -184,6 +192,31 @@ const AdminEmployeeProfile = () => {
           </p>
         </div>
 
+        <div className="bg-white shadow-lg rounded-lg p-6 mt-8">
+          <h2 className="text-2xl font-semibold mb-4 flex items-center">
+            <FaFileAlt className="mr-2 text-gray-600" /> Documents
+          </h2>
+          {employee.documents && employee.documents.length > 0 ? (
+            <ul className="space-y-2">
+              {employee.documents.map((doc, index) => (
+                <li key={index} className="flex items-center space-x-2">
+                  <a
+                    href={doc.document}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 text-lg"
+                  >
+                    {getDocumentName(doc.document)}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-700">No documents available</p>
+          )}
+        </div>
+
+
         <div className="bg-gray-100 p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
           <p className="text-gray-800 mb-2">
@@ -235,6 +268,8 @@ const AdminEmployeeProfile = () => {
             <FaShieldAlt className="inline-block mr-2" /> Active: {employee.is_active ? "Yes" : "No"}
           </p>
         </div>
+
+        
       </div>
 
       {/* Confirmation Modal for Deleting Employee */}
