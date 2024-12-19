@@ -235,7 +235,6 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
         # Debug request data and files
         print("Request data:", request.data)
-        print("Request files:", request.FILES)
 
         # Check permissions
         if request.user.is_superuser:
@@ -251,7 +250,9 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         # Validate and perform the update
+        print("Validating the serializer.")
         serializer = self.get_serializer(employee, data=request.data, partial=True)
+        print("Serializer data:", serializer.initial_data)
         if not serializer.is_valid():
             print(f"Validation failed: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
