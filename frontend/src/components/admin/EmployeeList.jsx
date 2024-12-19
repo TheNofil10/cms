@@ -163,10 +163,12 @@ const EmployeeList = () => {
     else if (currentUser.is_hr_manager)
       navigate(`/hr/employees/${employee.id}`);
   };
+  
   const handleDeleteEmployee = (employeeId, employeeName) => {
     setEmployeeToDelete({ id: employeeId, name: employeeName });
     setShowConfirmModal(true);
   };
+  
   // const handleDeleteEmployee = async (employeeId) => {
   //   try {
   //     await axios.delete(`${API}/employees/${employeeId}/`, {

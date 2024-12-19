@@ -21,8 +21,9 @@ import {
 } from "react-icons/fa";
 import { useAuth } from "../../contexts/AuthContext";
 import ConfirmationModal from "./ConfirmationModal";
-import AdminUpdateProfileForm from "./AdminUpdateProfileForm";
 import API from "../../api/api";
+import UpdateProfileForm from "../employee/UpdateProfileForm";
+
 const AdminEmployeeProfile = () => {
   const { id } = useParams();
   const [employee, setEmployee] = useState(null);
@@ -85,7 +86,16 @@ const AdminEmployeeProfile = () => {
   }, [id]);
 
   const handleUpdateProfile = () => {
-    toast.error("You cannot update profiles");
+    setIsEditing(true);
+  };
+
+  const handleCloseUpdateForm = () => {
+    setIsEditing(false);
+  };
+
+  const handleProfileUpdated = async () => {
+    await fetchEmployee(); // Refresh employee data
+    setIsEditing(false);
   };
 
   const handleDeleteEmployee = (employeeId, employeeName) => {
@@ -121,7 +131,7 @@ const AdminEmployeeProfile = () => {
   if (error) return <div className="text-center p-6 text-red-500">{error}</div>;
 
   return (
-    <div className="container mx-auto p-8 bg-white rounded-lg shadow-lg max-w-5xl">
+    <div className="container mx-auto p-8 bg-gray-200 rounded-lg shadow-lg max-w-5xl mt-10">
       <div className="flex items-center mb-6">
         <img
           src={employee.profile_image}
@@ -234,6 +244,14 @@ const AdminEmployeeProfile = () => {
         onCancel={() => setShowConfirmModal(false)}
         message={`Are you sure you want to delete ${employeeToDelete?.name}? This action cannot be undone.`}
       />
+
+      {isEditing && (
+        <UpdateProfileForm
+          employee={employee}
+          onClose={handleCloseUpdateForm}
+          onUpdate={handleProfileUpdated}
+        />
+      )}
       
     </div>
   );

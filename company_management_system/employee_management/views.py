@@ -225,96 +225,42 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             instance.save()
 
     def update(self, request, *args, **kwargs):
-        employee = self.get_object()
+        print("Update operation invoked")
+        print(f"Request user: {request.user}, is_superuser: {request.user.is_superuser}, is_hr_manager: {getattr(request.user, 'is_hr_manager', False)}")
 
-        if request.user.is_superuser or (
-            request.user.is_hr_manager and not (request.user == employee)
-        ):
+        # Fetch the employee being updated
+        employee = self.get_object()
+        print(f"Employee to update: {employee}, ID: {employee.id}")
+
+
+        # Debug request data and files
+        print("Request data:", request.data)
+        print("Request files:", request.FILES)
+
+        # Check permissions
+        if request.user.is_superuser:
+            print("User is superuser, proceeding with update.")
+            return super().update(request, *args, **kwargs)
+
+        if getattr(request.user, "is_hr_manager", False) and request.user != employee:
+            print("User is HR manager and not the employee being updated, proceeding with update.")
             return super().update(request, *args, **kwargs)
 
         if request.user != employee:
+            print(f"Permission denied: Request user ({request.user.id}) is not allowed to update employee ({employee.id})")
             return Response(status=status.HTTP_403_FORBIDDEN)
 
+        # Validate and perform the update
         serializer = self.get_serializer(employee, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            print(f"Validation failed: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        print("Validation successful, performing the update.")
         self.perform_update(serializer)
+
+        print("Update successful, returning updated employee data.")
         return Response(serializer.data)
-
-    def destroy(self, request, *args, **kwargs):
-        employee = self.get_object()
-
-        if request.user.is_superuser and (request.user != employee):
-            return super().destroy(request, *args, **kwargs)
-
-        if employee.is_superuser and (request.user != employee):
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
-        return super().destroy(request, *args, **kwargs)
-
-    queryset = Employee.objects.all()
-    serializer_class = EmployeeSerializer
-
-    def get_permissions(self):
-        if self.action == "destroy":
-            return [IsAdminUser()]
-        elif self.action in ["create", "update", "partial_update"]:
-            if self.request.user.is_hr_manager or self.request.user.is_superuser:
-                return [IsAuthenticated()]
-        return [IsAuthenticated()]
-
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_superuser:
-            return Employee.objects.all()
-        if user.is_hr_manager:
-            return Employee.objects.all()
-        return Employee.objects.filter(department=user.department)
-
-    def perform_create(self, serializer):
-        # Save the employee instance
-        employee = serializer.save(is_active=True)
-        print(self.request.data)
-        print(self.request.FILES)
-        # Handle profile image upload
-        if "profile_image" in self.request.FILES:
-            employee.profile_image = self.request.FILES["profile_image"]
-            employee.save()
-        print("here")
-        # Handle employee documents upload
-        if "documents" in self.request.data:
-            print("found ")
-            # Loop through each document and create an EmployeeDocuments entry
-            for document in self.request.data.getlist("documents"):
-                # Assuming you have the EmployeeDocumentsViewSet set up for the employee\
-                print("document is ",document)
-                document_data = {
-                    'employee': employee.id,
-                    'document': document
-                }
-                # Create the document using EmployeeDocumentsViewSet logic
-                print("document data are ",document_data)
-
-                document_serializer = EmployeeDocumentsSerializer(data=document_data)
-                if document_serializer.is_valid():
-                    document_serializer.save()
-                else:
-                    print(f"Error with document upload: {document_serializer.errors}")
-
-    def perform_update(self, serializer):
-        try:
-            instance = serializer.save()
-            if "profile_image" in self.request.FILES:
-                instance.profile_image = self.request.FILES["profile_image"]
-                instance.save()
-        except Exception as e:
-            print(f"Error during update: {e}")
-            raise
-
-    def destroy(self, request, *args, **kwargs):
-        employee = self.get_object()
-        if request.user.is_superuser or request.user.is_hr_manager:
-            return super().destroy(request, *args, **kwargs)
-        return Response(status=status.HTTP_403_FORBIDDEN)
 
 class EmployeeDocumentsViewSet(viewsets.ModelViewSet):
     queryset = EmployeeDocuments.objects.all()

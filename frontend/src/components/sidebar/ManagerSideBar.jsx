@@ -16,7 +16,7 @@ const ManagerSideBar = ({ expanded, onToggle }) => {
       <SidebarItem icon={<FaTasks />} text="Tasks" to="/manager/tasks" />
       <SidebarItem icon={<FaBuilding />} text="My Department" to="/manager/department" />
       <hr className="my-3" />
-      <SidebarItem icon={<Settings />} text="Settings" to="/settings" />
+      <SidebarItem icon={<Settings />} text="Settings" to="/manager/settings" />
       <SidebarItem icon={<LogOut />} text="Logout" onClick={logout} />
     </Sidebar>
   );
