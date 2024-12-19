@@ -38,51 +38,53 @@ const AdminEmployeeProfile = () => {
   const [employeeToDelete, setEmployeeToDelete] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  useEffect(() => {
-    const fetchEmployee = async () => {
-      try {
-        const employeeResponse = await axios.get(
-          `${API}/employees/${id}/`,
+
+  const fetchEmployee = async () => {
+    try {
+      const employeeResponse = await axios.get(
+        `${API}/employees/${id}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+      setEmployee(employeeResponse.data);
+      console.log("Employee data: ", employeeResponse.data);
+
+      if (employeeResponse.data.department) {
+        const departmentResponse = await axios.get(
+          `${API}/departments/${employeeResponse.data.department}/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
           }
         );
-        setEmployee(employeeResponse.data);
-        console.log("Employee data: ", employeeResponse.data);
-
-        if (employeeResponse.data.department) {
-          const departmentResponse = await axios.get(
-            `${API}/departments/${employeeResponse.data.department}/`,
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-              },
-            }
-          );
-          setDepartment(departmentResponse.data);
-        }
-
-        if (employeeResponse.data.manager) {
-          const managerResponse = await axios.get(
-            `${API}/employees/${employeeResponse.data.manager}/`,
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-              },
-            }
-          );
-          setManager(managerResponse.data);
-        }
-      } catch (error) {
-        console.error("Error fetching employee:", error);
-        setError("Unable to fetch employee data.");
-        toast.error("Failed to load employee data");
-      } finally {
-        setLoading(false);
+        setDepartment(departmentResponse.data);
       }
-    };
+
+      if (employeeResponse.data.manager) {
+        const managerResponse = await axios.get(
+          `${API}/employees/${employeeResponse.data.manager}/`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+        setManager(managerResponse.data);
+      }
+    } catch (error) {
+      console.error("Error fetching employee:", error);
+      setError("Unable to fetch employee data.");
+      toast.error("Failed to load employee data");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  useEffect(() => {
 
     fetchEmployee();
   }, [id]);
@@ -96,7 +98,7 @@ const AdminEmployeeProfile = () => {
   };
 
   const handleProfileUpdated = async () => {
-    await fetchEmployee(); // Refresh employee data
+    await fetchEmployee(); // Refresh employee data after update
     setIsEditing(false);
   };
 
