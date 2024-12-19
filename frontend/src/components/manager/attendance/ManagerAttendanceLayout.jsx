@@ -9,6 +9,7 @@ const ManagerAttendanceLayout = () => {
     { name: "Table", path: "/manager/attendance/table" },
     { name: "Leave Applications", path: "/manager/attendance/leaves" },
     { name: "App Attendance", path: "/manager/app_attendance" },
+    { name: "Approvals", path: "/manager/approvals" },
   ];
   return (
     <div className="flex-grow bg-white">
@@ -17,7 +18,9 @@ const ManagerAttendanceLayout = () => {
           <h1 className="text-2xl font-semibold mr-6">Attendance</h1>
         </header>
       </div>
+      <div>
       <Navbar  navItems={navItems} />
+      </div>
       <div className="py-10 px-10">
         <Outlet />
       </div>

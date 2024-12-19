@@ -57,6 +57,7 @@ import EmployeeSignupPage from '../components/admin/EmployeeSignupPage.jsx'
 import ManagerDashboard from "../components/manager/ManagerDashboard.jsx";
 import LiveAttendance from "../components/hr/attendance/LiveAttendance.jsx";
 import MabagerAppAttendance from "../components/manager/attendance/ManagerAppAttendance.jsx";
+import ManagerApprovals from "../components/manager/attendance/ManagerApprovals.jsx";
 const AllRoutes = () => {
   return (
     <Routes>
@@ -95,9 +96,9 @@ const AllRoutes = () => {
           />
         </Route>
       </Route>
-          
-          {/* Manager Routes*/}
-          <Route
+
+      {/* Manager Routes*/}
+      <Route
         element={
           <ManagerRoute element={<ManagerLayout />} managerOnly={true} />
         }
@@ -122,7 +123,8 @@ const AllRoutes = () => {
           <Route path="/manager/attendance/table" element={<AttendanceTable />} />
           <Route path="/manager/attendance/leaves" element={<ManagerLeaveApplications />} />
           <Route path="/manager/app_attendance" element={<MabagerAppAttendance />} />
-          
+          <Route path="/manager/approvals" element={<ManagerApprovals />} />
+
         </Route>
       </Route>
 
@@ -203,7 +205,7 @@ const AllRoutes = () => {
           path="/hr/performance-reviews"
           element={<HRPerformanceReviews />}
         />
-       
+
         <Route path="/hr/profile" element={<EmployeeProfile />} />
         <Route path="/hr/settings" element={<HRSettings />} />
         <Route path="/hr/talent-hunt" element={<TalentHuntPage />} />

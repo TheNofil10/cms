@@ -8,6 +8,7 @@ const UpdateAttendanceModal = ({ isOpen, onClose, record }) => {
   useEffect(() => {
     if (record) {
       setUpdatedRecord(record);
+      console.log(record);
     }
   }, [record]);
 
