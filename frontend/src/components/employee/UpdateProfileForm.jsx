@@ -23,6 +23,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
     profile_pic: null
   });
   const [preview, setPreview] = useState('');
+  const [documents, setDocuments] = useState([]);  // State to hold documents
 
   useEffect(() => {
     if (employee) {
@@ -46,6 +47,10 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
       });
       setPreview(employee.profile_image);
     }
+
+
+      setDocuments(employee.documents);  // Set the documents from the response
+
   }, [employee]);
 
   const handleChange = (e) => {
@@ -58,9 +63,12 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
     setFormData({
       ...formData,
       profile_image: file,
-      
     });
     setPreview(URL.createObjectURL(file))
+  };
+  const getDocumentName = (url) => {
+    const urlParts = url.split('/');
+    return decodeURIComponent(urlParts[urlParts.length - 1]);
   };
 
   const handleSubmit = async (e) => {
@@ -217,7 +225,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <input
               type="date"
               name="date_of_birth"
-              value={formData.date_of_birth} 
+              value={formData.date_of_birth} disabled
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
@@ -228,7 +236,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <input
               type="date"
               name="employment_date"
-              value={formData.employment_date} 
+              value={formData.employment_date} disabled
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
@@ -239,7 +247,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <input
               type="text"
               name="department"
-              value={formData.department} 
+              value={formData.department} disabled
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
@@ -250,7 +258,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <input
               type="text"
               name="position"
-              value={formData.position} 
+              value={formData.position} disabled
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
@@ -260,7 +268,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <label className="block text-gray-700 mb-2">Salary:</label>
             <input
               type="number"
-              name="salary" 
+              name="salary" disabled
               value={formData.salary}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
@@ -272,7 +280,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <input
               type="text"
               name="manager"
-              value={formData.manager} 
+              value={formData.manager} disabled
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
@@ -287,6 +295,28 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
+          </div>
+                    {/* Displaying the available documents */}
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2">Available Documents:</label>
+            {documents.length > 0 ? (
+              <ul className="list-disc pl-5">
+                {documents.map((doc, index) => (
+                  <li key={index}>
+                    <a
+                      href={doc.url}  // Assuming `doc.url` is the URL to download the document
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 underline"
+                    >
+                      {getDocumentName(doc.document)}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No documents available.</p>
+            )}
           </div>
 
           <div className="flex justify-end mt-6">
