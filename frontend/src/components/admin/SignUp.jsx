@@ -1562,6 +1562,175 @@ const Signup = () => {
               </div>
             </>
           )}
+          
+          {/* Step 13 */}
+          {step === 13 && (
+            <>
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Reference Name #1</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="ref_name_1"
+                    value={formData.ref_name_1}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Mobile No.</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="ref_mobile_1"
+                    value={formData.ref_mobile_1}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Email Address</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaPhone className="m-2" />
+                  <input
+                    type="text"
+                    name="ref_email_1"
+                    value={formData.ref_email_1}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Designation</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaEnvelope className="m-2" />
+                  <input
+                    type="email"
+                    name="ref_designation_1"
+                    value={formData.ref_designation_1}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Company Name</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaEnvelope className="m-2" />
+                  <input
+                    type="email"
+                    name="ref_company_1"
+                    value={formData.ref_company_1}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Reference Name #2</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="ref_name_2"
+                    value={formData.ref_name_2}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Mobile No.</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="ref_mobile_2"
+                    value={formData.ref_mobile_2}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Email Address</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaPhone className="m-2" />
+                  <input
+                    type="text"
+                    name="ref_email_2"
+                    value={formData.ref_email_2}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Designation</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaEnvelope className="m-2" />
+                  <input
+                    type="email"
+                    name="ref_designation_2"
+                    value={formData.ref_designation_2}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Company Name</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaEnvelope className="m-2" />
+                  <input
+                    type="email"
+                    name="ref_company_2"
+                    value={formData.ref_company_2}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-between">
+                <button
+                  type="button"
+                  onClick={handlePreviousStep}
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  Previous
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextStep}
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          )}
 
         </form>
       </div>
