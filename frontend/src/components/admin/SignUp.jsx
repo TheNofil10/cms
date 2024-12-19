@@ -24,6 +24,32 @@ import API from "../../api/api";
 const SERVER_URL = API;
 
 const Signup = () => {
+  const handleQualificationChange = (index, e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => {
+      const updatedQualifications = [...prev.qualifications];
+      updatedQualifications[index] = { ...updatedQualifications[index], [name]: value };
+      return { ...prev, qualifications: updatedQualifications };
+    });
+  };
+  
+  const addQualification = () => {
+    setFormData((prev) => ({
+      ...prev,
+      qualifications: [
+        ...prev.qualifications,
+        { institute: '', degree: '', year_from: '', year_to: '', gpa: '' },
+      ],
+    }));
+  };
+  
+  const removeQualification = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      qualifications: prev.qualifications.filter((_, i) => i !== index),
+    }));
+  };
+
   const [formData, setFormData] = useState({
     first_name: "",
     middle_name: "",
@@ -48,6 +74,7 @@ const Signup = () => {
     is_hr_manager: false,
     is_manager: false,
     documents: [],
+    qualifications: [{ institute: '', degree: '', year_from: '', year_to: '', gpa: '' }],
   });
 
   const [step, setStep] = useState(1);
@@ -122,70 +149,86 @@ const Signup = () => {
   };
 
  
-const handleSignup = (e) => {
-  e.preventDefault();
-  setLoading(true);
-
-  const formDataObj = new FormData();
-  Object.keys(formData).forEach((key) => {
-    if (formData[key] !== null) {
-      // Append the other form data
-      if (key === "documents" && formData[key].length > 0) {
-        // Append multiple documents if they exist
-        formData[key].forEach((file) => {
-          formDataObj.append("documents", file);
-        });
-      } else {
-        formDataObj.append(key, formData[key]);
+  const handleSignup = (e) => {
+    e.preventDefault();
+    setLoading(true);
+  
+    const formDataObj = new FormData();
+    
+    // Loop through formData and append necessary fields
+    Object.keys(formData).forEach((key) => {
+      if (formData[key] !== null) {
+        // Handle qualifications array
+        if (key === 'qualifications' && formData[key].length > 0) {
+          formData[key].forEach((qualification, index) => {
+            Object.keys(qualification).forEach((qualificationKey) => {
+              formDataObj.append(`qualifications[${index}][${qualificationKey}]`, qualification[qualificationKey]);
+            });
+          });
+        }
+        // Handle documents array
+        else if (key === "documents" && formData[key].length > 0) {
+          formData[key].forEach((file) => {
+            formDataObj.append("documents", file);
+          });
+        }
+        // Handle other form data fields
+        else {
+          formDataObj.append(key, formData[key]);
+        }
       }
-    }
-  });
-  console.log(formDataObj);
-  axios
-    .post(`${SERVER_URL}/employees/`, formDataObj, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        "Content-Type": "multipart/form-data",
-      },
-    })
-    .then((response) => {
-      toast.success("Signed Up Successfully");
-      setFormData({
-        first_name: "",
-        middle_name: "",
-        last_name: "",
-        username: "",
-        email: "",
-        password: "",
-        phone: "",
-        alternate_phone: "",
-        address: "",
-        date_of_birth: "",
-        employment_date: "",
-        department: "",
-        position: "",
-        salary: "",
-        manager: "",
-        emergency_contact: "",
-        profile_image: null,
-        imagePreview: null,
-        is_staff: false,
-        is_active: true,
-        is_hr_manager: false,
-        is_manager: false,
-        documents: [], // Reset documents array
-      });
-      setStep(1);
-      navigate("/admin/employees");
-    })
-    .catch((error) => {
-      console.log(error);
-      toast.error("An error occurred. Please try again.");
-    })
-    .finally(() => {
-      setLoading(false);
     });
-};
+  
+    // Send form data via axios
+    axios
+      .post(`${SERVER_URL}/employees/`, formDataObj, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        toast.success("Signed Up Successfully");
+        
+        // Reset form data after successful signup
+        setFormData({
+          first_name: "",
+          middle_name: "",
+          last_name: "",
+          username: "",
+          email: "",
+          password: "",
+          phone: "",
+          alternate_phone: "",
+          address: "",
+          date_of_birth: "",
+          employment_date: "",
+          department: "",
+          position: "",
+          salary: "",
+          manager: "",
+          emergency_contact: "",
+          profile_image: null,
+          imagePreview: null,
+          is_staff: false,
+          is_active: true,
+          is_hr_manager: false,
+          is_manager: false,
+          documents: [], // Reset documents array
+          qualifications: [], // Reset qualifications array
+        });
+  
+        setStep(1);
+        navigate("/admin/employees");
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("An error occurred. Please try again.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   const getProgress = () => (step / 12) * 100;
 
@@ -414,6 +457,7 @@ const handleSignup = (e) => {
                   />
                 </div>
               </div>
+
               <div className="mb-4">
                 <label className="block text-sm mb-2">Department</label>
                 <div className="flex items-center bg-gray-200 rounded">
@@ -428,6 +472,7 @@ const handleSignup = (e) => {
                   />
                 </div>
               </div>
+
               <div className="mb-4">
                 <label className="block text-sm mb-2">Position</label>
                 <div className="flex items-center bg-gray-200 rounded">
@@ -436,6 +481,49 @@ const handleSignup = (e) => {
                     type="text"
                     name="position"
                     value={formData.position}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Flexible Timings</label>
+                <div className="flex items-center space-x-4">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="flexible"
+                      value="yes"
+                      checked={formData.flexible === true}
+                      onChange={() => handleInputChange({ target: { name: flexible, value: true } })}
+                      className="mr-2"
+                    />
+                    yes
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="flexible"
+                      value="no"
+                      checked={formData.flexible === false}
+                      onChange={() => handleInputChange({ target: { name: flexible, value: false } })}
+                      className="mr-2"
+                    />
+                    no
+                  </label>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Employee ID</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUserShield className="m-2" />
+                  <input
+                    type="text"
+                    name="employee_id"
+                    value={formData.employee_id}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
                     required
@@ -1215,6 +1303,109 @@ const handleSignup = (e) => {
               </div>
 
               <div className="flex justify-between">
+                <button
+                  type="button"
+                  onClick={handlePreviousStep}
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  Previous
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextStep}
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          )}
+
+          {/* Step 11 */}
+          {step === 11 && (
+            <>
+              {formData.qualifications.map((qualification, index) => (
+                <div key={index} className="qualification-section mb-4">
+                  <div className="mb-2">
+                    <label className="block text-sm mb-2">Institute</label>
+                    <input
+                      type="text"
+                      name="institute"
+                      value={qualification.institute}
+                      onChange={(e) => handleQualificationChange(index, e)}
+                      className="w-full p-2 bg-gray-200 border-none outline-none"
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-2">
+                    <label className="block text-sm mb-2">Degree</label>
+                    <input
+                      type="text"
+                      name="degree"
+                      value={qualification.degree}
+                      onChange={(e) => handleQualificationChange(index, e)}
+                      className="w-full p-2 bg-gray-200 border-none outline-none"
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-2">
+                    <label className="block text-sm mb-2">Year From</label>
+                    <input
+                      type="number"
+                      name="year_from"
+                      value={qualification.year_from}
+                      onChange={(e) => handleQualificationChange(index, e)}
+                      className="w-full p-2 bg-gray-200 border-none outline-none"
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-2">
+                    <label className="block text-sm mb-2">Year To</label>
+                    <input
+                      type="number"
+                      name="year_to"
+                      value={qualification.year_to}
+                      onChange={(e) => handleQualificationChange(index, e)}
+                      className="w-full p-2 bg-gray-200 border-none outline-none"
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-2">
+                    <label className="block text-sm mb-2">GPA</label>
+                    <input
+                      type="number"
+                      name="gpa"
+                      step="0.1"
+                      value={qualification.gpa}
+                      onChange={(e) => handleQualificationChange(index, e)}
+                      className="w-full p-2 bg-gray-200 border-none outline-none"
+                      required
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => removeQualification(index)}
+                    className="text-red-600"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={addQualification}
+                className="bg-blue-500 text-white p-2 rounded"
+              >
+                Add Qualification
+              </button>
+
+              <div className="flex justify-between mt-4">
                 <button
                   type="button"
                   onClick={handlePreviousStep}
