@@ -164,4 +164,4 @@ node_modules/
 coverage/
 .nyc_output/
 
-company_management_system\company_management_system\settings.py
+/company_management_system\settings.py
