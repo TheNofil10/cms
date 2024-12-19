@@ -235,7 +235,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
         # Debug request data and files
         print("Request data:", request.data)
-
+        print("request user is ",request.user)
         # Check permissions
         if request.user.is_superuser:
             print("User is superuser, proceeding with update.")
@@ -243,7 +243,18 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
         if getattr(request.user, "is_hr_manager", False) and request.user != employee:
             print("User is HR manager and not the employee being updated, proceeding with update.")
-            return super().update(request, *args, **kwargs)
+            print("Validating the serializer.")
+            serializer = self.get_serializer(employee, data=request.data, partial=True)
+            print("Serializer data:", serializer.initial_data)
+            if not serializer.is_valid():
+                print(f"Validation failed: {serializer.errors}")
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            print("Validation successful, performing the update.")
+            self.perform_update(serializer)
+
+            print("Update successful, returning updated employee data.")
+            return Response("Employee updated successfully.", status=status.HTTP_200_OK)
 
         if request.user != employee:
             print(f"Permission denied: Request user ({request.user.id}) is not allowed to update employee ({employee.id})")
