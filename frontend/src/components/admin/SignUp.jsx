@@ -76,6 +76,32 @@ const Signup = () => {
     }));
   };
 
+  const handleDependentChange = (index, e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => {
+      const updatedDependents = [...prev.dependents];
+      updatedDependents[index] = { ...updatedDependents[index], [name]: value };
+      return { ...prev, dependents: updatedDependents };
+    });
+  };
+  
+  const addDependent = () => {
+    setFormData((prev) => ({
+      ...prev,
+      dependents: [
+        ...prev.dependents,
+        { name: '', date_of_birth: '', relation: '', cnic: '' },
+      ],
+    }));
+  };
+  
+  const removeDependent = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      dependents: prev.dependents.filter((_, i) => i !== index),
+    }));
+  };
+
   const [formData, setFormData] = useState({
     first_name: "",
     middle_name: "",
@@ -102,6 +128,7 @@ const Signup = () => {
     documents: [],
     qualifications: [{ institute: '', degree: '', year_from: '', year_to: '', gpa: '' }],
     employments: [{ company_name: '', designation: '', year_from: '', year_to: '', reason_for_leaving: '' }],
+    dependents: [{ name: '', date_of_birth: '', relation: '', cnic: '' }],
   });
 
   const [step, setStep] = useState(1);
@@ -201,6 +228,14 @@ const Signup = () => {
             });
           });
         }
+        // Handle dependents array
+        else if (key === 'dependents' && formData[key].length > 0) {
+          formData[key].forEach((dependent, index) => {
+            Object.keys(dependent).forEach((dependentKey) => {
+              formDataObj.append(`dependents[${index}][${dependentKey}]`, dependent[dependentKey]);
+            });
+          });
+        }
         // Handle documents array
         else if (key === "documents" && formData[key].length > 0) {
           formData[key].forEach((file) => {
@@ -252,6 +287,7 @@ const Signup = () => {
           documents: [], // Reset documents array
           qualifications: [], // Reset qualifications array
           employments: [], // Reset employments array
+          dependents: [], // Reset dependents array
         });
   
         setStep(1);
@@ -1831,6 +1867,98 @@ const Signup = () => {
             </>
           )}
 
+          {/* Step 15 */}
+          {step === 15 && (
+            <>
+              {formData.dependents.map((dependent, index) => (
+                <div key={index} className="dependent-section mb-4">
+                  <div className="mb-2">
+                    <label className="block text-sm mb-2">Dependent Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={dependent.name}
+                      onChange={(e) => handleDependentChange(index, e)}
+                      className="w-full p-2 bg-gray-200 border-none outline-none"
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-2">
+                    <label className="block text-sm mb-2">Date of Birth</label>
+                    <input
+                      type="date"
+                      name="date_of_birth"
+                      value={dependent.date_of_birth}
+                      onChange={(e) => handleDependentChange(index, e)}
+                      className="w-full p-2 bg-gray-200 border-none outline-none"
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-2">
+                    <label className="block text-sm mb-2">Relation</label>
+                    <input
+                      type="text"
+                      name="relation"
+                      value={dependent.relation}
+                      onChange={(e) => handleDependentChange(index, e)}
+                      className="w-full p-2 bg-gray-200 border-none outline-none"
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-2">
+                    <label className="block text-sm mb-2">CNIC No.</label>
+                    <input
+                      type="text"
+                      name="cnic"
+                      value={dependent.cnic}
+                      onChange={(e) => handleDependentChange(index, e)}
+                      className="w-full p-2 bg-gray-200 border-none outline-none"
+                      required
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => removeDependent(index)}
+                    className="text-red-600"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={addDependent}
+                className="bg-blue-500 text-white p-2 rounded"
+              >
+                Add Dependent
+              </button>
+
+              <div className="flex justify-between mt-4">
+                <button
+                  type="button"
+                  onClick={handlePreviousStep}
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  Previous
+                </button>
+
+                <button
+                  type="submit"
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                  disabled={loading}
+                >
+                  {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
+                </button> 
+              </div>
+            </>
+          )}
+
+
         </form>
       </div>
     </div>
@@ -1838,13 +1966,3 @@ const Signup = () => {
 };
 
 export default Signup;
-
-{/* 
-<button
-type="submit"
-className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
-disabled={loading}
->
-{loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
-</button> 
-*/}
