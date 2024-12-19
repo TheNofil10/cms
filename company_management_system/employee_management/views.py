@@ -239,7 +239,18 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         # Check permissions
         if request.user.is_superuser:
             print("User is superuser, proceeding with update.")
-            return super().update(request, *args, **kwargs)
+            print("Validating the serializer.")
+            serializer = self.get_serializer(employee, data=request.data, partial=True)
+            print("Serializer data:", serializer.initial_data)
+            if not serializer.is_valid():
+                print(f"Validation failed: {serializer.errors}")
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            print("Validation successful, performing the update.")
+            self.perform_update(serializer)
+
+            print("Update successful, returning updated employee data.")
+            return Response("Employee updated successfully.", status=status.HTTP_200_OK)
 
         if getattr(request.user, "is_hr_manager", False) and request.user != employee:
             print("User is HR manager and not the employee being updated, proceeding with update.")
