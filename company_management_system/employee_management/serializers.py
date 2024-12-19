@@ -19,12 +19,23 @@ from .models import (
     EmployeeDocuments,
 )
 
+class EmployeeDocumentsSerializer(serializers.ModelSerializer):
+    document = serializers.FileField()  # This field is required for document upload
+
+    class Meta:
+        model = EmployeeDocuments
+        fields = ["employee", "document", "uploaded_at"]
+
+
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    # Include documents as a nested serializer
+    documents = EmployeeDocumentsSerializer(many=True, read_only=True)
+
     class Meta:
         model = Employee
-        fields = "__all__"
-
+        fields = "__all__"  # or you can explicitly list the fields you want to include
+    
     def create(self, validated_data):
         password = validated_data.pop("password", None)
         employee = super().create(validated_data)
@@ -40,6 +51,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
             instance.set_password(password)
             instance.save()
         return instance
+
     
     def perform_update(self, serializer):
         try:
@@ -53,14 +65,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
         except Exception as e:
             print(f"Error during update: {e}")
             raise
-
-
-class EmployeeDocumentsSerializer(serializers.ModelSerializer):
-    document = serializers.FileField()  # This field is required for document upload
-
-    class Meta:
-        model = EmployeeDocuments
-        fields = ["employee", "document", "uploaded_at"]
 
 class AdminEmployeeSerializer(serializers.ModelSerializer):
     class Meta:
