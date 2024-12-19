@@ -50,6 +50,32 @@ const Signup = () => {
     }));
   };
 
+  const handleEmploymentChange = (index, e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => {
+      const updatedEmployments = [...prev.employments];
+      updatedEmployments[index] = { ...updatedEmployments[index], [name]: value };
+      return { ...prev, employments: updatedEmployments };
+    });
+  };
+  
+  const addEmployment = () => {
+    setFormData((prev) => ({
+      ...prev,
+      employments: [
+        ...prev.employments,
+        { company_name: '', designation: '', year_from: '', year_to: '', reason_for_leaving: '' },
+      ],
+    }));
+  };
+  
+  const removeEmployment = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      employments: prev.employments.filter((_, i) => i !== index),
+    }));
+  };
+
   const [formData, setFormData] = useState({
     first_name: "",
     middle_name: "",
@@ -75,6 +101,7 @@ const Signup = () => {
     is_manager: false,
     documents: [],
     qualifications: [{ institute: '', degree: '', year_from: '', year_to: '', gpa: '' }],
+    employments: [{ company_name: '', designation: '', year_from: '', year_to: '', reason_for_leaving: '' }],
   });
 
   const [step, setStep] = useState(1);
@@ -166,6 +193,14 @@ const Signup = () => {
             });
           });
         }
+        // Handle employments array
+        else if (key === 'employments' && formData[key].length > 0) {
+          formData[key].forEach((employment, index) => {
+            Object.keys(employment).forEach((employmentKey) => {
+              formDataObj.append(`employments[${index}][${employmentKey}]`, employment[employmentKey]);
+            });
+          });
+        }
         // Handle documents array
         else if (key === "documents" && formData[key].length > 0) {
           formData[key].forEach((file) => {
@@ -216,6 +251,7 @@ const Signup = () => {
           is_manager: false,
           documents: [], // Reset documents array
           qualifications: [], // Reset qualifications array
+          employments: [], // Reset employments array
         });
   
         setStep(1);
@@ -230,7 +266,7 @@ const Signup = () => {
       });
   };
 
-  const getProgress = () => (step / 12) * 100;
+  const getProgress = () => (step / 13) * 100;
 
   return (
     <div className="min-h-screen flex flex-col justify-start items-center mt-10 rounded shadow-xl bg-white text-gray-900">
@@ -1403,6 +1439,109 @@ const Signup = () => {
                 className="bg-blue-500 text-white p-2 rounded"
               >
                 Add Qualification
+              </button>
+
+              <div className="flex justify-between mt-4">
+                <button
+                  type="button"
+                  onClick={handlePreviousStep}
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  Previous
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextStep}
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          )}
+
+          {/* Step 12 */}
+          {step === 12 && (
+            <>
+              {formData.employments.map((employment, index) => (
+                <div key={index} className="employment-section mb-4">
+                  <div className="mb-2">
+                    <label className="block text-sm mb-2">Company Name</label>
+                    <input
+                      type="text"
+                      name="company_name"
+                      value={employment.company_name}
+                      onChange={(e) => handleEmploymentChange(index, e)}
+                      className="w-full p-2 bg-gray-200 border-none outline-none"
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-2">
+                    <label className="block text-sm mb-2">Designation</label>
+                    <input
+                      type="text"
+                      name="designation"
+                      value={employment.designation}
+                      onChange={(e) => handleEmploymentChange(index, e)}
+                      className="w-full p-2 bg-gray-200 border-none outline-none"
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-2">
+                    <label className="block text-sm mb-2">Year From</label>
+                    <input
+                      type="number"
+                      name="year_from"
+                      value={employment.year_from}
+                      onChange={(e) => handleEmploymentChange(index, e)}
+                      className="w-full p-2 bg-gray-200 border-none outline-none"
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-2">
+                    <label className="block text-sm mb-2">Year To</label>
+                    <input
+                      type="number"
+                      name="year_to"
+                      value={employment.year_to}
+                      onChange={(e) => handleEmploymentChange(index, e)}
+                      className="w-full p-2 bg-gray-200 border-none outline-none"
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-2">
+                    <label className="block text-sm mb-2">Reason for Leaving</label>
+                    <input
+                      type="number"
+                      name="reason_for_leaving"
+                      step="0.1"
+                      value={employment.reason_for_leaving}
+                      onChange={(e) => handleEmploymentChange(index, e)}
+                      className="w-full p-2 bg-gray-200 border-none outline-none"
+                      required
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => removeEmployment(index)}
+                    className="text-red-600"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={addEmployment}
+                className="bg-blue-500 text-white p-2 rounded"
+              >
+                Add Employment
               </button>
 
               <div className="flex justify-between mt-4">
