@@ -296,6 +296,12 @@ class EmployeeDocumentsViewSet(viewsets.ModelViewSet):
             document = self.request.FILES["document"]
             # Save the document
             serializer.save(document=document, employee=employee)
+            
+    
+    def destroy(self, request, *args, **kwargs):
+        document = self.get_object()
+        document.delete()
+        return Response({"message": "Document deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
 
 class AdminEmployeeView(viewsets.ViewSet):
     serializer_class = AdminEmployeeSerializer

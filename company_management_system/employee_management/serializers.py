@@ -24,7 +24,7 @@ class EmployeeDocumentsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EmployeeDocuments
-        fields = ["employee", "document", "uploaded_at"]
+        fields = ["id","employee", "document", "uploaded_at"]
 
 
 
