@@ -583,6 +583,21 @@ const Signup = () => {
               </div>
 
               <div className="mb-4">
+                <label className="block text-sm mb-2">Location</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaAddressCard className="m-2" />
+                  <input
+                    type="text"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
                 <label className="block text-sm mb-2">Salary</label>
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaDollarSign className="m-2" />
@@ -596,6 +611,7 @@ const Signup = () => {
                   />
                 </div>
               </div>
+
               <div className="mb-4">
                 <label className="block text-sm mb-2">Manager</label>
                 <div className="flex items-center bg-gray-200 rounded">
@@ -1584,7 +1600,7 @@ const Signup = () => {
               <div className="mb-4">
                 <label className="block text-sm mb-2">Mobile No.</label>
                 <div className="flex items-center bg-gray-200 rounded">
-                  <FaUser className="m-2" />
+                  <FaPhone className="m-2" />
                   <input
                     type="text"
                     name="ref_mobile_1"
@@ -1599,7 +1615,7 @@ const Signup = () => {
               <div className="mb-4">
                 <label className="block text-sm mb-2">Email Address</label>
                 <div className="flex items-center bg-gray-200 rounded">
-                  <FaPhone className="m-2" />
+                  <FaEnvelope className="m-2" />
                   <input
                     type="text"
                     name="ref_email_1"
@@ -1613,7 +1629,7 @@ const Signup = () => {
               <div className="mb-4">
                 <label className="block text-sm mb-2">Designation</label>
                 <div className="flex items-center bg-gray-200 rounded">
-                  <FaEnvelope className="m-2" />
+                  <FaAddressCard className="m-2" />
                   <input
                     type="email"
                     name="ref_designation_1"
@@ -1628,7 +1644,7 @@ const Signup = () => {
               <div className="mb-4">
                 <label className="block text-sm mb-2">Company Name</label>
                 <div className="flex items-center bg-gray-200 rounded">
-                  <FaEnvelope className="m-2" />
+                  <FaAddressCard className="m-2" />
                   <input
                     type="email"
                     name="ref_company_1"
@@ -1657,7 +1673,7 @@ const Signup = () => {
               <div className="mb-4">
                 <label className="block text-sm mb-2">Mobile No.</label>
                 <div className="flex items-center bg-gray-200 rounded">
-                  <FaUser className="m-2" />
+                  <FaPhone className="m-2" />
                   <input
                     type="text"
                     name="ref_mobile_2"
@@ -1672,7 +1688,7 @@ const Signup = () => {
               <div className="mb-4">
                 <label className="block text-sm mb-2">Email Address</label>
                 <div className="flex items-center bg-gray-200 rounded">
-                  <FaPhone className="m-2" />
+                  <FaEnvelope className="m-2" />
                   <input
                     type="text"
                     name="ref_email_2"
@@ -1686,7 +1702,7 @@ const Signup = () => {
               <div className="mb-4">
                 <label className="block text-sm mb-2">Designation</label>
                 <div className="flex items-center bg-gray-200 rounded">
-                  <FaEnvelope className="m-2" />
+                  <FaAddressCard className="m-2" />
                   <input
                     type="email"
                     name="ref_designation_2"
@@ -1701,7 +1717,7 @@ const Signup = () => {
               <div className="mb-4">
                 <label className="block text-sm mb-2">Company Name</label>
                 <div className="flex items-center bg-gray-200 rounded">
-                  <FaEnvelope className="m-2" />
+                  <FaAddressCard className="m-2" />
                   <input
                     type="email"
                     name="ref_company_2"
