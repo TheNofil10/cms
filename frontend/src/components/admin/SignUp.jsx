@@ -465,20 +465,37 @@ const Signup = () => {
                   />
                 </div>
               </div>
+
               <div className="mb-4">
-                <label className="block text-sm mb-2">Address</label>
+                <label className="block text-sm mb-2">Current Address</label>
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaAddressCard className="m-2" />
                   <input
                     type="text"
-                    name="address"
-                    value={formData.address}
+                    name="curr_address"
+                    value={formData.curr_address}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
                     required
                   />
                 </div>
               </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Permanent Address</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaAddressCard className="m-2" />
+                  <input
+                    type="text"
+                    name="permanent_address"
+                    value={formData.permanent_address}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
               <div className="flex justify-between">
                 <button
                   type="button"
@@ -509,21 +526,6 @@ const Signup = () => {
                     type="date"
                     name="date_of_birth"
                     value={formData.date_of_birth}
-                    onChange={handleInputChange}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm mb-2">Employment Date</label>
-                <div className="flex items-center bg-gray-200 rounded">
-                  <FaCalendar className="m-2" />
-                  <input
-                    type="date"
-                    name="employment_date"
-                    value={formData.employment_date}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
                     required
@@ -1036,36 +1038,6 @@ const Signup = () => {
                     type="text"
                     name="father_cnic_no"
                     value={formData.father_cnic_no}
-                    onChange={handleInputChange}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm mb-2">Current Address</label>
-                <div className="flex items-center bg-gray-200 rounded">
-                  <FaAddressCard className="m-2" />
-                  <input
-                    type="text"
-                    name="curr_address"
-                    value={formData.curr_address}
-                    onChange={handleInputChange}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm mb-2">Permanent Address</label>
-                <div className="flex items-center bg-gray-200 rounded">
-                  <FaAddressCard className="m-2" />
-                  <input
-                    type="text"
-                    name="perm_address"
-                    value={formData.perm_address}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
                     required
