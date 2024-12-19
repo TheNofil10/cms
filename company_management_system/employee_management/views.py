@@ -19,6 +19,7 @@ from rest_framework.viewsets import ModelViewSet
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.shortcuts import get_object_or_404
+import os
 from .serializers import (
     ApplicantSerializer,
     AttendanceStatsSerializer,
@@ -300,7 +301,27 @@ class EmployeeDocumentsViewSet(viewsets.ModelViewSet):
     
     def destroy(self, request, *args, **kwargs):
         document = self.get_object()
+
+        # Access the file path properly
+        document_path = document.document.path  # Get the file path
+
+        # Get the folder path from the document path
+        folder_path = os.path.dirname(document_path)
+
+        # Check if the file exists and delete it
+        if os.path.exists(document_path):
+            os.remove(document_path)
+
+        # Now check if the folder is empty
+        if not os.listdir(folder_path):  # If the folder is empty
+            try:
+                os.rmdir(folder_path)  # Remove the folder
+            except OSError as e:
+                print(f"Error deleting folder {folder_path}: {e}")
+
+        # Delete the document entry in the database
         document.delete()
+
         return Response({"message": "Document deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
 
 class AdminEmployeeView(viewsets.ViewSet):
