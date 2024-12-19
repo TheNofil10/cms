@@ -50,6 +50,7 @@ const Login = () => {
         backgroundSize: 'cover', // Ensures the image covers the entire area
         backgroundPosition: 'center', // Centers the image
         backgroundRepeat: 'no-repeat', // Prevents repeating the image
+        width:'100%',
       }}
     >
 

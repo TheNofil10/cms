@@ -14,6 +14,7 @@ import {
   FaUserShield,
   FaToggleOn,
   FaToggleOff,
+  FaAddressBook,
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { Line } from "rc-progress";
@@ -186,7 +187,7 @@ const handleSignup = (e) => {
     });
 };
 
-  const getProgress = () => (step / 6) * 100;
+  const getProgress = () => (step / 12) * 100;
 
   return (
     <div className="min-h-screen flex flex-col justify-start items-center mt-10 rounded shadow-xl bg-white text-gray-900">
@@ -441,6 +442,22 @@ const handleSignup = (e) => {
                   />
                 </div>
               </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Date of Joining</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaCalendar className="m-2" />
+                  <input
+                    type="date"
+                    name="joining_date"
+                    value={formData.joining_date}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
               <div className="mb-4">
                 <label className="block text-sm mb-2">Salary</label>
                 <div className="flex items-center bg-gray-200 rounded">
@@ -468,19 +485,6 @@ const handleSignup = (e) => {
                   />
                 </div>
               </div>
-              <div className="mb-4">
-                <label className="block text-sm mb-2">Emergency Contact</label>
-                <div className="flex items-center bg-gray-200 rounded">
-                  <FaPhone className="m-2" />
-                  <input
-                    type="text"
-                    name="emergency_contact"
-                    value={formData.emergency_contact}
-                    onChange={handleInputChange}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-                  />
-                </div>
-              </div>
 
               <div className="flex justify-between">
                 <button
@@ -500,6 +504,8 @@ const handleSignup = (e) => {
               </div>
             </>
           )}
+
+          {/* Step 5 */}
           {step == 5 && (
             <>
               <div className="mb-4">
@@ -565,7 +571,8 @@ const handleSignup = (e) => {
               </div>
             </>
           )}
-          {/* Step 5 */}
+
+          {/* Step 6 */}
           {step === 6 && (
             <>
               <div className="mb-4">
@@ -625,11 +632,602 @@ const handleSignup = (e) => {
                   Previous
                 </button>
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={handleNextStep}
                   className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
-                  disabled={loading}
                 >
-                  {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
+                  Next
+                </button>
+              </div>
+            </>
+          )}
+
+          {/* Step 7 */}
+          {step === 7 && (
+            <>
+              <div className="mb-4">
+                <label className="block text-sm mb-2">EOBI No.</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="eobi_no"
+                    value={formData.eobi_no}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Blood Group</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="blood_group"
+                    value={formData.blood_group}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Gender</label>
+                <div className="flex items-center space-x-4">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="gender"
+                      value="male"
+                      checked={formData.gender === "male"}
+                      onChange={() => handleInputChange({ target: { name: "gender", value: "male" } })}
+                      className="mr-2"
+                    />
+                    Male
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="gender"
+                      value="female"
+                      checked={formData.gender === "female"}
+                      onChange={() => handleInputChange({ target: { name: "gender", value: "female" } })}
+                      className="mr-2"
+                    />
+                    Female
+                  </label>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Marital Status</label>
+                <div className="flex items-center space-x-4">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="marital_status"
+                      value="Single"
+                      checked={formData.marital_status === true}
+                      onChange={() => handleInputChange({ target: { name: "marital_status", value: true } })}
+                      className="mr-2"
+                    />
+                    Single
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="marital_status"
+                      value="Married"
+                      checked={formData.marital_status === false}
+                      onChange={() => handleInputChange({ target: { name: "marital_status", value: false } })}
+                      className="mr-2"
+                    />
+                    Married
+                  </label>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">CNIC No.</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaAddressCard className="m-2" />
+                  <input
+                    type="text"
+                    name="cnic_no"
+                    value={formData.cnic_no}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Issue Date</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaCalendar className="m-2" />
+                  <input
+                    type="date"
+                    name="cnic_issue_date"
+                    value={formData.cnic_issue_date}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Expiry Date</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaCalendar className="m-2" />
+                  <input
+                    type="date"
+                    name="cnic_expiry_date"
+                    value={formData.cnic_expiry_date}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Driving License No.</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaAddressCard className="m-2" />
+                  <input
+                    type="text"
+                    name="dv_license_no"
+                    value={formData.dv_license_no}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Issue Date</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaCalendar className="m-2" />
+                  <input
+                    type="date"
+                    name="dv_license_issue_date"
+                    value={formData.dv_license_issue_date}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Expiry Date</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaCalendar className="m-2" />
+                  <input
+                    type="date"
+                    name="dv_license_expiry_date"
+                    value={formData.dv_license_expiry_date}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Company Email</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaEnvelope className="m-2" />
+                  <input
+                    type="email"
+                    name="company_email"
+                    value={formData.company_email}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Father's Name (as per CNIC)</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="father_name"
+                    value={formData.father_name}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">CNIC No.</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaAddressCard className="m-2" />
+                  <input
+                    type="text"
+                    name="father_cnic_no"
+                    value={formData.father_cnic_no}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Current Address</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaAddressCard className="m-2" />
+                  <input
+                    type="text"
+                    name="curr_address"
+                    value={formData.curr_address}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Permanent Address</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaAddressCard className="m-2" />
+                  <input
+                    type="text"
+                    name="perm_address"
+                    value={formData.perm_address}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-between">
+                <button
+                  type="button"
+                  onClick={handlePreviousStep}
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  Previous
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextStep}
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          )}
+
+          {/* Step 8 */}
+          {step === 8 && (
+            <>
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Emergency Contact Name</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="em_name_1"
+                    value={formData.em_name_1}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Relationship</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="em_relationship_1"
+                    value={formData.em_relationship_1}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Emergency Contact</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaPhone className="m-2" />
+                  <input
+                    type="text"
+                    name="em_contact_1"
+                    value={formData.em_contact_1}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Email Address</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaEnvelope className="m-2" />
+                  <input
+                    type="email"
+                    name="em_email_1"
+                    value={formData.em_email_1}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Emergency Contact Name</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="em_name_2"
+                    value={formData.em_name_2}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Relationship</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="em_relationship_2"
+                    value={formData.em_relationship_2}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Emergency Contact</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaPhone className="m-2" />
+                  <input
+                    type="text"
+                    name="em_contact_2"
+                    value={formData.em_contact_2}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Email Address</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaEnvelope className="m-2" />
+                  <input
+                    type="email"
+                    name="em_email_2"
+                    value={formData.em_email_2}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-between">
+                <button
+                  type="button"
+                  onClick={handlePreviousStep}
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  Previous
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextStep}
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          )}
+
+          {/* Step 9 */}
+          {step === 9 && (
+            <>
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Next of Kin Name (as per CNIC)</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="nok_name"
+                    value={formData.nok_name}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Relationship</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="nok_relationship"
+                    value={formData.nok_relationship}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">CNIC No.</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaAddressCard className="m-2" />
+                  <input
+                    type="text"
+                    name="nok_cnic"
+                    value={formData.nok_cnic}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Contact No.</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaPhone className="m-2" />
+                  <input
+                    type="text"
+                    name="nok_contact"
+                    value={formData.nok_contact}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Email Address</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaEnvelope className="m-2" />
+                  <input
+                    type="email"
+                    name="nok_email"
+                    value={formData.nok_email}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Permanent Address</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaAddressCard className="m-2" />
+                  <input
+                    type="text"
+                    name="nok_perm_address"
+                    value={formData.nok_perm_address}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-between">
+                <button
+                  type="button"
+                  onClick={handlePreviousStep}
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  Previous
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextStep}
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          )}
+
+          {/* Step 10 */}
+          {step === 10 && (
+            <>
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Nationality</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="nationality"
+                    value={formData.nationality}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Religion</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="religion"
+                    value={formData.religion}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Any Disability/Sickness</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="disability"
+                    value={formData.disability}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-between">
+                <button
+                  type="button"
+                  onClick={handlePreviousStep}
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  Previous
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextStep}
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  Next
                 </button>
               </div>
             </>
@@ -642,3 +1240,11 @@ const handleSignup = (e) => {
 };
 
 export default Signup;
+
+{/* <button
+type="submit"
+className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+disabled={loading}
+>
+{loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
+</button> */}
