@@ -266,7 +266,7 @@ const Signup = () => {
       });
   };
 
-  const getProgress = () => (step / 13) * 100;
+  const getProgress = () => (step / 15) * 100;
 
   return (
     <div className="min-h-screen flex flex-col justify-start items-center mt-10 rounded shadow-xl bg-white text-gray-900">
@@ -479,6 +479,7 @@ const Signup = () => {
                   />
                 </div>
               </div>
+
               <div className="mb-4">
                 <label className="block text-sm mb-2">Employment Date</label>
                 <div className="flex items-center bg-gray-200 rounded">
@@ -1748,6 +1749,88 @@ const Signup = () => {
             </>
           )}
 
+          {/* Step 14 */}
+          {step === 14 && (
+            <>
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Spouse Name</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="spouse_name"
+                    value={formData.spouse_name}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Date of Birth</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaCalendar className="m-2" />
+                  <input
+                    type="date"
+                    name="spouse_date_of_birth"
+                    value={formData.spouse_date_of_birth}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Relation</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUser className="m-2" />
+                  <input
+                    type="text"
+                    name="spouse_relationship"
+                    value={formData.spouse_relationship}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">CNIC No.</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaAddressCard className="m-2" />
+                  <input
+                    type="text"
+                    name="spouse_cnic"
+                    value={formData.nok_cnic}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-between">
+                <button
+                  type="button"
+                  onClick={handlePreviousStep}
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  Previous
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextStep}
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          )}
+
         </form>
       </div>
     </div>
@@ -1756,10 +1839,12 @@ const Signup = () => {
 
 export default Signup;
 
-{/* <button
+{/* 
+<button
 type="submit"
 className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
 disabled={loading}
 >
 {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
-</button> */}
+</button> 
+*/}
