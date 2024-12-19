@@ -217,7 +217,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <input
               type="date"
               name="date_of_birth"
-              value={formData.date_of_birth} disabled
+              value={formData.date_of_birth} 
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
@@ -228,7 +228,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <input
               type="date"
               name="employment_date"
-              value={formData.employment_date} disabled
+              value={formData.employment_date} 
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
@@ -239,7 +239,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <input
               type="text"
               name="department"
-              value={formData.department} disabled
+              value={formData.department} 
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
@@ -250,7 +250,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <input
               type="text"
               name="position"
-              value={formData.position} disabled
+              value={formData.position} 
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
@@ -260,7 +260,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <label className="block text-gray-700 mb-2">Salary:</label>
             <input
               type="number"
-              name="salary" disabled
+              name="salary" 
               value={formData.salary}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
@@ -272,7 +272,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <input
               type="text"
               name="manager"
-              value={formData.manager} disabled
+              value={formData.manager} 
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />

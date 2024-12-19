@@ -128,7 +128,7 @@ const AdminEmployeeProfile = () => {
     }
   };
 
-  
+
   const getDocumentName = (url) => {
     const urlParts = url.split('/');
     return decodeURIComponent(urlParts[urlParts.length - 1]);
@@ -139,7 +139,7 @@ const AdminEmployeeProfile = () => {
   if (error) return <div className="text-center p-6 text-red-500">{error}</div>;
 
   return (
-    <div className="container mx-auto p-8 bg-gray-200 rounded-lg shadow-lg max-w-5xl mt-10">
+    <div className="container mx-auto p-8 bg-gray-200 rounded-lg shadow-lg max-w-5xl mt-10 mb-10">
       <div className="flex items-center mb-6">
         <img
           src={employee.profile_image}
@@ -176,7 +176,7 @@ const AdminEmployeeProfile = () => {
 
       <div className="grid grid-cols-2 gap-8">
         {/* Left Column */}
-        <div className="bg-gray-100 p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Contact Information</h2>
           <p className="text-gray-800 mb-2">
             <FaEnvelope className="inline-block mr-2" /> {employee.email}
@@ -192,32 +192,8 @@ const AdminEmployeeProfile = () => {
           </p>
         </div>
 
-        <div className="bg-white shadow-lg rounded-lg p-6 mt-8">
-          <h2 className="text-2xl font-semibold mb-4 flex items-center">
-            <FaFileAlt className="mr-2 text-gray-600" /> Documents
-          </h2>
-          {employee.documents && employee.documents.length > 0 ? (
-            <ul className="space-y-2">
-              {employee.documents.map((doc, index) => (
-                <li key={index} className="flex items-center space-x-2">
-                  <a
-                    href={doc.document}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 text-lg"
-                  >
-                    {getDocumentName(doc.document)}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-700">No documents available</p>
-          )}
-        </div>
 
-
-        <div className="bg-gray-100 p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
           <p className="text-gray-800 mb-2">
             <FaBirthdayCake className="inline-block mr-2" /> {employee.date_of_birth}
@@ -234,7 +210,7 @@ const AdminEmployeeProfile = () => {
         </div>
 
         {/* Right Column */}
-        <div className="bg-gray-100 p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Job Details</h2>
           <p className="text-gray-800 mb-2">
             <FaBriefcase className="inline-block mr-2" /> Position: {employee.position}
@@ -244,7 +220,7 @@ const AdminEmployeeProfile = () => {
           </p>
         </div>
 
-        <div className="bg-gray-100 p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-4">System Access</h2>
           <p className="text-gray-800 mb-2">
             <FaUserCircle className="inline-block mr-2" /> Username: {employee.username}
@@ -254,12 +230,12 @@ const AdminEmployeeProfile = () => {
             {employee.is_superuser
               ? "Superuser"
               : employee.is_hr_manager
-              ? "HR Manager"
-              : employee.is_manager
-              ? "Manager"
-              : employee.is_staff
-              ? "Staff"
-              : "Employee"}
+                ? "HR Manager"
+                : employee.is_manager
+                  ? "Manager"
+                  : employee.is_staff
+                    ? "Staff"
+                    : "Employee"}
           </p>
           <p className="text-gray-800 mb-2">
             <FaCalendarAlt className="inline-block mr-2" /> Last Login: {employee.last_login || "Never"}
@@ -269,7 +245,32 @@ const AdminEmployeeProfile = () => {
           </p>
         </div>
 
-        
+        <div className="bg-white shadow-lg rounded-lg p-6">
+          <h2 className="text-2xl font-semibold mb-4 flex items-center">
+            <FaFileAlt className="mr-2 text-gray-600" /> Documents
+          </h2>
+          <div className="max-h-60 overflow-y-auto">
+            {employee.documents && employee.documents.length > 0 ? (
+              <ul className="space-y-2">
+                {employee.documents.map((doc, index) => (
+                  <li key={index} className="flex items-center space-x-2">
+                    <a
+                      href={doc.document}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 text-lg"
+                    >
+                      {getDocumentName(doc.document)}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-700">No documents available</p>
+            )}
+          </div>
+        </div>
+
       </div>
 
       {/* Confirmation Modal for Deleting Employee */}
@@ -287,7 +288,7 @@ const AdminEmployeeProfile = () => {
           onUpdate={handleProfileUpdated}
         />
       )}
-      
+
     </div>
   );
 };
