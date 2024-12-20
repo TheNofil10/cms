@@ -190,11 +190,9 @@ const Signup = () => {
       case 2:
         return formData.email && formData.password;
       case 3:
-        return formData.phone && formData.address;
+        return true;
       case 4:
-        return (
-          formData.date_of_birth && formData.department && formData.position
-        );
+        return true;
       case 5:
         return true;
       default:
@@ -208,6 +206,8 @@ const Signup = () => {
     setLoading(true);
   
     const formDataObj = new FormData();
+
+    console.log(formData);
     
     // Loop through formData and append necessary fields
     Object.keys(formData).forEach((key) => {
@@ -247,7 +247,7 @@ const Signup = () => {
           formDataObj.append(key, formData[key]);
         }
 
-    });
+    }});
   
     // Send form data via axios
     axios
@@ -588,21 +588,6 @@ const Signup = () => {
                     />
                     no
                   </label>
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm mb-2">Employee ID</label>
-                <div className="flex items-center bg-gray-200 rounded">
-                  <FaUserShield className="m-2" />
-                  <input
-                    type="text"
-                    name="employee_id"
-                    value={formData.employee_id}
-                    onChange={handleInputChange}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
-                  />
                 </div>
               </div>
 
