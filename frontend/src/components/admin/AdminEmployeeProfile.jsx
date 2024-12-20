@@ -109,19 +109,15 @@ const AdminEmployeeProfile = () => {
 
   const confirmDeleteEmployee = async () => {
     if (!employeeToDelete) return;
-    if (currentUser.is_hr_manager) {
-      toast.error("HRs can't delete an employee");
-      setShowConfirmModal(false);
-      return;
-    }
+
     try {
       await axios.delete(`${API}/employees/${id}/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
       });
-      toast.error("Employee deleted successfully");
-      navigate("/admin/employees");
+      toast.success("Employee deleted successfully");
+      navigate("/hr/employees");
     } catch (error) {
       toast.error("Error deleting employee");
     } finally {

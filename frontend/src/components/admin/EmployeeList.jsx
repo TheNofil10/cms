@@ -118,7 +118,7 @@ const EmployeeList = () => {
             <button
               className="text-red-600 disabled:text-gray-300 disabled:hover:text-gray-300 hover:text-red-800 bg-transparent border-none"
               onClick={() => handleDeleteEmployee(row.original.id)}
-              disabled={currentUser.is_hr_manager}
+              
             >
               <DeleteIcon />
             </button>

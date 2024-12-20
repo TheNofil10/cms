@@ -175,7 +175,7 @@ const handleSignup = (e) => {
         documents: [], // Reset documents array
       });
       setStep(1);
-      navigate("/admin/employees");
+      navigate("/hr/employees");
     })
     .catch((error) => {
       console.log(error);

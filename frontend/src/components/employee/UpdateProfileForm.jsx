@@ -382,7 +382,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
                       </svg>
                     </button>
                     <a
-                      href={doc.url} // Assuming `doc.url` is the URL to download the document
+                      href={doc.document} // Assuming `doc.url` is the URL to download the document
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 underline"

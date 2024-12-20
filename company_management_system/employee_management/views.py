@@ -176,6 +176,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == "destroy":
+            if self.request.user.is_hr_manager or self.request.user.is_superuser:
+                return [IsAuthenticated()]
             return [IsAdminUser()]
         elif self.action in ["create", "update", "partial_update"]:
             if self.request.user.is_hr_manager or self.request.user.is_superuser:

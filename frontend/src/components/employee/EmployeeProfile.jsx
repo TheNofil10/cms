@@ -106,12 +106,12 @@ const EmployeeProfile = () => {
         <p className="text-gray-600 text-lg flex items-center">
           <FaRegBuilding className="mr-2 text-blue-600" /> {department ? department.name : "Loading..."}
         </p>
-        <button
+      {/*  <button
           onClick={handleUpdateProfile}
           className="bg-blue-600 text-white px-4 py-2 rounded-full mt-4 hover:bg-blue-700 transition-colors"
         >
           Edit Profile
-        </button>
+        </button> */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
