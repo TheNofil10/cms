@@ -246,7 +246,7 @@ const Signup = () => {
         else {
           formDataObj.append(key, formData[key]);
         }
-      }
+
     });
   
     // Send form data via axios

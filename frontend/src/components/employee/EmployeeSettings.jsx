@@ -3,8 +3,7 @@ import React from 'react'
 const EmployeeSettings = () => {
   return (
     <div>
-      EmployeeSettings
-      EmployeeSettings
+      Settings Under Development...
     </div>
   )
 }

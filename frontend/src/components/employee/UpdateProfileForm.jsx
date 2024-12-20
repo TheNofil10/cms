@@ -23,6 +23,9 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
     profile_pic: null
   });
   const [preview, setPreview] = useState('');
+  const [documents, setDocuments] = useState([]);  // State to hold documents
+  const [selectedFiles, setSelectedFiles] = useState([]);
+
 
   useEffect(() => {
     if (employee) {
@@ -46,6 +49,10 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
       });
       setPreview(employee.profile_image);
     }
+
+
+    setDocuments(employee.documents);  // Set the documents from the response
+
   }, [employee]);
 
   const handleChange = (e) => {
@@ -58,14 +65,17 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
     setFormData({
       ...formData,
       profile_image: file,
-      
     });
     setPreview(URL.createObjectURL(file))
+  };
+  const getDocumentName = (url) => {
+    const urlParts = url.split('/');
+    return decodeURIComponent(urlParts[urlParts.length - 1]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const formDataToSend = new FormData();
     Object.keys(formData).forEach((key) => {
       if (key === 'profile_pic' && formData[key]) {
@@ -95,6 +105,62 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
     }
   };
 
+  const handleDocumentDelete = async (documentId) => {
+    if (window.confirm("Are you sure you want to delete this document?")) {
+      console.log(documentId);
+      try {
+        const response = await axios.delete(`${API}/employee-documents/${documentId}/`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`, // Adjust for your auth setup
+          },
+        });
+        if (response.status === 204) {
+          toast.success("Document deleted successfully!");
+          // Optionally remove the document from local state
+          setDocuments((prevDocs) => prevDocs.filter((doc) => doc.id !== documentId));
+        }
+      } catch (error) {
+        console.error("Error deleting document:", error);
+        toast.error("Failed to delete the document. Please try again.");
+      }
+    }
+  };
+
+  // Handle multiple file input changes
+  const handleFilesChange = (e) => {
+    setSelectedFiles([...e.target.files]); // Store all selected files
+  };
+
+  // Handle multiple document uploads
+  const handleDocumentsUpload = async () => {
+    if (selectedFiles.length === 0) {
+      toast.error("Please select files before uploading.");
+      return;
+    }
+
+    const formData = new FormData();
+    selectedFiles.forEach((file) => {
+      formData.append("documents", file); // Add each file to FormData
+    });
+    formData.append("employee_id", employee.id); // Assuming `employee.id` is available
+
+    try {
+      const response = await axios.post(`${API}/employee-documents/`, formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      toast.success("Documents uploaded successfully!");
+      setDocuments((prevDocs) => [...prevDocs, ...response.data]); // Update the document list
+      setSelectedFiles([]); // Clear the file input
+    } catch (error) {
+      console.error("Error uploading documents:", error);
+      toast.error("Failed to upload documents.");
+    }
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
       <div className="bg-white w-full max-w-md h-[80vh] overflow-auto p-6 rounded-lg shadow-lg">
@@ -104,7 +170,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
           <div className="mb-4">
             <label className="block text-gray-700 mb-2">Profile Picture:</label>
             <input
-              type="file" 
+              type="file"
               name="profile_pic"
               onChange={handleImageChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
@@ -217,7 +283,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <input
               type="date"
               name="date_of_birth"
-              value={formData.date_of_birth} disabled
+              value={formData.date_of_birth} 
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
@@ -228,7 +294,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <input
               type="date"
               name="employment_date"
-              value={formData.employment_date} disabled
+              value={formData.employment_date} 
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
@@ -239,7 +305,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <input
               type="text"
               name="department"
-              value={formData.department} disabled
+              value={formData.department} 
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
@@ -250,7 +316,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <input
               type="text"
               name="position"
-              value={formData.position} disabled
+              value={formData.position} 
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
@@ -260,7 +326,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <label className="block text-gray-700 mb-2">Salary:</label>
             <input
               type="number"
-              name="salary" disabled
+              name="salary" 
               value={formData.salary}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
@@ -272,7 +338,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <input
               type="text"
               name="manager"
-              value={formData.manager} disabled
+              value={formData.manager} 
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
@@ -283,10 +349,73 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <input
               type="text"
               name="emergency_contact"
-              value={formData.emergency_contact} 
+              value={formData.emergency_contact}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
+          </div>
+          {/* Displaying the available documents */}
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2">Available Documents:</label>
+            {documents.length > 0 ? (
+              <ul className="list-disc pl-5">
+                {documents.map((doc, index) => (
+                  <li key={index} className="flex items-center">
+                    <button
+                      type="button"
+                      onClick={() => handleDocumentDelete(doc.id)} // Delete functionality
+                      className="text-red-600 mr-2"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-5 h-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                    <a
+                      href={doc.document} // Assuming `doc.url` is the URL to download the document
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 underline"
+                    >
+                      {getDocumentName(doc.document)}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No documents available.</p>
+            )}
+
+            {/* Add Multiple Documents Section */}
+            <div className="mt-4">
+              <label className="block text-gray-700 mb-2">Upload New Documents:</label>
+              <div className="flex items-center space-x-4">
+                <input
+                  type="file"
+                  multiple // Allow multiple files
+                  onChange={handleFilesChange} // Handle multiple file changes
+                  className="block w-full text-gray-700 border rounded-md"
+                />
+                <button
+                  type="button"
+                  onClick={handleDocumentsUpload} // Add multiple documents
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  Upload
+                </button>
+              </div>
+            </div>
+
           </div>
 
           <div className="flex justify-end mt-6">

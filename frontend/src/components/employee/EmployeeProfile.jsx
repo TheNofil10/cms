@@ -15,6 +15,7 @@ import {
   FaMoneyBillWave,
   FaPhoneAlt,
   FaUserShield,
+  FaFileAlt, // Icon for files/documents
 } from "react-icons/fa";
 import { ToastContainer } from "react-toastify";
 import UpdateProfileForm from "./UpdateProfileForm";
@@ -38,6 +39,7 @@ const EmployeeProfile = () => {
         }
       );
       setEmployee(response.data);
+      console.log("Employee data: ", response.data); 
 
       const departmentResponse = await axios.get(
         `${API}/department/me/`,
@@ -73,6 +75,11 @@ const EmployeeProfile = () => {
     setIsEditing(false);
   };
 
+  const getDocumentName = (url) => {
+    const urlParts = url.split('/');
+    return decodeURIComponent(urlParts[urlParts.length - 1]);
+  };
+
   if (loading)
     return <div className="text-center p-6 text-black">Loading...</div>;
   if (error) return <div className="text-center p-6 text-red-500">{error}</div>;
@@ -83,9 +90,7 @@ const EmployeeProfile = () => {
       <div className="relative mb-6 w-full h-48 bg-black rounded-lg shadow-lg flex items-center justify-center overflow-hidden">
         <img
           src={employee.profile_image}
-          alt={`${employee.first_name} ${
-            employee.middle_name ? employee.middle_name + " " : ""
-          }${employee.last_name}'s profile`}
+          alt={`${employee.first_name} ${employee.middle_name ? employee.middle_name + " " : ""}${employee.last_name}'s profile`}
           className="w-36 h-36 rounded-full border-4 border-white shadow-lg object-cover"
         />
       </div>
@@ -93,23 +98,20 @@ const EmployeeProfile = () => {
       {/* Profile Header */}
       <div className="bg-white shadow-lg rounded-lg p-6 flex flex-col items-center">
         <h1 className="text-3xl font-semibold mb-2">
-          {employee.first_name}{" "}
-          {employee.middle_name ? employee.middle_name + " " : ""}
-          {employee.last_name}
+          {employee.first_name} {employee.middle_name ? employee.middle_name + " " : ""}{employee.last_name}
         </h1>
         <p className="text-gray-600 text-lg flex items-center mb-2">
           <FaUserTie className="mr-2 text-blue-600" /> {employee.position}
         </p>
         <p className="text-gray-600 text-lg flex items-center">
-          <FaRegBuilding className="mr-2 text-blue-600" />{" "}
-          {department ? department.name : "Loading..."}
+          <FaRegBuilding className="mr-2 text-blue-600" /> {department ? department.name : "Loading..."}
         </p>
-        <button
+      {/*  <button
           onClick={handleUpdateProfile}
           className="bg-blue-600 text-white px-4 py-2 rounded-full mt-4 hover:bg-blue-700 transition-colors"
         >
           Edit Profile
-        </button>
+        </button> */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
@@ -122,22 +124,16 @@ const EmployeeProfile = () => {
             <FaUserTie className="inline mr-2" /> Position: {employee.position}
           </p>
           <p className="text-gray-700 text-lg mb-2">
-            <FaRegBuilding className="inline mr-2" /> Department:{" "}
-            {department ? department.name : "Loading..."}
+            <FaRegBuilding className="inline mr-2" /> Department: {department ? department.name : "Loading..."}
           </p>
           <p className="text-gray-700 text-lg mb-2">
-            <FaCalendarAlt className="inline mr-2" /> Employment Date:{" "}
-            {employee.employment_date}
+            <FaCalendarAlt className="inline mr-2" /> Employment Date: {employee.employment_date}
           </p>
           <p className="text-gray-700 text-lg mb-2">
-            <FaBirthdayCake className="inline mr-2" /> Date of Birth:{" "}
-            {employee.date_of_birth}
+            <FaBirthdayCake className="inline mr-2" /> Date of Birth: {employee.date_of_birth}
           </p>
           <p className="text-gray-700 text-lg">
-            <FaUserCircle className="inline mr-2" /> Manager:{" "}
-            {department.manager
-              ? `${department.manager.first_name} ${department.manager.last_name}`
-              : "N/A"}
+            <FaUserCircle className="inline mr-2" /> Manager: {department.manager ? `${department.manager.first_name} ${department.manager.last_name}` : "N/A"}
           </p>
         </div>
 
@@ -169,42 +165,53 @@ const EmployeeProfile = () => {
           </div>
         </div>
 
+        {/* Document Section */}
+        <div className="bg-white shadow-lg rounded-lg p-6">
+          <h2 className="text-2xl font-semibold mb-4 flex items-center">
+            <FaFileAlt className="mr-2 text-gray-600" /> Documents
+          </h2>
+          {employee.documents && employee.documents.length > 0 ? (
+            <ul className="space-y-2">
+              {employee.documents.map((doc, index) => (
+                <li key={index} className="flex items-center space-x-2">
+                  <a
+                    href={doc.document}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 text-lg"
+                  >
+                    {getDocumentName(doc.document)}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-700">No documents available</p>
+          )}
+        </div>
+
         {/* Additional Information Section */}
         <div className="bg-white shadow-lg rounded-lg p-6">
           <h2 className="text-2xl font-semibold mb-4 flex items-center">
-            <FaMoneyBillWave className="mr-2 text-gray-600" /> Additional
-            Information
+            <FaMoneyBillWave className="mr-2 text-gray-600" /> Additional Information
           </h2>
           <div className="flex justify-between">
             <p className="text-gray-700 text-lg mb-2">
-              <FaPhoneAlt className="inline mr-2" /> Alternate Phone:{" "}
-              {employee.alternate_phone || "N/A"}
+              <FaPhoneAlt className="inline mr-2" /> Alternate Phone: {employee.alternate_phone || "N/A"}
             </p>
           </div>
           <p className="text-gray-700 text-lg mb-2">
-            <FaUserShield className="inline mr-2" /> Emergency Contact:{" "}
-            {employee.emergency_contact || "N/A"}
+            <FaUserShield className="inline mr-2" /> Emergency Contact: {employee.emergency_contact || "N/A"}
           </p>
           <p className="text-gray-700 text-lg mb-2">
-            <FaAddressCard className="inline mr-2" /> Address:{" "}
-            {employee.address}
+            <FaAddressCard className="inline mr-2" /> Address: {employee.address}
           </p>
           <p className="text-gray-700 text-lg">
-            <FaMoneyBillWave className="inline mr-2" /> Salary:{" "}
-            {employee.salary}
-          </p>
-        </div>
-        {/* Experience Section */}
-        <div className="bg-white shadow-lg rounded-lg p-6">
-          <h2 className="text-2xl font-semibold mb-4 flex items-center">
-            <FaAddressCard className="mr-2 text-gray-600" /> Experience
-          </h2>
-          <p className="text-gray-700 text-lg">
-            Experience details...will be added by HR soon
+            <FaMoneyBillWave className="inline mr-2" /> Salary: {employee.salary}
           </p>
         </div>
       </div>
-      
+
       {isEditing && (
         <UpdateProfileForm
           employee={employee}
