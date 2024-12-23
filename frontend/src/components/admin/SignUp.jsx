@@ -1,7 +1,10 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
+  FaClock,
   FaUser,
   FaEnvelope,
   FaLock,
@@ -127,7 +130,8 @@ const Signup = () => {
     is_manager: false,
     documents: [],
     permanent_address: "",
-    flexible: false,
+    check_in_time: "",
+    working_hours: "",
     employee_id: "",
     location: "",
     eobi_no: "",
@@ -334,7 +338,8 @@ const Signup = () => {
           is_manager: false,
           documents: [], // Reset documents array
           permanent_address: "",
-          flexible: false,
+          check_in_time: "",
+          working_hours: "",
           employee_id: "",
           location: "",
           eobi_no: "",
@@ -548,6 +553,7 @@ const Signup = () => {
                   />
                 </div>
               </div>
+
               <div className="mb-4">
                 <label className="block text-sm mb-2">Alternate Phone</label>
                 <div className="flex items-center bg-gray-200 rounded">
@@ -660,30 +666,34 @@ const Signup = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm mb-2">Flexible Timings</label>
-                <div className="flex items-center space-x-4">
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="flexible"
-                      value="yes"
-                      checked={formData.flexible === true}
-                      onChange={() => handleInputChange({ target: { name: flexible, value: true } })}
-                      className="mr-2"
-                    />
-                    yes
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="flexible"
-                      value="no"
-                      checked={formData.flexible === false}
-                      onChange={() => handleInputChange({ target: { name: flexible, value: false } })}
-                      className="mr-2"
-                    />
-                    no
-                  </label>
+                <label className="block text-sm mb-2">Check-In Time</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaClock className="m-2" />
+                  <input
+                    type="time"
+                    name="check_in_time"
+                    value={formData.check_in_time}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Working Hours</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaClock className="m-2" />
+                  <input
+                    type="number"
+                    name="working_hours"
+                    value={formData.working_hours}
+                    onChange={handleInputChange}
+                    min="0"
+                    step="0.5"
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                    placeholder="Enter hours (e.g., 8.5)"
+                  />
+                  <span className="ml-2 text-gray-500">hours</span>
                 </div>
               </div>
 
