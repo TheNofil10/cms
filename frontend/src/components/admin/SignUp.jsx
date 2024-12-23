@@ -114,9 +114,8 @@ const Signup = () => {
     password: "",
     phone: "",
     alternate_phone: "",
-    address: "",
     date_of_birth: "",
-    date_of_joining: "",
+    joining_date: "",
     department: "",
     position: "",
     salary: "",
@@ -324,7 +323,7 @@ const Signup = () => {
           alternate_phone: "",
           address: "",
           date_of_birth: "",
-          date_of_joining: "",
+          joining_date: "",
           department: "",
           position: "",
           salary: "",
@@ -981,8 +980,8 @@ const Signup = () => {
                       type="checkbox"
                       name="marital_status"
                       value="Single"
-                      checked={formData.marital_status === true}
-                      onChange={() => handleInputChange({ target: { name: "marital_status", value: true } })}
+                      checked={formData.marital_status === false}
+                      onChange={() => handleInputChange({ target: { name: "marital_status", value: false } })}
                       className="mr-2"
                     />
                     Single
@@ -992,8 +991,8 @@ const Signup = () => {
                       type="checkbox"
                       name="marital_status"
                       value="Married"
-                      checked={formData.marital_status === false}
-                      onChange={() => handleInputChange({ target: { name: "marital_status", value: false } })}
+                      checked={formData.marital_status === true}
+                      onChange={() => handleInputChange({ target: { name: "marital_status", value: true } })}
                       className="mr-2"
                     />
                     Married
@@ -1632,7 +1631,7 @@ const Signup = () => {
                   <div className="mb-2">
                     <label className="block text-sm mb-2">Reason for Leaving</label>
                     <input
-                      type="number"
+                      type="text"
                       name="reason_for_leaving"
                       step="0.1"
                       value={employment.reason_for_leaving}
