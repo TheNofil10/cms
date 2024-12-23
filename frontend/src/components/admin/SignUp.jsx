@@ -1900,7 +1900,7 @@ const Signup = () => {
                   <input
                     type="text"
                     name="spouse_cnic"
-                    value={formData.nok_cnic}
+                    value={formData.spouse_cnic}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
                     required
