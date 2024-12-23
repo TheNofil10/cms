@@ -684,12 +684,16 @@ const Signup = () => {
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaClock className="m-2" />
                   <input
-                    type="time"
+                    type="number"
                     name="working_hours"
                     value={formData.working_hours}
                     onChange={handleInputChange}
+                    min="0"
+                    step="0.5"
                     className="w-full p-2 bg-gray-200 border-none outline-none"
+                    placeholder="Enter hours (e.g., 8.5)"
                   />
+                  <span className="ml-2 text-gray-500">hours</span>
                 </div>
               </div>
 
