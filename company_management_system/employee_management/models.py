@@ -101,6 +101,30 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     nationality = models.CharField(max_length=255, null=False, blank=False)
     religion = models.CharField(max_length=255, null=False, blank=False)
     disability = models.CharField(max_length=255, null=True, blank=True)  # Optional field
+    
+    
+    #step 13
+    
+    ref_name_1 = models.CharField(max_length=255)
+    ref_mobile_1 = models.CharField(max_length=15)
+    ref_email_1 = models.EmailField(blank=True, null=True)
+    ref_designation_1 = models.CharField(max_length=255)
+    ref_company_1 = models.CharField(max_length=255)
+
+    ref_name_2 = models.CharField(max_length=255)
+    ref_mobile_2 = models.CharField(max_length=15)
+    ref_email_2 = models.EmailField(blank=True, null=True)
+    ref_designation_2 = models.CharField(max_length=255)
+    ref_company_2 = models.CharField(max_length=255)
+    
+    
+    #step 14
+    spouse_name = models.CharField(max_length=255)
+    spouse_date_of_birth = models.DateField()
+    spouse_relationship = models.CharField(max_length=255)
+    spouse_cnic = models.CharField(max_length=15)
+    
+    
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]
 
@@ -144,6 +168,28 @@ class Qualification(models.Model):
     def __str__(self):
         return f"{self.degree} from {self.institute}"
 
+
+class Employment(models.Model):
+    employee = models.ForeignKey(Employee,on_delete=models.CASCADE,related_name="employments")
+    company_name = models.CharField(max_length=255)
+    designation = models.CharField(max_length=255)
+    year_from = models.PositiveIntegerField()
+    year_to = models.PositiveIntegerField()
+    reason_for_leaving = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.company_name} - {self.designation}"
+
+
+class Dependent(models.Model):
+    employee = models.ForeignKey(Employee, related_name='dependents', on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    date_of_birth = models.DateField()
+    relation = models.CharField(max_length=255)
+    cnic = models.CharField(max_length=15)
+    
+    def __str__(self):
+        return self.name
 class EmployeeDocuments(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="documents")
     document = models.FileField(upload_to=employee_documents_path)
