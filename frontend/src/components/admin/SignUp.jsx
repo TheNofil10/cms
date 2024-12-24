@@ -109,13 +109,14 @@ const Signup = () => {
     first_name: "",
     middle_name: "",
     last_name: "",
+    address: "",
     username: "",
     email: "",
     password: "",
     phone: "",
     alternate_phone: "",
     date_of_birth: "",
-    joining_date: "",
+    employment_date: "",
     department: "",
     position: "",
     salary: "",
@@ -321,7 +322,7 @@ const Signup = () => {
           alternate_phone: "",
           address: "",
           date_of_birth: "",
-          joining_date: "",
+          employment_date: "",
           department: "",
           position: "",
           salary: "",
@@ -389,7 +390,7 @@ const Signup = () => {
         });
   
         setStep(1);
-        navigate("/admin/employees");
+        navigate("/hr/employees");
       })
       .catch((error) => {
         console.log(error);
@@ -571,8 +572,8 @@ const Signup = () => {
                   <FaAddressCard className="m-2" />
                   <input
                     type="text"
-                    name="curr_address"
-                    value={formData.curr_address}
+                    name="address"
+                    value={formData.address}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
                     required
@@ -700,8 +701,8 @@ const Signup = () => {
                   <FaCalendar className="m-2" />
                   <input
                     type="date"
-                    name="joining_date"
-                    value={formData.joining_date}
+                    name="employment_date"
+                    value={formData.employment_date}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
                     required
@@ -1375,8 +1376,8 @@ const Signup = () => {
                   <FaAddressCard className="m-2" />
                   <input
                     type="text"
-                    name="nok_perm_address"
-                    value={formData.nok_perm_address}
+                    name="nok_permanent_address"
+                    value={formData.nok_permanent_address}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
                     required
@@ -1940,7 +1941,7 @@ const Signup = () => {
                       value={dependent.name}
                       onChange={(e) => handleDependentChange(index, e)}
                       className="w-full p-2 bg-gray-200 border-none outline-none"
-                      required
+                      
                     />
                   </div>
 
@@ -1952,7 +1953,7 @@ const Signup = () => {
                       value={dependent.date_of_birth}
                       onChange={(e) => handleDependentChange(index, e)}
                       className="w-full p-2 bg-gray-200 border-none outline-none"
-                      required
+                      
                     />
                   </div>
 
@@ -1964,7 +1965,7 @@ const Signup = () => {
                       value={dependent.relation}
                       onChange={(e) => handleDependentChange(index, e)}
                       className="w-full p-2 bg-gray-200 border-none outline-none"
-                      required
+                      
                     />
                   </div>
 
@@ -1976,7 +1977,7 @@ const Signup = () => {
                       value={dependent.cnic}
                       onChange={(e) => handleDependentChange(index, e)}
                       className="w-full p-2 bg-gray-200 border-none outline-none"
-                      required
+                      
                     />
                   </div>
 

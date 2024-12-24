@@ -40,6 +40,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=15)
     alternate_phone = models.CharField(max_length=15, null=True, blank=True)
     address = models.TextField()
+    permanent_address = models.TextField()
     date_of_birth = models.DateField()
     employment_date = models.DateField()
     department = models.ForeignKey(
@@ -66,8 +67,40 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_hr_manager = models.BooleanField(default=False)  
     is_manager = models.BooleanField(default=False)
+    check_in_time = models.TimeField(null=True, blank=True)  
+    working_hours = models.FloatField(null=True, blank=True)  
+    location = models.TextField(null=True, blank=True)  
+    
+    #step 7 :
+    eobi_no = models.CharField(max_length=255, null=True, blank=True)
+    blood_group = models.CharField(max_length=5, null=True, blank=True)  # Example: "O+"
+    gender = models.CharField(max_length=10, null=True, blank=True)  # Choices can be added
+    marital_status = models.BooleanField(null=True, blank=True)  # True for Married, False for Single
+    cnic_no = models.CharField(max_length=15, null=True, blank=True)  # 13 digits + spaces or dashes
+    cnic_issue_date = models.DateField(null=True, blank=True)
+    cnic_expiry_date = models.DateField(null=True, blank=True)
+    dv_license_no = models.CharField(max_length=255, null=True, blank=True)
+    dv_license_issue_date = models.DateField(null=True, blank=True)
+    dv_license_expiry_date = models.DateField(null=True, blank=True)
+    company_email = models.EmailField(max_length=255, null=True, blank=True)
+    father_name = models.CharField(max_length=255, null=True, blank=True)
+    father_cnic_no = models.CharField(max_length=15, null=True, blank=True)
+    
+    #step 9
+    
+    # Fields for Next of Kin
+    nok_name = models.CharField(max_length=255)  # Next of Kin Name
+    nok_relationship = models.CharField(max_length=255)  # Relationship with the user
+    nok_cnic = models.CharField(max_length=15, unique=False)  # CNIC Number
+    nok_contact = models.CharField(max_length=15, blank=True)  # Contact Number
+    nok_email = models.EmailField(max_length=255)  # Email Address
+    nok_permanent_address = models.TextField()  # Permanent Address
     
     
+    #step 10
+    nationality = models.CharField(max_length=255, null=False, blank=False)
+    religion = models.CharField(max_length=255, null=False, blank=False)
+    disability = models.CharField(max_length=255, null=True, blank=True)  # Optional field
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]
 
@@ -82,6 +115,34 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+
+class EmergencyContact(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='emergency_contacts')
+    
+    em_name_1 = models.CharField(max_length=255)
+    em_relationship_1 = models.CharField(max_length=255)
+    em_contact_1 = models.CharField(max_length=20, null=True, blank=True)
+    em_email_1 = models.EmailField()
+
+    em_name_2 = models.CharField(max_length=255)
+    em_relationship_2 = models.CharField(max_length=255)
+    em_contact_2 = models.CharField(max_length=20, null=True, blank=True)
+    em_email_2 = models.EmailField()
+
+    def __str__(self):
+        return f"Emergency Contact for {self.employee.first_name} {self.employee.last_name}"
+
+
+class Qualification(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='qualifications')
+    institute = models.CharField(max_length=255, null=False, blank=False)
+    degree = models.CharField(max_length=255, null=False, blank=False)
+    year_from = models.IntegerField(null=False, blank=False)
+    year_to = models.IntegerField(null=False, blank=False)
+    gpa = models.DecimalField(max_digits=4, decimal_places=2, null=False, blank=False)
+
+    def __str__(self):
+        return f"{self.degree} from {self.institute}"
 
 class EmployeeDocuments(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="documents")

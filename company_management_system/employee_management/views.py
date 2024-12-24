@@ -2,8 +2,10 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from django.utils.dateparse import parse_date
 from decimal import Decimal
+from rest_framework.exceptions import ValidationError
 from rest_framework import mixins
 from rest_framework.decorators import api_view, permission_classes, action
+from collections import defaultdict
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from django.utils import timezone
@@ -40,8 +42,11 @@ from .serializers import (
     TodoSerializer,
     AppattendanceSerializer,
     EmployeeDocumentsSerializer,
+    EmployeeEmergencyContactSerializer,
+    EmployeeQualificationSerializer,
 )
 from .models import (
+    Qualification,
     Applicant,
     Attendance,
     Employee,
@@ -58,6 +63,7 @@ from .models import (
     Todo,
     EmployeeAppAttendance,
     EmployeeDocuments,
+    EmergencyContact,
 )
 from django.core.files.storage import default_storage
 from datetime import timedelta
@@ -173,7 +179,29 @@ def generate_job_details(request):
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
+    def parse_nested_data(self, data, prefix):
+        """Parses nested data like qualifications[0][field]."""
+        parsed_data = defaultdict(dict)
+        for key, value in data.items():
+            if key.startswith(prefix):
+                # Extract the index and field name
+                index, field = key[len(prefix):-1].split('][')
+                parsed_data[int(index)][field] = value[0]  # Use the first value from the list
+        return list(parsed_data.values())
 
+    def handle_qualifications(self, employee, qualifications_data):
+        """Handles saving qualifications for an employee."""
+        for qualification in qualifications_data:
+            qualification["employee"] = employee.id  # Associate with the employee
+            qualification_serializer = EmployeeQualificationSerializer(data=qualification)
+            if qualification_serializer.is_valid():
+                print("data is valid")
+                qualification_serializer.save()
+                print("qualification saved")
+            else:
+                raise ValidationError(
+                    {"qualification_errors": qualification_serializer.errors}
+                )
     def get_permissions(self):
         if self.action == "destroy":
             if self.request.user.is_hr_manager or self.request.user.is_superuser:
@@ -195,8 +223,15 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         print(self.request.FILES)
         # Save the employee instance
-        employee = serializer.save(is_active=True)
         
+      #  print("data ",self.request.data)
+        employee = serializer.save(is_active=True)
+              # Handle qualifications
+        # Handle qualifications
+        qualifications_data = self.parse_nested_data(self.request.data, "qualifications[")
+        print("qualifications data is ",qualifications_data)
+        if qualifications_data:
+            self.handle_qualifications(employee, qualifications_data)
         # Handle profile image upload
         if "profile_image" in self.request.FILES:
             employee.profile_image = self.request.FILES["profile_image"]
@@ -220,6 +255,24 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                     document_serializer.save()
                 else:
                     print(f"Error with document upload: {document_serializer.errors}")
+                    
+            if "em_contact_1" in self.request.data:
+                emergency_contact_data = {
+                    'employee': employee.id,
+                    'em_name_1': self.request.data["em_contact_1"],
+                    'em_relationship_1': self.request.data["em_relationship_1"],
+                    'em_contact_1': self.request.data["em_contact_1"],
+                    'em_email_1': self.request.data["em_email_1"],
+                    'em_name_2': self.request.data["em_contact_2"],
+                    'em_relationship_2': self.request.data["em_relationship_2"],
+                    'em_contact_2': self.request.data["em_contact_2"],
+                    'em_email_2': self.request.data["em_email_2"],
+                }
+                emergency_contact_serializer = EmployeeEmergencyContactSerializer(data=emergency_contact_data)
+                if emergency_contact_serializer.is_valid():
+                    emergency_contact_serializer.save()
+                else:
+                    print(f"Error with emergency contact upload: {emergency_contact_serializer.errors}")
 
     def perform_update(self, serializer):
         instance = serializer.save()
