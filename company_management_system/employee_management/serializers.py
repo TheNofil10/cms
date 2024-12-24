@@ -17,6 +17,8 @@ from .models import (
     Todo,
     EmployeeAppAttendance,
     EmployeeDocuments,
+    EmergencyContact,
+    Qualification,
 )
 
 class EmployeeDocumentsSerializer(serializers.ModelSerializer):
@@ -26,6 +28,15 @@ class EmployeeDocumentsSerializer(serializers.ModelSerializer):
         model = EmployeeDocuments
         fields = ["id","employee", "document", "uploaded_at"]
 
+class EmployeeQualificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Qualification
+        fields = "__all__"
+
+class EmployeeEmergencyContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmergencyContact
+        fields = "__all__"
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
@@ -34,7 +45,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Employee
-        fields = "__all__"  # or you can explicitly list the fields you want to include
+        fields = "__all__"  
     
     def create(self, validated_data):
         password = validated_data.pop("password", None)
