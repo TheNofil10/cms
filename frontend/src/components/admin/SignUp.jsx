@@ -403,12 +403,105 @@ const Signup = () => {
 
   const getProgress = () => (step / 15) * 100;
 
+  const fillSampleData = () => {
+    setFormData({
+      first_name: "John",
+      middle_name: "A.",
+      last_name: "Doe",
+      username: "johndoe",
+      email: "johndoe@example.com",
+      password: "SecurePassword123",
+      phone: "1234567890",
+      alternate_phone: "0987654321",
+      address: "123 Main Street",
+      date_of_birth: "1990-01-01",
+      employment_date: "2022-06-15",
+      department: "35",
+      position: "Software Engineer",
+      salary: "75000",
+      manager: null,
+      profile_image: null,
+      imagePreview: null,
+      is_staff: true,
+      is_active: true,
+      is_hr_manager: false,
+      is_manager: false,
+      documents: [],
+      permanent_address: "123 Main Street",
+      check_in_time: "09:00",
+      working_hours: "8",
+      location: "New York",
+      eobi_no: "EOB12345",
+      blood_group: "O+",
+      gender: "Male",
+      marital_status: true,
+      cnic_no: "12345-6789012-3",
+      cnic_issue_date: "2010-01-01",
+      cnic_expiry_date: "2030-01-01",
+      dv_license_no: "DL12345",
+      dv_license_issue_date: "2015-01-01",
+      dv_license_expiry_date: "2025-01-01",
+      company_email: "john.doe@company.com",
+      father_name: "Robert Doe",
+      father_cnic_no: "98765-4321098-7",
+      em_name_1: "Alice Doe",
+      em_relationship_1: "Wife",
+      em_contact_1: "1234567890",
+      em_email_1: "alice.doe@example.com",
+      em_name_2: "Bob Doe",
+      em_relationship_2: "Brother",
+      em_contact_2: "0987654321",
+      em_email_2: "bob.doe@example.com",
+      nok_name: "Alice Doe",
+      nok_relationship: "Wife",
+      nok_cnic: "12345-6789012-3",
+      nok_contact: "1234567890",
+      nok_email: "alice.doe@example.com",
+      nok_permanent_address: "123 Main Street",
+      nationality: "American",
+      religion: "Christianity",
+      disability: "None",
+      ref_name_1: "Jane Doe",
+      ref_mobile_1: "1234567890",
+      ref_email_1: "jane.doe@example.com",
+      ref_designation_1: "Manager",
+      ref_company_1: "Tech Corp",
+      ref_name_2: "Jack Smith",
+      ref_mobile_2: "0987654321",
+      ref_email_2: "jack.smith@example.com",
+      ref_designation_2: "Director",
+      ref_company_2: "Innovate LLC",
+      spouse_name: "Alice Doe",
+      spouse_date_of_birth: "1992-02-02",
+      spouse_relationship: "Wife",
+      spouse_cnic: "12345-6789012-3",
+      qualifications: [
+        { institute: "University A", degree: "B.Sc", year_from: "2008", year_to: "2012", gpa: "3.8" },
+      ],
+      employments: [
+        { company_name: "Tech Corp", designation: "Software Engineer", year_from: "2013", year_to: "2018", reason_for_leaving: "Career Growth" },
+      ],
+      dependents: [
+        { name: "Alice Doe", date_of_birth: "2015-05-15", relation: "Daughter", cnic: "45678-1234567-0" },
+      ],
+    });
+  };
+
   return (
     <div className="min-h-screen flex flex-col justify-start items-center mt-10 rounded shadow-xl bg-white text-gray-900">
       <div className="w-full max-w-md">
         <h2 className="text-3xl mb-6 text-black text-center">
           Employee Details
         </h2>
+
+        {/* <div>
+          <button onClick={fillSampleData}>Fill Sample Data</button>
+          <button onClick={handleSignup} disabled={loading}>
+            {loading ? "Submitting..." : "Submit"}
+          </button>
+          <ToastContainer />
+        </div> */}
+
         <Line percent={getProgress()} strokeWidth="2" strokeColor="black" />
         <form
           onSubmit={handleSignup}

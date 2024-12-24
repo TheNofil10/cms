@@ -44,9 +44,13 @@ from .serializers import (
     EmployeeDocumentsSerializer,
     EmployeeEmergencyContactSerializer,
     EmployeeQualificationSerializer,
+    EmployeeEmploymentSerializer,
+    EmployeeDependentSerializer
 )
 from .models import (
+    Dependent,
     Qualification,
+    Employment,
     Applicant,
     Attendance,
     Employee,
@@ -202,6 +206,27 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                 raise ValidationError(
                     {"qualification_errors": qualification_serializer.errors}
                 )
+                
+    def handle_employments(self, employee, employments_data):
+        """Handles saving employment records for an employee."""
+        for employment in employments_data:
+            employment["employee"] = employee.id  # Associate with the employee
+            employment_serializer = EmployeeEmploymentSerializer(data=employment)
+            if employment_serializer.is_valid():
+                employment_serializer.save()
+            else:
+                raise ValidationError({"employment_errors": employment_serializer.errors})
+            
+                
+    def handle_dependents(self, employee, dependent_data):
+        """Handles saving employment records for an employee."""
+        for employment in dependent_data:
+            employment["employee"] = employee.id  # Associate with the employee
+            dependent_serializer = EmployeeDependentSerializer(data=employment)
+            if dependent_serializer.is_valid():
+                dependent_serializer.save()
+            else:
+                raise ValidationError({"employment_errors": dependent_serializer.errors})
     def get_permissions(self):
         if self.action == "destroy":
             if self.request.user.is_hr_manager or self.request.user.is_superuser:
@@ -224,14 +249,22 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         print(self.request.FILES)
         # Save the employee instance
         
-      #  print("data ",self.request.data)
+        print("data ",self.request.data)
         employee = serializer.save(is_active=True)
-              # Handle qualifications
         # Handle qualifications
         qualifications_data = self.parse_nested_data(self.request.data, "qualifications[")
         print("qualifications data is ",qualifications_data)
         if qualifications_data:
             self.handle_qualifications(employee, qualifications_data)
+            
+        # Handle dependent
+
+        
+
+        employments_data = self.parse_nested_data(self.request.data, "employments[")
+        print("employments data is ",employments_data)
+        if employments_data:
+            self.handle_employments(employee, employments_data)
         # Handle profile image upload
         if "profile_image" in self.request.FILES:
             employee.profile_image = self.request.FILES["profile_image"]

@@ -19,6 +19,8 @@ from .models import (
     EmployeeDocuments,
     EmergencyContact,
     Qualification,
+    Employment,
+    Dependent,
 )
 
 class EmployeeDocumentsSerializer(serializers.ModelSerializer):
@@ -32,12 +34,20 @@ class EmployeeQualificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Qualification
         fields = "__all__"
+        
+class EmployeeEmploymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employment
+        fields = "__all__"
 
 class EmployeeEmergencyContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmergencyContact
         fields = "__all__"
-
+class EmployeeDependentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dependent
+        fields = "__all__"
 
 class EmployeeSerializer(serializers.ModelSerializer):
     # Include documents as a nested serializer
