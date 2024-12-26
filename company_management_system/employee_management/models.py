@@ -506,7 +506,7 @@ class ComplianceReport(models.Model):
     
     
 class Voucher(models.Model):
-    id = models.CharField(primary_key=True, max_length=50, unique=True)  # Unique voucher code
+    id = models.AutoField(primary_key=True)  # Unique voucher code
     head_of_department = models.CharField(max_length=255)
     department = models.CharField(max_length=255)
     date = models.DateField()
@@ -518,7 +518,7 @@ class Voucher(models.Model):
 
 def voucher_documents_path(instance, filename):
     print("instance ==> ",instance)
-    return f"voucher_documents/voucher/{instance}/{filename}"
+    return f"voucher_documents/voucher/{instance.voucher.id}/{filename}"
 
 class VoucherDocuments(models.Model):
     voucher = models.ForeignKey(Voucher, on_delete=models.CASCADE, related_name="documents")

@@ -1234,35 +1234,11 @@ class TodoViewSet(viewsets.ModelViewSet):
 class VoucherListView(viewsets.ModelViewSet):
     queryset = Voucher.objects.all()
     serializer_class = VoucherSerializer
-    
-    def get(self, request):
-        # Query all vouchers
-        vouchers = Voucher.objects.all()
-        # Serialize the data
-        serializer = VoucherSerializer(vouchers, many=True)
-        # Return serialized data as JSON
-        return Response(serializer.data)
-    
+
     def perform_create(self, serializer):
-        voucher = serializer.save
-        # Handle voucher documents upload
-        if "documents" in self.request.data:
-            print("found")
-            # Loop through each document and create an EmployeeDocuments entry
-            for document in self.request.data.getlist("documents"):
-                # Assuming you have the EmployeeDocumentsViewSet set up for the employee
-                print("document is ",document)
-                document_data = {
-                    'employee': voucher.id,
-                    'document': document
-                }
-                print("document data are ",document_data)
-                # Create the document using EmployeeDocumentsViewSet logic
-                document_serializer = EmployeeDocumentsSerializer(data=document_data)
-                if document_serializer.is_valid():
-                    document_serializer.save()
-                else:
-                    print(f"Error with document upload: {document_serializer.errors}")
+        voucher = serializer.save()
+        # Documents will be uploaded via VoucherDocumentViewSet, not here.
+        return voucher
                     
 
 class VoucherDocumentViewSet(viewsets.ModelViewSet):
@@ -1275,9 +1251,9 @@ class VoucherDocumentViewSet(viewsets.ModelViewSet):
         if "document" in self.request.FILES:
             document = self.request.FILES["document"]
             # Save the document
-            serializer.save(document=document, voucher='voucher')
-            
-    
+            serializer.save(document=document, voucher=voucher)  # Corrected 'voucher' value
+            return serializer.instance  # Return the saved instance
+
     def destroy(self, request, *args, **kwargs):
         document = self.get_object()
 
@@ -1302,5 +1278,3 @@ class VoucherDocumentViewSet(viewsets.ModelViewSet):
         document.delete()
 
         return Response({"message": "Document deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
-    
-    

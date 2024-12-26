@@ -6,6 +6,7 @@ import {
   FaCalendar,
   FaDollarSign,
   FaUserShield,
+  FaSpinner,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Line } from "rc-progress";
@@ -69,7 +70,7 @@ const AddVoucher = () => {
       case 1:
         return formData.head_of_department && formData.department && formData.date && formData.amount && formData.reason;
       case 2:
-        return formData.documents;
+        return;
     }
   };
 
@@ -100,7 +101,7 @@ const AddVoucher = () => {
   
     // Send form data via axios
     axios
-      .post(`${SERVER_URL}/employees/`, formDataObj, {
+      .post(`${SERVER_URL}/vouchers/`, formDataObj, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           "Content-Type": "multipart/form-data",

@@ -14,7 +14,7 @@ const AddVoucherPage = () => {
     const fetchVouchers = async () => {
       try {
         const response = await axios.get(
-          `${API}/employees/`,
+          `${API}/vouchers/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
