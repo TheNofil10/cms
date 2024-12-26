@@ -9,6 +9,7 @@ from collections import defaultdict
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from django.utils import timezone
+import shutil
 from django.http import JsonResponse
 from django.db import connection
 from django.views.decorators.http import require_GET
@@ -396,6 +397,30 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
         print("Update successful, returning updated employee data.")
         return Response(serializer.data)
+
+    def perform_destroy(self, instance):
+        # Clean up the profile image
+        profile_image_folder = os.path.join(settings.MEDIA_ROOT, 'profile_images', 'employees', str(instance.id))
+        if os.path.exists(profile_image_folder):
+            try:
+                shutil.rmtree(profile_image_folder)  # Remove the profile image folder and its contents
+                print(f"Profile image folder '{profile_image_folder}' deleted.")
+            except Exception as e:
+                print(f"Error deleting profile image folder: {e}")
+
+        # Clean up the employee documents
+        employee_documents_folder = os.path.join(settings.MEDIA_ROOT, 'employee_documents', 'employees', f"Document for {instance.first_name} {instance.last_name}")
+        if os.path.exists(employee_documents_folder):
+            try:
+                shutil.rmtree(employee_documents_folder)  # Remove the documents folder and its contents
+                print(f"Documents folder '{employee_documents_folder}' deleted.")
+            except Exception as e:
+                print(f"Error deleting documents folder: {e}")
+        else:
+            print(f"Documents folder '{employee_documents_folder}' does not exist)")
+        
+        # Now, delete the employee instance from the database
+        super().perform_destroy(instance)
 
 class EmployeeDocumentsViewSet(viewsets.ModelViewSet):
     queryset = EmployeeDocuments.objects.all()
