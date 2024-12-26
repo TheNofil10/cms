@@ -1,6 +1,7 @@
 import React from "react";
 import Sidebar, { SidebarItem } from "./Sidebar";
 import { FaHome, FaUser, FaCalendarAlt, FaTasks, FaBuilding, FaUsers } from 'react-icons/fa';
+import { MdOutlineCardGiftcard } from "react-icons/md";
 import { Settings, LogOut } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -14,6 +15,7 @@ const ManagerSideBar = ({ expanded, onToggle }) => {
       <SidebarItem icon={<FaUsers/>} text="Employees List" to="/manager/employees" />
       <SidebarItem icon={<FaCalendarAlt />} text="Attendance" to="/manager/attendance" />
       <SidebarItem icon={<FaTasks />} text="Tasks" to="/manager/tasks" />
+      <SidebarItem icon={<MdOutlineCardGiftcard />} text="Voucher" to="/admin/vouchers" />
       <SidebarItem icon={<FaBuilding />} text="My Department" to="/manager/department" />
       <hr className="my-3" />
       <SidebarItem icon={<Settings />} text="Settings" to="/manager/settings" />
