@@ -21,6 +21,8 @@ from .models import (
     Qualification,
     Employment,
     Dependent,
+    Voucher,
+    VoucherDocuments,
 )
 
 class EmployeeDocumentsSerializer(serializers.ModelSerializer):
@@ -273,3 +275,16 @@ class TodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Todo
         fields = "__all__"
+        
+
+class VoucherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Voucher
+        fields = '__all__'  # Include all fields in the API response
+
+class VoucherDocumentSerializer(serializers.ModelSerializer):
+    document = serializers.FileField()  # This field is required for document upload
+
+    class Meta:
+        model = VoucherDocuments
+        fields = ["id", "document", "uploaded_at"]

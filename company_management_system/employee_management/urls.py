@@ -4,12 +4,15 @@ from .views import (
     ApplicantViewSet, ApplicationListView, AttendanceCheckView, AttendanceViewSet, CompanyAttendanceStatsView, ComplianceReportViewSet,
     DepartmentEmployeeView, DepartmentMemberListView, DepartmentViewSet, EmployeeAttendanceStatsView, EmployeeAttendanceView,
     EmployeeDepartmentView, EmployeeSuggestionView, EmployeeViewSet, AdminEmployeeView, EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet,EmployeeDocumentsViewSet,
-    LeaveManagementView, LeaveViewSet, PayrollViewSet, PerformanceReviewViewSet, TaskCommentViewSet, TaskViewSet, TodoViewSet, apply_leave, approve_leave_hr, approve_leave_manager, generate_job_details, generate_post, live_attendance,approve_app_attendance_manager,AppAttendanceViewSet
+    LeaveManagementView, LeaveViewSet, PayrollViewSet, PerformanceReviewViewSet, TaskCommentViewSet, TaskViewSet, TodoViewSet, apply_leave, approve_leave_hr, approve_leave_manager, generate_job_details, generate_post, live_attendance,approve_app_attendance_manager,AppAttendanceViewSet,
+    VoucherListView, VoucherDocumentViewSet,
     )
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'employees', EmployeeViewSet)
+router.register(r'vouchers', VoucherListView)
+router.register(r'voucher-documents', VoucherDocumentViewSet)
 router.register(r'employee-documents', EmployeeDocumentsViewSet)  # Add this line
 
 router.register(r'departments', DepartmentViewSet)

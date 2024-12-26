@@ -503,3 +503,27 @@ class ComplianceReport(models.Model):
 
     def __str__(self):
         return self.report_name
+    
+    
+class Voucher(models.Model):
+    id = models.CharField(primary_key=True, max_length=50, unique=True)  # Unique voucher code
+    head_of_department = models.CharField(max_length=255)
+    department = models.CharField(max_length=255)
+    date = models.DateField()
+    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    reason = models.CharField(max_length=255)
+    
+    def __str__(self):
+        return self.id
+
+def voucher_documents_path(instance, filename):
+    print("instance ==> ",instance)
+    return f"voucher_documents/voucher/{instance}/{filename}"
+
+class VoucherDocuments(models.Model):
+    voucher = models.ForeignKey(Voucher, on_delete=models.CASCADE, related_name="documents")
+    document = models.FileField(upload_to=voucher_documents_path)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Document for {self.employee.first_name} {self.employee.last_name}"
