@@ -308,6 +308,29 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                     print(f"Error with emergency contact upload: {emergency_contact_serializer.errors}")
 
     def perform_update(self, serializer):
+    # Get the instance before updating
+        instance = self.get_object()
+        old_folder_name = f"Document for {instance.first_name} {instance.last_name}"  # Old folder name with "Document for" prefix
+
+        # Save the updated instance
+        instance = serializer.save()
+
+        # Check if the first name or last name has changed
+        new_folder_name = f"Document for {instance.first_name} {instance.last_name}"  # New folder name with updated first and last name
+        if old_folder_name != new_folder_name:
+            # Construct the old and new folder paths
+            old_folder_path = os.path.join(settings.MEDIA_ROOT, 'employee_documents', 'employees', old_folder_name)
+            new_folder_path = os.path.join(settings.MEDIA_ROOT, 'employee_documents', 'employees', new_folder_name)
+
+            try:
+                # Rename the folder
+                if os.path.exists(old_folder_path):
+                    os.rename(old_folder_path, new_folder_path)
+                    print(f"Folder renamed from '{old_folder_path}' to '{new_folder_path}'.")
+                else:
+                    print(f"Old folder '{old_folder_path}' does not exist.")
+            except Exception as e:
+                print(f"Error renaming folder: {e}")
         instance = serializer.save()
         if "profile_image" in self.request.FILES:
             instance.profile_image = self.request.FILES["profile_image"]

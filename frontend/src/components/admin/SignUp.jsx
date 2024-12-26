@@ -494,13 +494,13 @@ const Signup = () => {
           Employee Details
         </h2>
 
-        {/* <div>
+         <div>
           <button onClick={fillSampleData}>Fill Sample Data</button>
           <button onClick={handleSignup} disabled={loading}>
             {loading ? "Submitting..." : "Submit"}
           </button>
           <ToastContainer />
-        </div> */}
+        </div> 
 
         <Line percent={getProgress()} strokeWidth="2" strokeColor="black" />
         <form
