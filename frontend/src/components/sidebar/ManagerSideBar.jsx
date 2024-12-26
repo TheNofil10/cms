@@ -15,7 +15,7 @@ const ManagerSideBar = ({ expanded, onToggle }) => {
       <SidebarItem icon={<FaUsers/>} text="Employees List" to="/manager/employees" />
       <SidebarItem icon={<FaCalendarAlt />} text="Attendance" to="/manager/attendance" />
       <SidebarItem icon={<FaTasks />} text="Tasks" to="/manager/tasks" />
-      <SidebarItem icon={<MdOutlineCardGiftcard />} text="Voucher" to="/admin/vouchers" />
+      <SidebarItem icon={<MdOutlineCardGiftcard />} text="Vouchers" to="/manager/vouchers" />
       <SidebarItem icon={<FaBuilding />} text="My Department" to="/manager/department" />
       <hr className="my-3" />
       <SidebarItem icon={<Settings />} text="Settings" to="/manager/settings" />

@@ -6,6 +6,8 @@ import EmployeeDashboard from "../components/employee/EmployeeDashboard";
 import AdminDashboard from "../components/admin/AdminDashboard";
 import HRDashboard from "../components/hr/HRDashboard"; // HR Dashboard
 import EmployeesPage from "../components/admin/EmployeesPage";
+import VouchersPage from "../components/admin/VouchersPage.jsx";
+import AddVoucherPage from "../components/admin/CreateVoucherPage.jsx"
 import Attendance from "../components/admin/Attendance";
 import AdminSettings from "../components/admin/AdminSettings";
 import HRSettings from "../components/hr/HRSettings"; // HR Settings
@@ -58,6 +60,7 @@ import ManagerDashboard from "../components/manager/ManagerDashboard.jsx";
 import LiveAttendance from "../components/hr/attendance/LiveAttendance.jsx";
 import MabagerAppAttendance from "../components/manager/attendance/ManagerAppAttendance.jsx";
 import ManagerApprovals from "../components/manager/attendance/ManagerApprovals.jsx";
+
 const AllRoutes = () => {
   return (
     <Routes>
@@ -76,6 +79,8 @@ const AllRoutes = () => {
         <Route path="/employee/settings" element={<EmployeeSettings />} />
         <Route path="/employee/tasks" element={<EmployeeTasks />} />
         <Route path="/employee/tasks/:id" element={<EmployeeTaskDetails />} />
+        <Route path="/employee/vouchers" element={<VouchersPage />} />
+        <Route path="/employee/vouchers/add" element={<AddVoucherPage />} />
         <Route path="/employee/department" element={<EmployeeDepartment />} />
         <Route
           element={
@@ -110,6 +115,8 @@ const AllRoutes = () => {
         <Route path="/manager/tasks/:id" element={<TaskDetail />} />
         <Route path="/manager/employees/:id" element={<AdminEmployeeProfile />} />
         <Route path="/manager/employees" element={<EmployeesPage />} />
+        <Route path="/manager/vouchers" element={<VouchersPage />} />
+        <Route path="/manager/vouchers/add" element={<AddVoucherPage />} />
         <Route path="/manager/department" element={<ManagerDepartmentPage />} />
         <Route
           element={
@@ -137,6 +144,8 @@ const AllRoutes = () => {
         <Route path="/admin/employees/:id" element={<AdminEmployeeProfile />} />
         <Route path="/settings" element={<AdminSettings />} />
         <Route path="/admin/departments" element={<DepartmentsPage />} />
+        <Route path="/admin/vouchers" element={<VouchersPage />} />
+        <Route path="/admin/vouchers/add" element={<AddVoucherPage />} />
         <Route path="/admin/departments/add" element={<AddDepartment />} />
         <Route
           path="/admin/departments/:id"
@@ -198,6 +207,8 @@ const AllRoutes = () => {
         <Route path="/hr/employees" element={<EmployeesPage />} />
         <Route path="/hr/employees/add" element={<EmployeeSignupPage />} />
         <Route path="/hr/employees/:id" element={<AdminEmployeeProfile />} />
+        <Route path="/hr/vouchers" element={<VouchersPage />} />
+        <Route path="/hr/vouchers/add" element={<AddVoucherPage />} />
         <Route path="/hr/departments/:id" element={<DepartmentDetailPage />} />
         <Route path="/hr/departments" element={<DepartmentsPage />} />
         <Route path="/hr/payroll" element={<HRPayRoll />} />

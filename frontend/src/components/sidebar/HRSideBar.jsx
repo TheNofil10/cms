@@ -15,7 +15,7 @@ const HRSideBar = ({ expanded, onToggle }) => {
       <SidebarItem icon={<FaCalendarAlt />} text="Attendance" to="/hr/attendance" />
       <SidebarItem icon={<FaDollarSign />} text="Payroll" to="/hr/payroll" />
       <SidebarItem icon={<FaUsers />} text="Employees List" to="/hr/employees" />
-      <SidebarItem icon={<MdOutlineCardGiftcard />} text="Voucher" to="/admin/vouchers" />
+      <SidebarItem icon={<MdOutlineCardGiftcard />} text="Vouchers" to="/hr/vouchers" />
       <SidebarItem icon={<FaBuilding />} text="Departments List" to="/hr/departments" />
       <SidebarItem icon={<FaUser />} text="Profile" to="/hr/profile" />
       <hr className="my-3" />
