@@ -446,6 +446,7 @@ class EmployeeDocumentsViewSet(viewsets.ModelViewSet):
 
         # Check if the file exists and delete it
         if os.path.exists(document_path):
+            
             os.remove(document_path)
 
         # Now check if the folder is empty
@@ -459,6 +460,73 @@ class EmployeeDocumentsViewSet(viewsets.ModelViewSet):
         document.delete()
 
         return Response({"message": "Document deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+
+
+class UpdateEmployeeDocuments(APIView):
+    def put(self, request, employee_id, *args, **kwargs):
+        # Print out the request data for debugging
+        print("data ", request.data)
+
+        # Check if 'documents' are in the request data
+        if "documents" in request.data:
+            print("found documents")
+
+            # Loop through each document and create an EmployeeDocuments entry
+            for document in request.data.getlist("documents"):
+                print(f"Processing document: {document}")
+
+                # Get the employee's first and last name from the employee record
+                try:
+                    employee = Employee.objects.get(id=employee_id)
+                except Employee.DoesNotExist:
+                    return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
+                
+                # Concatenate first name and last name to form the folder name
+                employee_name = f"{employee.first_name}_{employee.last_name}".replace(" ", "_")
+
+                # Define the folder path for storing documents
+                folder_path = os.path.join(
+                    settings.MEDIA_ROOT, 
+                    'employee_documents', 
+                    'employees', 
+                    'Documents for', 
+                    employee_name
+                )
+                # Check if the folder exists, if not, create it
+                if not os.path.exists(folder_path):
+                    print(f"Folder does not exist. Creating folder: {folder_path}")
+                    os.makedirs(folder_path)
+
+                # Define the document file path (you can customize the file name if needed)
+                document_path = os.path.join(folder_path, document.name)
+
+                # Save the document in the folder
+                with open(document_path, 'wb') as f:
+                    for chunk in document.chunks():
+                        f.write(chunk)
+
+                # Document data to save in the database
+                document_data = {
+                    'employee': employee_id,
+                    'document': document_path  # Save the file path instead of the file itself
+                }
+
+                # Create the serializer instance
+                document_serializer = EmployeeDocumentsSerializer(data=document_data)
+
+                # Check if the data is valid
+                if document_serializer.is_valid():
+                    print("Document data is valid")
+                  #  document_serializer.save()  # Save the document record in the database
+                else:
+                    print(f"Error with document upload: {document_serializer.errors}")
+
+        else:
+            print("No documents found in request")
+
+        return Response({"message": "Employee documents updated successfully."})
+
+
 
 class AdminEmployeeView(viewsets.ViewSet):
     serializer_class = AdminEmployeeSerializer
