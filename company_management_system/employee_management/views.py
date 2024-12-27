@@ -1238,6 +1238,22 @@ class VoucherListView(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         voucher = serializer.save()
         # Documents will be uploaded via VoucherDocumentViewSet, not here.
+        if "documents" in self.request.data:
+            print("found")
+            # Loop through each document and create an EmployeeDocuments entry
+            for document in self.request.data.getlist("documents"):
+                # Assuming you have the EmployeeDocumentsViewSet set up for the employee
+                print("document is ",document)
+                document_data = {
+                    'document': document
+                }
+                print("document data are ",document_data)
+                # Create the document using EmployeeDocumentsViewSet logic
+                document_serializer = VoucherDocumentSerializer(data=document_data)
+                if document_serializer.is_valid():
+                    document_serializer.save()
+                else:
+                    print(f"Error with document upload: {document_serializer.errors}")
         return voucher
                     
 
@@ -1247,34 +1263,7 @@ class VoucherDocumentViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        voucher = serializer.validated_data['voucher']
         if "document" in self.request.FILES:
             document = self.request.FILES["document"]
             # Save the document
-            serializer.save(document=document, voucher=voucher)  # Corrected 'voucher' value
-            return serializer.instance  # Return the saved instance
-
-    def destroy(self, request, *args, **kwargs):
-        document = self.get_object()
-
-        # Access the file path properly
-        document_path = document.document.path  # Get the file path
-
-        # Get the folder path from the document path
-        folder_path = os.path.dirname(document_path)
-
-        # Check if the file exists and delete it
-        if os.path.exists(document_path):
-            os.remove(document_path)
-
-        # Now check if the folder is empty
-        if not os.listdir(folder_path):  # If the folder is empty
-            try:
-                os.rmdir(folder_path)  # Remove the folder
-            except OSError as e:
-                print(f"Error deleting folder {folder_path}: {e}")
-
-        # Delete the document entry in the database
-        document.delete()
-
-        return Response({"message": "Document deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+            serializer.save(document=document)

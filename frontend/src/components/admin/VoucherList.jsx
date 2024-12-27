@@ -62,7 +62,7 @@ const VoucherList = () => {
     const fetchVouchers = async () => {
       try {
         const response = await axios.get(
-          `${API}/employees/`,
+          `${API}/vouchers/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -86,8 +86,8 @@ const VoucherList = () => {
 
   useEffect(() => {
     if (filters.filterBy && filters.filterValue) {
-      const filtered = vouchers.filter((employee) =>
-        employee[filters.filterBy]
+      const filtered = vouchers.filter((voucher) =>
+        voucher[filters.filterBy]
           ?.toString()
           .toLowerCase()
           .includes(filters.filterValue.toLowerCase())
@@ -101,11 +101,11 @@ const VoucherList = () => {
   const columns = useMemo(
     () => [
       { Header: "ID", accessor: "id" },
-      { Header: "First Name", accessor: "first_name" },
-      { Header: "Last Name", accessor: "last_name" },
-      { Header: "Date", accessor: "email" },
-      { Header: "Amount", accessor: "position" },
-      { Header: "Status", accessor: "department" },
+      { Header: "First Name", accessor: "employee_first_name" },
+      { Header: "Last Name", accessor: "employee_last_name" },
+      { Header: "Date", accessor: "date" },
+      { Header: "Amount", accessor: "amount" },
+      { Header: "Status", accessor: "status" },
       {
         Header: "Actions",
         Cell: ({ row }) => (
@@ -159,43 +159,25 @@ const VoucherList = () => {
 
   const navigate = useNavigate();
 
-  const handleVoucherClick = (employee) => {
-    if (currentUser.is_staff) navigate(`/admin/employees/${employee.id}`);
+  const handleVoucherClick = (voucher) => {
+    if (currentUser.is_superuser)
+      navigate(`/admin/vouchers/${voucher.id}`);
     else if (currentUser.is_hr_manager)
-      navigate(`/hr/employees/${employee.id}`);
+      navigate(`/hr/vouchers/${voucher.id}`);
+    else navigate(`/employee/vouchers/${voucher.id}`);
   };
 
-  const handleDeleteVoucher = (employeeId, employeeName) => {
-    setVoucherToDelete({ id: employeeId, name: employeeName });
+  const handleDeleteVoucher = (voucherID) => {
+    setVoucherToDelete({ id: voucherID });
     setShowConfirmModal(true);
   };
-  
-  // const handleDeleteEmployee = async (employeeId) => {
-  //   try {
-  //     await axios.delete(`${API}/employees/${employeeId}/`, {
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-  //       },
-  //     });
-  //     toast.error("Employee deleted successfully");
-  //     setEmployees(employees.filter((emp) => emp.id !== employeeId));
-  //     setFilteredData(filteredData.filter((emp) => emp.id !== employeeId));
-  //     toast.success("Successfully deleted")
-  //   } catch (error) {
-  //     if (error.response && error.response.status === 404) {
-  //       toast.error("Employee not found");
-  //     } else {
-  //       console.error("Error deleting employee:", error);
-  //     }
-  //   }
-  // };
 
-  const confirmDeleteEmployee = async () => {
+  const confirmDeleteVoucher = async () => {
     if (!voucherToDelete) return;
 
     try {
       await axios.delete(
-        `${API}/employees/${voucherToDelete.id}/`,
+        `${API}/vouchers/${voucherToDelete.id}/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -209,9 +191,9 @@ const VoucherList = () => {
       toast.success("Successfully deleted");
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("Employee not found");
+        toast.error("Voucher not found");
       } else {
-        console.error("Error deleting employee:", error);
+        console.error("Error deleting voucher:", error);
       }
     } finally {
       setShowConfirmModal(false);
@@ -243,24 +225,25 @@ const VoucherList = () => {
     const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Employees");
-    XLSX.writeFile(workbook, "employees.xlsx");
+    XLSX.writeFile(workbook, "vouchers.xlsx");
   };
 
   const handleExportToPdf = () => {
     const docDefinition = {
-      content: filteredData.map((employee) => ({
+      content: filteredData.map((voucher) => ({
         columns: [
-          { text: employee.first_name, fontSize: 10 },
-          { text: employee.last_name, fontSize: 10 },
-          { text: employee.email, fontSize: 10 },
-          { text: employee.position, fontSize: 10 },
-          { text: employee.department, fontSize: 10 },
+          { text: voucher.id, fontSize: 10 },
+          { text: voucher.employee_first_name, fontSize: 10 },
+          { text: voucher.employee_last_name, fontSize: 10 },
+          { text: voucher.date, fontSize: 10 },
+          { text: voucher.amount, fontSize: 10 },
+          { text: voucher.status, fontSize: 10 },
         ],
       })),
       pageMargins: [40, 40, 40, 40],
     };
 
-    pdfMake.createPdf(docDefinition).download("employees.pdf");
+    pdfMake.createPdf(docDefinition).download("vouchers.pdf");
   };
 
   const handleExportSelection = (format) => {
@@ -286,11 +269,12 @@ const VoucherList = () => {
             className="py-1 px-2 border border-gray-400 rounded text-sm"
           >
             <option value="">Filter by...</option>
-            <option value="first_name">First Name</option>
-            <option value="last_name">Last Name</option>
-            <option value="email">Email</option>
-            <option value="position">Position</option>
-            <option value="department">Department</option>
+            <option value="id">ID</option>
+            <option value="employee_first_name">First Name</option>
+            <option value="employee_last_name">First Name</option>
+            <option value="date">Date</option>
+            <option value="amount">Amount</option>
+            <option value="status">Status</option>
           </select>
           <input
             type="text"
@@ -357,15 +341,13 @@ const VoucherList = () => {
             )}
           </button>
 
-          {/* Add Employee Button */}
-          {currentUser.is_superuser && (
+          {/* Create Voucher Button */}
             <button
               className="bg-black text-white border-none font-medium py-1 px-3 rounded text-sm"
               onClick={() => navigate("/admin/vouchers/add")}
             >
               <FaPlus className="inline mr-1" /> Create Voucher
             </button>
-          )}
         </div>
       </div>
 
@@ -481,10 +463,10 @@ const VoucherList = () => {
       )}
       {view === "card" && (
         <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-4">
-          {filteredData.map((employee) => (
+          {filteredData.map((voucher) => (
             <EmployeeCard
-              key={employee.id}
-              employee={employee}
+              key={voucher.id}
+              voucher={voucher}
               onView={handleVoucherClick}
               onDelete={handleDeleteVoucher}
             />
@@ -493,7 +475,7 @@ const VoucherList = () => {
       )}
       {selectedVoucher && (
         <AdminEmployeeProfile
-          employee={selectedVoucher}
+          voucher={selectedVoucher}
           onClose={() => setSelectedVoucher(null)}
         />
       )}
@@ -501,8 +483,8 @@ const VoucherList = () => {
       <ConfirmationModal
         isOpen={showConfirmModal}
         onClose={() => setShowConfirmModal(false)}
-        onConfirm={confirmDeleteEmployee}
-        employeeName={voucherToDelete ? voucherToDelete.name : ""}
+        onConfirm={confirmDeleteVoucher}
+        voucherId={voucherToDelete ? voucherToDelete.id : ""}
       />
     </div>
   );

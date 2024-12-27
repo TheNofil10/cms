@@ -278,13 +278,21 @@ class TodoSerializer(serializers.ModelSerializer):
         
 
 class VoucherSerializer(serializers.ModelSerializer):
+    employee_first_name = serializers.CharField(source='employee.first_name', read_only=True)
+    employee_last_name = serializers.CharField(source='employee.last_name', read_only=True)
+    
     class Meta:
         model = Voucher
         fields = '__all__'  # Include all fields in the API response
+        
+    def create(self, validated_data):
+        validated_data['status'] = 'pending'
+        return super().create(validated_data)
 
 class VoucherDocumentSerializer(serializers.ModelSerializer):
     document = serializers.FileField()  # This field is required for document upload
 
     class Meta:
         model = VoucherDocuments
-        fields = ["id", "document", "uploaded_at"]
+        fields = ["document", "uploaded_at"]
+    

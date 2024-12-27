@@ -12,10 +12,13 @@ import { useNavigate } from "react-router-dom";
 import { Line } from "rc-progress";
 import axios from "axios";
 import API from "../../api/api";
+import { useAuth } from "../../contexts/AuthContext";
 
 const SERVER_URL = API;
 
 const AddVoucher = () => {
+  const { currentUser } = useAuth();
+
   const [formData, setFormData] = useState({
     head_of_department: "",
     department: "",
@@ -121,7 +124,9 @@ const AddVoucher = () => {
         });
   
         setStep(1);
-        navigate("/hr/employees");
+        if (currentUser.is_superuser) navigate("/admin/dashboard");
+        else if (currentUser.is_hr) navigate("/hr/dashboard");
+        else navigate("/employee/dashboard");
       })
       .catch((error) => {
         console.log(error);
