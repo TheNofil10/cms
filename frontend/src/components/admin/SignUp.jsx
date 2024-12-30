@@ -238,7 +238,7 @@ const Signup = () => {
       case 1:
         return formData.first_name && formData.last_name && formData.username;
       case 2:
-        return formData.email && formData.password;
+        return formData.department && formData.password;
       case 3:
         return true;
       case 4:
@@ -434,7 +434,7 @@ const Signup = () => {
       eobi_no: "EOB12345",
       blood_group: "O+",
       gender: "Male",
-      marital_status: true,
+      marital_status: false,
       cnic_no: "12345-6789012-3",
       cnic_issue_date: "2010-01-01",
       cnic_expiry_date: "2030-01-01",
@@ -511,7 +511,7 @@ const Signup = () => {
           {step === 1 && (
             <>
               <div className="mb-4">
-                <label className="block text-sm mb-2">First Name</label>
+                <label className="block text-sm mb-2">First Name *</label>
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaUser className="m-2" />
                   <input
@@ -524,6 +524,7 @@ const Signup = () => {
                   />
                 </div>
               </div>
+
               <div className="mb-4">
                 <label className="block text-sm mb-2">Middle Name</label>
                 <div className="flex items-center bg-gray-200 rounded">
@@ -537,8 +538,9 @@ const Signup = () => {
                   />
                 </div>
               </div>
+
               <div className="mb-4">
-                <label className="block text-sm mb-2">Last Name</label>
+                <label className="block text-sm mb-2">Last Name *</label>
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaUser className="m-2" />
                   <input
@@ -551,8 +553,9 @@ const Signup = () => {
                   />
                 </div>
               </div>
+
               <div className="mb-4">
-                <label className="block text-sm mb-2">Username</label>
+                <label className="block text-sm mb-2">Username *</label>
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaUser className="m-2" />
                   <input
@@ -565,7 +568,16 @@ const Signup = () => {
                   />
                 </div>
               </div>
+
               <div className="flex justify-between">
+                <button
+                  type="submit"
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                  disabled={loading}
+                >
+                  {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
+                </button> 
+
                 <button
                   type="button"
                   onClick={handleNextStep}
@@ -581,21 +593,50 @@ const Signup = () => {
           {step === 2 && (
             <>
               <div className="mb-4">
-                <label className="block text-sm mb-2">Email</label>
+                <label className="block text-sm mb-2">Department *</label>
                 <div className="flex items-center bg-gray-200 rounded">
-                  <FaEnvelope className="m-2" />
+                  <FaAddressCard className="m-2" />
                   <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
+                    type="text"
+                    name="department"
+                    value={formData.department}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
                     required
                   />
                 </div>
               </div>
+
               <div className="mb-4">
-                <label className="block text-sm mb-2">Password</label>
+                <label className="block text-sm mb-2">Company Email</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaEnvelope className="m-2" />
+                  <input
+                    type="text"
+                    name="company_email"
+                    value={formData.company_email}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"                    
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Alternative Email</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaEnvelope className="m-2" />
+                  <input
+                    type="text"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Password *</label>
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaLock className="m-2" />
                   <input
@@ -608,6 +649,7 @@ const Signup = () => {
                   />
                 </div>
               </div>
+
               <div className="flex justify-between">
                 <button
                   type="button"
@@ -622,6 +664,16 @@ const Signup = () => {
                   className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
                 >
                   Next
+                </button>
+              </div>
+
+              <div className="mt-4">
+                <button
+                  type="submit"
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                  disabled={loading}
+                >
+                  {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
                 </button>
               </div>
             </>
@@ -640,7 +692,7 @@ const Signup = () => {
                     value={formData.phone}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -669,7 +721,7 @@ const Signup = () => {
                     value={formData.address}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -684,7 +736,6 @@ const Signup = () => {
                     value={formData.permanent_address}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
                   />
                 </div>
               </div>
@@ -705,6 +756,16 @@ const Signup = () => {
                   Next
                 </button>
               </div>
+
+              <div className="mt-4">
+                <button
+                  type="submit"
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                  disabled={loading}
+                >
+                  {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
+                </button>
+              </div>
             </>
           )}
 
@@ -721,22 +782,6 @@ const Signup = () => {
                     value={formData.date_of_birth}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm mb-2">Department</label>
-                <div className="flex items-center bg-gray-200 rounded">
-                  <FaAddressCard className="m-2" />
-                  <input
-                    type="text"
-                    name="department"
-                    value={formData.department}
-                    onChange={handleInputChange}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
                   />
                 </div>
               </div>
@@ -751,7 +796,6 @@ const Signup = () => {
                     value={formData.position}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
                   />
                 </div>
               </div>
@@ -797,8 +841,7 @@ const Signup = () => {
                     name="employment_date"
                     value={formData.employment_date}
                     onChange={handleInputChange}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    className="w-full p-2 bg-gray-200 border-none outline-none"                    
                   />
                 </div>
               </div>
@@ -813,7 +856,6 @@ const Signup = () => {
                     value={formData.location}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
                   />
                 </div>
               </div>
@@ -828,7 +870,6 @@ const Signup = () => {
                     value={formData.salary}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
                   />
                 </div>
               </div>
@@ -861,6 +902,16 @@ const Signup = () => {
                   className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
                 >
                   Next
+                </button>
+              </div>
+
+              <div className="mt-4">
+                <button
+                  type="submit"
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                  disabled={loading}
+                >
+                  {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
                 </button>
               </div>
             </>
@@ -930,6 +981,17 @@ const Signup = () => {
                   Next
                 </button>
               </div>
+
+              <div className="mt-4">
+                <button
+                  type="submit"
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                  disabled={loading}
+                >
+                  {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
+                </button>
+              </div>
+
             </>
           )}
 
@@ -1000,6 +1062,16 @@ const Signup = () => {
                   Next
                 </button>
               </div>
+
+              <div className="mt-4">
+                <button
+                  type="submit"
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                  disabled={loading}
+                >
+                  {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
+                </button>
+              </div>
             </>
           )}
 
@@ -1015,8 +1087,7 @@ const Signup = () => {
                     name="eobi_no"
                     value={formData.eobi_no}
                     onChange={handleInputChange}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    className="w-full p-2 bg-gray-200 border-none outline-none"                    
                   />
                 </div>
               </div>
@@ -1031,7 +1102,6 @@ const Signup = () => {
                     value={formData.blood_group}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
                   />
                 </div>
               </div>
@@ -1101,8 +1171,7 @@ const Signup = () => {
                     name="cnic_no"
                     value={formData.cnic_no}
                     onChange={handleInputChange}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    className="w-full p-2 bg-gray-200 border-none outline-none"                    
                   />
                 </div>
               </div>
@@ -1117,7 +1186,6 @@ const Signup = () => {
                     value={formData.cnic_issue_date}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
                   />
                 </div>
               </div>
@@ -1131,8 +1199,7 @@ const Signup = () => {
                     name="cnic_expiry_date"
                     value={formData.cnic_expiry_date}
                     onChange={handleInputChange}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    className="w-full p-2 bg-gray-200 border-none outline-none"                    
                   />
                 </div>
               </div>
@@ -1147,7 +1214,6 @@ const Signup = () => {
                     value={formData.dv_license_no}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
                   />
                 </div>
               </div>
@@ -1162,7 +1228,6 @@ const Signup = () => {
                     value={formData.dv_license_issue_date}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
                   />
                 </div>
               </div>
@@ -1177,22 +1242,6 @@ const Signup = () => {
                     value={formData.dv_license_expiry_date}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm mb-2">Company Email</label>
-                <div className="flex items-center bg-gray-200 rounded">
-                  <FaEnvelope className="m-2" />
-                  <input
-                    type="email"
-                    name="company_email"
-                    value={formData.company_email}
-                    onChange={handleInputChange}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
                   />
                 </div>
               </div>
@@ -1207,7 +1256,6 @@ const Signup = () => {
                     value={formData.father_name}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
                   />
                 </div>
               </div>
@@ -1222,7 +1270,6 @@ const Signup = () => {
                     value={formData.father_cnic_no}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
                   />
                 </div>
               </div>
@@ -1243,6 +1290,16 @@ const Signup = () => {
                   Next
                 </button>
               </div>
+
+              <div className="mt-4">
+                <button
+                  type="submit"
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                  disabled={loading}
+                >
+                  {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
+                </button>
+              </div>
             </>
           )}
 
@@ -1259,7 +1316,6 @@ const Signup = () => {
                     value={formData.em_name_1}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
                   />
                 </div>
               </div>
@@ -1274,7 +1330,6 @@ const Signup = () => {
                     value={formData.em_relationship_1}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
                   />
                 </div>
               </div>
@@ -1298,12 +1353,11 @@ const Signup = () => {
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaEnvelope className="m-2" />
                   <input
-                    type="email"
+                    type="text"
                     name="em_email_1"
                     value={formData.em_email_1}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
                   />
                 </div>
               </div>
@@ -1318,7 +1372,7 @@ const Signup = () => {
                     value={formData.em_name_2}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1333,7 +1387,7 @@ const Signup = () => {
                     value={formData.em_relationship_2}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1357,12 +1411,12 @@ const Signup = () => {
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaEnvelope className="m-2" />
                   <input
-                    type="email"
+                    type="text"
                     name="em_email_2"
                     value={formData.em_email_2}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1383,6 +1437,16 @@ const Signup = () => {
                   Next
                 </button>
               </div>
+
+              <div className="mt-4">
+                <button
+                  type="submit"
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                  disabled={loading}
+                >
+                  {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
+                </button>
+              </div>
             </>
           )}
 
@@ -1399,7 +1463,7 @@ const Signup = () => {
                     value={formData.nok_name}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1414,7 +1478,7 @@ const Signup = () => {
                     value={formData.nok_relationship}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1429,7 +1493,7 @@ const Signup = () => {
                     value={formData.nok_cnic}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1453,12 +1517,12 @@ const Signup = () => {
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaEnvelope className="m-2" />
                   <input
-                    type="email"
+                    type="text"
                     name="nok_email"
                     value={formData.nok_email}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1473,7 +1537,7 @@ const Signup = () => {
                     value={formData.nok_permanent_address}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1492,6 +1556,16 @@ const Signup = () => {
                   className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
                 >
                   Next
+                </button>
+              </div>
+
+              <div className="mt-4">
+                <button
+                  type="submit"
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                  disabled={loading}
+                >
+                  {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
                 </button>
               </div>
             </>
@@ -1510,7 +1584,7 @@ const Signup = () => {
                     value={formData.nationality}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1525,7 +1599,7 @@ const Signup = () => {
                     value={formData.religion}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1540,7 +1614,7 @@ const Signup = () => {
                     value={formData.disability}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1561,6 +1635,16 @@ const Signup = () => {
                   Next
                 </button>
               </div>
+
+              <div className="mt-4">
+                <button
+                  type="submit"
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                  disabled={loading}
+                >
+                  {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
+                </button>
+              </div>
             </>
           )}
 
@@ -1577,7 +1661,7 @@ const Signup = () => {
                       value={qualification.institute}
                       onChange={(e) => handleQualificationChange(index, e)}
                       className="w-full p-2 bg-gray-200 border-none outline-none"
-                      required
+                      
                     />
                   </div>
 
@@ -1589,7 +1673,7 @@ const Signup = () => {
                       value={qualification.degree}
                       onChange={(e) => handleQualificationChange(index, e)}
                       className="w-full p-2 bg-gray-200 border-none outline-none"
-                      required
+                      
                     />
                   </div>
 
@@ -1601,7 +1685,7 @@ const Signup = () => {
                       value={qualification.year_from}
                       onChange={(e) => handleQualificationChange(index, e)}
                       className="w-full p-2 bg-gray-200 border-none outline-none"
-                      required
+                      
                     />
                   </div>
 
@@ -1613,7 +1697,7 @@ const Signup = () => {
                       value={qualification.year_to}
                       onChange={(e) => handleQualificationChange(index, e)}
                       className="w-full p-2 bg-gray-200 border-none outline-none"
-                      required
+                      
                     />
                   </div>
 
@@ -1626,7 +1710,7 @@ const Signup = () => {
                       value={qualification.gpa}
                       onChange={(e) => handleQualificationChange(index, e)}
                       className="w-full p-2 bg-gray-200 border-none outline-none"
-                      required
+                      
                     />
                   </div>
 
@@ -1664,6 +1748,16 @@ const Signup = () => {
                   Next
                 </button>
               </div>
+
+              <div className="mt-4">
+                <button
+                  type="submit"
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                  disabled={loading}
+                >
+                  {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
+                </button>
+              </div>
             </>
           )}
 
@@ -1680,7 +1774,7 @@ const Signup = () => {
                       value={employment.company_name}
                       onChange={(e) => handleEmploymentChange(index, e)}
                       className="w-full p-2 bg-gray-200 border-none outline-none"
-                      required
+                      
                     />
                   </div>
 
@@ -1692,7 +1786,7 @@ const Signup = () => {
                       value={employment.designation}
                       onChange={(e) => handleEmploymentChange(index, e)}
                       className="w-full p-2 bg-gray-200 border-none outline-none"
-                      required
+                      
                     />
                   </div>
 
@@ -1704,7 +1798,7 @@ const Signup = () => {
                       value={employment.year_from}
                       onChange={(e) => handleEmploymentChange(index, e)}
                       className="w-full p-2 bg-gray-200 border-none outline-none"
-                      required
+                      
                     />
                   </div>
 
@@ -1716,7 +1810,7 @@ const Signup = () => {
                       value={employment.year_to}
                       onChange={(e) => handleEmploymentChange(index, e)}
                       className="w-full p-2 bg-gray-200 border-none outline-none"
-                      required
+                      
                     />
                   </div>
 
@@ -1729,7 +1823,7 @@ const Signup = () => {
                       value={employment.reason_for_leaving}
                       onChange={(e) => handleEmploymentChange(index, e)}
                       className="w-full p-2 bg-gray-200 border-none outline-none"
-                      required
+                      
                     />
                   </div>
 
@@ -1767,6 +1861,16 @@ const Signup = () => {
                   Next
                 </button>
               </div>
+
+              <div className="mt-4">
+                <button
+                  type="submit"
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                  disabled={loading}
+                >
+                  {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
+                </button>
+              </div>
             </>
           )}
           
@@ -1783,7 +1887,7 @@ const Signup = () => {
                     value={formData.ref_name_1}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1798,7 +1902,7 @@ const Signup = () => {
                     value={formData.ref_mobile_1}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1822,12 +1926,12 @@ const Signup = () => {
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaAddressCard className="m-2" />
                   <input
-                    type="email"
+                    type="text"
                     name="ref_designation_1"
                     value={formData.ref_designation_1}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1837,12 +1941,12 @@ const Signup = () => {
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaAddressCard className="m-2" />
                   <input
-                    type="email"
+                    type="text"
                     name="ref_company_1"
                     value={formData.ref_company_1}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1856,7 +1960,7 @@ const Signup = () => {
                     value={formData.ref_name_2}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1871,7 +1975,7 @@ const Signup = () => {
                     value={formData.ref_mobile_2}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1895,12 +1999,12 @@ const Signup = () => {
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaAddressCard className="m-2" />
                   <input
-                    type="email"
+                    type="text"
                     name="ref_designation_2"
                     value={formData.ref_designation_2}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1910,12 +2014,12 @@ const Signup = () => {
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaAddressCard className="m-2" />
                   <input
-                    type="email"
+                    type="text"
                     name="ref_company_2"
                     value={formData.ref_company_2}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1934,6 +2038,16 @@ const Signup = () => {
                   className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
                 >
                   Next
+                </button>
+              </div>
+
+              <div className="mt-4">
+                <button
+                  type="submit"
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                  disabled={loading}
+                >
+                  {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
                 </button>
               </div>
             </>
@@ -1952,7 +2066,7 @@ const Signup = () => {
                     value={formData.spouse_name}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1967,7 +2081,7 @@ const Signup = () => {
                     value={formData.spouse_date_of_birth}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1982,7 +2096,7 @@ const Signup = () => {
                     value={formData.spouse_relationship}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -1997,7 +2111,7 @@ const Signup = () => {
                     value={formData.spouse_cnic}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
+                    
                   />
                 </div>
               </div>
@@ -2016,6 +2130,16 @@ const Signup = () => {
                   className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
                 >
                   Next
+                </button>
+              </div>
+
+              <div className="mt-4">
+                <button
+                  type="submit"
+                  className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200"
+                  disabled={loading}
+                >
+                  {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
                 </button>
               </div>
             </>
