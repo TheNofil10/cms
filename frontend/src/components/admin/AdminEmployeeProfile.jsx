@@ -363,5 +363,3 @@ const AdminEmployeeProfile = () => {
 };
 
 export default AdminEmployeeProfile;
-
-
