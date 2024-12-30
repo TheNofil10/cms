@@ -15,6 +15,20 @@ import {
   FaMapMarkerAlt,
   FaShieldAlt,
   FaEdit,
+  FaHome,
+  FaHeartbeat,
+  FaPray,
+  FaPassport,
+  FaWheelchair,
+  FaCalendarCheck,
+  FaRegClock,
+  FaBusinessTime,
+  FaIdBadge,
+  FaMapMarkedAlt,
+  FaBuilding,
+  FaUserAlt,
+  FaIdCard,
+  FaUser,
   FaBriefcase,
   FaUserCircle,
   FaTrash,
@@ -83,7 +97,7 @@ const AdminEmployeeProfile = () => {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
 
     fetchEmployee();
@@ -149,11 +163,10 @@ const AdminEmployeeProfile = () => {
             {employee.first_name} {employee.last_name}
           </h1>
           <p className="text-gray-600 text-xl">
-            <FaUserTie className="inline-block mr-2" /> {employee.position}
+            <FaUserTie className="inline-block mr-2" /> {employee.position || "-"}
           </p>
           <p className="text-gray-600">
-            <FaRegBuilding className="inline-block mr-2" />{" "}
-            {department ? department.name : "Loading..."}
+            <FaRegBuilding className="inline-block mr-2" /> {department ? department.name : "Loading..."}
           </p>
         </div>
         <div className="flex space-x-3">
@@ -163,112 +176,170 @@ const AdminEmployeeProfile = () => {
           >
             <FaEdit className="inline-block mr-1" /> Edit
           </button>
-          <button
-            onClick={() => handleDeleteEmployee(employee.id, employee.first_name)}
-            className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700"
-          >
-            <FaTrash className="inline-block mr-1" /> Delete
-          </button>
+          {employee.is_superuser && (
+            <button
+              onClick={() => handleDeleteEmployee(employee.id, employee.first_name)}
+              className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700"
+            >
+              <FaTrash className="inline-block mr-1" /> Delete
+            </button>
+          )}
+
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-8">
-        {/* Left Column */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Contact Information</h2>
-          <p className="text-gray-800 mb-2">
-            <FaEnvelope className="inline-block mr-2" /> {employee.email}
-          </p>
-          <p className="text-gray-800 mb-2">
-            <FaPhone className="inline-block mr-2" /> {employee.phone || "Not provided"}
-          </p>
-          <p className="text-gray-800 mb-2">
-            <FaPhone className="inline-block mr-2" /> {employee.alternate_phone || "Not provided"}
-          </p>
-          <p className="text-gray-800">
-            <FaMapMarkerAlt className="inline-block mr-2" /> {employee.address}
-          </p>
-        </div>
 
-
+        {/* Personal Information */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
-          <p className="text-gray-800 mb-2">
-            <FaBirthdayCake className="inline-block mr-2" /> {employee.date_of_birth}
-          </p>
-          <p className="text-gray-800 mb-2">
-            <FaCalendarAlt className="inline-block mr-2" /> Employment Date: {employee.employment_date}
-          </p>
-          <p className="text-gray-800 mb-2">
-            <FaUserShield className="inline-block mr-2" /> Manager: {manager ? `${manager.first_name} ${manager.last_name}` : "No Manager"}
-          </p>
-          <p className="text-gray-800">
-            <FaPhone className="inline-block mr-2" /> Emergency Contact: {employee.emergency_contact || "Not provided"}
-          </p>
+          <p><FaUserShield className="inline-block mr-2" /> Full Name: {`${employee.first_name} ${employee.middle_name} ${employee.last_name}`}</p>
+          <p><FaUserShield className="inline-block mr-2" /> Username: {`${employee.username}`}</p>
+          <p><FaUserShield className="inline-block mr-2" /> Email: {`${employee.email}`}</p>
+          <p><FaBirthdayCake className="inline-block mr-2" /> Date of Birth: {employee.date_of_birth || "-"}</p>
+          <p><FaPray className="inline-block mr-2" /> Religion: {employee.religion || "-"}</p>
+          <p><FaPassport className="inline-block mr-2" /> Nationality: {employee.nationality || "-"}</p>
+          <p><FaWheelchair className="inline-block mr-2" /> Disability: {employee.disability ? "Yes" : "No"}</p>
+          <p><FaIdCard className="inline-block mr-2" /> CNIC: {employee.cnic_no || "-"}</p>
+          <p><FaCalendarAlt className="inline-block mr-2" /> CNIC Issue Date: {employee.cnic_issue_date || "-"}</p>
+          <p><FaCalendarAlt className="inline-block mr-2" /> CNIC Expiry Date: {employee.cnic_expiry_date || "-"}</p>
         </div>
 
-        {/* Right Column */}
+        {/* Other Information */}
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <h2 className="text-xl font-semibold mb-4">Other Information</h2>
+          <p><FaUserCircle className="inline-block mr-2" /> Marital Status: {employee.marital_status ? "Married" : "Single"}</p>
+          <p><FaHeartbeat className="inline-block mr-2" /> Blood Group: {employee.blood_group || "-"}</p>
+          <p><FaUser className="inline-block mr-2" /> Gender: {employee.gender || "-"}</p>
+          <p><FaUser className="inline-block mr-2" /> Driving Liscence: {employee.dv_license_no || "-"}</p>
+          <p><FaUser className="inline-block mr-2" /> Driving Liscence Issue: {employee.dv_license_issue_date || "-"}</p>
+          <p><FaUser className="inline-block mr-2" /> Driving Liscence Expiry: {employee.dv_license_expiry_date || "-"}</p>
+          <p><FaUser className="inline-block mr-2" /> Company Email: {employee.company_email || "-"}</p>
+          <p><FaUser className="inline-block mr-2" /> Father's Name: {employee.father_name || "-"}</p>
+          <p><FaUser className="inline-block mr-2" /> Father's CNIC: {employee.father_cnic_no || "-"}</p>
+          <p><FaUser className="inline-block mr-2" /> Spouse Name: {employee.spouse_name || "-"}</p>
+          <p><FaUser className="inline-block mr-2" /> Spouse D.O.B: {employee.spouse_date_of_birth || "-"}</p>
+          <p><FaUser className="inline-block mr-2" /> Spouse Relation: {employee.spouse_relationship || "-"}</p>
+          <p><FaUser className="inline-block mr-2" /> Spouse CNIC: {employee.spouse_cnic || "-"}</p>
+        </div>
+
+        {/* Job Details */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Job Details</h2>
-          <p className="text-gray-800 mb-2">
-            <FaBriefcase className="inline-block mr-2" /> Position: {employee.position}
-          </p>
-          <p className="text-gray-800">
-            <FaMoneyBillWave className="inline-block mr-2" /> Salary: {employee.salary} PKR
-          </p>
+          <p><FaIdBadge className="inline-block mr-2" /> Employee ID: {employee.id || "-"}</p>
+          <p><FaBriefcase className="inline-block mr-2" /> Department: {department ? department.name : "-"}</p>
+          <p><FaBriefcase className="inline-block mr-2" /> Position: {employee.position}</p>
+          <p><FaUserShield className="inline-block mr-2" /> Manager: {manager ? `${manager.first_name} ${manager.last_name}` : "-"}</p>
+          <p><FaCalendarCheck className="inline-block mr-2" /> Employment Date: {employee.employment_date || "-"}</p>
+          <p><FaMoneyBillWave className="inline-block mr-2" /> Salary: {employee.salary || "-"} PKR</p>
+          <p><FaRegClock className="inline-block mr-2" /> Check-in Time: {employee.check_in_time || "-"}</p>
+          <p><FaBusinessTime className="inline-block mr-2" /> Working Hours: {employee.working_hours || "-"}</p>
+          <p><FaMapMarkedAlt className="inline-block mr-2" /> Location: {employee.location || "-"}</p>
+          <p><FaBuilding className="inline-block mr-2" /> EOBI No: {employee.eobi_no || "-"}</p>
         </div>
 
+        {/* References */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">System Access</h2>
-          <p className="text-gray-800 mb-2">
-            <FaUserCircle className="inline-block mr-2" /> Username: {employee.username}
-          </p>
-          <p className="text-gray-800 mb-2">
-            <FaUserShield className="inline-block mr-2" /> Role:{" "}
-            {employee.is_superuser
-              ? "Superuser"
-              : employee.is_hr_manager
-                ? "HR Manager"
-                : employee.is_manager
-                  ? "Manager"
-                  : employee.is_staff
-                    ? "Staff"
-                    : "Employee"}
-          </p>
-          <p className="text-gray-800 mb-2">
-            <FaCalendarAlt className="inline-block mr-2" /> Last Login: {employee.last_login || "Never"}
-          </p>
-          <p className="text-gray-800">
-            <FaShieldAlt className="inline-block mr-2" /> Active: {employee.is_active ? "Yes" : "No"}
-          </p>
+          <h2 className="text-xl font-semibold mb-4">References</h2>
+          <p><FaUserAlt className="inline-block mr-2" /> Ref Name 1: {employee.ref_name_1 || "-"}</p>
+          <p><FaPhone className="inline-block mr-2" /> Mobile 1: {employee.ref_mobile_1 || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Email 1: {employee.ref_email_1 || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Company 1: {employee.ref_company_1 || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Designation 1: {employee.ref_designation_1 || "-"}</p>
+          <p><FaUserAlt className="inline-block mr-2" /> Ref Name 2: {employee.ref_name_2 || "-"}</p>
+          <p><FaPhone className="inline-block mr-2" /> Mobile 2: {employee.ref_mobile_2 || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Email 2: {employee.ref_email_2 || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Company 2: {employee.ref_company_2 || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Designation 2: {employee.ref_designation_2 || "-"}</p>
         </div>
 
-        <div className="bg-white shadow-lg rounded-lg p-6">
-          <h2 className="text-2xl font-semibold mb-4 flex items-center">
-            <FaFileAlt className="mr-2 text-gray-600" /> Documents
-          </h2>
-          <div className="max-h-60 overflow-y-auto">
-            {employee.documents && employee.documents.length > 0 ? (
-              <ul className="space-y-2">
-                {employee.documents.map((doc, index) => (
-                  <li key={index} className="flex items-center space-x-2">
-                    <a
-                      href={doc.document}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 text-lg"
-                    >
-                      {getDocumentName(doc.document)}
-                    </a>
-                  </li>
+        {/* Contact Info */}
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <h2 className="text-xl font-semibold mb-4">Contact Information</h2>
+          <p><FaUserAlt className="inline-block mr-2" /> Phone No: {employee.phone || "-"}</p>
+          <p><FaPhone className="inline-block mr-2" /> Alternate Phone No: {employee.alternate_phone || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Current Address: {employee.address || "-"}</p>
+          <p><FaUserAlt className="inline-block mr-2" /> Permanent Address: {employee.permanent_address || "-"}</p>
+        </div>
+
+        {/* Emergency Contacts */}
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <h2 className="text-xl font-semibold mb-4">Emergency Contacts</h2>
+          <p><FaUserAlt className="inline-block mr-2" /> Name 1: {employee.em_name_1 || "-"}</p>
+          <p><FaPhone className="inline-block mr-2" /> Contact 1: {employee.em_contact_1 || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Email 1: {employee.em_email_1 || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Relation 1: {employee.em_relationship_1 || "-"}</p>
+          <p><FaUserAlt className="inline-block mr-2" /> Name 2: {employee.em_name_2 || "-"}</p>
+          <p><FaPhone className="inline-block mr-2" /> Contact 2: {employee.em_contact_2 || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Email 2: {employee.em_email_2 || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Relation 2: {employee.em_relationship_2 || "-"}</p>
+        </div>
+
+        {/* NOK */}
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <h2 className="text-xl font-semibold mb-4">Next Of Kin Details</h2>
+          <p><FaEnvelope className="inline-block mr-2" /> Name: {employee.nok_name || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Realtion: {employee.nok_relationship || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> CNIC: {employee.nok_cnic || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Contact: {employee.nok_contact || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Email: {employee.nok_email || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Address: {employee.nok_permanent_address || "-"}</p>
+        </div>
+
+        {/* Qualifications Section */}
+        {/* <div className="mb-6">
+          <h3 className="text-lg font-semibold mb-2">Qualifications</h3>
+          {employee.qualifications.length > 0 ? (
+            <table className="w-full border-collapse border border-gray-300">
+              <thead>
+                <tr>
+                  <th className="border border-gray-300 px-4 py-2">Institute</th>
+                  <th className="border border-gray-300 px-4 py-2">Degree</th>
+                  <th className="border border-gray-300 px-4 py-2">Year From</th>
+                  <th className="border border-gray-300 px-4 py-2">Year To</th>
+                  <th className="border border-gray-300 px-4 py-2">GPA</th>
+                </tr>
+              </thead>
+              <tbody>
+                {employee.qualifications.map((q, index) => (
+                  <tr key={index}>
+                    <td className="border border-gray-300 px-4 py-2">{q.institute}</td>
+                    <td className="border border-gray-300 px-4 py-2">{q.degree}</td>
+                    <td className="border border-gray-300 px-4 py-2">{q.year_from}</td>
+                    <td className="border border-gray-300 px-4 py-2">{q.year_to}</td>
+                    <td className="border border-gray-300 px-4 py-2">{q.gpa}</td>
+                  </tr>
                 ))}
-              </ul>
-            ) : (
-              <p className="text-gray-700">No documents available</p>
-            )}
-          </div>
-        </div>
+              </tbody>
+            </table>
+          ) : (
+            <p>No qualifications available.</p>
+          )}
+        </div> */}
 
+
+        {/* Documents */}
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <h2 className="text-xl font-semibold mb-4">Documents</h2>
+          {employee.documents && employee.documents.length > 0 ? (
+            <ul>
+              {employee.documents.map((doc, index) => (
+                <li key={index} className="mb-2">
+                  <a
+                    href={doc.document}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline"
+                  >
+                    {getDocumentName(doc.document)}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No documents available</p>
+          )}
+        </div>
       </div>
 
       {/* Confirmation Modal for Deleting Employee */}
