@@ -488,9 +488,8 @@ const Signup = () => {
   };
 
   return (
-      <div className="min-h-screen flex flex-col justify-start items-center mt-10 rounded shadow-xl bg-white text-gray-900 w-full px-4">
-        <div className="w-full">
-
+      <div className="min-h-screen flex flex-col justify-start items-center rounded shadow-xl bg-white text-gray-900 w-full px-4">
+        <div className="w-full mt-0">
 
         {/* <div>
           <button onClick={fillSampleData}>Fill Sample Data</button>
@@ -505,9 +504,7 @@ const Signup = () => {
           className="bg-white text-black p-8 rounded-lg shadow-2xl"
         >
           {/* Required Information */}
-
-          {/* Header */}
-          <div className="my-8 text-center">
+          <div className="my0 text-center">
             <div className="flex items-center">
               <hr className="flex-grow border-t border-gray-300" />
               <h1 className="mx-4 text-2xl font-bold tracking-wide">Required Information</h1>
@@ -1131,7 +1128,6 @@ const Signup = () => {
             </div>
 
           {/* Family Information */}
-          {/* Header */}
           <div className="my-8 text-center">
             <div className="flex items-center">
               <hr className="flex-grow border-t border-gray-300" />
@@ -1306,7 +1302,6 @@ const Signup = () => {
             </div>
 
           {/* Next of Kin */}
-          {/* Header */}
           <div className="my-8 text-center">
             <div className="flex items-center">
               <hr className="flex-grow border-t border-gray-300" />
@@ -1411,7 +1406,6 @@ const Signup = () => {
           </div>
 
           {/* Emergency Contact */}
-          {/* Header */}
           <div className="my-8 text-center">
             <div className="flex items-center">
               <hr className="flex-grow border-t border-gray-300" />
@@ -1726,7 +1720,6 @@ const Signup = () => {
           </div>
 
           {/* References */}
-          {/* Header */}
           <div className="my-8 text-center">
             <div className="flex items-center">
               <hr className="flex-grow border-t border-gray-300" />
