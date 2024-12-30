@@ -156,7 +156,7 @@ const AddVoucher = () => {
           {step === 1 && (
             <>
               <div className="mb-4">
-                <label className="block text-sm mb-2">Head of Department</label>
+                <label className="block text-sm mb-2">Head of Department *</label>
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaUserShield className="m-2" />
                   <input
@@ -171,7 +171,7 @@ const AddVoucher = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm mb-2">Department</label>
+                <label className="block text-sm mb-2">Department *</label>
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaUserShield className="m-2" />
                   <input
@@ -185,7 +185,7 @@ const AddVoucher = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm mb-2">Date</label>
+                <label className="block text-sm mb-2">Date *</label>
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaCalendar className="m-2" />
                   <input
@@ -201,7 +201,7 @@ const AddVoucher = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm mb-2">Amount</label>
+                <label className="block text-sm mb-2">Amount *</label>
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaDollarSign className="m-2" />
                   <input
@@ -216,7 +216,7 @@ const AddVoucher = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm mb-2">Reason</label>
+                <label className="block text-sm mb-2">Reason *</label>
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaAddressCard className="m-2" />
                   <input
