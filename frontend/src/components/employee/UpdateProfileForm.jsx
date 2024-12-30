@@ -137,8 +137,9 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
   const handleDocumentsUpload = async () => {
     if (selectedFiles.length === 0) {
       toast.error("Please select files before uploading.");
-      return;
+      return
     }
+    
   
     const formData = new FormData();
   
