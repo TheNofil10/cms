@@ -504,7 +504,7 @@ const Signup = () => {
           className="bg-white text-black p-8 rounded-lg shadow-2xl"
         >
           {/* Required Information */}
-          <div className="my0 text-center">
+          <div className="my-8 text-center">
             <div className="flex items-center">
               <hr className="flex-grow border-t border-gray-300" />
               <h1 className="mx-4 text-2xl font-bold tracking-wide">Required Information</h1>
@@ -676,6 +676,7 @@ const Signup = () => {
             </div>
           </div>
           
+          {/* Personal Information */}
           <div className="my-8 text-center">
             <div className="flex items-center">
               <hr className="flex-grow border-t border-gray-300" />
