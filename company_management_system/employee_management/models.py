@@ -512,6 +512,9 @@ class Voucher(models.Model):
     date = models.DateField()
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     reason = models.CharField(max_length=255)
+    project = models.CharField(max_length=255)
+    category = models.CharField(max_length=30)
+    other_category = models.CharField(max_length=255)
     status = models.CharField(max_length=20, default='pending')
     
     def __str__(self):

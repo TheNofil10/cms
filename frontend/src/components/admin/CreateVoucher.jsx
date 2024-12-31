@@ -22,6 +22,9 @@ const AddVoucher = () => {
   const [formData, setFormData] = useState({
     head_of_department: "",
     department: "",
+    project: "",
+    category: "",
+    other_category: "",
     reason: "",
     amount: "",
     date: new Date().toISOString().slice(0, 10),
@@ -117,6 +120,9 @@ const AddVoucher = () => {
         setFormData({
           head_of_department: "",
           department: "",
+          project: "",
+          category: "",
+          other_category: "",
           reason: "",
           amount: "",
           date: "",
@@ -185,6 +191,20 @@ const AddVoucher = () => {
               </div>
 
               <div className="mb-4">
+                <label className="block text-sm mb-2">Project *</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUserShield className="m-2" />
+                  <input
+                    type="text"
+                    name="project"
+                    value={formData.project}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
                 <label className="block text-sm mb-2">Date *</label>
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaCalendar className="m-2" />
@@ -214,6 +234,46 @@ const AddVoucher = () => {
                   />
                 </div>
               </div>
+
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Category</label>
+                <div className="flex items-center bg-gray-200 rounded">
+                  <FaUserShield className="m-2" />
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+                  >
+                    <option value={"fuel"}>Fuel</option>
+                    <option value={"mobile phone"}>Mobile Phone</option>
+                    <option value={"travel"}>Travel</option>
+                    <option value={"internet"}>Internet</option>
+                    <option value={"software"}>Software</option>
+                    <option value={"entertainment"}>Entertainment / Food</option>
+                    <option value={"office supplies"}>Office Supplies</option>
+                    <option value={"office supplies"}>Labour</option>
+                    <option value={"wellness"}>Wellness</option>
+                    <option value={"other"}>Other...</option>
+                  </select>
+                </div>
+              </div>
+
+              {formData.category === "other" && (
+                  <div className="mb-4">
+                  <label className="block text-sm mb-2">Other Category</label>
+                  <div className="flex items-center bg-gray-200 rounded">
+                    <FaAddressCard className="m-2" />
+                    <input
+                      type="text"
+                      name="other_category"
+                      value={formData.other_category}
+                      onChange={handleInputChange}
+                      className="w-full p-2 bg-gray-200 border-none outline-none"
+                    />
+                  </div>
+                </div>
+              )}
 
               <div className="mb-4">
                 <label className="block text-sm mb-2">Reason *</label>

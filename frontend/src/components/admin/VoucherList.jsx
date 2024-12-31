@@ -325,22 +325,6 @@ const VoucherList = () => {
             )}
           </div>
 
-          {/* View Toggle Button */}
-          <button
-            className="bg-black text-white border-none font-medium py-1 px-3 rounded text-sm"
-            onClick={() => setView(view === "table" ? "card" : "table")}
-          >
-            {view === "table" ? (
-              <>
-                <CardIcon className="inline mr-1" /> Card
-              </>
-            ) : (
-              <>
-                <TableIcon className="inline mr-1" /> Table
-              </>
-            )}
-          </button>
-
           {/* Create Voucher Button */}
             <button
               className="bg-black text-white border-none font-medium py-1 px-3 rounded text-sm"
