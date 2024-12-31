@@ -283,7 +283,10 @@ class VoucherSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Voucher
-        fields = '__all__'  # Include all fields in the API response
+        fields = [
+            'id', 'employee', 'employee_first_name', 'employee_last_name', 
+            'date', 'amount', 'status', 'documents',  # Add other required fields
+        ]
         
     def create(self, validated_data):
         validated_data['status'] = 'pending'

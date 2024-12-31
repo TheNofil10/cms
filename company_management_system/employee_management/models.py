@@ -526,7 +526,7 @@ def voucher_documents_path(instance, filename):
     return f"voucher_documents/voucher/{instance}/{filename}"
 
 class VoucherDocuments(models.Model):
-    id = models.AutoField(primary_key=True)  # Unique voucher code
+    id = models.AutoField(primary_key=True)
     voucher = models.ForeignKey(Voucher, on_delete=models.CASCADE, related_name="documents")
     document = models.FileField(upload_to=voucher_documents_path)
     uploaded_at = models.DateTimeField(auto_now_add=True)

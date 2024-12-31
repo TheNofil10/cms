@@ -45,6 +45,7 @@ const VoucherList = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [voucherToDelete, setVoucherToDelete] = useState(null);
   const [vouchers, setVouchers] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -71,7 +72,7 @@ const VoucherList = () => {
         );
         setVouchers(response.data.results || response.data || []);
         setFilteredData(response.data.results || response.data || []);
-
+        console.log(vouchers);
       } catch (error) {
         console.error("Error fetching vouchers:", error);
         setError("There was an error fetching the voucher data.");
@@ -82,6 +83,28 @@ const VoucherList = () => {
     };
 
     fetchVouchers();
+
+    const fetchEmployees = async () => {
+      try {
+        const response = await axios.get(
+          `${API}/employees/`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+        setEmployees(response.data.results || response.data || []);
+      } catch (error) {
+        console.error("Error fetching employees:", error);
+        setError("There was an error fetching the employee data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEmployees();
+
   }, []);
 
   useEffect(() => {
@@ -328,7 +351,11 @@ const VoucherList = () => {
           {/* Create Voucher Button */}
             <button
               className="bg-black text-white border-none font-medium py-1 px-3 rounded text-sm"
-              onClick={() => navigate("/admin/vouchers/add")}
+              onClick={() => 
+                {if (currentUser.is_superuser) navigate("/admin/vouchers/add")
+                else if (currentUser.is_hr_manager) navigate("/hr/vouchers/add")
+                else if (currentUser.is_staff) navigate("/employee/vouchers/add")
+                }}
             >
               <FaPlus className="inline mr-1" /> Create Voucher
             </button>
@@ -443,18 +470,6 @@ const VoucherList = () => {
               </select>
             </div>
           </div>
-        </div>
-      )}
-      {view === "card" && (
-        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-4">
-          {filteredData.map((voucher) => (
-            <EmployeeCard
-              key={voucher.id}
-              voucher={voucher}
-              onView={handleVoucherClick}
-              onDelete={handleDeleteVoucher}
-            />
-          ))}
         </div>
       )}
       {selectedVoucher && (

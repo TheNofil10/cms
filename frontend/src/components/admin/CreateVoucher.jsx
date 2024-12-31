@@ -100,7 +100,7 @@ const AddVoucher = () => {
   
   
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     if (name === "department") {
       const updatedData = updateDepartmentDetails(value);
       console.log("Updated Data:", updatedData);
@@ -109,7 +109,10 @@ const AddVoucher = () => {
         ...updatedData,
       }));
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      setFormData({
+        ...formData,
+        [name]: type === "checkbox" ? checked : value,
+      });
     }
   };
   
@@ -328,7 +331,7 @@ const AddVoucher = () => {
                     <option value={"software"}>Software</option>
                     <option value={"entertainment/food"}>Entertainment / Food</option>
                     <option value={"office supplies"}>Office Supplies</option>
-                    <option value={"office supplies"}>Labour</option>
+                    <option value={"labour"}>Labour</option>
                     <option value={"wellness"}>Wellness</option>
                     <option value={"other"}>Other...</option>
                   </select>

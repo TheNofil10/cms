@@ -136,7 +136,7 @@ const AllRoutes = () => {
       </Route>
 
       {/* Admin Routes */}
-      <Route element={<ProtectedRoute element={<AdminLayout />} adminOnly />}>
+      <Route element={<ProtectedRoute element={<AdminLayout />} />}>
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/employees" element={<EmployeesPage />} />
         <Route path="/admin/employees/add" element={<EmployeeSignupPage />} />
