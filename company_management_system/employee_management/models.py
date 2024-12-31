@@ -506,16 +506,17 @@ class ComplianceReport(models.Model):
     
     
 class Voucher(models.Model):
-    id = models.AutoField(primary_key=True)  # Unique voucher code
-    head_of_department = models.CharField(max_length=255)
-    department = models.CharField(max_length=255)
+    id = models.AutoField(primary_key=True)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name="department", null=False)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="employee", null=False)
+    head_of_department = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="head_of_department", null=True)
     date = models.DateField()
-    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    reason = models.CharField(max_length=255)
-    project = models.CharField(max_length=255)
-    category = models.CharField(max_length=30)
-    other_category = models.CharField(max_length=255)
-    status = models.CharField(max_length=20, default='pending')
+    amount = models.DecimalField(max_digits=10, decimal_places=2, null=False)
+    reason = models.CharField(max_length=255, null=False)
+    project = models.CharField(max_length=255, null=True)
+    category = models.CharField(max_length=30, null=False)
+    other_category = models.CharField(max_length=255, null=True)
+    status = models.CharField(max_length=20, default='pending', null=False)
     
     def __str__(self):
         return self.id

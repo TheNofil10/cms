@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -18,8 +18,57 @@ const SERVER_URL = API;
 
 const AddVoucher = () => {
   const { currentUser } = useAuth();
+  const [departments, setDepartments] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  const [error, setError] = useState("");
+  const [departmentHead, setDepartmentHead] = useState([]);
+
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await axios.get(
+          `${API}/departments/`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+        setDepartments(response.data.results || response.data || []);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+        setError("There was an error fetching the department data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDepartments();
+
+    const fetchEmployees = async () => {
+      try {
+        const response = await axios.get(
+          `${API}/employees/`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+        setEmployees(response.data.results || response.data || []);
+      } catch (error) {
+        console.error("Error fetching employees:", error);
+        setError("There was an error fetching the employee data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEmployees();
+}, []);
 
   const [formData, setFormData] = useState({
+    employee: currentUser.id,
     head_of_department: "",
     department: "",
     project: "",
@@ -35,13 +84,35 @@ const AddVoucher = () => {
   const [loading, setLoading] = useState(false);
   let navigate = useNavigate();
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
+  const updateDepartmentDetails = (value) => {
+    console.log("Selected Value:", value);
+    const selectedDepartment = departments.find((department) => department.id === value);
+    const head = selectedDepartment?.manager
+      ? employees.find((employee) => employee.id === selectedDepartment.manager)
+      : null;
+    console.log("Department Head:", head);
+    setDepartmentHead(head ? `${head.first_name} ${head.last_name}` : "No Head");
+    return {
+      department: value,
+      head_of_department: head?.id || null,
+    };
   };
+  
+  
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "department") {
+      const updatedData = updateDepartmentDetails(value);
+      console.log("Updated Data:", updatedData);
+      setFormData((prev) => ({
+        ...prev,
+        ...updatedData,
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+  
 
   const handleDocumentsChange = (e) => {
     const newFiles = Array.from(e.target.files);
@@ -60,6 +131,7 @@ const AddVoucher = () => {
   };
   
   const handleNextStep = () => {
+    console.log(formData);
     if (validateStep(step)) {
       setStep(step + 1);
     } else {
@@ -74,9 +146,9 @@ const AddVoucher = () => {
   const validateStep = (currentStep) => {
     switch (currentStep) {
       case 1:
-        return formData.head_of_department && formData.department && formData.date && formData.amount && formData.reason;
-      case 2:
-        return;
+        return formData.department && formData.date && formData.amount && formData.reason;
+      default:
+        return false;
     }
   };
 
@@ -118,14 +190,13 @@ const AddVoucher = () => {
         
         // Reset form data after successful signup
         setFormData({
-          head_of_department: "",
           department: "",
+          head_of_department: "",
           project: "",
           category: "",
           other_category: "",
           reason: "",
           amount: "",
-          date: "",
           documents: [],
         });
   
@@ -162,36 +233,39 @@ const AddVoucher = () => {
           {step === 1 && (
             <>
               <div className="mb-4">
-                <label className="block text-sm mb-2">Head of Department *</label>
-                <div className="flex items-center bg-gray-200 rounded">
-                  <FaUserShield className="m-2" />
-                  <input
-                    type="text"
-                    name="head_of_department"
-                    value={formData.head_of_department}
-                    onChange={handleInputChange}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="mb-4">
                 <label className="block text-sm mb-2">Department *</label>
                 <div className="flex items-center bg-gray-200 rounded">
-                  <FaUserShield className="m-2" />
-                  <input
-                    type="text"
-                    name="department"
-                    value={formData.department}
-                    onChange={handleInputChange}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-                  />
+                    <FaUserShield className="m-2" />
+                    <select
+                        name="department"
+                        value={formData.department}
+                        onChange={handleInputChange}
+                        className="w-full p-2 bg-gray-200 border-none outline-none"
+                    >
+                        <option value="">-- Select a department --</option>
+                        {departments.map((department) => (
+                            <option key={department.id} value={department.id}>
+                                {department.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
-              </div>
+
+                <div className="mt-4">
+                    <label className="block text-sm mb-2">Head of Department</label>
+                    <input
+                        type="text"
+                        name="head_of_department"
+                        value={departmentHead}
+                        readOnly
+                        disabled
+                        className="w-full p-2 bg-gray-200 border-none outline-none text-gray-500 cursor-not-allowed"
+                    />
+                </div>
+            </div>
 
               <div className="mb-4">
-                <label className="block text-sm mb-2">Project *</label>
+                <label className="block text-sm mb-2">Project</label>
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaUserShield className="m-2" />
                   <input
@@ -243,14 +317,16 @@ const AddVoucher = () => {
                     name="category"
                     value={formData.category}
                     onChange={handleInputChange}
+                    required
                     className="w-full p-2 bg-gray-200 border-none outline-none"
                   >
+                    <option value={""}>-- Select a category --</option>
                     <option value={"fuel"}>Fuel</option>
                     <option value={"mobile phone"}>Mobile Phone</option>
                     <option value={"travel"}>Travel</option>
                     <option value={"internet"}>Internet</option>
                     <option value={"software"}>Software</option>
-                    <option value={"entertainment"}>Entertainment / Food</option>
+                    <option value={"entertainment/food"}>Entertainment / Food</option>
                     <option value={"office supplies"}>Office Supplies</option>
                     <option value={"office supplies"}>Labour</option>
                     <option value={"wellness"}>Wellness</option>

@@ -1236,6 +1236,11 @@ class VoucherListView(viewsets.ModelViewSet):
     serializer_class = VoucherSerializer
 
     def perform_create(self, serializer):
+        # employee = Employee.objects.get(id=self.employee_id)
+        # employee_first_name = employee.first_name
+        # employee_last_name = employee.last_name
+        
+        # department = Department.objects.get(id=self.department_id)
         voucher = serializer.save()
         # Documents will be uploaded via VoucherDocumentViewSet, not here.
         if "documents" in self.request.data:
