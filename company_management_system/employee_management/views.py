@@ -732,7 +732,7 @@ def approve_app_attendance_manager(request, application_id):
                 employee=app_attendance.employee,
                 date=log_date,
                 time_in=log_time_with_microseconds,  # Store datetime with microseconds
-                status="Present",
+                status="present",
                 comments="Logged in from app",
                 hours_worked=None,  # Will calculate when out is logged
                 is_overtime=False,

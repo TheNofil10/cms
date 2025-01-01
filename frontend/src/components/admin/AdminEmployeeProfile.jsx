@@ -88,7 +88,7 @@ const AdminEmployeeProfile = () => {
         }
       );
       setEmployee(employeeResponse.data);
-      console.log("Employee data: ", employeeResponse.data);
+      // console.log("Employee data: ", employeeResponse.data);
 
       if (employeeResponse.data.department) {
         const departmentResponse = await axios.get(
@@ -200,7 +200,7 @@ const AdminEmployeeProfile = () => {
           >
             <FaEdit className="inline-block mr-1" /> Edit
           </button>
-          {employee.is_superuser && (
+          {currentUser.is_superuser && (
             <button
               onClick={() => handleDeleteEmployee(employee.id, employee.first_name)}
               className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700"

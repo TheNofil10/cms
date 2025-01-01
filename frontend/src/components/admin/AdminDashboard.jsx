@@ -78,7 +78,7 @@ const AdminDashboard = () => {
         const oneWeekAgo = new Date(today.setDate(today.getDate() - 7)).toISOString().split('T')[0];
 
         const attendanceResponse = await axios.get(
-          `${SERVER_URL}/attendance/`,
+          `${SERVER_URL}/attendance/?dateFilter=today`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
