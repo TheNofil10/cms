@@ -422,7 +422,7 @@ const Signup = () => {
       manager: null,
       profile_image: null,
       imagePreview: null,
-      is_staff: true,
+      is_staff: false,
       is_active: true,
       is_hr_manager: false,
       is_manager: false,
