@@ -42,7 +42,7 @@ import EmployeeAttendanceLayout from "../components/employee/EmployeeAttendanceL
 import EmployeeAttendanceTable from "../components/employee/EmployeeAttendanceTable.jsx";
 import EmployeeAttendanceApplications from "../components/employee/EmployeeAttendanceApplications.jsx";
 import HrAttendanceLayout from "../components/hr/attendance/HrAttendanceLayout.jsx";
-import AttendanceDahsboard from "../components/hr/attendance/AttendanceDahsboard.jsx";
+import AttendanceDahsboard from "../components/hr/attendance/AttendanceDashboard.jsx";
 import AttendanceTable from "../components/hr/attendance/AttendanceTable.jsx";
 import LeaveApplications from "../components/hr/attendance/LeaveApplications.jsx";
 import ManagerLayout from "../components/manager/ManagerLayout.jsx";

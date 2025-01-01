@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
 -- Host: localhost    Database: cms
 -- ------------------------------------------------------
--- Server version	8.0.38
+-- Server version	8.0.40
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -31,6 +31,15 @@ CREATE TABLE `auth_group` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `auth_group`
+--
+
+LOCK TABLES `auth_group` WRITE;
+/*!40000 ALTER TABLE `auth_group` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auth_group` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `auth_group_permissions`
 --
 
@@ -50,6 +59,15 @@ CREATE TABLE `auth_group_permissions` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `auth_group_permissions`
+--
+
+LOCK TABLES `auth_group_permissions` WRITE;
+/*!40000 ALTER TABLE `auth_group_permissions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auth_group_permissions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `auth_permission`
 --
 
@@ -66,6 +84,15 @@ CREATE TABLE `auth_permission` (
   CONSTRAINT `auth_permission_content_type_id_2f476e4b_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auth_permission`
+--
+
+LOCK TABLES `auth_permission` WRITE;
+/*!40000 ALTER TABLE `auth_permission` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auth_permission` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `auth_user`
@@ -92,6 +119,15 @@ CREATE TABLE `auth_user` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `auth_user`
+--
+
+LOCK TABLES `auth_user` WRITE;
+/*!40000 ALTER TABLE `auth_user` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auth_user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `auth_user_groups`
 --
 
@@ -109,6 +145,15 @@ CREATE TABLE `auth_user_groups` (
   CONSTRAINT `auth_user_groups_user_id_6a12ed8b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auth_user_groups`
+--
+
+LOCK TABLES `auth_user_groups` WRITE;
+/*!40000 ALTER TABLE `auth_user_groups` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auth_user_groups` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `auth_user_user_permissions`
@@ -130,6 +175,15 @@ CREATE TABLE `auth_user_user_permissions` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `auth_user_user_permissions`
+--
+
+LOCK TABLES `auth_user_user_permissions` WRITE;
+/*!40000 ALTER TABLE `auth_user_user_permissions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auth_user_user_permissions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `authtoken_token`
 --
 
@@ -145,6 +199,15 @@ CREATE TABLE `authtoken_token` (
   CONSTRAINT `authtoken_token_user_id_35299eff_fk_employee_` FOREIGN KEY (`user_id`) REFERENCES `employee_management_employee` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `authtoken_token`
+--
+
+LOCK TABLES `authtoken_token` WRITE;
+/*!40000 ALTER TABLE `authtoken_token` DISABLE KEYS */;
+/*!40000 ALTER TABLE `authtoken_token` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `django_admin_log`
@@ -172,6 +235,15 @@ CREATE TABLE `django_admin_log` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `django_admin_log`
+--
+
+LOCK TABLES `django_admin_log` WRITE;
+/*!40000 ALTER TABLE `django_admin_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `django_admin_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `django_content_type`
 --
 
@@ -186,6 +258,15 @@ CREATE TABLE `django_content_type` (
   UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`)
 ) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `django_content_type`
+--
+
+LOCK TABLES `django_content_type` WRITE;
+/*!40000 ALTER TABLE `django_content_type` DISABLE KEYS */;
+/*!40000 ALTER TABLE `django_content_type` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `django_migrations`
@@ -204,6 +285,15 @@ CREATE TABLE `django_migrations` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `django_migrations`
+--
+
+LOCK TABLES `django_migrations` WRITE;
+/*!40000 ALTER TABLE `django_migrations` DISABLE KEYS */;
+/*!40000 ALTER TABLE `django_migrations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `django_session`
 --
 
@@ -218,6 +308,15 @@ CREATE TABLE `django_session` (
   KEY `django_session_expire_date_a5c62663` (`expire_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `django_session`
+--
+
+LOCK TABLES `django_session` WRITE;
+/*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
+/*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `employee_management_applicant`
@@ -238,6 +337,15 @@ CREATE TABLE `employee_management_applicant` (
   CONSTRAINT `employee_management_applicant_chk_1` CHECK ((`status` in (_utf8mb4'applied',_utf8mb4'shortlisted',_utf8mb4'rejected')))
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_management_applicant`
+--
+
+LOCK TABLES `employee_management_applicant` WRITE;
+/*!40000 ALTER TABLE `employee_management_applicant` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_management_applicant` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `employee_management_application`
@@ -262,6 +370,15 @@ CREATE TABLE `employee_management_application` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `employee_management_application`
+--
+
+LOCK TABLES `employee_management_application` WRITE;
+/*!40000 ALTER TABLE `employee_management_application` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_management_application` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `employee_management_attendance`
 --
 
@@ -276,13 +393,24 @@ CREATE TABLE `employee_management_attendance` (
   `time_out` time(6) DEFAULT NULL,
   `comments` longtext NOT NULL,
   `employee_id` int NOT NULL,
-  `hours_worked` decimal(5,2) NOT NULL,
+  `hours_worked` decimal(5,2) DEFAULT NULL,
   `is_overtime` tinyint(1) NOT NULL,
+  `Location` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `employee_management__employee_id_59db70e5_fk_employee_` (`employee_id`),
   CONSTRAINT `employee_management__employee_id_59db70e5_fk_employee_` FOREIGN KEY (`employee_id`) REFERENCES `employee_management_employee` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6175 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_management_attendance`
+--
+
+LOCK TABLES `employee_management_attendance` WRITE;
+/*!40000 ALTER TABLE `employee_management_attendance` DISABLE KEYS */;
+INSERT INTO `employee_management_attendance` VALUES (1,'2024-12-24','late','17:48:29.700378',NULL,'Logged late in',64,NULL,0,'office');
+/*!40000 ALTER TABLE `employee_management_attendance` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `employee_management_benefit`
@@ -293,7 +421,7 @@ DROP TABLE IF EXISTS `employee_management_benefit`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `employee_management_benefit` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `type` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `start_date` date NOT NULL,
   `end_date` date DEFAULT NULL,
   `employee_id` int NOT NULL,
@@ -302,6 +430,15 @@ CREATE TABLE `employee_management_benefit` (
   CONSTRAINT `employee_management__employee_id_fa23e547_fk_employee_` FOREIGN KEY (`employee_id`) REFERENCES `employee_management_employee` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_management_benefit`
+--
+
+LOCK TABLES `employee_management_benefit` WRITE;
+/*!40000 ALTER TABLE `employee_management_benefit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_management_benefit` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `employee_management_compliancereport`
@@ -320,6 +457,15 @@ CREATE TABLE `employee_management_compliancereport` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `employee_management_compliancereport`
+--
+
+LOCK TABLES `employee_management_compliancereport` WRITE;
+/*!40000 ALTER TABLE `employee_management_compliancereport` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_management_compliancereport` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `employee_management_deduction`
 --
 
@@ -328,7 +474,7 @@ DROP TABLE IF EXISTS `employee_management_deduction`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `employee_management_deduction` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `type` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `amount` decimal(10,2) NOT NULL,
   `effective_from` date NOT NULL,
   `effective_to` date DEFAULT NULL,
@@ -338,6 +484,15 @@ CREATE TABLE `employee_management_deduction` (
   CONSTRAINT `employee_management__employee_id_cbb99b3b_fk_employee_` FOREIGN KEY (`employee_id`) REFERENCES `employee_management_employee` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_management_deduction`
+--
+
+LOCK TABLES `employee_management_deduction` WRITE;
+/*!40000 ALTER TABLE `employee_management_deduction` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_management_deduction` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `employee_management_department`
@@ -359,8 +514,81 @@ CREATE TABLE `employee_management_department` (
   UNIQUE KEY `name` (`name`),
   KEY `employee_management__manager_id_4d5241cd_fk_employee_` (`manager_id`),
   CONSTRAINT `employee_management__manager_id_4d5241cd_fk_employee_` FOREIGN KEY (`manager_id`) REFERENCES `employee_management_employee` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_management_department`
+--
+
+LOCK TABLES `employee_management_department` WRITE;
+/*!40000 ALTER TABLE `employee_management_department` DISABLE KEYS */;
+INSERT INTO `employee_management_department` VALUES (18,'HR','helloworld','HR@hr.com','Lahore, Punjab, Pakistan',50000.00,'0123456789',NULL),(20,'Software','verberbweb','gergeq','qrgqerg',2515.00,'dfbfe',NULL),(21,'Software 2','fewfwege','wfwegw','gwegw',43143.00,'1414413',NULL),(22,'Software 3','wgwgwg','ergwgw','rwgqgwq',41.00,'342',NULL);
+/*!40000 ALTER TABLE `employee_management_department` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_management_dependent`
+--
+
+DROP TABLE IF EXISTS `employee_management_dependent`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_management_dependent` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `date_of_birth` date NOT NULL,
+  `relation` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cnic` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`),
+  CONSTRAINT `employee_management_dependent_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employee_management_employee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_management_dependent`
+--
+
+LOCK TABLES `employee_management_dependent` WRITE;
+/*!40000 ALTER TABLE `employee_management_dependent` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_management_dependent` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_management_emergencycontact`
+--
+
+DROP TABLE IF EXISTS `employee_management_emergencycontact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_management_emergencycontact` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int DEFAULT NULL,
+  `em_name_1` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `em_relationship_1` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `em_contact_1` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `em_email_1` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `em_name_2` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `em_relationship_2` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `em_contact_2` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `em_email_2` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`),
+  CONSTRAINT `employee_management_emergencycontact_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employee_management_employee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_management_emergencycontact`
+--
+
+LOCK TABLES `employee_management_emergencycontact` WRITE;
+/*!40000 ALTER TABLE `employee_management_emergencycontact` DISABLE KEYS */;
+INSERT INTO `employee_management_emergencycontact` VALUES (1,63,'1234567890','Wife','1234567890','alice.doe@example.com','0987654321','Brother','0987654321','bob.doe@example.com'),(2,64,'1234567890','Wife','1234567890','alice.doe@example.com','0987654321','Brother','0987654321','bob.doe@example.com');
+/*!40000 ALTER TABLE `employee_management_emergencycontact` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `employee_management_employee`
@@ -394,13 +622,63 @@ CREATE TABLE `employee_management_employee` (
   `department_id` varchar(255) DEFAULT NULL,
   `is_hr_manager` tinyint(1) DEFAULT NULL,
   `is_manager` tinyint(1) DEFAULT NULL,
+  `permanent_address` longtext,
+  `check_in_time` time DEFAULT NULL,
+  `working_hours` float DEFAULT NULL,
+  `location` text,
+  `eobi_no` varchar(255) DEFAULT NULL,
+  `blood_group` varchar(5) DEFAULT NULL,
+  `gender` varchar(10) DEFAULT NULL,
+  `marital_status` tinyint(1) DEFAULT NULL,
+  `cnic_no` varchar(15) DEFAULT NULL,
+  `cnic_issue_date` date DEFAULT NULL,
+  `cnic_expiry_date` date DEFAULT NULL,
+  `dv_license_no` varchar(255) DEFAULT NULL,
+  `dv_license_issue_date` date DEFAULT NULL,
+  `dv_license_expiry_date` date DEFAULT NULL,
+  `company_email` varchar(255) DEFAULT NULL,
+  `father_name` varchar(255) DEFAULT NULL,
+  `father_cnic_no` varchar(15) DEFAULT NULL,
+  `nok_name` varchar(255) NOT NULL,
+  `nok_relationship` varchar(255) NOT NULL,
+  `nok_cnic` varchar(15) NOT NULL,
+  `nok_contact` varchar(15) DEFAULT NULL,
+  `nok_email` varchar(255) NOT NULL,
+  `nok_permanent_address` text NOT NULL,
+  `nationality` varchar(255) NOT NULL,
+  `religion` varchar(255) NOT NULL,
+  `disability` varchar(255) DEFAULT NULL,
+  `ref_name_1` varchar(255) NOT NULL,
+  `ref_mobile_1` varchar(15) NOT NULL,
+  `ref_email_1` varchar(255) DEFAULT NULL,
+  `ref_designation_1` varchar(255) NOT NULL,
+  `ref_company_1` varchar(255) NOT NULL,
+  `ref_name_2` varchar(255) NOT NULL,
+  `ref_mobile_2` varchar(15) NOT NULL,
+  `ref_email_2` varchar(255) DEFAULT NULL,
+  `ref_designation_2` varchar(255) NOT NULL,
+  `ref_company_2` varchar(255) NOT NULL,
+  `spouse_name` varchar(255) NOT NULL,
+  `spouse_date_of_birth` date DEFAULT NULL,
+  `spouse_relationship` varchar(255) NOT NULL,
+  `spouse_cnic` varchar(15) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),
   KEY `employee_management__manager_id_b764fda4_fk_employee_` (`manager_id`),
   CONSTRAINT `employee_management__manager_id_b764fda4_fk_employee_` FOREIGN KEY (`manager_id`) REFERENCES `employee_management_employee` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_management_employee`
+--
+
+LOCK TABLES `employee_management_employee` WRITE;
+/*!40000 ALTER TABLE `employee_management_employee` DISABLE KEYS */;
+INSERT INTO `employee_management_employee` VALUES (59,'','','admin','admin@gmail.com','pbkdf2_sha256$720000$wMq7bHtoRgMluQE4nLCxDd$SCc5uLP0MI44/UWRNv1FSruZuSK6hwv3kW7rL222B3k=','','',NULL,'','',NULL,1,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'','','',NULL,'','','','',NULL,'','',NULL,'','','','',NULL,'','','',NULL,'',''),(60,'John','Doe','John123','john@hr.com','pbkdf2_sha256$720000$bR564O7QlQlSy2GqfPbDPA$Siebhg4dhjSuj8j1E+klDGIloqCY4I1EoJynWKMLyeY=','213114566','1670 S Amphlett BI 214-18','2000-02-17','Manager','profile_images/employees/60/logo_Qa5kKZE.png',NULL,1,0,0,'435321635','12455667','2024-12-17',NULL,'Middle',50000.00,'18',1,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'','','',NULL,'','','','',NULL,'','',NULL,'','','','',NULL,'','','',NULL,'',''),(61,'Doe','John','hello','hello@gmail.com','pbkdf2_sha256$720000$iYnPOU2juF7nvHjU0BX2yK$K7H32WfOJ6xlDajBADjmiOxe3sYbS9NnSixUmV4+CDA=','123','nskjdds','2024-12-20','Manager','profile_images/employees/61/1667902715026.jpg',NULL,1,0,0,'123','123','2024-12-20',NULL,'Middle',123.00,'18',1,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'','','',NULL,'','','','',NULL,'','',NULL,'','','','',NULL,'','','',NULL,'',''),(62,'j','j','bruh','j@hell.coom','pbkdf2_sha256$720000$57bsfwInaKnyK3BTYVKICA$jT6Mml//4xcLfRFWqd+wnfnkOLJj9/mLTngLcM510Dg=','123','jceecw','2024-12-20','Manager','profile_images/employees/62/1667902715026.jpg',NULL,1,0,0,'1233','123','2024-12-20',NULL,'jj',123.00,'18',1,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'','','',NULL,'','','','',NULL,'','',NULL,'','','','',NULL,'','','',NULL,'',''),(63,'Nofil','Doe','nofil','johndoe@example.com','pbkdf2_sha256$720000$BNxrGUpxsMEZJSl9abMJre$3+2lTGEj03oyOwykfSqee7tr8VJPjoEuye0ODPC0Gnc=','1234567890','123 Main Street','1990-01-01','Software Engineer','profile_images/employees/63/1667902715026.jpg',NULL,1,1,0,'0987654321',NULL,'2022-06-15',NULL,'A.',75000.00,'18',0,0,'123 Main Street','09:00:00',8,'New York','EOB12345','O+','Male',1,'12345-6789012-3','2010-01-01','2030-01-01','DL12345','2015-01-01','2025-01-01','john.doe@company.com','Robert Doe','98765-4321098-7','Alice Doe','Wife','12345-6789012-3','1234567890','alice.doe@example.com','123 Main Street','American','Christianity','None','Jane Doe','1234567890','jane.doe@example.com','Manager','Tech Corp','Jack Smith','0987654321','jack.smith@example.com','Director','Innovate LLC','Alice Doe','1992-02-02','Wife','12345-6789012-3'),(64,'hassan','Doe','hassan','123@example.com','pbkdf2_sha256$720000$XsRrahaiHnhwljfFupBtKV$a7yrc/iPs7UoiM2s6bQnyEgPP4kXuda5mjPImy4UaMY=','1234567890','123 Main Street','1990-01-01','Software Engineer','profile_images/employees/64/1667902715026.jpg',NULL,1,1,0,'0987654321',NULL,'2022-06-15',NULL,'A.',75000.00,'18',0,0,'123 Main Street','09:00:00',8,'New York','EOB12345','O+','male',1,'12345-6789012-3','2010-01-01','2030-01-01','DL12345','2015-01-01','2025-01-01','john.doe@company.com','Robert Doe','98765-4321098-7','Alice Doe','Wife','12345-6789012-3','1234567890','alice.doe@example.com','123 Main Street','American','Christianity','None','Jane Doe','1234567890','jane.doe@example.com','Manager','Tech Corp','Jack Smith','0987654321','jack.smith@example.com','Director','Innovate LLC','Alice Doe','1992-02-02','Wife','12345-6789012-3');
+/*!40000 ALTER TABLE `employee_management_employee` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `employee_management_employee_groups`
@@ -422,6 +700,15 @@ CREATE TABLE `employee_management_employee_groups` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `employee_management_employee_groups`
+--
+
+LOCK TABLES `employee_management_employee_groups` WRITE;
+/*!40000 ALTER TABLE `employee_management_employee_groups` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_management_employee_groups` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `employee_management_employee_user_permissions`
 --
 
@@ -439,6 +726,43 @@ CREATE TABLE `employee_management_employee_user_permissions` (
   CONSTRAINT `employee_management__permission_id_ce92f19d_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_management_employee_user_permissions`
+--
+
+LOCK TABLES `employee_management_employee_user_permissions` WRITE;
+/*!40000 ALTER TABLE `employee_management_employee_user_permissions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_management_employee_user_permissions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_management_employeedocuments`
+--
+
+DROP TABLE IF EXISTS `employee_management_employeedocuments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_management_employeedocuments` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `document` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `uploaded_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`),
+  CONSTRAINT `employee_management_employeedocuments_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employee_management_employee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_management_employeedocuments`
+--
+
+LOCK TABLES `employee_management_employeedocuments` WRITE;
+/*!40000 ALTER TABLE `employee_management_employeedocuments` DISABLE KEYS */;
+INSERT INTO `employee_management_employeedocuments` VALUES (1,63,'employee_documents/employees/Document for Nofil Doe/DSC05491.jpg','2024-12-24 11:43:31');
+/*!40000 ALTER TABLE `employee_management_employeedocuments` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `employee_management_employeerecord`
@@ -459,6 +783,46 @@ CREATE TABLE `employee_management_employeerecord` (
   CONSTRAINT `employee_management__employee_id_07581de1_fk_employee_` FOREIGN KEY (`employee_id`) REFERENCES `employee_management_employee` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_management_employeerecord`
+--
+
+LOCK TABLES `employee_management_employeerecord` WRITE;
+/*!40000 ALTER TABLE `employee_management_employeerecord` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_management_employeerecord` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_management_employment`
+--
+
+DROP TABLE IF EXISTS `employee_management_employment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_management_employment` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `company_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `designation` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `year_from` int NOT NULL,
+  `year_to` int NOT NULL,
+  `reason_for_leaving` text COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`),
+  CONSTRAINT `employee_management_employment_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employee_management_employee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_management_employment`
+--
+
+LOCK TABLES `employee_management_employment` WRITE;
+/*!40000 ALTER TABLE `employee_management_employment` DISABLE KEYS */;
+INSERT INTO `employee_management_employment` VALUES (1,63,'T','S',2,2,'C'),(2,64,'T','S',2,2,'C');
+/*!40000 ALTER TABLE `employee_management_employment` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `employee_management_jobposting`
@@ -489,6 +853,15 @@ CREATE TABLE `employee_management_jobposting` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `employee_management_jobposting`
+--
+
+LOCK TABLES `employee_management_jobposting` WRITE;
+/*!40000 ALTER TABLE `employee_management_jobposting` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_management_jobposting` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `employee_management_leave`
 --
 
@@ -499,10 +872,10 @@ CREATE TABLE `employee_management_leave` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
-  `leave_type` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `reason` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `leave_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `reason` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `employee_id` int NOT NULL,
-  `status` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime(6) NOT NULL,
   `hr_approval_date` date DEFAULT NULL,
   `manager_approval_date` date DEFAULT NULL,
@@ -512,6 +885,15 @@ CREATE TABLE `employee_management_leave` (
   CONSTRAINT `employee_management__employee_id_f8fb4e3f_fk_employee_` FOREIGN KEY (`employee_id`) REFERENCES `employee_management_employee` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_management_leave`
+--
+
+LOCK TABLES `employee_management_leave` WRITE;
+/*!40000 ALTER TABLE `employee_management_leave` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_management_leave` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `employee_management_payroll`
@@ -538,6 +920,15 @@ CREATE TABLE `employee_management_payroll` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `employee_management_payroll`
+--
+
+LOCK TABLES `employee_management_payroll` WRITE;
+/*!40000 ALTER TABLE `employee_management_payroll` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_management_payroll` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `employee_management_performancereview`
 --
 
@@ -560,6 +951,46 @@ CREATE TABLE `employee_management_performancereview` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `employee_management_performancereview`
+--
+
+LOCK TABLES `employee_management_performancereview` WRITE;
+/*!40000 ALTER TABLE `employee_management_performancereview` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_management_performancereview` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_management_qualification`
+--
+
+DROP TABLE IF EXISTS `employee_management_qualification`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_management_qualification` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `institute` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `degree` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `year_from` int NOT NULL,
+  `year_to` int NOT NULL,
+  `gpa` decimal(4,2) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`),
+  CONSTRAINT `employee_management_qualification_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employee_management_employee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_management_qualification`
+--
+
+LOCK TABLES `employee_management_qualification` WRITE;
+/*!40000 ALTER TABLE `employee_management_qualification` DISABLE KEYS */;
+INSERT INTO `employee_management_qualification` VALUES (1,63,'U','B',2,2,3.00),(2,64,'U','B',2,2,3.00);
+/*!40000 ALTER TABLE `employee_management_qualification` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `employee_management_task`
 --
 
@@ -568,10 +999,10 @@ DROP TABLE IF EXISTS `employee_management_task`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `employee_management_task` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `status` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `priority` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `priority` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `due_date` date DEFAULT NULL,
   `created_at` datetime(6) NOT NULL,
   `updated_at` datetime(6) NOT NULL,
@@ -581,6 +1012,15 @@ CREATE TABLE `employee_management_task` (
   CONSTRAINT `employee_management__department_id_1b3a0e8a_fk_employee_` FOREIGN KEY (`department_id`) REFERENCES `employee_management_department` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_management_task`
+--
+
+LOCK TABLES `employee_management_task` WRITE;
+/*!40000 ALTER TABLE `employee_management_task` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_management_task` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `employee_management_task_assigned_to`
@@ -602,6 +1042,15 @@ CREATE TABLE `employee_management_task_assigned_to` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `employee_management_task_assigned_to`
+--
+
+LOCK TABLES `employee_management_task_assigned_to` WRITE;
+/*!40000 ALTER TABLE `employee_management_task_assigned_to` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_management_task_assigned_to` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `employee_management_taskcomment`
 --
 
@@ -610,7 +1059,7 @@ DROP TABLE IF EXISTS `employee_management_taskcomment`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `employee_management_taskcomment` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `comment` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `comment` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime(6) NOT NULL,
   `created_by_id` int NOT NULL,
   `task_id` bigint NOT NULL,
@@ -623,6 +1072,15 @@ CREATE TABLE `employee_management_taskcomment` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `employee_management_taskcomment`
+--
+
+LOCK TABLES `employee_management_taskcomment` WRITE;
+/*!40000 ALTER TABLE `employee_management_taskcomment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_management_taskcomment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `employee_management_todo`
 --
 
@@ -631,8 +1089,8 @@ DROP TABLE IF EXISTS `employee_management_todo`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `employee_management_todo` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `task` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `status` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `task` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime(6) NOT NULL,
   `employee_id` int NOT NULL,
   PRIMARY KEY (`id`),
@@ -640,6 +1098,84 @@ CREATE TABLE `employee_management_todo` (
   CONSTRAINT `employee_management__employee_id_ee65c9b7_fk_employee_` FOREIGN KEY (`employee_id`) REFERENCES `employee_management_employee` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_management_todo`
+--
+
+LOCK TABLES `employee_management_todo` WRITE;
+/*!40000 ALTER TABLE `employee_management_todo` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_management_todo` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_management_voucher`
+--
+
+DROP TABLE IF EXISTS `employee_management_voucher`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_management_voucher` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `department_id` bigint NOT NULL,
+  `employee_id` int NOT NULL,
+  `head_of_department_id` int DEFAULT NULL,
+  `date` date NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `reason` varchar(255) NOT NULL,
+  `project` varchar(255) DEFAULT NULL,
+  `category` varchar(30) NOT NULL,
+  `other_category` varchar(255) DEFAULT NULL,
+  `status` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `department_id` (`department_id`),
+  KEY `employee_id` (`employee_id`),
+  KEY `head_of_department_id` (`head_of_department_id`),
+  CONSTRAINT `employee_management_voucher_ibfk_1` FOREIGN KEY (`department_id`) REFERENCES `employee_management_department` (`id`),
+  CONSTRAINT `employee_management_voucher_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employee_management_employee` (`id`),
+  CONSTRAINT `employee_management_voucher_ibfk_3` FOREIGN KEY (`head_of_department_id`) REFERENCES `employee_management_employee` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_management_voucher`
+--
+
+LOCK TABLES `employee_management_voucher` WRITE;
+/*!40000 ALTER TABLE `employee_management_voucher` DISABLE KEYS */;
+INSERT INTO `employee_management_voucher` VALUES (1,21,62,NULL,'2024-12-31',5343.00,'berbrg','vreb','internet',NULL,'pending'),(2,20,62,NULL,'2024-12-31',324.00,'verrbveb','3g3g','wellness',NULL,'pending'),(3,20,59,NULL,'2024-12-31',324.00,'ewvb','ferqg3g','software',NULL,'pending');
+/*!40000 ALTER TABLE `employee_management_voucher` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_management_voucherdocuments`
+--
+
+DROP TABLE IF EXISTS `employee_management_voucherdocuments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_management_voucherdocuments` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `voucher_id` int DEFAULT NULL,
+  `employee_id` int DEFAULT NULL,
+  `document` varchar(255) DEFAULT NULL,
+  `uploaded_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`),
+  KEY `voucher_id` (`voucher_id`),
+  CONSTRAINT `employee_management_voucherdocuments_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employee_management_employee` (`id`),
+  CONSTRAINT `employee_management_voucherdocuments_ibfk_2` FOREIGN KEY (`voucher_id`) REFERENCES `employee_management_voucher` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_management_voucherdocuments`
+--
+
+LOCK TABLES `employee_management_voucherdocuments` WRITE;
+/*!40000 ALTER TABLE `employee_management_voucherdocuments` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_management_voucherdocuments` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `encodings`
@@ -651,10 +1187,20 @@ DROP TABLE IF EXISTS `encodings`;
 CREATE TABLE `encodings` (
   `encodingID` int NOT NULL AUTO_INCREMENT,
   `employeeid` int DEFAULT NULL,
-  `encoding` text COLLATE utf8mb4_unicode_ci,
+  `encoding` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`encodingID`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `encodings`
+--
+
+LOCK TABLES `encodings` WRITE;
+/*!40000 ALTER TABLE `encodings` DISABLE KEYS */;
+INSERT INTO `encodings` VALUES (8,63,'[[-0.18753698468208313, 0.0040818508714437485, 0.09449845552444458, 0.013484836556017399, -0.10029496252536774, -0.05540699139237404, -0.03092205710709095, -0.027435794472694397, 0.11217992007732391, -0.03087085299193859, 0.3023145794868469, 0.05131775513291359, -0.2181890904903412, -0.1765260547399521, -0.006922896485775709, 0.09545721113681793, -0.03386460617184639, -0.10097534954547882, 0.0002674385905265808, -0.013098251074552536, 0.13517114520072937, -0.0006359863327816129, 0.014131504110991955, 0.014724262990057468, -0.11939336359500885, -0.36377865076065063, -0.13524797558784485, -0.10885119438171387, 0.045056067407131195, -0.05891972407698631, -0.026966644451022148, 0.06333992630243301, -0.14556756615638733, -0.09547187387943268, 0.012158670462667942, 0.11812572181224823, -0.006361067295074463, -0.06786198168992996, 0.10825993865728378, -0.08460285514593124, -0.13234812021255493, -0.07702624797821045, 0.06890327483415604, 0.19850026071071625, 0.1778978705406189, 0.07129459083080292, 0.08717509359121323, 0.007117513567209244, 0.05939671769738197, -0.28579050302505493, 0.06161123886704445, 0.10487540811300278, 0.18893544375896454, 0.033588193356990814, 0.16164761781692505, -0.15277758240699768, 0.04351680353283882, 0.1408400982618332, -0.19460681080818176, 0.042039141058921814, -0.06546296179294586, 0.00503016822040081, -0.01970379427075386, -0.027305843308568, 0.25429391860961914, 0.14080432057380676, -0.11844807863235474, -0.07020694762468338, 0.21889334917068481, -0.1330781728029251, -0.051925141364336014, 0.05375029146671295, -0.1642484962940216, -0.21115578711032867, -0.25637587904930115, 0.07816176861524582, 0.4326231777667999, 0.17149415612220764, -0.20576998591423035, 0.1083102747797966, -0.07162554562091827, 0.03074764832854271, 0.04026082903146744, -0.0065735336393117905, -0.057239823043346405, -0.031237337738275528, -0.17460897564888, -0.03595028445124626, 0.16091443598270416, -0.006668781861662865, 0.008579622954130173, 0.18538062274456024, 0.016173748299479485, 0.06843841075897217, 0.07896987348794937, 0.02880493551492691, -0.0226130448281765, 0.0015863887965679169, -0.07993309199810028, -0.008703758008778095, 0.06467311084270477, -0.08934037387371063, 0.014791490510106087, 0.0880342498421669, -0.12874607741832733, 0.07536870986223221, -0.02057366445660591, 0.04594983905553818, 0.0009788940660655499, -0.0057905856519937515, -0.0956360325217247, 0.0010139233199879527, 0.06748068332672119, -0.2599712908267975, 0.22411605715751648, 0.12079744786024094, -0.05843326076865196, 0.18345634639263153, 0.0772421732544899, 0.09129751473665237, 0.026277504861354828, -0.08916682749986649, -0.12609438598155975, -0.09240574389696121, 0.041107334196567535, -0.0957183986902237, 0.008826490491628647, 0.04557763412594795]]'),(9,64,'[[-0.09434060752391815, 0.01012292318046093, 0.012943405658006668, -0.06197132170200348, 0.041708722710609436, 0.04590567573904991, -0.06200564652681351, -0.10777046531438828, 0.21307069063186646, -0.14025576412677765, 0.21657191216945648, 0.08488306403160095, -0.0968586802482605, -0.11591313034296036, -0.02397649735212326, 0.08113781362771988, -0.1270950734615326, -0.14977620542049408, -0.015817910432815552, -0.04748634621500969, -0.007015963084995747, 0.022947777062654495, 0.02057640627026558, 0.041996557265520096, -0.24778474867343903, -0.3296847343444824, -0.05721474066376686, -0.06883426010608673, 0.03789575397968292, -0.04261348769068718, -0.09653011709451675, 0.06153876706957817, -0.24605761468410492, 0.009802458807826042, -0.019552020356059074, 0.16658492386341095, -0.009135909378528595, 0.003615565598011017, 0.15299275517463684, 0.11161914467811584, -0.11168200522661209, -0.05804011598229408, -0.04364785552024841, 0.25512993335723877, 0.15542952716350555, 0.04089928790926933, 0.05580822378396988, -0.07817365974187851, 0.10749615728855133, -0.2640209496021271, 0.08408253639936447, 0.07075141370296478, 0.057458195835351944, 0.05645854026079178, -0.009165909141302109, -0.18437941372394562, -0.033416908234357834, 0.0672515332698822, -0.1149650365114212, 0.07794441282749176, -0.05520069971680641, -0.02336122654378414, -0.06400211155414581, -0.03354651853442192, 0.24084120988845825, 0.15130889415740967, -0.10124213993549347, -0.11403664946556091, 0.15079881250858307, -0.13304398953914642, -0.02880489081144333, 0.025454726070165634, -0.05632619187235832, -0.21427948772907257, -0.2832777500152588, 0.09013406932353973, 0.37206897139549255, 0.17717108130455017, -0.16295990347862244, 0.05841059237718582, -0.0709988921880722, -0.02760924957692623, 0.09902063012123108, 0.06506465375423431, -0.10124509781599045, 0.1147722378373146, -0.05498361960053444, 0.05706777051091194, 0.2490173727273941, 0.049949854612350464, -0.04937966167926788, 0.1744447946548462, -0.05113860219717026, 0.1385166049003601, 0.03432092070579529, 0.02771310694515705, -0.08236375451087952, 0.08172231912612915, -0.12629905343055725, -0.002049964852631092, 0.07101491838693619, 0.01440065260976553, 0.0719427838921547, 0.14813297986984253, -0.1597975641489029, 0.2028266042470932, -0.0044937715865671635, -0.046180371195077896, 0.09950343519449234, 0.06724168360233307, -0.12984433770179749, -0.11200294643640518, 0.10832539200782776, -0.24053817987442017, 0.14722687005996704, 0.17961204051971436, 0.09115158021450043, 0.22155125439167023, 0.13114245235919952, 0.07619696855545044, 0.021140864118933678, 0.06467533856630325, -0.19381549954414368, 0.004073179792612791, 0.057338595390319824, -0.06086268648505211, 0.060396209359169006, 0.03450174257159233]]');
+/*!40000 ALTER TABLE `encodings` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `rawdata`
@@ -668,9 +1214,19 @@ CREATE TABLE `rawdata` (
   `employee_id` int DEFAULT NULL,
   `date` date DEFAULT NULL,
   `log_time` time DEFAULT NULL,
+  `log_type` enum('in','out') COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1992 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rawdata`
+--
+
+LOCK TABLES `rawdata` WRITE;
+/*!40000 ALTER TABLE `rawdata` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rawdata` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `token_blacklist_blacklistedtoken`
@@ -690,6 +1246,15 @@ CREATE TABLE `token_blacklist_blacklistedtoken` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `token_blacklist_blacklistedtoken`
+--
+
+LOCK TABLES `token_blacklist_blacklistedtoken` WRITE;
+/*!40000 ALTER TABLE `token_blacklist_blacklistedtoken` DISABLE KEYS */;
+/*!40000 ALTER TABLE `token_blacklist_blacklistedtoken` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `token_blacklist_outstandingtoken`
 --
 
@@ -706,8 +1271,18 @@ CREATE TABLE `token_blacklist_outstandingtoken` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `token_blacklist_outstandingtoken_jti_hex_d9bdf6f7_uniq` (`jti`),
   KEY `token_blacklist_outs_user_id_83bc629a_fk_employee_` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=520 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=623 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `token_blacklist_outstandingtoken`
+--
+
+LOCK TABLES `token_blacklist_outstandingtoken` WRITE;
+/*!40000 ALTER TABLE `token_blacklist_outstandingtoken` DISABLE KEYS */;
+INSERT INTO `token_blacklist_outstandingtoken` VALUES (520,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDUwMTUwOSwiaWF0IjoxNzM0NDE1MTA5LCJqdGkiOiIzNzM0ZWUyNDVkNzE0OTM5OTI0ZTg4OGU1MDBkNTJiMyIsInVzZXJfaWQiOjU5fQ.g-szfY8uNeGzj1weI2nnkqBxtcmb057GM_JzKHaHjb0','2024-12-17 05:58:29.634477','2024-12-18 05:58:29.000000',59,'3734ee245d714939924e888e500d52b3'),(521,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDUwMTc5MywiaWF0IjoxNzM0NDE1MzkzLCJqdGkiOiJiOTgxZGViZWMzYTU0NjFlYTkwZTA3NzgwMmVjYWJiNiIsInVzZXJfaWQiOjYwfQ.3RbWD02fTn7kmd89kvoXi7V-0DariVsW85HBgib_9Fc','2024-12-17 06:03:13.752938','2024-12-18 06:03:13.000000',60,'b981debec3a5461ea90e077802ecabb6'),(522,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDUwNTg1NywiaWF0IjoxNzM0NDE5NDU3LCJqdGkiOiI5ZDYzMGMyOWVmZGM0MTJjYTk2ZDc2MDkxYjUzZDhkMyIsInVzZXJfaWQiOjU5fQ.HvZAppDdUfRwebgxNCvVXtqfWPD1rzuSjI7vGbWhgig','2024-12-17 07:10:57.735683','2024-12-18 07:10:57.000000',59,'9d630c29efdc412ca96d76091b53d8d3'),(523,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDUwOTQ4MCwiaWF0IjoxNzM0NDIzMDgwLCJqdGkiOiIyNDcxNjYxMjgwNjE0YmE1YTk1YjA0NzFkZjhiMWRkYyIsInVzZXJfaWQiOjU5fQ.tkr5WUO_69mjpEbW2dHes_kKrku0hD5WWvfd3FlrjiE','2024-12-17 08:11:20.229895','2024-12-18 08:11:20.000000',59,'2471661280614ba5a95b0471df8b1ddc'),(524,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDUyMTc5MiwiaWF0IjoxNzM0NDM1MzkyLCJqdGkiOiJiODljMzU3YTIzNDA0ZTgwYWQ4ZTdkMDM1ZjI2MzY3NSIsInVzZXJfaWQiOjU5fQ.8ZTfbozEO1tecwrzP00E0A3muaXdzzPK9o9HbeCbdaM','2024-12-17 11:36:32.460496','2024-12-18 11:36:32.000000',59,'b89c357a23404e80ad8e7d035f263675'),(525,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDU4NTM3NSwiaWF0IjoxNzM0NDk4OTc1LCJqdGkiOiJiYjU1ZjE4ODNiNGQ0ODg2YjY3Y2M3ODE1YzgyNDg4NCIsInVzZXJfaWQiOjU5fQ.Vex7d-HNttfZ7PdhjCmmqMCE9tO-Uz9vhJAM0lrVA-I','2024-12-18 05:16:15.134237','2024-12-19 05:16:15.000000',59,'bb55f1883b4d4886b67cc7815c824884'),(526,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDU5NDk3NywiaWF0IjoxNzM0NTA4NTc3LCJqdGkiOiJjODFhZGZkNTY2YTg0ZjYwYTI1YTQ1NTIyNWEyYzk1MSIsInVzZXJfaWQiOjU5fQ.k-SzHDcfVyXL0IQ3C6Ag7w3ffqGYH7O0bGDd0Xg8H7I','2024-12-18 07:56:17.230847','2024-12-19 07:56:17.000000',59,'c81adfd566a84f60a25a455225a2c951'),(527,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDYwMjM3OSwiaWF0IjoxNzM0NTE1OTc5LCJqdGkiOiJkMWEwYTFjNjY2OWI0OTc2ODJjY2Q2YWFkYzQ5ZTA1OSIsInVzZXJfaWQiOjU5fQ.F4lL4lZ47KXHydEvBW6ha90SxRW5h09ud26TDqrKBOc','2024-12-18 09:59:39.587236','2024-12-19 09:59:39.000000',59,'d1a0a1c6669b497682ccd6aadc49e059'),(528,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDYwNzA3MCwiaWF0IjoxNzM0NTIwNjcwLCJqdGkiOiIxNDkyNDg2NWY5MWQ0MWJhYTkxYTk2ZGYyOTI1YjdkNCIsInVzZXJfaWQiOjU5fQ.ZNdMqLKVktNx3ev3oB6OqpDwEcFeFxfPLDwkooKHYGM','2024-12-18 11:17:50.439224','2024-12-19 11:17:50.000000',59,'14924865f91d41baa91a96df2925b7d4'),(529,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDYzMjcyNywiaWF0IjoxNzM0NTQ2MzI3LCJqdGkiOiI1ZTJlYzVjZDc0NWU0NzJlYWJlNzA0YTk4NjE5Nzc1OSIsInVzZXJfaWQiOjU5fQ.wvzptHaye_T7kKkkdwFDUXaYWD0vcTs7ZjgvgTMopFg','2024-12-18 18:25:27.502694','2024-12-19 18:25:27.000000',59,'5e2ec5cd745e472eabe704a986197759'),(530,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDY3NDI4NywiaWF0IjoxNzM0NTg3ODg3LCJqdGkiOiJjMjNmYjQ2ZWI3MWQ0MGExYmRmZGU1YWFkOTQyMWI0NiIsInVzZXJfaWQiOjU5fQ.urFoJFACsPo6Jc-TZvp6YwV1MTqpEa4K2BOBkaW3l1Y','2024-12-19 05:58:07.367471','2024-12-20 05:58:07.000000',59,'c23fb46eb71d40a1bdfde5aad9421b46'),(531,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDY3ODEyMywiaWF0IjoxNzM0NTkxNzIzLCJqdGkiOiI1Nzc5YTk5NzEzNTc0ODkzYTk4YTU3ODJlMmE1NTNlNCIsInVzZXJfaWQiOjU5fQ.kNFS3dlfI73n4W_lZWiuD51-ZwXwvlddGoClp_Uhr20','2024-12-19 07:02:03.890151','2024-12-20 07:02:03.000000',59,'5779a99713574893a98a5782e2a553e4'),(532,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDY4MTk1MiwiaWF0IjoxNzM0NTk1NTUyLCJqdGkiOiI4MWQyYWZjMzI4ZmQ0YTY3YWIxYzc3OWM1MjM3NmVlNiIsInVzZXJfaWQiOjU5fQ.T17RvaaM6ZJ8Zp_ylorjyxiR0tVa_e2unWF7MSj7jDE','2024-12-19 08:05:52.912256','2024-12-20 08:05:52.000000',59,'81d2afc328fd4a67ab1c779c52376ee6'),(533,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDcxMTY4OCwiaWF0IjoxNzM0NjI1Mjg4LCJqdGkiOiJjNTYyNjg3OTk0Nzg0ZWU1OTQzNDUxNGMxNWFlODU0MCIsInVzZXJfaWQiOjU5fQ.5zLwlv_fbM28VWWCb8jZXBTSq93EinGwUsB5VPuRhUU','2024-12-19 16:21:28.734140','2024-12-20 16:21:28.000000',59,'c562687994784ee59434514c15ae8540'),(534,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDcxMTY5NCwiaWF0IjoxNzM0NjI1Mjk0LCJqdGkiOiI3MTk2OGYyOWIxNDg0YjI3OTRjM2ZiY2Y5M2VhMTQyNCIsInVzZXJfaWQiOjU5fQ.AFIrPEtr21sRWO5dPlvohv9uf9vnnO5ulvlAOAJrCiA','2024-12-19 16:21:34.986425','2024-12-20 16:21:34.000000',59,'71968f29b1484b2794c3fbcf93ea1424'),(535,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDcxMTg5MiwiaWF0IjoxNzM0NjI1NDkyLCJqdGkiOiI1MmYyMDIxZjllMTI0NmEyOWY3YjRhZDEyZGZmODk5NCIsInVzZXJfaWQiOjU5fQ.Himf2CLh4WFLKmRVGFMV2DDq8JTIOic8gx-I_ljTm_k','2024-12-19 16:24:52.864126','2024-12-20 16:24:52.000000',59,'52f2021f9e1246a29f7b4ad12dff8994'),(536,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDc2MDkxOCwiaWF0IjoxNzM0Njc0NTE4LCJqdGkiOiI2NDZiNTUzZTI2NzI0NjczYTFlMzc2Y2RkNjY3ZmNmMCIsInVzZXJfaWQiOjU5fQ.RoN-HQ0q1HLm0KdinCTGBOWJumGEgv4iECDkLmHK11Q','2024-12-20 06:01:58.003819','2024-12-21 06:01:58.000000',59,'646b553e26724673a1e376cdd667fcf0'),(537,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDc2MTExNSwiaWF0IjoxNzM0Njc0NzE1LCJqdGkiOiIyN2MyNDRjNDlkMDA0OGU5ODVlZmY3Nzk4NjNjZjY3YiIsInVzZXJfaWQiOjYxfQ.zPcAW27Jnw3BuUGfX5JQnP4uuRYgay37gWz2Ym_SpEU','2024-12-20 06:05:15.956823','2024-12-21 06:05:15.000000',61,'27c244c49d0048e985eff779863cf67b'),(538,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDc2MTI4NiwiaWF0IjoxNzM0Njc0ODg2LCJqdGkiOiIxMjI3NDdhMzk0MmE0ZWJkOWNlOGIwYThlZDA2OTgxOCIsInVzZXJfaWQiOjYxfQ.uKBOGs_J5cj8-xecuv_ZGDALMTV6YELOQCCs_Nmi7Vw','2024-12-20 06:08:06.125354','2024-12-21 06:08:06.000000',61,'122747a3942a4ebd9ce8b0a8ed069818'),(539,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDc2MTUxNCwiaWF0IjoxNzM0Njc1MTE0LCJqdGkiOiJmNjgyNDVhNDEwYzc0MTM4YjM5M2E5MTVmOTQxN2JiMiIsInVzZXJfaWQiOjYxfQ.C7IIap_34J30KdG0SDhQ4JomSMX6mxDIiAvqRTfGJxs','2024-12-20 06:11:54.596184','2024-12-21 06:11:54.000000',61,'f68245a410c74138b393a915f9417bb2'),(540,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDc2MTc0MCwiaWF0IjoxNzM0Njc1MzQwLCJqdGkiOiI5ZWU3ZTIwNWMwMjQ0YTc4OThiMjg1ODU1NmJmZDE5OCIsInVzZXJfaWQiOjYxfQ.uQHaQIvt6y_zoC_7xVzDVmgmm4WHCnBCxt4W8qJCzqk','2024-12-20 06:15:40.567498','2024-12-21 06:15:40.000000',61,'9ee7e205c0244a7898b2858556bfd198'),(541,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDc2MjYxNiwiaWF0IjoxNzM0Njc2MjE2LCJqdGkiOiIxYWQ4NjE0YzlhODA0YzNjYWQ1Yzg1NTViYzdhYjBkOSIsInVzZXJfaWQiOjYxfQ.btWeG_dKQdxbd_vEvbxcBLgeskcZ7e7nnWesJA6CcNs','2024-12-20 06:30:16.597085','2024-12-21 06:30:16.000000',61,'1ad8614c9a804c3cad5c8555bc7ab0d9'),(542,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDc2MzQ1MywiaWF0IjoxNzM0Njc3MDUzLCJqdGkiOiJjNjVmNjQ3ZDJlNTE0OGU3ODRkOWMzMTkxZDhlMGQ0OCIsInVzZXJfaWQiOjYxfQ.GCtuCo7mNVXEi1DB36kauoEzF8hUE5BQ2c-LXqv-zec','2024-12-20 06:44:13.849408','2024-12-21 06:44:13.000000',61,'c65f647d2e5148e784d9c3191d8e0d48'),(543,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDc2MzUwNiwiaWF0IjoxNzM0Njc3MTA2LCJqdGkiOiI3ZTkyZWRlN2EyZGI0ZmI4OTA4YjBmZTdlMWY3MzE1ZCIsInVzZXJfaWQiOjU5fQ.n06eJJ6Na-USxWRmCIXgBcY-LcQ3-XlJAFzAV73Vo10','2024-12-20 06:45:06.930717','2024-12-21 06:45:06.000000',59,'7e92ede7a2db4fb8908b0fe7e1f7315d'),(544,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDc2MzY0NiwiaWF0IjoxNzM0Njc3MjQ2LCJqdGkiOiI4MGE4OTMzN2EyMzg0ZDNjOGFiZTczMzJhYjY0OWZiNCIsInVzZXJfaWQiOjYyfQ.LEeAMakkyr_60c8QugtAu0J7t8dl24GAzqGw8_hACWQ','2024-12-20 06:47:26.852210','2024-12-21 06:47:26.000000',62,'80a89337a2384d3c8abe7332ab649fb4'),(545,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDc2NTM5NywiaWF0IjoxNzM0Njc4OTk3LCJqdGkiOiJhYTc4YjhhZTcxMWE0NTkzYTM2M2JmNmFmM2MyOGVmNyIsInVzZXJfaWQiOjU5fQ.24f6yEIRd4JI3Divt34MUpCpJ_QoP4O8KTU05uABARk','2024-12-20 07:16:37.143504','2024-12-21 07:16:37.000000',59,'aa78b8ae711a4593a363bf6af3c28ef7'),(546,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDc2NTQwNSwiaWF0IjoxNzM0Njc5MDA1LCJqdGkiOiJkZDM3MTU5MWExNzg0MjVmYjc4YWFhMTU2ZjdmYjM2YiIsInVzZXJfaWQiOjYxfQ.xG_rpUC5CRd4msoNSl1j8mUgAfujZ8zGFqq4acN36cs','2024-12-20 07:16:45.604618','2024-12-21 07:16:45.000000',61,'dd371591a178425fb78aaa156f7fb36b'),(547,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTAxNTQ3MSwiaWF0IjoxNzM0OTI5MDcxLCJqdGkiOiJhYzYxNDU2Zjk3ZjE0Y2YzODlhY2Y4ZDRjZTc5ZmU4NyIsInVzZXJfaWQiOjU5fQ.dyJwHuA0c3DTaW2tg2393A_0_RERwjAeLRuWs7wAdno','2024-12-23 04:44:31.533728','2024-12-24 04:44:31.000000',59,'ac61456f97f14cf389acf8d4ce79fe87'),(548,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTAxOTk5MywiaWF0IjoxNzM0OTMzNTkzLCJqdGkiOiIzM2UyNDg4Y2VhNjQ0ZjhjODllY2U2ZTQ0YjA4ZjA1MCIsInVzZXJfaWQiOjYyfQ.MOAlTF-U2LMI6u5vLXuex7IIIaU3Yd9E53ZEdYftd3E','2024-12-23 05:59:53.582530','2024-12-24 05:59:53.000000',62,'33e2488cea644f8c89ece6e44b08f050'),(549,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTAyMDA3OCwiaWF0IjoxNzM0OTMzNjc4LCJqdGkiOiJjOTYxNzk5NTJiYjg0ODVlYjFiMGIyZWU0YzI4MTdhMSIsInVzZXJfaWQiOjYxfQ.AkhkOZfWkKNQmC_unI-Whe_jLl2K6QzfeY4qZDpg7y0','2024-12-23 06:01:18.866469','2024-12-24 06:01:18.000000',61,'c96179952bb8485eb1b0b2ee4c2817a1'),(550,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTAyMDEzNywiaWF0IjoxNzM0OTMzNzM3LCJqdGkiOiIxYjFjMWRmMzQ5MGE0YjQ3OTQ3MjU0NGEzNTY4Y2JjYSIsInVzZXJfaWQiOjYxfQ.pns_gnczbywrqa_U7Lb8GZUVax_NtoN7GDDELefQyWU','2024-12-23 06:02:17.766080','2024-12-24 06:02:17.000000',61,'1b1c1df3490a4b479472544a3568cbca'),(551,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTAyMDE2MiwiaWF0IjoxNzM0OTMzNzYyLCJqdGkiOiIyMWIwZDgwMTVmNGY0MDdlYmI2OWY0MWFlNzg0YjQwYSIsInVzZXJfaWQiOjYwfQ.-OOrvdQ5HGLE2uG2VW-zzSP-uOQRU-TgeCLZZFsXPCM','2024-12-23 06:02:42.808738','2024-12-24 06:02:42.000000',60,'21b0d8015f4f407ebb69f41ae784b40a'),(552,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTAyMDIwOSwiaWF0IjoxNzM0OTMzODA5LCJqdGkiOiI4ZTE0NjNkOGEzY2Y0YTIyYjhhOWIyNjgyMjkzODYxMSIsInVzZXJfaWQiOjYyfQ.4Gvh70ywB1WH7pVOSI6wGDi8K6puA5BCCEa6-6Kvq1Y','2024-12-23 06:03:29.925741','2024-12-24 06:03:29.000000',62,'8e1463d8a3cf4a22b8a9b26822938611'),(553,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTAyMDI0NywiaWF0IjoxNzM0OTMzODQ3LCJqdGkiOiI5NWZhODQ5ZmNmZmM0NDZmOTQ4NGNlMWM4NTBkMDgzMiIsInVzZXJfaWQiOjYwfQ.akpCSMk4xx6zkxnNyCDtgHy8xZBNLUjaQlvDJ3NbqXE','2024-12-23 06:04:07.373588','2024-12-24 06:04:07.000000',60,'95fa849fcffc446f9484ce1c850d0832'),(554,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTAyMDMwMiwiaWF0IjoxNzM0OTMzOTAyLCJqdGkiOiI4NzM2OTM5ZTc4YTU0MGRkOGM2MzgzZWNlYjhiNjA0NyIsInVzZXJfaWQiOjU5fQ.YgUAf8jxbv7zM2le7NJ1aMnPLFyOQT8KXco6-_PqY_E','2024-12-23 06:05:02.487305','2024-12-24 06:05:02.000000',59,'8736939e78a540dd8c6383eceb8b6047'),(555,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTAyMDMzNiwiaWF0IjoxNzM0OTMzOTM2LCJqdGkiOiIwMzkxNjg2NmQ1NTg0NTEzODMzOWNkNzIyZmJkZTJlYyIsInVzZXJfaWQiOjYyfQ.vzYCIRm5QyXVL8cKWfLaZD6QcDCkFtZsQ_KdtliN_j0','2024-12-23 06:05:36.243554','2024-12-24 06:05:36.000000',62,'03916866d55845138339cd722fbde2ec'),(556,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTAyNDg3NiwiaWF0IjoxNzM0OTM4NDc2LCJqdGkiOiIyNjYzOTkzYjA0YTQ0ZDI3OWMxNDkyZjk0NTNjOGIxMyIsInVzZXJfaWQiOjU5fQ.Z8c1WV0R_kOI_F62P1OPanyVeHPsK5XonylKbzUzpVY','2024-12-23 07:21:16.166257','2024-12-24 07:21:16.000000',59,'2663993b04a44d279c1492f9453c8b13'),(557,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTAyNTAxNSwiaWF0IjoxNzM0OTM4NjE1LCJqdGkiOiIyMzhkN2RjNmUyMDM0NzZhOTRhOTRmNmE4Mjc3OGEwZCIsInVzZXJfaWQiOjYwfQ.eyvXXisF8LE4ii5NSIi7R9U33-B4uTUzaqX3HS5i770','2024-12-23 07:23:35.667234','2024-12-24 07:23:35.000000',60,'238d7dc6e203476a94a94f6a82778a0d'),(558,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTAzNDA4OSwiaWF0IjoxNzM0OTQ3Njg5LCJqdGkiOiJlZjQ4OWIzNzEzZTE0NzJjYmExMjU5ZjZiMGJkOWM0YyIsInVzZXJfaWQiOjYwfQ.V34rPBLpuUmp8-CDKFLvb5heAKZm6FgbSCgyNglge3w','2024-12-23 09:54:49.968287','2024-12-24 09:54:49.000000',60,'ef489b3713e1472cba1259f6b0bd9c4c'),(559,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTEyNDA3MCwiaWF0IjoxNzM1MDM3NjcwLCJqdGkiOiI5ZDRkN2Q1OThjYzA0MmFkYTY1MzhlZjVmZjM5Y2ZlNCIsInVzZXJfaWQiOjYwfQ.MCChbuM8YuVt6j3sDoEnpwhDG7yXXEYdlGpVjMBkxio','2024-12-24 10:54:30.832489','2024-12-25 10:54:30.000000',60,'9d4d7d598cc042ada6538ef5ff39cfe4'),(560,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTEyNjc3OCwiaWF0IjoxNzM1MDQwMzc4LCJqdGkiOiI2YmY0YWEzNzBjY2E0ZWJjOWYzOTIxODA2NWEwMmRkOSIsInVzZXJfaWQiOjYwfQ.stSa3TQGLqF4joG_P6CBS0HbeG6WGYUgdrXgPikF4jA','2024-12-24 11:39:38.522910','2024-12-25 11:39:38.000000',60,'6bf4aa370cca4ebc9f39218065a02dd9'),(561,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTI3NTY1NSwiaWF0IjoxNzM1MTg5MjU1LCJqdGkiOiIyNTk2YzA1YjMzMWM0NWM2YjQ5NjExMWNlYzc0MjNkZiIsInVzZXJfaWQiOjYyfQ.Yc7gPK-dqjixzhbNeHNNSXYzX8FbV-_cP4UuYe3Iva8','2024-12-26 05:00:55.107392','2024-12-27 05:00:55.000000',62,'2596c05b331c45c6b496111cec7423df'),(562,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTI4MDMzNywiaWF0IjoxNzM1MTkzOTM3LCJqdGkiOiI4ZDExMTBiZDc3OWE0NTU2ODRmM2U2Yzc2MjY5MWFmYSIsInVzZXJfaWQiOjYyfQ.SdWkYCNwf_dbiG2TRdAtYrB15cQXPZXkF4IUX8J3MZA','2024-12-26 06:18:57.915229','2024-12-27 06:18:57.000000',62,'8d1110bd779a455684f3e6c762691afa'),(563,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTI4MTc5MiwiaWF0IjoxNzM1MTk1MzkyLCJqdGkiOiI2ZmRhODExNzk0MWE0MzE4YTE4ZmEzY2UyMDBlMDliZSIsInVzZXJfaWQiOjU5fQ.QqTiTjXmCRarPx1FE2oGZrd8m9kljGrGO4FD66s_SE8','2024-12-26 06:43:12.055848','2024-12-27 06:43:12.000000',59,'6fda8117941a4318a18fa3ce200e09be'),(564,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTI4NTUzMCwiaWF0IjoxNzM1MTk5MTMwLCJqdGkiOiI4MWUyMjZiZTQ3NDI0ZDRjYjc4NWZkY2NmMjk5NWQxZCIsInVzZXJfaWQiOjYyfQ.Jc33WKAhYcSz9-XiaD2kddZJTVaZTB1UW4-S-YKWIjc','2024-12-26 07:45:30.628066','2024-12-27 07:45:30.000000',62,'81e226be47424d4cb785fdccf2995d1d'),(565,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTI4NTY0NCwiaWF0IjoxNzM1MTk5MjQ0LCJqdGkiOiJjMGM5OWIwNzk5OTM0OGI5OTNhZWM3Y2U3OWRlNWM1NSIsInVzZXJfaWQiOjU5fQ.bmmLLvNH3Su_sC88XYyVqfJh3NZfqHnNYmBCAO27keU','2024-12-26 07:47:24.360690','2024-12-27 07:47:24.000000',59,'c0c99b07999348b993aec7ce79de5c55'),(566,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTI4NzYzNSwiaWF0IjoxNzM1MjAxMjM1LCJqdGkiOiJiOTAwOTk2YTQ2NTU0OWYyOTA3ODYzYjQwODAwYWZmMiIsInVzZXJfaWQiOjYyfQ.Kjyo37r8JiP19iwrizQQ577ASI_e54hH9XfgCsYuSKA','2024-12-26 08:20:35.735943','2024-12-27 08:20:35.000000',62,'b900996a465549f2907863b40800aff2'),(567,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTI4NzcyMiwiaWF0IjoxNzM1MjAxMzIyLCJqdGkiOiIyNzc0NWQyMjE5MWI0YTZlYTQzZjBjMDVhOWU1NTM4MyIsInVzZXJfaWQiOjU5fQ.CtO1v4nr39gLGXeTrdzn6cso8CLaJA4XoIGJkCFWlI8','2024-12-26 08:22:02.768420','2024-12-27 08:22:02.000000',59,'27745d22191b4a6ea43f0c05a9e55383'),(568,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTI5NTE1MiwiaWF0IjoxNzM1MjA4NzUyLCJqdGkiOiIwOGM1MjgwNDc5M2M0N2MyOGYyY2Q2YjQxNTM0MGRiYyIsInVzZXJfaWQiOjU5fQ.rmuTVNzUBJOl6F3lSx96o-g6DFYtd4-8cLtHftlTiDM','2024-12-26 10:25:52.895870','2024-12-27 10:25:52.000000',59,'08c52804793c47c28f2cd6b415340dbc'),(569,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTI5NjM2OSwiaWF0IjoxNzM1MjA5OTY5LCJqdGkiOiJlNjY5ZWJmNWRkNmQ0YTAxODUwOGU3M2NmZjczODdkOCIsInVzZXJfaWQiOjU5fQ.CtZ2hqH4neO9DesjLMSB5EcuBaEwavSSGsG-2yUuaYk','2024-12-26 10:46:09.078900','2024-12-27 10:46:09.000000',59,'e669ebf5dd6d4a018508e73cff7387d8'),(570,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTMwMDMyNiwiaWF0IjoxNzM1MjEzOTI2LCJqdGkiOiI3OTI2NDRjNTNkNTk0OTdjYmUzMTM3YTMwYjVkMTJjMyIsInVzZXJfaWQiOjU5fQ.Kt7lcnqvuBr-wkNYKoBOD3_jii_eVs1ChtUI9kvzY6c','2024-12-26 11:52:06.157939','2024-12-27 11:52:06.000000',59,'792644c53d59497cbe3137a30b5d12c3'),(571,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTM2MjI0MSwiaWF0IjoxNzM1Mjc1ODQxLCJqdGkiOiJkNjkzMzRiY2Y3MGU0MjFiODRmZmEzMDhmNDI4MWY2MCIsInVzZXJfaWQiOjU5fQ.mFu9zEf-T2s-oZw5RLODWxUhO_T6N_9kntzYugc9zd4','2024-12-27 05:04:01.002957','2024-12-28 05:04:01.000000',59,'d69334bcf70e421b84ffa308f4281f60'),(572,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTM2NjM0NiwiaWF0IjoxNzM1Mjc5OTQ2LCJqdGkiOiIwMmY2NGRlZmVkMzE0Mzc0ODg0NGY3ZjhjYzMzZDViOSIsInVzZXJfaWQiOjU5fQ.wfHk1eGRuyvPZCS_-iubY34EKEVzRJrZ9hnHWAqxqhc','2024-12-27 06:12:26.069758','2024-12-28 06:12:26.000000',59,'02f64defed3143748844f7f8cc33d5b9'),(573,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTM2OTA5NiwiaWF0IjoxNzM1MjgyNjk2LCJqdGkiOiI4MzU3MDIzOWRiZDI0ZjdkYTYwNmJiMGZiZTMwMDdkMyIsInVzZXJfaWQiOjYwfQ.Ap2xXCq6ONvx9WqVNVJi9Iw_0mc9lfDfH_0KA-PXWto','2024-12-27 06:58:16.577281','2024-12-28 06:58:16.000000',60,'83570239dbd24f7da606bb0fbe3007d3'),(574,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTM2OTI2MiwiaWF0IjoxNzM1MjgyODYyLCJqdGkiOiJkNmVmODdmNWQ0YWI0NTc2Yjc1ZGI5MWRmNDcwNTc3MiIsInVzZXJfaWQiOjYwfQ.H4NQkZ5cO97MPPCA65vIqORjPHbqRmaOsgOI-URqGeg','2024-12-27 07:01:02.128062','2024-12-28 07:01:02.000000',60,'d6ef87f5d4ab4576b75db91df4705772'),(575,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTM3MDA3MiwiaWF0IjoxNzM1MjgzNjcyLCJqdGkiOiI4NzlmNjQ2NDM1NDk0NGM5YmE0MWE3ZWQwYjkyMDQ3YiIsInVzZXJfaWQiOjYxfQ.k5uh5dXuUjeRDfHealRlV_y_UBaEYCNWRlMM-GMSQg0','2024-12-27 07:14:32.024494','2024-12-28 07:14:32.000000',61,'879f6464354944c9ba41a7ed0b92047b'),(576,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTM3MjE5MCwiaWF0IjoxNzM1Mjg1NzkwLCJqdGkiOiIzMzFiZWE4YjNhM2E0ZjdkYTkzN2MwNTA5OTcxNDIyZiIsInVzZXJfaWQiOjU5fQ.1bkAuzq7P6grdUaNCD-JBsTjUfi2efE8By21Dc39Y04','2024-12-27 07:49:50.081721','2024-12-28 07:49:50.000000',59,'331bea8b3a3a4f7da937c0509971422f'),(577,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTM3ODMyMCwiaWF0IjoxNzM1MjkxOTIwLCJqdGkiOiJmMzliYzIwZmFmNDk0MzQzYjg0MGJiMWUyNTQyOWJiZCIsInVzZXJfaWQiOjU5fQ.1rCsyv_BcXO6uKuxcEOZPqT8Anrwi0B0CQ2k4HiI-oY','2024-12-27 09:32:00.398896','2024-12-28 09:32:00.000000',59,'f39bc20faf494343b840bb1e25429bbd'),(578,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTM4MzkzNSwiaWF0IjoxNzM1Mjk3NTM1LCJqdGkiOiI4MTZkYTNhM2Q5YjM0OWQ4YmE4NGFlNjdjYTkyMTM5ZCIsInVzZXJfaWQiOjU5fQ.JQpsI0j_B87Mzvs56-mNQ5d2ZOcyLefzjDQBbkZVJyc','2024-12-27 11:05:35.008380','2024-12-28 11:05:35.000000',59,'816da3a3d9b349d8ba84ae67ca92139d'),(579,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTM4NDEzOSwiaWF0IjoxNzM1Mjk3NzM5LCJqdGkiOiIwMDZlZGU0NjA3Njk0ZDk0OTgyOWI3ODc1ZTFmZjAwMiIsInVzZXJfaWQiOjU5fQ.mq3R-gKq5osTtuY5g4SK0-T0Coq61xl5SNYPozCq5gI','2024-12-27 11:08:59.271518','2024-12-28 11:08:59.000000',59,'006ede4607694d949829b7875e1ff002'),(580,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTYxOTQ1MCwiaWF0IjoxNzM1NTMzMDUwLCJqdGkiOiI2YTBmYmI5ZTFjZDM0YWU0YjRhMjYwMGI3ZjIyOGU0MCIsInVzZXJfaWQiOjU5fQ.0S18J-9zdhp8Q6Z_oxMlEwRDoqqJefjA2CLPhFSeHWg','2024-12-30 04:30:50.621114','2024-12-31 04:30:50.000000',59,'6a0fbb9e1cd34ae4b4a2600b7f228e40'),(581,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTYyMzQyNCwiaWF0IjoxNzM1NTM3MDI0LCJqdGkiOiIwYzZhMTY4Y2RjYTA0Nzc2YmViYTU2MThkNTNiYmI3OSIsInVzZXJfaWQiOjU5fQ.EXT5bqt5mdi1aleJcXtFnjqrCsRi2tyX8m6YYSgfVR0','2024-12-30 05:37:04.898804','2024-12-31 05:37:04.000000',59,'0c6a168cdca04776beba5618d53bbb79'),(582,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTYyNzg2MCwiaWF0IjoxNzM1NTQxNDYwLCJqdGkiOiJlNWM2YmUyZTJiZDQ0MDMwYjlmMTc1NWM4M2NiNWQ1OCIsInVzZXJfaWQiOjU5fQ.qC5JQAw2ZvffL0-4gDiXPvtNJB-QJrF7quyFjkobqRc','2024-12-30 06:51:00.914498','2024-12-31 06:51:00.000000',59,'e5c6be2e2bd44030b9f1755c83cb5d58'),(583,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTYyODU5NiwiaWF0IjoxNzM1NTQyMTk2LCJqdGkiOiI2YzRlNmFlMGE1YzU0ZmIyOWI4YzEyNTkxOThkODkwMyIsInVzZXJfaWQiOjYyfQ.n2JGzE2ptRICxucqRSnFGiUAnIhly4_JNtGC9H7dae0','2024-12-30 07:03:16.868984','2024-12-31 07:03:16.000000',62,'6c4e6ae0a5c54fb29b8c1259198d8903'),(584,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTYyODYwNywiaWF0IjoxNzM1NTQyMjA3LCJqdGkiOiI4NjhjNjgyMjQ1YzI0NGZmYmZhZDg1YTk5Yjk4YWU4ZCIsInVzZXJfaWQiOjYxfQ.MxU5InAPZtt_XtdiL6D4Nj9VVuMr7SfZSEHuX_volmY','2024-12-30 07:03:27.238009','2024-12-31 07:03:27.000000',61,'868c682245c244ffbfad85a99b98ae8d'),(585,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTYyODYxMywiaWF0IjoxNzM1NTQyMjEzLCJqdGkiOiJmYWNkYmY0YWI0NWU0MGIwODgzM2U4NTU3MTdjODRiZCIsInVzZXJfaWQiOjYwfQ.b7wKSmvgxpUUVnPNcdTBCMY8v-_YoaXOPErPsP5mXwA','2024-12-30 07:03:33.264941','2024-12-31 07:03:33.000000',60,'facdbf4ab45e40b08833e855717c84bd'),(586,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTYyODYyOSwiaWF0IjoxNzM1NTQyMjI5LCJqdGkiOiJiYzJmNjhhZTMyZWI0NmExOGMzZjZjZGMzZGY0YzEzMyIsInVzZXJfaWQiOjYxfQ.Gbpa_AbleE2v9ez1PCPVaIka0lXxM70qAOPSr2F5J14','2024-12-30 07:03:49.855931','2024-12-31 07:03:49.000000',61,'bc2f68ae32eb46a18c3f6cdc3df4c133'),(587,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTYyODYzNCwiaWF0IjoxNzM1NTQyMjM0LCJqdGkiOiJiMjI2ODU1ZmUzMjY0OTE0OGIwY2ViNWI4ZDZkNTQzYiIsInVzZXJfaWQiOjYyfQ.Yi9YoQT75Pr65gIB3D-rGZRom92pFn7kAsqK3AUDar8','2024-12-30 07:03:54.585938','2024-12-31 07:03:54.000000',62,'b226855fe32649148b0ceb5b8d6d543b'),(588,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTYyODY0MiwiaWF0IjoxNzM1NTQyMjQyLCJqdGkiOiIxNTI2MzAwYTkyYTY0ZjMzODcxM2RiMzcwZGQyOTViZCIsInVzZXJfaWQiOjU5fQ.ZvQX-_hx1b89Sj8cNWRNedCSsM8RhdQ0ZOG7C0sNhnA','2024-12-30 07:04:02.958137','2024-12-31 07:04:02.000000',59,'1526300a92a64f338713db370dd295bd'),(589,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTYyODY3NSwiaWF0IjoxNzM1NTQyMjc1LCJqdGkiOiIyZTQ1NWRiOThkYjI0NmI3YjU3M2JmZDhiM2E2OTkzOCIsInVzZXJfaWQiOjYyfQ.1pehh8lIHhOWpagoszVJRQ8MaRBE4WVftpHSPQ68biM','2024-12-30 07:04:35.049825','2024-12-31 07:04:35.000000',62,'2e455db98db246b7b573bfd8b3a69938'),(590,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTYyOTYxNSwiaWF0IjoxNzM1NTQzMjE1LCJqdGkiOiIzNTI0OGVkMTI5MDE0YjZiYjI5NzI5MjJiNGQxNjA5ZiIsInVzZXJfaWQiOjU5fQ.geN5Rg8y8yP17KdcGeFMRlEqVzH84hmGo3Auiq5nVy0','2024-12-30 07:20:15.759030','2024-12-31 07:20:15.000000',59,'35248ed129014b6bb2972922b4d1609f'),(591,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTYyOTY1NCwiaWF0IjoxNzM1NTQzMjU0LCJqdGkiOiI1NzFlN2Q2ODVhZjM0ZmJiYTRiMTAxODY0YmIwZjFkNSIsInVzZXJfaWQiOjYxfQ.x_RYco-5U81GMH2JawqcQxjTnll6YBtE-oKoUzaFi_4','2024-12-30 07:20:54.310956','2024-12-31 07:20:54.000000',61,'571e7d685af34fbba4b101864bb0f1d5'),(592,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTYzMjU1NCwiaWF0IjoxNzM1NTQ2MTU0LCJqdGkiOiJlOTM0ZWQ0NjUxYTk0NDY2YmM4ZjQ5YmQyN2JmZjJhOCIsInVzZXJfaWQiOjU5fQ.M4kNDMZcroiTohoRROc0azuacWZ8BfOlu7y7DGqGqwg','2024-12-30 08:09:14.133120','2024-12-31 08:09:14.000000',59,'e934ed4651a94466bc8f49bd27bff2a8'),(593,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTYzMjg5MCwiaWF0IjoxNzM1NTQ2NDkwLCJqdGkiOiIwZjhiZTI0YTkyNjc0ZThkYjM0NDQ2OGI5ZGY4YTRiMiIsInVzZXJfaWQiOjU5fQ.M1p8SKIiolq5VSVj2fdQxEieH8ARFwt1nAZYmbsOPz0','2024-12-30 08:14:50.005787','2024-12-31 08:14:50.000000',59,'0f8be24a92674e8db344468b9df8a4b2'),(594,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTYzNjYyNiwiaWF0IjoxNzM1NTUwMjI2LCJqdGkiOiI4NTQzZTNmNGY3ZmI0ZjA4ODdhOTI0OTUxMDA1YmQ2MyIsInVzZXJfaWQiOjU5fQ.NctQOPkB8eU231Q-5XL-5RLyBhZPHaV_IMy4cjxRFUk','2024-12-30 09:17:06.862174','2024-12-31 09:17:06.000000',59,'8543e3f4f7fb4f0887a924951005bd63'),(595,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTYzNzE1NCwiaWF0IjoxNzM1NTUwNzU0LCJqdGkiOiJmMGNkZWQzMDQyNTE0OGU2YWM5Y2VhMTM0OWFjM2NiZCIsInVzZXJfaWQiOjU5fQ.epoHFYsTr2bIl9WmBcK5w6cesXq9AFOursgGofAzsDM','2024-12-30 09:25:54.871181','2024-12-31 09:25:54.000000',59,'f0cded30425148e6ac9cea1349ac3cbd'),(596,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTY0MjQ4OSwiaWF0IjoxNzM1NTU2MDg5LCJqdGkiOiI3NzY0ZWE0MTVkODY0OWY4YWI1ZDU3ZDkzMWVlMTk3MyIsInVzZXJfaWQiOjU5fQ.QFXGxh3U2YwtJ37gEGF61CoqNeLSwbFQw0mrJg4JSio','2024-12-30 10:54:49.453708','2024-12-31 10:54:49.000000',59,'7764ea415d8649f8ab5d57d931ee1973'),(597,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTY0NTAzOCwiaWF0IjoxNzM1NTU4NjM4LCJqdGkiOiJjMTc0MjRlYWE4Yzk0ZmRjYjhjODU4OWI1ODYyNzMxNCIsInVzZXJfaWQiOjU5fQ.cHkYmpLEfkQ_ZFZnzaw7Zi-zCdKoL77rE6nNOLxAVvg','2024-12-30 11:37:18.530236','2024-12-31 11:37:18.000000',59,'c17424eaa8c94fdcb8c8589b58627314'),(598,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTY0Njk2NSwiaWF0IjoxNzM1NTYwNTY1LCJqdGkiOiIwNGJjODA5NGNjMDA0OWY4OGZlZGRiNWM1ODI4MjMwMCIsInVzZXJfaWQiOjU5fQ.UdJjnfgOlsPI8uP2WPVciV2avvGP0pWq-BTNyj_jQAY','2024-12-30 12:09:25.027953','2024-12-31 12:09:25.000000',59,'04bc8094cc0049f88feddb5c58282300'),(599,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTcxMDM2OSwiaWF0IjoxNzM1NjIzOTY5LCJqdGkiOiIyMzRjODk5YmMyYzY0ODAwYThmMDk0YWI5MzMyMDAxZCIsInVzZXJfaWQiOjU5fQ.7z2ii_cDEGuilBVG-P-8ZByjC2-nSRXyHTAHOy7Ss40','2024-12-31 05:46:09.807490','2025-01-01 05:46:09.000000',59,'234c899bc2c64800a8f094ab9332001d'),(600,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTcxMDQ3NywiaWF0IjoxNzM1NjI0MDc3LCJqdGkiOiJlNWVjOWY0ODczMWQ0ODc5YTE4Mjg2MWY0YzcxN2FkZiIsInVzZXJfaWQiOjU5fQ.RGXljmuTzMlLyDMq_H1zcHddPou7Goo7DbQzVuzlnpU','2024-12-31 05:47:57.301722','2025-01-01 05:47:57.000000',59,'e5ec9f48731d4879a182861f4c717adf'),(601,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTcxMzIwMCwiaWF0IjoxNzM1NjI2ODAwLCJqdGkiOiJhZmYxZGEzNWE4MWQ0ODljYjkwY2M1N2RiM2M3ZTQ2NCIsInVzZXJfaWQiOjYyfQ.XlrLdwPRt2ne-cU8EYKqeCMZtK1zif1PNjb78Y4P6KI','2024-12-31 06:33:20.158447','2025-01-01 06:33:20.000000',62,'aff1da35a81d489cb90cc57db3c7e464'),(602,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTcxNDE3MywiaWF0IjoxNzM1NjI3NzczLCJqdGkiOiJmZDZiMTBkYTY4Mzk0ZmFhOWU2MTlkYzJjNTljMWQ2YyIsInVzZXJfaWQiOjU5fQ.iQSrwWXKPgIab4TkEytr0Ky1OMZiPRGLx3kqSN9hJXU','2024-12-31 06:49:33.248889','2025-01-01 06:49:33.000000',59,'fd6b10da68394faa9e619dc2c59c1d6c'),(603,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTcxNjE3MSwiaWF0IjoxNzM1NjI5NzcxLCJqdGkiOiIzM2NhYzBkNTBiNmQ0YjBkOTRkMjIxNjk2ZDkyOTJkYyIsInVzZXJfaWQiOjU5fQ.djy0QDqvky_BRp9bcBJ3uH6NSj7OddAnarJyOIoso3E','2024-12-31 07:22:51.960777','2025-01-01 07:22:51.000000',59,'33cac0d50b6d4b0d94d221696d9292dc'),(604,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTcyMDQzOCwiaWF0IjoxNzM1NjM0MDM4LCJqdGkiOiIxMDhlNjQyMzAzOGE0MzM0YjczZWRjYjY3N2MwOTMyNSIsInVzZXJfaWQiOjU5fQ.r4DcVsarLBnHGtyDqD8lO_O1MpHpOCPciK4eXA7MCVk','2024-12-31 08:33:58.711091','2025-01-01 08:33:58.000000',59,'108e6423038a4334b73edcb677c09325'),(605,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTcyMjU3NSwiaWF0IjoxNzM1NjM2MTc1LCJqdGkiOiIzN2YwNTNjYmQ4OGI0YzExYjMyNjMxMmE0MmJmNDMwZiIsInVzZXJfaWQiOjU5fQ.JuaEAiIr0NQWIbyowTKzkbNXnCW3YebsIyLF_VSWhPk','2024-12-31 09:09:35.165821','2025-01-01 09:09:35.000000',59,'37f053cbd88b4c11b326312a42bf430f'),(606,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTcyNDk0NSwiaWF0IjoxNzM1NjM4NTQ1LCJqdGkiOiIxNGY3MWVkMjljNmQ0N2JhOTBlZWRmNGU2ODQ3ODc3ZiIsInVzZXJfaWQiOjU5fQ.tcDOr78XsztugZIjyMs6y5Vv81sLEpe1GJBxYFSjVfA','2024-12-31 09:49:05.886535','2025-01-01 09:49:05.000000',59,'14f71ed29c6d47ba90eedf4e6847877f'),(607,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTcyNzU1NiwiaWF0IjoxNzM1NjQxMTU2LCJqdGkiOiI5YmI1ODEzZWNjYWU0YmRmYTUyZjY2Yjc2NTg0ZGRmMCIsInVzZXJfaWQiOjYyfQ.GJqBPOPnJ_HOdzUBDIYVIPLhVN3nieRWHwH7t36bmV8','2024-12-31 10:32:36.196279','2025-01-01 10:32:36.000000',62,'9bb5813eccae4bdfa52f66b76584ddf0'),(608,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTcyNzU2OSwiaWF0IjoxNzM1NjQxMTY5LCJqdGkiOiIwOThlOWViNmViYTk0NGQ4YTI0N2RlNTc3MTI1Njk4MiIsInVzZXJfaWQiOjYwfQ.uL7N6WhvUD6_EtVgz-V1po0xH0iHREzOL3O2O8Gv7o8','2024-12-31 10:32:49.715207','2025-01-01 10:32:49.000000',60,'098e9eb6eba944d8a247de5771256982'),(609,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTcyNzcxNiwiaWF0IjoxNzM1NjQxMzE2LCJqdGkiOiIwODNhMDM2OTQ0M2E0MGIyOGYwYjY5ZWFlZTA5YzA1NyIsInVzZXJfaWQiOjYxfQ.NDZ67TeGlKML_dvEEF5WFebq6d0EuBSWiZog7pjY4qQ','2024-12-31 10:35:16.561263','2025-01-01 10:35:16.000000',61,'083a0369443a40b28f0b69eaee09c057'),(610,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTcyOTAzNSwiaWF0IjoxNzM1NjQyNjM1LCJqdGkiOiJmMGUwOWNlMWQyMjE0Y2I1OGIzM2RjYzliZjk5OWFkOCIsInVzZXJfaWQiOjYxfQ.YH3DXZbgUvVFoASgYADoqg1VE68ntXFBBo7d4m_UI2s','2024-12-31 10:57:15.956177','2025-01-01 10:57:15.000000',61,'f0e09ce1d2214cb58b33dcc9bf999ad8'),(611,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTcyOTA1MCwiaWF0IjoxNzM1NjQyNjUwLCJqdGkiOiIyZTQ3N2Q2ZTE2NTI0NDExOWZlNTIxMDZhOTAzYTNiYSIsInVzZXJfaWQiOjYyfQ.Vj1bVpUErvZv8ihRQjIn9cmTObzmROg3WxDWTavmtvY','2024-12-31 10:57:30.164142','2025-01-01 10:57:30.000000',62,'2e477d6e165244119fe52106a903a3ba'),(612,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTcyOTk1MSwiaWF0IjoxNzM1NjQzNTUxLCJqdGkiOiJjNTkzNjk2YTIwNzM0ZjcwODgzYTljMjk0NDIyOTQ5NyIsInVzZXJfaWQiOjYyfQ.m7ViUYIJSPclV6SP2LAS94ZrAbVrwjG-b9rRKQF2L5Y','2024-12-31 11:12:31.443467','2025-01-01 11:12:31.000000',62,'c593696a20734f70883a9c2944229497'),(613,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTcyOTk1MiwiaWF0IjoxNzM1NjQzNTUyLCJqdGkiOiJiOGQyNzk3YWY4NTM0MTY0OGM1YTljMzY5ZDY3NWJmMyIsInVzZXJfaWQiOjYyfQ.CrSyPK8-uALUU8fHXxgk4yXzzhWkfB2APelN8gbAhuY','2024-12-31 11:12:32.179962','2025-01-01 11:12:32.000000',62,'b8d2797af85341648c5a9c369d675bf3'),(614,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTcyOTk4NywiaWF0IjoxNzM1NjQzNTg3LCJqdGkiOiIxYzg3NDEyOTdmOTg0ZjQ1YTY4YTVhYjgxYTljN2NlYSIsInVzZXJfaWQiOjU5fQ.IUbZQJwuzYZrA6VJ4DwEYeUsJ87aeRLQ176MMhcKUXQ','2024-12-31 11:13:07.842093','2025-01-01 11:13:07.000000',59,'1c8741297f984f45a68a5ab81a9c7cea'),(615,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTczMDI1MiwiaWF0IjoxNzM1NjQzODUyLCJqdGkiOiI5YzRjMDlmODRmYWU0ZWRiOTFkMDQ3N2VmNmQ2MjI2MSIsInVzZXJfaWQiOjYyfQ.67YTJ5nFBFHwq-DsjaDCWgzwqoUqrY0EmlP1EaTSdmI','2024-12-31 11:17:32.501886','2025-01-01 11:17:32.000000',62,'9c4c09f84fae4edb91d0477ef6d62261'),(616,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTczMTE3MSwiaWF0IjoxNzM1NjQ0NzcxLCJqdGkiOiJhNTMwOTBhM2EzZTU0MGUwYTY4NDdkZWE4MzllMWYzNiIsInVzZXJfaWQiOjU5fQ.-nCUQc_1ckbsTWi8SyBfv48X0y6YFKrWVqVxFpiiXX4','2024-12-31 11:32:51.153140','2025-01-01 11:32:51.000000',59,'a53090a3a3e540e0a6847dea839e1f36'),(617,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTczMTM2MCwiaWF0IjoxNzM1NjQ0OTYwLCJqdGkiOiIwZmE2YjdkZjVmNjc0ZTZiYWZjMDQ3OWZmMmQyZGYyMiIsInVzZXJfaWQiOjYxfQ.0ABey5Dn-hSGjrisfuM2yuvqJU9pozxzA3K-ugMF8jc','2024-12-31 11:36:00.766796','2025-01-01 11:36:00.000000',61,'0fa6b7df5f674e6bafc0479ff2d2df22'),(618,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTczMTQ4MCwiaWF0IjoxNzM1NjQ1MDgwLCJqdGkiOiI4YzkyMmJhYjIzYjU0NjBiYjlkYjI5OWRmZWE0NWY4OSIsInVzZXJfaWQiOjU5fQ._U8xQBGLMmIQ2LNq3JsN-v5uSC1fJ3bX0ur4To51GwA','2024-12-31 11:38:00.151993','2025-01-01 11:38:00.000000',59,'8c922bab23b5460bb9db299dfea45f89'),(619,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTczMjQzOCwiaWF0IjoxNzM1NjQ2MDM4LCJqdGkiOiJhYjU3MTAyNmJlNTg0YjNkYjAwMmExMmQ4YjBhYzRjOSIsInVzZXJfaWQiOjU5fQ.qrByrnNrRH55evtP5QaOo9QzMyekug5iBEyphmG01nw','2024-12-31 11:53:58.490371','2025-01-01 11:53:58.000000',59,'ab571026be584b3db002a12d8b0ac4c9'),(620,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTczMjgyMiwiaWF0IjoxNzM1NjQ2NDIyLCJqdGkiOiJhMTA3MWFiZTA2MWQ0MDdkYWRmZDYwNWU5N2FkNWY3NiIsInVzZXJfaWQiOjYyfQ.j3lQL3z2nb3re9TqWk61iNmk1hEYPQpCldUoC3HNO2Y','2024-12-31 12:00:22.127702','2025-01-01 12:00:22.000000',62,'a1071abe061d407dadfd605e97ad5f76'),(621,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTczMzc1MywiaWF0IjoxNzM1NjQ3MzUzLCJqdGkiOiI2NmJlMTZhZTVhYzI0ODY3YmNjMDQwOTE4YjQ5ZTk2ZSIsInVzZXJfaWQiOjU5fQ.aKpfrU7GJAENE1O7HKAoVadZGYwBf_gW4Rjqzk3ZqXY','2024-12-31 12:15:53.569898','2025-01-01 12:15:53.000000',59,'66be16ae5ac24867bcc040918b49e96e'),(622,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTc5MjUwNiwiaWF0IjoxNzM1NzA2MTA2LCJqdGkiOiJiNWQ2YmNmMDhjY2I0ZDBiOGM1N2QwYTI2OGEzZTRjZSIsInVzZXJfaWQiOjU5fQ.n3a6YeG3WBjOUQ0wfepL-zjOP-aoCvLkJa66VEzWT4Q','2025-01-01 04:35:06.752656','2025-01-02 04:35:06.000000',59,'b5d6bcf08ccb4d0b8c57d0a268a3e4ce');
+/*!40000 ALTER TABLE `token_blacklist_outstandingtoken` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -718,21 +1293,4 @@ CREATE TABLE `token_blacklist_outstandingtoken` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-18 10:30:21
-
-
-
-
-
-
-CREATE TABLE employee_management_employeedocuments (
-    id INT AUTO_INCREMENT,
-    employee_id INT NOT NULL,
-    document VARCHAR(255) NOT NULL,
-    uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-    FOREIGN KEY (`employee_id`) 
-    REFERENCES `employee_management_employee` (`id`) 
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Dump completed on 2025-01-01 12:37:54
