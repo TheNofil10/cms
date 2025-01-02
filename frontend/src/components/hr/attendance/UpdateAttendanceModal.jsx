@@ -29,6 +29,8 @@ const UpdateAttendanceModal = ({ isOpen, onClose, record }) => {
       return;
     }
 
+    console.log(updatedRecord);
+
     try {
       await axios.patch(
         `${API}/admin/attendance/update/${updatedRecord.id}/`,
@@ -115,9 +117,9 @@ const UpdateAttendanceModal = ({ isOpen, onClose, record }) => {
               className="border px-2 py-1 rounded-md w-full"
             >
               <option value="">Select Status</option>
-              <option value="Present">Present</option>
-              <option value="Absent">Absent</option>
-              <option value="Late">Late</option>
+              <option value="present">Present</option>
+              <option value="absent">Absent</option>
+              <option value="late">Late</option>
               <option value="sick_leave">Sick Leave</option>
               <option value="casual_leave">Casual Leave</option>
             </select>
