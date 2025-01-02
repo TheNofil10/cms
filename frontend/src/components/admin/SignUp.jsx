@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -27,6 +27,48 @@ import API from "../../api/api";
 const SERVER_URL = API;
 
 const Signup = () => {
+  const [employees, setEmployees] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const response = await axios.get(`${API}/employees/`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        });
+        setEmployees(response.data.results || response.data || []);
+      } catch (error) {
+        console.error("Error fetching employees:", error);
+        setError("There was an error fetching the employee data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEmployees();
+
+    const fetchDepartments = async () => {
+      try {
+        const response = await axios.get(`${API}/departments/`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        });
+        setDepartments(response.data.results || response.data || []);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+        setError("There was an error fetching the department data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDepartments();
+  }, []);
+
   const handleQualificationChange = (index, e) => {
     const { name, value } = e.target;
     setFormData((prev) => {
@@ -576,18 +618,23 @@ const Signup = () => {
         </div>
           
           <div className="flex flex-col lg:flex-row lg:space-x-4">
-            <div className="mb-4 w-full lg:w-1/2">
-                <label className="block text-sm mb-2">Department *</label>
+              <div className="mb-4 w-full lg:w-1/2">
+              <label className="block text-sm mb-2">Department *</label>
                 <div className="flex items-center bg-gray-200 rounded">
-                  <FaAddressCard className="m-2" />
-                  <input
-                    type="text"
-                    name="department"
-                    value={formData.department}
-                    onChange={handleInputChange}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-                    required
-                  />
+                    <FaUserShield className="m-2" />
+                    <select
+                        name="department"
+                        value={formData.department}
+                        onChange={handleInputChange}
+                        className="w-full p-2 bg-gray-200 border-none outline-none"
+                    >
+                        <option value="">-- Select a department --</option>
+                        {departments.map((department) => (
+                            <option key={department.id} value={department.id}>
+                                {department.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
               </div>
 
@@ -1018,17 +1065,26 @@ const Signup = () => {
           <div className="flex flex-col lg:flex-row lg:space-x-4">
             <div className="mb-4 w-full lg:w-1/2">
               <label className="block text-sm mb-2">Manager</label>
-              <div className="flex items-center bg-gray-200 rounded">
-                <FaUserShield className="m-2" />
-                <input
-                  type="text"
-                  name="manager"
-                  value={formData.manager}
-                  onChange={handleInputChange}
-                  className="w-full p-2 bg-gray-200 border-none outline-none"
-                />
+                <div className="flex items-center bg-gray-200 rounded">
+                    <FaUserShield className="m-2" />
+                    <select
+                        name="manager"
+                        value={formData.manager}
+                        onChange={handleInputChange}
+                        className="w-full p-2 bg-gray-200 border-none outline-none"
+                    >
+                        <option value="">-- Select a Manager --</option>
+                        console.log(employees);
+                        {employees.map((employee) => (
+                            employee.is_hr_manager || employee.is_hr_manager || employee.is_manager 
+                            ? <option key={employee.id} value={employee.id}>
+                                {`${employee.first_name} ${employee.last_name}`}
+                              </option>
+                            : null
+                        ))}
+                    </select>
+                </div>
               </div>
-            </div>
 
             <div className="mb-4 w-full lg:w-1/2">
               <label className="block text-sm mb-2">Date of Joining</label>
