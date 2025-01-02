@@ -9,10 +9,8 @@ from collections import defaultdict
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from django.utils import timezone
-import shutil
 from django.http import JsonResponse
 from django.db import connection
-from django.core.files.base import ContentFile
 from django.views.decorators.http import require_GET
 from django.utils.timezone import make_aware
 from rest_framework.views import APIView
@@ -186,18 +184,14 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
     def parse_nested_data(self, data, prefix):
-        """Parses nested data like employments[0][field] and returns the full values."""
-        """Parses nested data like employments[0][field] and returns the full values."""
+        """Parses nested data like qualifications[0][field]."""
         parsed_data = defaultdict(dict)
         for key, value in data.items():
             if key.startswith(prefix):
                 # Extract the index and field name
                 index, field = key[len(prefix):-1].split('][')
-                parsed_data[int(index)][field] = value  # Use the whole list instead of just the first value
-                parsed_data[int(index)][field] = value  # Use the whole list instead of just the first value
+                parsed_data[int(index)][field] = value[0]  # Use the first value from the list
         return list(parsed_data.values())
-
-
 
     def handle_qualifications(self, employee, qualifications_data):
         """Handles saving qualifications for an employee."""
@@ -226,24 +220,13 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                 
     def handle_dependents(self, employee, dependent_data):
         """Handles saving employment records for an employee."""
-        print("dependent data is ",dependent_data)
-        dependents_data = {
-            "name": dependent_data[0]["name"],
-            "relation": dependent_data[0]["relation"],
-            "date_of_birth": dependent_data[0]["date_of_birth"],
-            "employee": employee.id,
-            "cnic": dependent_data[0]["cnic"],
-        }
-        print("data is ",dependents_data)
-        
-        dependent_serializer = EmployeeDependentSerializer(data=dependents_data)
-        if dependent_serializer.is_valid():
-            dependent_serializer.save()
-        else:
-            print(f"Error with document upload: {dependent_serializer.errors}")
-            
-        
-   
+        for employment in dependent_data:
+            employment["employee"] = employee.id  # Associate with the employee
+            dependent_serializer = EmployeeDependentSerializer(data=employment)
+            if dependent_serializer.is_valid():
+                dependent_serializer.save()
+            else:
+                raise ValidationError({"employment_errors": dependent_serializer.errors})
     def get_permissions(self):
         if self.action == "destroy":
             if self.request.user.is_hr_manager or self.request.user.is_superuser:
@@ -275,10 +258,6 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             self.handle_qualifications(employee, qualifications_data)
             
         # Handle dependent
-        dependent_data = self.parse_nested_data(self.request.data, "dependents[")
-        print("dependent data is ",dependent_data)
-        if dependent_data:
-            self.handle_dependents(employee, dependent_data)
 
         
 
@@ -286,8 +265,6 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         print("employments data is ",employments_data)
         if employments_data:
             self.handle_employments(employee, employments_data)
-            
-        
         # Handle profile image upload
         if "profile_image" in self.request.FILES:
             employee.profile_image = self.request.FILES["profile_image"]
@@ -324,7 +301,6 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                     'em_contact_2': self.request.data["em_contact_2"],
                     'em_email_2': self.request.data["em_email_2"],
                 }
-                print("emergency contact data is ",emergency_contact_data)
                 emergency_contact_serializer = EmployeeEmergencyContactSerializer(data=emergency_contact_data)
                 if emergency_contact_serializer.is_valid():
                     emergency_contact_serializer.save()
@@ -332,29 +308,6 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                     print(f"Error with emergency contact upload: {emergency_contact_serializer.errors}")
 
     def perform_update(self, serializer):
-    # Get the instance before updating
-        instance = self.get_object()
-        old_folder_name = f"Document for {instance.first_name} {instance.last_name}"  # Old folder name with "Document for" prefix
-
-        # Save the updated instance
-        instance = serializer.save()
-
-        # Check if the first name or last name has changed
-        new_folder_name = f"Document for {instance.first_name} {instance.last_name}"  # New folder name with updated first and last name
-        if old_folder_name != new_folder_name:
-            # Construct the old and new folder paths
-            old_folder_path = os.path.join(settings.MEDIA_ROOT, 'employee_documents', 'employees', old_folder_name)
-            new_folder_path = os.path.join(settings.MEDIA_ROOT, 'employee_documents', 'employees', new_folder_name)
-
-            try:
-                # Rename the folder
-                if os.path.exists(old_folder_path):
-                    os.rename(old_folder_path, new_folder_path)
-                    print(f"Folder renamed from '{old_folder_path}' to '{new_folder_path}'.")
-                else:
-                    print(f"Old folder '{old_folder_path}' does not exist.")
-            except Exception as e:
-                print(f"Error renaming folder: {e}")
         instance = serializer.save()
         if "profile_image" in self.request.FILES:
             instance.profile_image = self.request.FILES["profile_image"]
@@ -421,30 +374,6 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         print("Update successful, returning updated employee data.")
         return Response(serializer.data)
 
-    def perform_destroy(self, instance):
-        # Clean up the profile image
-        profile_image_folder = os.path.join(settings.MEDIA_ROOT, 'profile_images', 'employees', str(instance.id))
-        if os.path.exists(profile_image_folder):
-            try:
-                shutil.rmtree(profile_image_folder)  # Remove the profile image folder and its contents
-                print(f"Profile image folder '{profile_image_folder}' deleted.")
-            except Exception as e:
-                print(f"Error deleting profile image folder: {e}")
-
-        # Clean up the employee documents
-        employee_documents_folder = os.path.join(settings.MEDIA_ROOT, 'employee_documents', 'employees', f"Document for {instance.first_name} {instance.last_name}")
-        if os.path.exists(employee_documents_folder):
-            try:
-                shutil.rmtree(employee_documents_folder)  # Remove the documents folder and its contents
-                print(f"Documents folder '{employee_documents_folder}' deleted.")
-            except Exception as e:
-                print(f"Error deleting documents folder: {e}")
-        else:
-            print(f"Documents folder '{employee_documents_folder}' does not exist)")
-        
-        # Now, delete the employee instance from the database
-        super().perform_destroy(instance)
-
 class EmployeeDocumentsViewSet(viewsets.ModelViewSet):
     queryset = EmployeeDocuments.objects.all()
     serializer_class = EmployeeDocumentsSerializer
@@ -456,10 +385,7 @@ class EmployeeDocumentsViewSet(viewsets.ModelViewSet):
             document = self.request.FILES["document"]
             # Save the document
             serializer.save(document=document, employee=employee)
-    
-    def perform_update(self, serializer):
-        print("Update operation invoked")
-        return super().perform_update(serializer)
+            
     
     def destroy(self, request, *args, **kwargs):
         document = self.get_object()
@@ -472,7 +398,6 @@ class EmployeeDocumentsViewSet(viewsets.ModelViewSet):
 
         # Check if the file exists and delete it
         if os.path.exists(document_path):
-            
             os.remove(document_path)
 
         # Now check if the folder is empty
@@ -486,64 +411,6 @@ class EmployeeDocumentsViewSet(viewsets.ModelViewSet):
         document.delete()
 
         return Response({"message": "Document deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
-
-
-class UpdateEmployeeDocuments(APIView):
-    def put(self, request, employee_id, *args, **kwargs):
-        print("data ", request.data)
-
-        if "documents" in request.data:
-            print("found documents")
-
-            for document in request.data.getlist("documents"):
-                print(f"Processing document: {document}")
-
-                try:
-                    employee = Employee.objects.get(id=employee_id)
-                    print("Found employee ", employee)
-                except Employee.DoesNotExist:
-                    return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
-
-                employee_name = f"{employee.first_name} {employee.last_name}"
-                folder_path = os.path.join(
-                    settings.MEDIA_ROOT,
-                    'employee_documents',
-                    'employees',
-                    f'Document for {employee_name}'
-                )
-                if not os.path.exists(folder_path):
-                    print(f"Folder does not exist. Creating folder: {folder_path}")
-                    os.makedirs(folder_path)
-
-                document_path = os.path.join(folder_path, document.name)
-                print("document path ", document_path)
-
-                with open(document_path, 'wb') as f:
-                    for chunk in document.chunks():
-                        f.write(chunk)
-
-                # Load the file into a ContentFile object
-                with open(document_path, 'rb') as file_obj:
-                    content_file = ContentFile(file_obj.read(), name=document.name)
-
-                document_data = {
-                    'employee': employee_id,
-                    'document': content_file  # Pass the file object to the serializer
-                }
-                print("document data ", document_data)
-
-                document_serializer = EmployeeDocumentsSerializer(data=document_data)
-
-                if document_serializer.is_valid():
-                    print("Document data is valid")
-                    document_serializer.save()  # Save the document record in the database
-                else:
-                    print(f"Error with document upload: {document_serializer.errors}")
-        else:
-            print("No documents found in request")
-
-        return Response({"message": "Employee documents updated successfully."})
-
 
 class AdminEmployeeView(viewsets.ViewSet):
     serializer_class = AdminEmployeeSerializer
