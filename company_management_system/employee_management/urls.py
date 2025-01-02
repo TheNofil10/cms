@@ -4,8 +4,8 @@ from .views import (
     ApplicantViewSet, ApplicationListView, AttendanceCheckView, AttendanceViewSet, CompanyAttendanceStatsView, ComplianceReportViewSet,
     DepartmentEmployeeView, DepartmentMemberListView, DepartmentViewSet, EmployeeAttendanceStatsView, EmployeeAttendanceView,
     EmployeeDepartmentView, EmployeeSuggestionView, EmployeeViewSet, AdminEmployeeView, EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet,EmployeeDocumentsViewSet,
-    LeaveManagementView, LeaveViewSet, PayrollViewSet, PerformanceReviewViewSet, TaskCommentViewSet, TaskViewSet, TodoViewSet, apply_leave, approve_leave_hr, approve_leave_manager, generate_job_details, generate_post, live_attendance,approve_app_attendance_manager,AppAttendanceViewSet
-    ,UpdateEmployeeDocuments)
+    LeaveManagementView, LeaveViewSet, PayrollViewSet, PerformanceReviewViewSet, TaskCommentViewSet, TaskViewSet, TodoViewSet, apply_leave, approve_leave_hr, approve_leave_manager, generate_job_details, generate_post, live_attendance,approve_app_attendance_manager,AppAttendanceViewSet,
+    GenerateEmployeeCardView, UpdateEmployeeDocuments)
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -66,4 +66,5 @@ urlpatterns = [
     path('employee-suggestions/', EmployeeSuggestionView.as_view({'get': 'list'}), name='employee-suggestions'),
     path('tasks/<int:task_id>/comments/', task_comment_list, name='task-comments-list'),
     path('admin/live-attendance/', live_attendance, name='live-attendance'),
+    path('generate-card/<int:employee_id>/', GenerateEmployeeCardView.as_view(), name='generate_employee_card'),
 ]

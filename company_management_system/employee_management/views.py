@@ -1,4 +1,8 @@
 from datetime import datetime, timedelta
+import zipfile
+from io import BytesIO
+from tempfile import NamedTemporaryFile
+from PIL import Image, ImageDraw, ImageFont
 from django.conf import settings
 from django.utils.dateparse import parse_date
 from decimal import Decimal
@@ -9,10 +13,11 @@ from collections import defaultdict
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from django.utils import timezone
-import shutil
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, FileResponse
 from django.db import connection
+from django.views import View
 from django.core.files.base import ContentFile
+import shutil
 from django.views.decorators.http import require_GET
 from django.utils.timezone import make_aware
 from rest_framework.views import APIView
@@ -84,6 +89,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
 from .models import Employee
 from .serializers import AdminEmployeeSerializer
+from textwrap import wrap
 
 
 logger = logging.getLogger(__name__)
@@ -1359,3 +1365,134 @@ class TodoViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(employee=self.request.user)
+
+
+class GenerateEmployeeCardView(View):
+    def get(self, request, employee_id):
+        self.employee = Employee.objects.get(id=employee_id)
+        self.department = Department.objects.get(id=self.employee.department_id)
+        
+        # Open the card templates
+        template_path_page1 = os.path.join('employee_management/employee_card_template/page1.png')
+        template_path_page2 = os.path.join('employee_management/employee_card_template/page2.png')
+        
+        self.page1 = Image.open(template_path_page1)
+        self.page2 = Image.open(template_path_page2)
+        
+        # create font
+        self.font_path = os.path.join('employee_management/employee_card_template/font.ttf')
+        
+        # create page 1
+        self.create_page_1()
+        # create page 2
+        self.create_page_2()
+        
+        zip_buffer = BytesIO()
+                
+        # Create a zip file containing both images
+        with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
+            # Save Page 1
+            page1_buffer = BytesIO()
+            self.page1.save(page1_buffer, format="PNG")
+            page1_buffer.seek(0)
+            zf.writestr("front.png", page1_buffer.read())
+
+            # Save Page 2
+            page2_buffer = BytesIO()
+            self.page2.save(page2_buffer, format="PNG")
+            page2_buffer.seek(0)
+            zf.writestr("back.png", page2_buffer.read())
+
+        zip_buffer.seek(0)
+
+        # Send the zip file as the response
+        response = HttpResponse(zip_buffer, content_type="application/zip")
+        response["Content-Disposition"] = f'attachment; filename="{self.employee.id}_employee_card.zip"'
+        return response
+        
+    def create_page_1(self):
+        try:
+            # Open the employee's profile picture
+            profile_pic_path = self.employee.profile_image
+            profile_pic = Image.open(profile_pic_path).convert("RGBA")
+            
+            # Create a circular mask
+            size = (170, 170)
+            mask = Image.new("L", size, 0)
+            draw = ImageDraw.Draw(mask)
+            draw.ellipse((0, 0) + size, fill=255)
+            
+            # Resize and crop the profile picture into a circle
+            profile_pic = Image.open(profile_pic_path).convert("RGBA")
+            profile_pic = profile_pic.resize(size, Image.LANCZOS)
+            circular_pic = Image.new("RGBA", size, (255, 255, 255, 0))
+            circular_pic.paste(profile_pic, (0, 0), mask)
+            
+            # Paste the circular image onto the card
+            self.page1.paste(circular_pic, (70, 123), circular_pic)
+        except ValueError: pass
+            
+        draw = ImageDraw.Draw(self.page1)
+        # Write the name of the employee in the center
+        full_name = f"{self.employee.first_name} {self.employee.middle_name} {self.employee.last_name}"
+        name_font = ImageFont.truetype(self.font_path, 25)
+        page_width = self.page1.size[0]
+        
+        # Wrap text to fit within the max width
+        wrapped_text = wrap(full_name, width=19)
+
+        # Calculate the total height for all lines to vertically center them
+        line_height = name_font.getbbox("A")[1] + 25
+        total_text_height = line_height * len(wrapped_text)
+        y_start = 320 - (total_text_height // 2) 
+
+        # Draw each line centered
+        for i, line in enumerate(wrapped_text):
+            text_width = draw.textbbox((0, 0), text=line, font=name_font)[2]
+            x_position = (page_width - text_width) / 2
+            y_position = y_start + i * line_height
+            draw.text((x_position, y_position), line, font=name_font, fill="white")
+        
+        font = ImageFont.truetype(self.font_path, 18)
+        # Add Fields to the Card
+        draw.text((25, 375), f"Designation:", fill="white", font=font)
+        draw.text((25, 413), f"Department:", fill="white", font=font)
+        draw.text((25, 455), f"Location/City:", fill="white", font=font)
+
+        # Add text to the card
+        draw.text((120, 375), f"{self.employee.position}", fill="black", font=font)
+        draw.text((120, 413), f"{self.department.name}", fill="black", font=font)
+        draw.text((130, 455), f"{self.employee.location}", fill="black", font=font)
+        
+    def create_page_2(self):
+        draw = ImageDraw.Draw(self.page2)
+        font = ImageFont.truetype(self.font_path, 18)
+
+        # Add text to the card
+        draw.text((80, 30), f"{self.employee.cnic_no}", fill="black", font=font)
+        
+        # Address should wrap since it can be longer
+        # draw.text((105, 180), f"{self.employee.address}", fill="black", font=font)
+
+        address = f"{self.employee.address}"
+        
+        # Wrap text to fit within the max width
+        wrapped_text = wrap(address, width=25)
+
+        # Calculate the total height for all lines to vertically center them
+        line_height = font.getbbox("A")[1] + 20
+        y_start = 180
+
+        for i, line in enumerate(wrapped_text):
+            y_position = y_start + i * line_height
+            draw.text((105, y_position), line, font=font, fill="black")
+        
+        # 227, 270
+        draw.text((105, y_position + 47), f"{self.employee.phone}", fill="black", font=font)
+        draw.text((85, y_position + 90), f"{self.employee.email}", fill="black", font=font)
+        
+        # Add Fields to the Card
+        draw.text((25, 180), f"Address:", fill="black", font=font)
+        draw.text((25, y_position + 47), f"Number:", fill="black", font=font)
+        draw.text((25, y_position + 90), f"Email:", fill="black", font=font)
+        

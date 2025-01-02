@@ -52,6 +52,30 @@ const AdminEmployeeProfile = () => {
   const [employeeToDelete, setEmployeeToDelete] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
+  const generateEmployeeCard = async (employeeId) => {
+    try {
+      // Triggering the backend API call
+      const employeeResponse = await axios.get(`${API}/generate-card/${employeeId}/`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+        responseType: "blob", // This is important to handle file downloads as blobs
+      });
+  
+      // Create a download link
+      const url = window.URL.createObjectURL(new Blob([employeeResponse.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "employee_card.zip");
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error("Error generating card:", error);
+      toast.error("Failed to generate card");
+    }
+  };
+    
 
   const fetchEmployee = async () => {
     try {
@@ -341,6 +365,13 @@ const AdminEmployeeProfile = () => {
           )}
         </div>
       </div>
+
+      <button 
+      type="submit" 
+      onClick={() => generateEmployeeCard(employee.id)}
+      className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200 my-5">
+        Generate Employee Card
+      </button>
 
       {/* Confirmation Modal for Deleting Employee */}
       <ConfirmationModal
