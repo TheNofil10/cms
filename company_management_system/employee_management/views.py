@@ -186,14 +186,15 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
     def parse_nested_data(self, data, prefix):
-        """Parses nested data like qualifications[0][field]."""
+        """Parses nested data like employments[0][field] and returns the full values."""
         parsed_data = defaultdict(dict)
         for key, value in data.items():
             if key.startswith(prefix):
                 # Extract the index and field name
                 index, field = key[len(prefix):-1].split('][')
-                parsed_data[int(index)][field] = value[0]  # Use the first value from the list
+                parsed_data[int(index)][field] = value  # Use the whole list instead of just the first value
         return list(parsed_data.values())
+
 
     def handle_qualifications(self, employee, qualifications_data):
         """Handles saving qualifications for an employee."""
@@ -222,13 +223,24 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                 
     def handle_dependents(self, employee, dependent_data):
         """Handles saving employment records for an employee."""
-        for employment in dependent_data:
-            employment["employee"] = employee.id  # Associate with the employee
-            dependent_serializer = EmployeeDependentSerializer(data=employment)
-            if dependent_serializer.is_valid():
-                dependent_serializer.save()
-            else:
-                raise ValidationError({"employment_errors": dependent_serializer.errors})
+        print("dependent data is ",dependent_data)
+        dependents_data = {
+            "name": dependent_data[0]["name"],
+            "relation": dependent_data[0]["relation"],
+            "date_of_birth": dependent_data[0]["date_of_birth"],
+            "employee": employee.id,
+            "cnic": dependent_data[0]["cnic"],
+        }
+        print("data is ",dependents_data)
+        
+        dependent_serializer = EmployeeDependentSerializer(data=dependents_data)
+        if dependent_serializer.is_valid():
+            dependent_serializer.save()
+        else:
+            print(f"Error with document upload: {dependent_serializer.errors}")
+            
+        
+   
     def get_permissions(self):
         if self.action == "destroy":
             if self.request.user.is_hr_manager or self.request.user.is_superuser:
@@ -260,6 +272,10 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             self.handle_qualifications(employee, qualifications_data)
             
         # Handle dependent
+        dependent_data = self.parse_nested_data(self.request.data, "dependents[")
+        print("dependent data is ",dependent_data)
+        if dependent_data:
+            self.handle_dependents(employee, dependent_data)
 
         
 
@@ -267,6 +283,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         print("employments data is ",employments_data)
         if employments_data:
             self.handle_employments(employee, employments_data)
+            
+        
         # Handle profile image upload
         if "profile_image" in self.request.FILES:
             employee.profile_image = self.request.FILES["profile_image"]

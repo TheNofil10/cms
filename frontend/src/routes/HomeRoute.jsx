@@ -4,7 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 
 const HomeRoute = () => {
   const { currentUser } = useAuth();
-
+  console.log("CHECK  ",currentUser);
   if (!currentUser) {
     // If the user is not logged in, redirect to the login page
     return <Navigate to="/login" />;
