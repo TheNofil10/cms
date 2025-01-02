@@ -1277,25 +1277,27 @@ class GenerateEmployeeCardView(View):
         return response
         
     def create_page_1(self):
-        # Open the employee's profile picture
-        profile_pic_path = self.employee.profile_image
-        profile_pic = Image.open(profile_pic_path).convert("RGBA")
-        
-        # Create a circular mask
-        size = (170, 170)
-        mask = Image.new("L", size, 0)
-        draw = ImageDraw.Draw(mask)
-        draw.ellipse((0, 0) + size, fill=255)
-        
-        # Resize and crop the profile picture into a circle
-        profile_pic = Image.open(profile_pic_path).convert("RGBA")
-        profile_pic = profile_pic.resize(size, Image.LANCZOS)
-        circular_pic = Image.new("RGBA", size, (255, 255, 255, 0))
-        circular_pic.paste(profile_pic, (0, 0), mask)
-        
-        # Paste the circular image onto the card
-        self.page1.paste(circular_pic, (70, 123), circular_pic)
-        
+        try:
+            # Open the employee's profile picture
+            profile_pic_path = self.employee.profile_image
+            profile_pic = Image.open(profile_pic_path).convert("RGBA")
+            
+            # Create a circular mask
+            size = (170, 170)
+            mask = Image.new("L", size, 0)
+            draw = ImageDraw.Draw(mask)
+            draw.ellipse((0, 0) + size, fill=255)
+            
+            # Resize and crop the profile picture into a circle
+            profile_pic = Image.open(profile_pic_path).convert("RGBA")
+            profile_pic = profile_pic.resize(size, Image.LANCZOS)
+            circular_pic = Image.new("RGBA", size, (255, 255, 255, 0))
+            circular_pic.paste(profile_pic, (0, 0), mask)
+            
+            # Paste the circular image onto the card
+            self.page1.paste(circular_pic, (70, 123), circular_pic)
+        except ValueError: pass
+            
         draw = ImageDraw.Draw(self.page1)
         # Write the name of the employee in the center
         full_name = f"{self.employee.first_name} {self.employee.last_name}"
