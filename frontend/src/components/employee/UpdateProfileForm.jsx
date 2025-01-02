@@ -128,41 +128,46 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
     }
   };
 
-  // Handle multiple file input changes
-  const handleFilesChange = (e) => {
-    setSelectedFiles([...e.target.files]); // Store all selected files
+  const handleFilesChange = (event) => {
+    const files = event.target.files;
+    const selectedFiles = Array.from(files); // Convert FileList to an array
+    setSelectedFiles(selectedFiles);  // Store selected files in the state
   };
-
-  // Handle multiple document uploads
+  
   const handleDocumentsUpload = async () => {
     if (selectedFiles.length === 0) {
       toast.error("Please select files before uploading.");
-      return;
+      return
     }
-
+    
+  
     const formData = new FormData();
-    selectedFiles.forEach((file) => {
-      formData.append("documents", file); // Add each file to FormData
+  
+    // Append each file to FormData
+    selectedFiles.forEach((file, index) => {
+      formData.append("documents", file);  // Append each file with the same key
     });
-    formData.append("employee_id", employee.id); // Assuming `employee.id` is available
-
+  
+    // Append employee_id to formData
+    formData.append("employee_id", employee.id);
+  
     try {
-      const response = await axios.post(`${API}/employee-documents/`, formData, {
+      const response = await axios.put(`${API}/update-employee-documents/${employee.id}/`, formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           "Content-Type": "multipart/form-data",
         },
       });
-
+  
       toast.success("Documents uploaded successfully!");
-      setDocuments((prevDocs) => [...prevDocs, ...response.data]); // Update the document list
-      setSelectedFiles([]); // Clear the file input
+      setSelectedFiles([]); // Clear the file input after upload
     } catch (error) {
       console.error("Error uploading documents:", error);
-      toast.error("Failed to upload documents.");
+      toast.error("Failed to upload documents. Please try again.");
     }
   };
-
+   
+  
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
       <div className="bg-white w-full max-w-md h-[80vh] overflow-auto p-6 rounded-lg shadow-lg">
@@ -410,25 +415,25 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
               <p>No documents available.</p>
             )}
 
-            {/* Add Multiple Documents Section */}
-            <div className="mt-4">
-              <label className="block text-gray-700 mb-2">Upload New Documents:</label>
-              <div className="flex items-center space-x-4">
-                <input
-                  type="file"
-                  multiple // Allow multiple files
-                  onChange={handleFilesChange} // Handle multiple file changes
-                  className="block w-full text-gray-700 border rounded-md"
-                />
-                <button
-                  type="button"
-                  onClick={handleDocumentsUpload} // Add multiple documents
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  Upload
-                </button>
-              </div>
-            </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2">Upload Documents:</label>
+            <input
+            type="file"
+            name="document"
+            onChange={handleFilesChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded"
+            multiple
+            />
+            <button
+              type="button"
+              onClick={handleDocumentsUpload}
+              className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Upload
+            </button>
+          </div>
+   
+
 
           </div>
 
