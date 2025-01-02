@@ -88,7 +88,7 @@ const AdminEmployeeProfile = () => {
         }
       );
       setEmployee(employeeResponse.data);
-      // console.log("Employee data: ", employeeResponse.data);
+      console.log("Employee data: ", employeeResponse.data);
 
       if (employeeResponse.data.department) {
         const departmentResponse = await axios.get(
@@ -289,14 +289,14 @@ const AdminEmployeeProfile = () => {
         {/* Emergency Contacts */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Emergency Contacts</h2>
-          <p><FaUserAlt className="inline-block mr-2" /> Name 1: {employee.em_name_1 || "-"}</p>
-          <p><FaPhone className="inline-block mr-2" /> Contact 1: {employee.em_contact_1 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Email 1: {employee.em_email_1 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Relation 1: {employee.em_relationship_1 || "-"}</p>
-          <p><FaUserAlt className="inline-block mr-2" /> Name 2: {employee.em_name_2 || "-"}</p>
-          <p><FaPhone className="inline-block mr-2" /> Contact 2: {employee.em_contact_2 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Email 2: {employee.em_email_2 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Relation 2: {employee.em_relationship_2 || "-"}</p>
+          <p><FaUserAlt className="inline-block mr-2" /> Name 1: {employee.emergency_contacts[0].em_name_1 || "-"}</p>
+          <p><FaPhone className="inline-block mr-2" /> Contact 1: {employee.emergency_contacts[0].em_contact_1 || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Email 1: {employee.emergency_contacts[0].em_email_1 || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Relation 1: {employee.emergency_contacts[0].em_relationship_1 || "-"}</p>
+          <p><FaUserAlt className="inline-block mr-2" /> Name 2: {employee.emergency_contacts[0].em_name_2 || "-"}</p>
+          <p><FaPhone className="inline-block mr-2" /> Contact 2: {employee.emergency_contacts[0].em_contact_2 || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Email 2: {employee.emergency_contacts[0].em_email_2 || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Relation 2: {employee.emergency_contacts[0].em_relationship_2 || "-"}</p>
         </div>
 
         {/* NOK */}
