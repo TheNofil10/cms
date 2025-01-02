@@ -187,13 +187,16 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     serializer_class = EmployeeSerializer
     def parse_nested_data(self, data, prefix):
         """Parses nested data like employments[0][field] and returns the full values."""
+        """Parses nested data like employments[0][field] and returns the full values."""
         parsed_data = defaultdict(dict)
         for key, value in data.items():
             if key.startswith(prefix):
                 # Extract the index and field name
                 index, field = key[len(prefix):-1].split('][')
                 parsed_data[int(index)][field] = value  # Use the whole list instead of just the first value
+                parsed_data[int(index)][field] = value  # Use the whole list instead of just the first value
         return list(parsed_data.values())
+
 
 
     def handle_qualifications(self, employee, qualifications_data):
@@ -321,6 +324,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                     'em_contact_2': self.request.data["em_contact_2"],
                     'em_email_2': self.request.data["em_email_2"],
                 }
+                print("emergency contact data is ",emergency_contact_data)
                 emergency_contact_serializer = EmployeeEmergencyContactSerializer(data=emergency_contact_data)
                 if emergency_contact_serializer.is_valid():
                     emergency_contact_serializer.save()

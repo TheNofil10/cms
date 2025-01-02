@@ -501,6 +501,7 @@ const Signup = () => {
           </button>
           <ToastContainer />
         </div> 
+        </div> 
 
         <Line percent={getProgress()} strokeWidth="2" strokeColor="black" />
         <form
@@ -2239,7 +2240,6 @@ const Signup = () => {
 
         </form>
       </div>
-    </div>
   );
 };
 
