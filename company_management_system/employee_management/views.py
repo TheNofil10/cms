@@ -87,6 +87,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
 from .models import Employee
 from .serializers import AdminEmployeeSerializer
+from textwrap import wrap
 
 
 logger = logging.getLogger(__name__)
@@ -1300,13 +1301,24 @@ class GenerateEmployeeCardView(View):
             
         draw = ImageDraw.Draw(self.page1)
         # Write the name of the employee in the center
-        full_name = f"{self.employee.first_name} {self.employee.last_name}"
+        full_name = f"{self.employee.first_name} {self.employee.middle_name} {self.employee.last_name}"
         name_font = ImageFont.truetype(self.font_path, 25)
-        bbox = draw.textbbox((0, 0), text=full_name, font=name_font)
         page_width = self.page1.size[0]
-        text_width = bbox[2] - bbox[0]
-        x_position = (page_width - text_width) / 2
-        draw.text((x_position, 320), full_name, font=name_font, fill="white")
+        
+        # Wrap text to fit within the max width
+        wrapped_text = wrap(full_name, width=19)
+
+        # Calculate the total height for all lines to vertically center them
+        line_height = name_font.getbbox("A")[1] + 25
+        total_text_height = line_height * len(wrapped_text)
+        y_start = 320 - (total_text_height // 2) 
+
+        # Draw each line centered
+        for i, line in enumerate(wrapped_text):
+            text_width = draw.textbbox((0, 0), text=line, font=name_font)[2]
+            x_position = (page_width - text_width) / 2
+            y_position = y_start + i * line_height
+            draw.text((x_position, y_position), line, font=name_font, fill="white")
         
         font = ImageFont.truetype(self.font_path, 18)
         # Add Fields to the Card
@@ -1325,7 +1337,29 @@ class GenerateEmployeeCardView(View):
 
         # Add text to the card
         draw.text((80, 30), f"{self.employee.cnic_no}", fill="black", font=font)
-        draw.text((105, 180), f"{self.employee.address}", fill="black", font=font)
-        draw.text((105, 227), f"{self.employee.phone}", fill="black", font=font)
-        draw.text((85, 270), f"{self.employee.email}", fill="black", font=font)
-           
+        
+        # Address should wrap since it can be longer
+        # draw.text((105, 180), f"{self.employee.address}", fill="black", font=font)
+
+        address = f"{self.employee.address}"
+        
+        # Wrap text to fit within the max width
+        wrapped_text = wrap(address, width=25)
+
+        # Calculate the total height for all lines to vertically center them
+        line_height = font.getbbox("A")[1] + 20
+        y_start = 180
+
+        for i, line in enumerate(wrapped_text):
+            y_position = y_start + i * line_height
+            draw.text((105, y_position), line, font=font, fill="black")
+        
+        # 227, 270
+        draw.text((105, y_position + 47), f"{self.employee.phone}", fill="black", font=font)
+        draw.text((85, y_position + 90), f"{self.employee.email}", fill="black", font=font)
+        
+        # Add Fields to the Card
+        draw.text((25, 180), f"Address:", fill="black", font=font)
+        draw.text((25, y_position + 47), f"Number:", fill="black", font=font)
+        draw.text((25, y_position + 90), f"Email:", fill="black", font=font)
+        
