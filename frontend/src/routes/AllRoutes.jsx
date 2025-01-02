@@ -8,6 +8,7 @@ import HRDashboard from "../components/hr/HRDashboard"; // HR Dashboard
 import EmployeesPage from "../components/admin/EmployeesPage";
 import VouchersPage from "../components/admin/VouchersPage.jsx";
 import AddVoucherPage from "../components/admin/CreateVoucherPage.jsx"
+import AdminVoucherProfile from "../components/admin/AdminVoucherProfile.jsx"
 import Attendance from "../components/admin/Attendance";
 import AdminSettings from "../components/admin/AdminSettings";
 import HRSettings from "../components/hr/HRSettings"; // HR Settings
@@ -116,6 +117,7 @@ const AllRoutes = () => {
         <Route path="/manager/employees/:id" element={<AdminEmployeeProfile />} />
         <Route path="/manager/employees" element={<EmployeesPage />} />
         <Route path="/manager/vouchers" element={<VouchersPage />} />
+        <Route path="/manager/vouchers/:id" element={<AdminVoucherProfile />} />
         <Route path="/manager/vouchers/add" element={<AddVoucherPage />} />
         <Route path="/manager/department" element={<ManagerDepartmentPage />} />
         <Route
@@ -146,6 +148,7 @@ const AllRoutes = () => {
         <Route path="/admin/departments" element={<DepartmentsPage />} />
         <Route path="/admin/vouchers" element={<VouchersPage />} />
         <Route path="/admin/vouchers/add" element={<AddVoucherPage />} />
+        <Route path="/admin/vouchers/:id" element={<AdminVoucherProfile />} />
         <Route path="/admin/departments/add" element={<AddDepartment />} />
         <Route
           path="/admin/departments/:id"
