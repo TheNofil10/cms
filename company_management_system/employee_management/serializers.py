@@ -52,6 +52,10 @@ class EmployeeDependentSerializer(serializers.ModelSerializer):
 class EmployeeSerializer(serializers.ModelSerializer):
     # Include documents as a nested serializer
     documents = EmployeeDocumentsSerializer(many=True, read_only=True)
+    emergency_contacts = EmployeeEmergencyContactSerializer(many=True, read_only=True)
+    qualifications = EmployeeQualificationSerializer(many=True, read_only=True)
+    employments = EmployeeEmploymentSerializer(many=True, read_only=True)
+    dependents = EmployeeDependentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Employee
