@@ -184,8 +184,9 @@ const AdminEmployeeProfile = () => {
         />
         <div className="ml-6 flex-1">
           <h1 className="text-3xl font-bold">
-            {employee.first_name} {employee.last_name}
+            {employee.first_name} {employee.middle_name ? `${employee.middle_name} ` : ""}{employee.last_name}
           </h1>
+
           <p className="text-gray-600 text-xl">
             <FaUserTie className="inline-block mr-2" /> {employee.position || "-"}
           </p>
@@ -289,15 +290,22 @@ const AdminEmployeeProfile = () => {
         {/* Emergency Contacts */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Emergency Contacts</h2>
-          <p><FaUserAlt className="inline-block mr-2" /> Name 1: {employee.emergency_contacts[0].em_name_1 || "-"}</p>
-          <p><FaPhone className="inline-block mr-2" /> Contact 1: {employee.emergency_contacts[0].em_contact_1 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Email 1: {employee.emergency_contacts[0].em_email_1 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Relation 1: {employee.emergency_contacts[0].em_relationship_1 || "-"}</p>
-          <p><FaUserAlt className="inline-block mr-2" /> Name 2: {employee.emergency_contacts[0].em_name_2 || "-"}</p>
-          <p><FaPhone className="inline-block mr-2" /> Contact 2: {employee.emergency_contacts[0].em_contact_2 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Email 2: {employee.emergency_contacts[0].em_email_2 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Relation 2: {employee.emergency_contacts[0].em_relationship_2 || "-"}</p>
+          {employee.emergency_contacts && employee.emergency_contacts.length > 0 ? (
+            <>
+              <p><FaUserAlt className="inline-block mr-2" /> Name 1: {employee.emergency_contacts[0].em_name_1 || "-"}</p>
+              <p><FaPhone className="inline-block mr-2" /> Contact 1: {employee.emergency_contacts[0].em_contact_1 || "-"}</p>
+              <p><FaEnvelope className="inline-block mr-2" /> Email 1: {employee.emergency_contacts[0].em_email_1 || "-"}</p>
+              <p><FaEnvelope className="inline-block mr-2" /> Relation 1: {employee.emergency_contacts[0].em_relationship_1 || "-"}</p>
+              <p><FaUserAlt className="inline-block mr-2" /> Name 2: {employee.emergency_contacts[0].em_name_2 || "-"}</p>
+              <p><FaPhone className="inline-block mr-2" /> Contact 2: {employee.emergency_contacts[0].em_contact_2 || "-"}</p>
+              <p><FaEnvelope className="inline-block mr-2" /> Email 2: {employee.emergency_contacts[0].em_email_2 || "-"}</p>
+              <p><FaEnvelope className="inline-block mr-2" /> Relation 2: {employee.emergency_contacts[0].em_relationship_2 || "-"}</p>
+            </>
+          ) : (
+            <p>No emergency contacts available.</p> // This will show if the emergency_contacts array is empty or undefined
+          )}
         </div>
+
 
         {/* NOK */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
