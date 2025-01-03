@@ -795,6 +795,7 @@ class LeaveViewSet(viewsets.ModelViewSet):
         return [IsAuthenticated()]
     
     
+
 class AppAttendanceViewSet(viewsets.ModelViewSet):
     queryset = EmployeeAppAttendance.objects.all()
     serializer_class = AppattendanceSerializer
@@ -811,7 +812,6 @@ class AppAttendanceViewSet(viewsets.ModelViewSet):
         if self.action in ["create", "update", "partial_update", "destroy"]:
             return [IsAdminUser()]
         return [IsAuthenticated()]
-
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])

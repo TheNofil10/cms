@@ -1,5 +1,6 @@
 from django.urls import reverse
 from rest_framework import serializers
+import base64
 from .models import (
     Applicant,
     Attendance,
@@ -181,11 +182,20 @@ class LeaveSerializer(serializers.ModelSerializer):
         model = Leave
         fields = "__all__"
 
+
 class AppattendanceSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = EmployeeAppAttendance
         fields = "__all__"
 
+    def get_image(self, obj):
+        # If image exists, convert binary data to Base64
+        if obj.image:
+            image_base64 = base64.b64encode(obj.image).decode('utf-8')
+            return f"data:image/jpeg;base64,{image_base64}"
+        return None  # Return None if no image
 class TaskCommentSerializer(serializers.ModelSerializer):
     commenter = serializers.SerializerMethodField()
 
