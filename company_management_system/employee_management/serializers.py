@@ -288,8 +288,8 @@ class VoucherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Voucher
         fields = [
-            'id', 'department_name', 'employee_first_name', 'employee_middle_name', 'employee_last_name',
-            'date', 'amount', 'reason', 'project', 'category', 'other_category', 'status', 'documents',
+            'id', 'department', 'employee', 'department_name', 'employee_first_name', 'employee_middle_name', 'employee_last_name',
+            'date', 'amount', 'reason', 'project', 'category', 'other_category', 'status',
         ]
         
     def create(self, validated_data):
@@ -297,7 +297,7 @@ class VoucherSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 class VoucherDocumentSerializer(serializers.ModelSerializer):
-    document = serializers.FileField()  # This field is required for document upload
+    document = serializers.FileField()
 
     class Meta:
         model = VoucherDocuments

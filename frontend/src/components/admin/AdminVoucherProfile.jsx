@@ -141,10 +141,10 @@ const AdminVoucherProfile = () => {
   };
 
 
-  // const getDocumentName = (url) => {
-  //   const urlParts = url.split('/');
-  //   return decodeURIComponent(urlParts[urlParts.length - 1]);
-  // };
+  const getDocumentName = (url) => {
+    const urlParts = url.split('/');
+    return decodeURIComponent(urlParts[urlParts.length - 1]);
+  };
 
   if (loading)
     return <div className="text-center p-6 text-black">Loading...</div>;
@@ -186,7 +186,7 @@ const AdminVoucherProfile = () => {
 
 
         {/* Documents */}
-        {/* <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Documents</h2>
           {voucher.documents && voucher.documents.length > 0 ? (
             <ul>
@@ -206,7 +206,7 @@ const AdminVoucherProfile = () => {
           ) : (
             <p>No documents available</p>
           )}
-        </div> */}
+        </div>
       </div>
 
       {/* Confirmation Modal for Deleting Employee */}

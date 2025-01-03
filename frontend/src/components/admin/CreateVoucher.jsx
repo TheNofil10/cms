@@ -134,7 +134,6 @@ const AddVoucher = () => {
   };
   
   const handleNextStep = () => {
-    console.log(formData);
     if (validateStep(step)) {
       setStep(step + 1);
     } else {
