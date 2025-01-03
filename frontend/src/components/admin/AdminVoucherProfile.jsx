@@ -33,6 +33,8 @@ import {
   FaUserCircle,
   FaTrash,
   FaFileAlt,
+  FaDollarSign,
+  FaGripLines,
 } from "react-icons/fa";
 import { useAuth } from "../../contexts/AuthContext";
 import ConfirmationModal from "./ConfirmationModal";
@@ -66,18 +68,6 @@ const AdminVoucherProfile = () => {
       setVoucher(voucherResponse.data);
       // console.log("Employee data: ", employeeResponse.data);
 
-      if (voucherResponse.data.department) {
-        const departmentResponse = await axios.get(
-          `${API}/departments/${voucherResponse.data.department}/`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-            },
-          }
-        );
-        setDepartment(departmentResponse.data);
-      }
-
       if (voucherResponse.data.head_of_department) {
         const headOfDepartmentResponse = await axios.get(
           `${API}/employees/${voucherResponse.data.head_of_department}/`,
@@ -105,15 +95,6 @@ const AdminVoucherProfile = () => {
 
   const handleUpdateProfile = () => {
     setIsEditing(true);
-  };
-
-  const handleCloseUpdateForm = () => {
-    setIsEditing(false);
-  };
-
-  const handleProfileUpdated = async () => {
-    await fetchVoucher(); // Refresh employee data after update
-    setIsEditing(false);
   };
 
   const handleDeleteVoucher = (voucherId) => {
@@ -154,12 +135,6 @@ const AdminVoucherProfile = () => {
     <div className="container mx-auto p-8 bg-gray-200 rounded-lg shadow-lg max-w-5xl mt-10 mb-10">
       <div className="flex items-center mb-6">
         <div className="flex space-x-3">
-          <button
-            onClick={handleUpdateProfile}
-            className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700"
-          >
-            <FaEdit className="inline-block mr-1" /> Edit
-          </button>
           {currentUser.is_superuser && (
             <button
               onClick={() => handleDeleteVoucher(voucher.id)}
@@ -177,11 +152,16 @@ const AdminVoucherProfile = () => {
         {/* Voucher Information */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Voucher Information</h2>
-          <p><FaUserShield className="inline-block mr-2" /> Voucher ID: {`${voucher.id}`}</p>
-          <p><FaUserShield className="inline-block mr-2" /> Created By: {`${voucher.employee_first_name} ${voucher.employee_middle_name} ${voucher.employee_last_name}`}</p>
+          <p><FaIdCard className="inline-block mr-2" /><b> Voucher ID: </b>{`${voucher.id}`}</p>
+          <p><FaUserShield className="inline-block mr-2" /><b> Created By: </b>{`${voucher.employee_first_name} ${voucher.employee_middle_name} ${voucher.employee_last_name}`}</p>
           {console.log(voucher)}
-          <p><FaUserShield className="inline-block mr-2" /> Department: {`${voucher.department_name}`}</p>
-          <p><FaUserShield className="inline-block mr-2" /> Head of Department: {`${voucher.head_of_department}`}</p>
+          <p><FaBuilding className="inline-block mr-2" /><b> Department: </b>{`${voucher.department_name}`}</p>
+          <p><FaUserShield className="inline-block mr-2" /><b> Head of Department: </b>{`${voucher.head_of_department}`}</p>
+          <p><FaCalendarCheck className="inline-block mr-2" /><b> Date Created: </b>{`${voucher.date}`}</p>
+          <p><FaBriefcase className="inline-block mr-2" /><b> Project: </b>{`${voucher.project}`}</p>
+          <p><FaBriefcase className="inline-block mr-2" /><b> Category: </b>{voucher.category? voucher.category : voucher.other_category}</p>
+          <p><FaDollarSign className="inline-block mr-2" /><b> Amount: </b>{`$ ${voucher.amount}`}</p>
+          <p><FaGripLines className="inline-block mr-2" /><b> Reason: </b>{`${voucher.reason}`}</p>
         </div>
 
 
@@ -216,14 +196,6 @@ const AdminVoucherProfile = () => {
         onCancel={() => setShowConfirmModal(false)}
         message={`Are you sure you want to delete ${voucherToDelete?.id}? This action cannot be undone.`}
       />
-
-      {isEditing && (
-        <UpdateProfileForm
-          employee={voucher}
-          onClose={handleCloseUpdateForm}
-          onUpdate={handleProfileUpdated}
-        />
-      )}
 
     </div>
   );

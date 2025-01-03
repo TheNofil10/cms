@@ -259,7 +259,7 @@ const VoucherList = () => {
           { text: voucher.employee_first_name, fontSize: 10 },
           { text: voucher.employee_last_name, fontSize: 10 },
           { text: voucher.date, fontSize: 10 },
-          { text: voucher.amount, fontSize: 10 },
+          { text: `$ ${voucher.amount}`, fontSize: 10 },
           { text: voucher.status, fontSize: 10 },
         ],
       })),
