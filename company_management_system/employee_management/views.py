@@ -847,50 +847,50 @@ def approve_app_attendance_manager(request, application_id):
 
     # Print log time to confirm microseconds are included (will show in microsecond format)
     print(f"Log time with microseconds: {log_time_with_microseconds}")
-
+    print("got log type ==?>" ,app_attendance.log_type)
     # Check if an attendance record exists for the employee on the given date
     attendance_record = Attendance.objects.filter(
         employee=app_attendance.employee,
         date=log_date
     ).first()  # Get the first record if exists
-
-    if not attendance_record:  # No attendance record for the day
+    print("attendance record is ",attendance_record)
+    if attendance_record:  # record will already be present...
         if app_attendance.log_type == "IN":
+            print("Processing time-in...")
             # Create a new attendance record for time-in
-            Attendance.objects.create(
-                employee=app_attendance.employee,
-                date=log_date,
-                time_in=log_time_with_microseconds,  # Store datetime with microseconds
-                status="present",
-                comments="Logged in from app",
-                hours_worked=None,  # Will calculate when out is logged
-                is_overtime=False,
-            )
+            
+            attendance_record.time_in = log_time_with_microseconds  # Store datetime with microseconds
+            attendance_record.status = "present"
+            attendance_record.comments = "Logged in from app"
+            attendance_record.hours_worked = None  # Will calculate when out is logged
+            attendance_record.is_overtime = False
+            attendance_record.save()
+            print("here")
             print(f"Time-in logged for {app_attendance.employee} at {log_time_with_microseconds}.")
-    else:
-        print("Processing time-out...")
-        time_in = attendance_record.time_in
-        if app_attendance.log_type == "OUT":
-            if time_in:  # Ensure time-in exists
-                # Combine time-in with date for proper calculations
-                time_in_datetime = datetime.combine(log_date, time_in)
-                time_diff = log_time_with_microseconds - time_in_datetime  # Calculate time difference
-
-                worked = time_diff.total_seconds() / 3600  # Worked hours in decimal
-                overtime = max(0, worked - 8)  # Calculate overtime hours
-
-                # Update attendance record
-                attendance_record.time_out = log_time_with_microseconds  # Store datetime for time_out with microseconds
-                attendance_record.hours_worked = round(worked, 2)  # Rounded to 2 decimal places
-                attendance_record.is_overtime = overtime > 0  # Boolean field
-                attendance_record.comments += " | Logged out from app"
-                attendance_record.save()
-
-                print(f"Time-out logged for {app_attendance.employee} at {log_time_with_microseconds}.")
-            else:
-                print(f"Time-in is missing for {app_attendance.employee} on {log_date}.")
         else:
-            print(f"Log type '{app_attendance.log_type}' is not handled.")
+            print("Processing time-out...")
+            time_in = attendance_record.time_in
+            if app_attendance.log_type == "OUT":
+                if time_in:  # Ensure time-in exists
+                    # Combine time-in with date for proper calculations
+                    time_in_datetime = datetime.combine(log_date, time_in)
+                    time_diff = log_time_with_microseconds - time_in_datetime  # Calculate time difference
+
+                    worked = time_diff.total_seconds() / 3600  # Worked hours in decimal
+                    overtime = max(0, worked - 8)  # Calculate overtime hours
+
+                    # Update attendance record
+                    attendance_record.time_out = log_time_with_microseconds  # Store datetime for time_out with microseconds
+                    attendance_record.hours_worked = round(worked, 2)  # Rounded to 2 decimal places
+                    attendance_record.is_overtime = overtime > 0  # Boolean field
+                    attendance_record.comments += " | Logged out from app"
+                    attendance_record.save()
+
+                    print(f"Time-out logged for {app_attendance.employee} at {log_time_with_microseconds}.")
+                else:
+                    print(f"Time-in is missing for {app_attendance.employee} on {log_date}.")
+            else:
+                print(f"Log type '{app_attendance.log_type}' is not handled.")
 
     # Optionally update the app attendance status
     app_attendance.status = "approved_by_manager"
