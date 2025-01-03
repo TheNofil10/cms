@@ -279,13 +279,17 @@ class TodoSerializer(serializers.ModelSerializer):
 
 class VoucherSerializer(serializers.ModelSerializer):
     employee_first_name = serializers.CharField(source='employee.first_name', read_only=True)
+    employee_middle_name = serializers.CharField(source='employee.middle_name', read_only=True)
     employee_last_name = serializers.CharField(source='employee.last_name', read_only=True)
+    department_name = serializers.CharField(source='department.name', read_only=True)
+    # head_of_department_first_name = serializers.CharField(source='employee.first_name', read_only=True)
+    # head_of_department_first_name = serializers.CharField(source='employee.last_name', read_only=True)
     
     class Meta:
         model = Voucher
         fields = [
-            'id', 'employee', 'employee_first_name', 'employee_last_name', 
-            'date', 'amount', 'status', 'documents',  # Add other required fields
+            'id', 'department_name', 'employee_first_name', 'employee_middle_name', 'employee_last_name',
+            'date', 'amount', 'reason', 'project', 'category', 'other_category', 'status', 'documents',
         ]
         
     def create(self, validated_data):

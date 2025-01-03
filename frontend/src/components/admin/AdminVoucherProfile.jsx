@@ -41,34 +41,34 @@ import UpdateProfileForm from "../employee/UpdateProfileForm";
 
 const AdminVoucherProfile = () => {
   const { id } = useParams();
-  const [employee, setEmployee] = useState(null);
+  const [voucher, setVoucher] = useState(null);
   const [department, setDepartment] = useState(null);
-  const [manager, setManager] = useState(null);
+  const [headOfDepartment, setHeadOfDepartment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [employeeToDelete, setEmployeeToDelete] = useState(null);
+  const [voucherToDelete, setVoucherToDelete] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
 
-  const fetchEmployee = async () => {
+  const fetchVoucher = async () => {
     try {
-      const employeeResponse = await axios.get(
-        `${API}/employees/${id}/`,
+      const voucherResponse = await axios.get(
+        `${API}/vouchers/${id}/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           },
         }
       );
-      setEmployee(employeeResponse.data);
+      setVoucher(voucherResponse.data);
       // console.log("Employee data: ", employeeResponse.data);
 
-      if (employeeResponse.data.department) {
+      if (voucherResponse.data.department) {
         const departmentResponse = await axios.get(
-          `${API}/departments/${employeeResponse.data.department}/`,
+          `${API}/departments/${voucherResponse.data.department}/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -78,21 +78,21 @@ const AdminVoucherProfile = () => {
         setDepartment(departmentResponse.data);
       }
 
-      if (employeeResponse.data.manager) {
-        const managerResponse = await axios.get(
-          `${API}/employees/${employeeResponse.data.manager}/`,
+      if (voucherResponse.data.head_of_department) {
+        const headOfDepartmentResponse = await axios.get(
+          `${API}/employees/${voucherResponse.data.head_of_department}/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
           }
         );
-        setManager(managerResponse.data);
+        setHeadOfDepartment(headOfDepartmentResponse.data);
       }
     } catch (error) {
-      console.error("Error fetching employee:", error);
-      setError("Unable to fetch employee data.");
-      toast.error("Failed to load employee data");
+      console.error("Error fetching HOD:", error);
+      setError("Unable to fetch HOD data.");
+      toast.error("Failed to load HOD data");
     } finally {
       setLoading(false);
     }
@@ -100,7 +100,7 @@ const AdminVoucherProfile = () => {
 
   useEffect(() => {
 
-    fetchEmployee();
+    fetchVoucher();
   }, [id]);
 
   const handleUpdateProfile = () => {
@@ -112,39 +112,39 @@ const AdminVoucherProfile = () => {
   };
 
   const handleProfileUpdated = async () => {
-    await fetchEmployee(); // Refresh employee data after update
+    await fetchVoucher(); // Refresh employee data after update
     setIsEditing(false);
   };
 
-  const handleDeleteEmployee = (employeeId, employeeName) => {
-    setEmployeeToDelete({ id: employeeId, name: employeeName });
+  const handleDeleteVoucher = (voucherId) => {
+    setVoucherToDelete({ id: voucherId });
     setShowConfirmModal(true);
   };
 
-  const confirmDeleteEmployee = async () => {
-    if (!employeeToDelete) return;
+  const confirmDeleteVoucher = async () => {
+    if (!voucherToDelete) return;
 
     try {
-      await axios.delete(`${API}/employees/${id}/`, {
+      await axios.delete(`${API}/vouchers/${id}/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
       });
-      toast.success("Employee deleted successfully");
-      navigate("/hr/employees");
+      toast.success("Voucher deleted successfully");
+      navigate("/hr/vouchers");
     } catch (error) {
-      toast.error("Error deleting employee");
+      toast.error("Error deleting voucher");
     } finally {
       setShowConfirmModal(false);
-      setEmployeeToDelete(null);
+      setVoucherToDelete(null);
     }
   };
 
 
-  const getDocumentName = (url) => {
-    const urlParts = url.split('/');
-    return decodeURIComponent(urlParts[urlParts.length - 1]);
-  };
+  // const getDocumentName = (url) => {
+  //   const urlParts = url.split('/');
+  //   return decodeURIComponent(urlParts[urlParts.length - 1]);
+  // };
 
   if (loading)
     return <div className="text-center p-6 text-black">Loading...</div>;
@@ -153,22 +153,6 @@ const AdminVoucherProfile = () => {
   return (
     <div className="container mx-auto p-8 bg-gray-200 rounded-lg shadow-lg max-w-5xl mt-10 mb-10">
       <div className="flex items-center mb-6">
-        <img
-          src={employee.profile_image}
-          alt={`${employee.first_name} ${employee.last_name}`}
-          className="w-24 h-24 rounded-full object-cover border-4 border-gray-300"
-        />
-        <div className="ml-6 flex-1">
-          <h1 className="text-3xl font-bold">
-            {employee.first_name} {employee.last_name}
-          </h1>
-          <p className="text-gray-600 text-xl">
-            <FaUserTie className="inline-block mr-2" /> {employee.position || "-"}
-          </p>
-          <p className="text-gray-600">
-            <FaRegBuilding className="inline-block mr-2" /> {department ? department.name : "Loading..."}
-          </p>
-        </div>
         <div className="flex space-x-3">
           <button
             onClick={handleUpdateProfile}
@@ -178,7 +162,7 @@ const AdminVoucherProfile = () => {
           </button>
           {currentUser.is_superuser && (
             <button
-              onClick={() => handleDeleteEmployee(employee.id, employee.first_name)}
+              onClick={() => handleDeleteVoucher(voucher.id)}
               className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700"
             >
               <FaTrash className="inline-block mr-1" /> Delete
@@ -190,140 +174,23 @@ const AdminVoucherProfile = () => {
 
       <div className="grid grid-cols-2 gap-8">
 
-        {/* Personal Information */}
+        {/* Voucher Information */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
-          <p><FaUserShield className="inline-block mr-2" /> Full Name: {`${employee.first_name} ${employee.middle_name} ${employee.last_name}`}</p>
-          <p><FaUserShield className="inline-block mr-2" /> Username: {`${employee.username}`}</p>
-          <p><FaUserShield className="inline-block mr-2" /> Email: {`${employee.email}`}</p>
-          <p><FaBirthdayCake className="inline-block mr-2" /> Date of Birth: {employee.date_of_birth || "-"}</p>
-          <p><FaPray className="inline-block mr-2" /> Religion: {employee.religion || "-"}</p>
-          <p><FaPassport className="inline-block mr-2" /> Nationality: {employee.nationality || "-"}</p>
-          <p><FaWheelchair className="inline-block mr-2" /> Disability: {employee.disability ? "Yes" : "No"}</p>
-          <p><FaIdCard className="inline-block mr-2" /> CNIC: {employee.cnic_no || "-"}</p>
-          <p><FaCalendarAlt className="inline-block mr-2" /> CNIC Issue Date: {employee.cnic_issue_date || "-"}</p>
-          <p><FaCalendarAlt className="inline-block mr-2" /> CNIC Expiry Date: {employee.cnic_expiry_date || "-"}</p>
+          <h2 className="text-xl font-semibold mb-4">Voucher Information</h2>
+          <p><FaUserShield className="inline-block mr-2" /> Voucher ID: {`${voucher.id}`}</p>
+          <p><FaUserShield className="inline-block mr-2" /> Created By: {`${voucher.employee_first_name} ${voucher.employee_middle_name} ${voucher.employee_last_name}`}</p>
+          {console.log(voucher)}
+          <p><FaUserShield className="inline-block mr-2" /> Department: {`${voucher.department_name}`}</p>
+          <p><FaUserShield className="inline-block mr-2" /> Head of Department: {`${voucher.head_of_department}`}</p>
         </div>
-
-        {/* Other Information */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Other Information</h2>
-          <p><FaUserCircle className="inline-block mr-2" /> Marital Status: {employee.marital_status ? "Married" : "Single"}</p>
-          <p><FaHeartbeat className="inline-block mr-2" /> Blood Group: {employee.blood_group || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Gender: {employee.gender || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Driving Liscence: {employee.dv_license_no || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Driving Liscence Issue: {employee.dv_license_issue_date || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Driving Liscence Expiry: {employee.dv_license_expiry_date || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Company Email: {employee.company_email || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Father's Name: {employee.father_name || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Father's CNIC: {employee.father_cnic_no || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Spouse Name: {employee.spouse_name || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Spouse D.O.B: {employee.spouse_date_of_birth || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Spouse Relation: {employee.spouse_relationship || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Spouse CNIC: {employee.spouse_cnic || "-"}</p>
-        </div>
-
-        {/* Job Details */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Job Details</h2>
-          <p><FaIdBadge className="inline-block mr-2" /> Employee ID: {employee.id || "-"}</p>
-          <p><FaBriefcase className="inline-block mr-2" /> Department: {department ? department.name : "-"}</p>
-          <p><FaBriefcase className="inline-block mr-2" /> Position: {employee.position}</p>
-          <p><FaUserShield className="inline-block mr-2" /> Manager: {manager ? `${manager.first_name} ${manager.last_name}` : "-"}</p>
-          <p><FaCalendarCheck className="inline-block mr-2" /> Employment Date: {employee.employment_date || "-"}</p>
-          <p><FaMoneyBillWave className="inline-block mr-2" /> Salary: {employee.salary || "-"} PKR</p>
-          <p><FaRegClock className="inline-block mr-2" /> Check-in Time: {employee.check_in_time || "-"}</p>
-          <p><FaBusinessTime className="inline-block mr-2" /> Working Hours: {employee.working_hours || "-"}</p>
-          <p><FaMapMarkedAlt className="inline-block mr-2" /> Location: {employee.location || "-"}</p>
-          <p><FaBuilding className="inline-block mr-2" /> EOBI No: {employee.eobi_no || "-"}</p>
-        </div>
-
-        {/* References */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">References</h2>
-          <p><FaUserAlt className="inline-block mr-2" /> Ref Name 1: {employee.ref_name_1 || "-"}</p>
-          <p><FaPhone className="inline-block mr-2" /> Mobile 1: {employee.ref_mobile_1 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Email 1: {employee.ref_email_1 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Company 1: {employee.ref_company_1 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Designation 1: {employee.ref_designation_1 || "-"}</p>
-          <p><FaUserAlt className="inline-block mr-2" /> Ref Name 2: {employee.ref_name_2 || "-"}</p>
-          <p><FaPhone className="inline-block mr-2" /> Mobile 2: {employee.ref_mobile_2 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Email 2: {employee.ref_email_2 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Company 2: {employee.ref_company_2 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Designation 2: {employee.ref_designation_2 || "-"}</p>
-        </div>
-
-        {/* Contact Info */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Contact Information</h2>
-          <p><FaUserAlt className="inline-block mr-2" /> Phone No: {employee.phone || "-"}</p>
-          <p><FaPhone className="inline-block mr-2" /> Alternate Phone No: {employee.alternate_phone || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Current Address: {employee.address || "-"}</p>
-          <p><FaUserAlt className="inline-block mr-2" /> Permanent Address: {employee.permanent_address || "-"}</p>
-        </div>
-
-        {/* Emergency Contacts */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Emergency Contacts</h2>
-          <p><FaUserAlt className="inline-block mr-2" /> Name 1: {employee.em_name_1 || "-"}</p>
-          <p><FaPhone className="inline-block mr-2" /> Contact 1: {employee.em_contact_1 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Email 1: {employee.em_email_1 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Relation 1: {employee.em_relationship_1 || "-"}</p>
-          <p><FaUserAlt className="inline-block mr-2" /> Name 2: {employee.em_name_2 || "-"}</p>
-          <p><FaPhone className="inline-block mr-2" /> Contact 2: {employee.em_contact_2 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Email 2: {employee.em_email_2 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Relation 2: {employee.em_relationship_2 || "-"}</p>
-        </div>
-
-        {/* NOK */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Next Of Kin Details</h2>
-          <p><FaEnvelope className="inline-block mr-2" /> Name: {employee.nok_name || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Realtion: {employee.nok_relationship || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> CNIC: {employee.nok_cnic || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Contact: {employee.nok_contact || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Email: {employee.nok_email || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Address: {employee.nok_permanent_address || "-"}</p>
-        </div>
-
-        {/* Qualifications Section */}
-        {/* <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-2">Qualifications</h3>
-          {employee.qualifications.length > 0 ? (
-            <table className="w-full border-collapse border border-gray-300">
-              <thead>
-                <tr>
-                  <th className="border border-gray-300 px-4 py-2">Institute</th>
-                  <th className="border border-gray-300 px-4 py-2">Degree</th>
-                  <th className="border border-gray-300 px-4 py-2">Year From</th>
-                  <th className="border border-gray-300 px-4 py-2">Year To</th>
-                  <th className="border border-gray-300 px-4 py-2">GPA</th>
-                </tr>
-              </thead>
-              <tbody>
-                {employee.qualifications.map((q, index) => (
-                  <tr key={index}>
-                    <td className="border border-gray-300 px-4 py-2">{q.institute}</td>
-                    <td className="border border-gray-300 px-4 py-2">{q.degree}</td>
-                    <td className="border border-gray-300 px-4 py-2">{q.year_from}</td>
-                    <td className="border border-gray-300 px-4 py-2">{q.year_to}</td>
-                    <td className="border border-gray-300 px-4 py-2">{q.gpa}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>No qualifications available.</p>
-          )}
-        </div> */}
 
 
         {/* Documents */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+        {/* <div className="bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Documents</h2>
-          {employee.documents && employee.documents.length > 0 ? (
+          {voucher.documents && voucher.documents.length > 0 ? (
             <ul>
-              {employee.documents.map((doc, index) => (
+              {voucher.documents.map((doc, index) => (
                 <li key={index} className="mb-2">
                   <a
                     href={doc.document}
@@ -339,20 +206,20 @@ const AdminVoucherProfile = () => {
           ) : (
             <p>No documents available</p>
           )}
-        </div>
+        </div> */}
       </div>
 
       {/* Confirmation Modal for Deleting Employee */}
       <ConfirmationModal
         isOpen={showConfirmModal}
-        onConfirm={confirmDeleteEmployee}
+        onConfirm={confirmDeleteVoucher}
         onCancel={() => setShowConfirmModal(false)}
-        message={`Are you sure you want to delete ${employeeToDelete?.name}? This action cannot be undone.`}
+        message={`Are you sure you want to delete ${voucherToDelete?.id}? This action cannot be undone.`}
       />
 
       {isEditing && (
         <UpdateProfileForm
-          employee={employee}
+          employee={voucher}
           onClose={handleCloseUpdateForm}
           onUpdate={handleProfileUpdated}
         />
