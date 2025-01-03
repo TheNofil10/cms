@@ -475,7 +475,7 @@ const Signup = () => {
       location: "New York",
       eobi_no: "EOB12345",
       blood_group: "O+",
-      gender: "Male",
+      gender: "male",
       marital_status: false,
       cnic_no: "12345-6789012-3",
       cnic_issue_date: "2010-01-01",
@@ -519,12 +519,18 @@ const Signup = () => {
       spouse_cnic: "12345-6789012-3",
       qualifications: [
         { institute: "University A", degree: "B.Sc", year_from: "2008", year_to: "2012", gpa: "3.8" },
+        { institute: "University A", degree: "B.Sc", year_from: "2008", year_to: "2012", gpa: "3.8" },
+        { institute: "University A", degree: "B.Sc", year_from: "2008", year_to: "2012", gpa: "3.8" },
       ],
       employments: [
         { company_name: "Tech Corp", designation: "Software Engineer", year_from: "2013", year_to: "2018", reason_for_leaving: "Career Growth" },
+        { company_name: "Tech Corp", designation: "Software Engineer", year_from: "2013", year_to: "2018", reason_for_leaving: "Career Growth" },
+        { company_name: "Tech Corp", designation: "Software Engineer", year_from: "2013", year_to: "2018", reason_for_leaving: "Career Growth" },
       ],
       dependents: [
-        { name: "Alice Doe", date_of_birth: "2015-05-15", relation: "Daughter", cnic: "45678-1234567-0" },
+        { name: "Alice Doe", date_of_birth: "2015-05-15", relation: "Daughter", cnic: "45678-1224567-0" },
+        { name: "Alice Doe", date_of_birth: "2015-05-15", relation: "Daughter", cnic: "45338-1234567-0" },
+        { name: "Alice Doe", date_of_birth: "2015-05-15", relation: "Daughter", cnic: "45378-1234367-0" },
       ],
     });
   };

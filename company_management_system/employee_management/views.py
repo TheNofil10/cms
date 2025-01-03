@@ -230,25 +230,20 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                 raise ValidationError({"employment_errors": employment_serializer.errors})
             
                 
-    def handle_dependents(self, employee, dependent_data):
-        """Handles saving employment records for an employee."""
-        print("dependent data is ",dependent_data)
-        dependents_data = {
-            "name": dependent_data[0]["name"],
-            "relation": dependent_data[0]["relation"],
-            "date_of_birth": dependent_data[0]["date_of_birth"],
-            "employee": employee.id,
-            "cnic": dependent_data[0]["cnic"],
-        }
-        print("data is ",dependents_data)
-        
-        dependent_serializer = EmployeeDependentSerializer(data=dependents_data)
-        if dependent_serializer.is_valid():
-            dependent_serializer.save()
-        else:
-            print(f"Error with document upload: {dependent_serializer.errors}")
-            
-        
+    def handle_dependents(self, employee, dependents_data):
+        """Handles saving dependent records for an employee."""
+        for dependent in dependents_data:
+            dependent["employee"] = employee.id  # Associate with the employee
+            dependent_serializer = EmployeeDependentSerializer(data=dependent)
+            if dependent_serializer.is_valid():
+                print("Dependent data is valid")
+                dependent_serializer.save()
+                print("Dependent saved")
+            else:
+                raise ValidationError(
+                    {"dependent_errors": dependent_serializer.errors}
+                )
+
    
     def get_permissions(self):
         if self.action == "destroy":
@@ -321,11 +316,11 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             if "em_contact_1" in self.request.data:
                 emergency_contact_data = {
                     'employee': employee.id,
-                    'em_name_1': self.request.data["em_contact_1"],
+                    'em_name_1': self.request.data["em_name_1"],
                     'em_relationship_1': self.request.data["em_relationship_1"],
                     'em_contact_1': self.request.data["em_contact_1"],
                     'em_email_1': self.request.data["em_email_1"],
-                    'em_name_2': self.request.data["em_contact_2"],
+                    'em_name_2': self.request.data["em_name_2"],
                     'em_relationship_2': self.request.data["em_relationship_2"],
                     'em_contact_2': self.request.data["em_contact_2"],
                     'em_email_2': self.request.data["em_email_2"],

@@ -61,7 +61,7 @@ const AdminEmployeeProfile = () => {
         },
         responseType: "blob", // This is important to handle file downloads as blobs
       });
-  
+
       // Create a download link
       const url = window.URL.createObjectURL(new Blob([employeeResponse.data]));
       const link = document.createElement("a");
@@ -75,7 +75,7 @@ const AdminEmployeeProfile = () => {
       toast.error("Failed to generate card");
     }
   };
-    
+
 
   const fetchEmployee = async () => {
     try {
@@ -311,35 +311,102 @@ const AdminEmployeeProfile = () => {
         </div>
 
         {/* Qualifications Section */}
-        {/* <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-2">Qualifications</h3>
-          {employee.qualifications.length > 0 ? (
-            <table className="w-full border-collapse border border-gray-300">
-              <thead>
-                <tr>
-                  <th className="border border-gray-300 px-4 py-2">Institute</th>
-                  <th className="border border-gray-300 px-4 py-2">Degree</th>
-                  <th className="border border-gray-300 px-4 py-2">Year From</th>
-                  <th className="border border-gray-300 px-4 py-2">Year To</th>
-                  <th className="border border-gray-300 px-4 py-2">GPA</th>
-                </tr>
-              </thead>
-              <tbody>
-                {employee.qualifications.map((q, index) => (
-                  <tr key={index}>
-                    <td className="border border-gray-300 px-4 py-2">{q.institute}</td>
-                    <td className="border border-gray-300 px-4 py-2">{q.degree}</td>
-                    <td className="border border-gray-300 px-4 py-2">{q.year_from}</td>
-                    <td className="border border-gray-300 px-4 py-2">{q.year_to}</td>
-                    <td className="border border-gray-300 px-4 py-2">{q.gpa}</td>
+        <div className="bg-white p-4 rounded-lg shadow-sm">
+          <div className="mb-4">
+            <h3 className="text-xl font-semibold mb-4">Qualifications</h3>
+            {employee.qualifications.length > 0 ? (
+              <table className="w-full border-collapse border border-gray-300 text-sm">
+                <thead>
+                  <tr>
+                    <th className="border border-gray-300 px-2 py-1">Institute</th>
+                    <th className="border border-gray-300 px-2 py-1">Degree</th>
+                    <th className="border border-gray-300 px-2 py-1">Year From</th>
+                    <th className="border border-gray-300 px-2 py-1">Year To</th>
+                    <th className="border border-gray-300 px-2 py-1">GPA</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>No qualifications available.</p>
-          )}
-        </div> */}
+                </thead>
+                <tbody>
+                  {employee.qualifications.map((q, index) => (
+                    <tr key={index}>
+                      <td className="border border-gray-300 px-2 py-1">{q.institute}</td>
+                      <td className="border border-gray-300 px-2 py-1">{q.degree}</td>
+                      <td className="border border-gray-300 px-2 py-1">{q.year_from}</td>
+                      <td className="border border-gray-300 px-2 py-1">{q.year_to}</td>
+                      <td className="border border-gray-300 px-2 py-1">{q.gpa}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="text-sm">No qualifications available.</p>
+            )}
+          </div>
+        </div>
+
+        {/* Experience Section */}
+        <div className="bg-white p-4 rounded-lg shadow-sm">
+          <div className="mb-4">
+            <h3 className="text-xl font-semibold mb-4">Experience</h3>
+            {employee.employments.length > 0 ? (
+              <table className="w-full border-collapse border border-gray-300 text-sm">
+                <thead>
+                  <tr>
+                    <th className="border border-gray-300 px-2 py-1">Company</th>
+                    <th className="border border-gray-300 px-2 py-1">Position</th>
+                    <th className="border border-gray-300 px-2 py-1">Year From</th>
+                    <th className="border border-gray-300 px-2 py-1">Year To</th>
+                    <th className="border border-gray-300 px-2 py-1">Reason For Leaving</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {employee.employments.map((exp, index) => (
+                    <tr key={index}>
+                      <td className="border border-gray-300 px-2 py-1">{exp.company_name}</td>
+                      <td className="border border-gray-300 px-2 py-1">{exp.designation}</td>
+                      <td className="border border-gray-300 px-2 py-1">{exp.year_from}</td>
+                      <td className="border border-gray-300 px-2 py-1">{exp.year_to}</td>
+                      <td className="border border-gray-300 px-2 py-1">{exp.reason_for_leaving}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="text-sm">No experience available.</p>
+            )}
+          </div>
+        </div>
+
+        {/* Dependents Section */}
+        <div className="bg-white p-4 rounded-lg shadow-sm">
+          <div className="mb-4">
+            <h3 className="text-xl font-semibold mb-4">Dependents</h3>
+            {employee.dependents.length > 0 ? (
+              <table className="w-full border-collapse border border-gray-300 text-sm">
+                <thead>
+                  <tr>
+                    <th className="border border-gray-300 px-2 py-1">Name</th>
+                    <th className="border border-gray-300 px-2 py-1">Relation</th>
+                    <th className="border border-gray-300 px-2 py-1">Date of Birth</th>
+                    <th className="border border-gray-300 px-2 py-1">CNIC</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {employee.dependents.map((dep, index) => (
+                    <tr key={index}>
+                      <td className="border border-gray-300 px-2 py-1">{dep.name}</td>
+                      <td className="border border-gray-300 px-2 py-1">{dep.relation}</td>
+                      <td className="border border-gray-300 px-2 py-1">{dep.date_of_birth}</td>
+                      <td className="border border-gray-300 px-2 py-1">{dep.cnic}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="text-sm">No dependents available.</p>
+            )}
+          </div>
+        </div>
+
 
 
         {/* Documents */}
@@ -366,10 +433,10 @@ const AdminEmployeeProfile = () => {
         </div>
       </div>
 
-      <button 
-      type="submit" 
-      onClick={() => generateEmployeeCard(employee.id)}
-      className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200 my-5">
+      <button
+        type="submit"
+        onClick={() => generateEmployeeCard(employee.id)}
+        className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200 my-5">
         Generate Employee Card
       </button>
 
