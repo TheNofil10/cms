@@ -13,7 +13,7 @@ router = DefaultRouter()
 router.register(r'employees', EmployeeViewSet)
 router.register(r'vouchers', VoucherListView)
 router.register(r'voucher-documents', VoucherDocumentViewSet)
-router.register(r'employee-documents', EmployeeDocumentsViewSet)  # Add this line
+router.register(r'employee-documents', EmployeeDocumentsViewSet)
 
 router.register(r'departments', DepartmentViewSet)
 router.register(r'employee-records', EmployeeRecordViewSet)

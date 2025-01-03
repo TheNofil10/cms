@@ -527,9 +527,10 @@ def voucher_documents_path(instance, filename):
 
 class VoucherDocuments(models.Model):
     id = models.AutoField(primary_key=True)
-    # voucher = models.ForeignKey(Voucher, on_delete=models.CASCADE, related_name="documents")
+    voucher = models.ForeignKey(Voucher, on_delete=models.CASCADE, related_name="documents")
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="creator")
     document = models.FileField(upload_to=voucher_documents_path)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True) 
     
     def __str__(self):
         return f"Documents"

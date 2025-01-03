@@ -277,29 +277,30 @@ class TodoSerializer(serializers.ModelSerializer):
         fields = "__all__"
         
 
+class VoucherDocumentSerializer(serializers.ModelSerializer):
+    document = serializers.FileField()
+
+    class Meta:
+        model = VoucherDocuments
+        fields = ["voucher", "document", "uploaded_at"]
+
+
 class VoucherSerializer(serializers.ModelSerializer):
     employee_first_name = serializers.CharField(source='employee.first_name', read_only=True)
     employee_middle_name = serializers.CharField(source='employee.middle_name', read_only=True)
     employee_last_name = serializers.CharField(source='employee.last_name', read_only=True)
     department_name = serializers.CharField(source='department.name', read_only=True)
+    documents = VoucherDocumentSerializer(many=True, read_only=True)
     # head_of_department_first_name = serializers.CharField(source='employee.first_name', read_only=True)
     # head_of_department_first_name = serializers.CharField(source='employee.last_name', read_only=True)
     
     class Meta:
         model = Voucher
         fields = [
-            'id', 'department', 'employee', 'department_name', 'employee_first_name', 'employee_middle_name', 'employee_last_name',
-            'date', 'amount', 'reason', 'project', 'category', 'other_category', 'status',
+            'id', 'department', 'employee','department_name', 'employee_first_name', 'employee_middle_name', 'employee_last_name',
+            'date', 'amount', 'reason', 'project', 'category', 'other_category', 'status', 'documents',
         ]
         
     def create(self, validated_data):
         validated_data['status'] = 'pending'
         return super().create(validated_data)
-
-class VoucherDocumentSerializer(serializers.ModelSerializer):
-    document = serializers.FileField()
-
-    class Meta:
-        model = VoucherDocuments
-        fields = ["document", "uploaded_at"]
-    

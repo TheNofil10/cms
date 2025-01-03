@@ -1245,6 +1245,8 @@ class VoucherListView(viewsets.ModelViewSet):
                 # Assuming you have the EmployeeDocumentsViewSet set up for the employee
                 print("document is ",document)
                 document_data = {
+                    'voucher': voucher.id,
+                    'employee': voucher.employee_id,
                     'document': document
                 }
                 print("document data are ",document_data)
