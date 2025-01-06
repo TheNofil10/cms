@@ -145,7 +145,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
     fetchDepartments();
 
     if (employee) {
-      console.log(employee);
+      console.log("employee", employee);
       setFormData({
         first_name: employee.first_name,
         middle_name: employee.middle_name || '',
@@ -351,11 +351,57 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
         formDataToSend.append(key, formData[key]);
       }
     });
-    console.log(formDataToSend)
+
+    const formDataObj = new FormData();
+
+    console.log("formData", formData);
+
+
+    // Loop through formData and append necessary fields
+    Object.keys(formData).forEach((key) => {
+      if (formData[key] !== null) {
+        // Handle qualifications array
+        if (key === 'qualifications' && formData[key].length > 0) {
+          formData[key].forEach((qualification, index) => {
+            Object.keys(qualification).forEach((qualificationKey) => {
+              formDataObj.append(`qualifications[${index}][${qualificationKey}]`, qualification[qualificationKey]);
+            });
+          });
+        }
+        // Handle employments array
+        else if (key === 'employments' && formData[key].length > 0) {
+          formData[key].forEach((employment, index) => {
+            Object.keys(employment).forEach((employmentKey) => {
+              formDataObj.append(`employments[${index}][${employmentKey}]`, employment[employmentKey]);
+            });
+          });
+        }
+        // Handle dependents array
+        else if (key === 'dependents' && formData[key].length > 0) {
+          formData[key].forEach((dependent, index) => {
+            Object.keys(dependent).forEach((dependentKey) => {
+              formDataObj.append(`dependents[${index}][${dependentKey}]`, dependent[dependentKey]);
+            });
+          });
+        }
+        // Handle documents array
+        else if (key === "documents" && formData[key].length > 0) {
+          formData[key].forEach((file) => {
+            formDataObj.append("documents", file);
+          });
+        }
+        // Handle other form data fields
+        else {
+          formDataObj.append(key, formData[key]);
+        }
+
+      }
+    });
+
     try {
       await axios.put(
         `${API}/employees/${employee.id}/`,
-        formDataToSend,
+        formDataObj,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -363,7 +409,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
           },
         }
       );
-      console.log(formData)
+      console.log("formDataObj", formDataObj);
       toast.success("Profile updated successfully");
       onUpdate();
     } catch (error) {
