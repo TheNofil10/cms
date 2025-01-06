@@ -15,17 +15,22 @@ import {
 import { useAuth } from "../../contexts/AuthContext";
 import ConfirmationModal from "./ConfirmationModal";
 import API from "../../api/api";
+import StatusImage from "./StatusImage";
 
 const AdminVoucherProfile = () => {
   const { id } = useParams();
   const [voucher, setVoucher] = useState(null);
-  const [headOfDepartment, setHeadOfDepartment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { currentUser } = useAuth();
   const navigate = useNavigate();
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+  const [showApproveConfirmModal, setShowApproveConfirmModal] = useState(false);
+  const [showRejectConfirmModal, setShowRejectConfirmModal] = useState(false);
   const [voucherToDelete, setVoucherToDelete] = useState(null);
+  const [voucherToApprove, setVoucherToApprove] = useState(null);
+  const [voucherToReject, setVoucherToReject] = useState(null);
+  const [reasonForRejection, setReasonForRejection] = useState("");
 
 
   const fetchVoucher = async () => {
@@ -40,22 +45,10 @@ const AdminVoucherProfile = () => {
       );
       setVoucher(voucherResponse.data);
       // console.log("Employee data: ", employeeResponse.data);
-
-      if (voucherResponse.data.head_of_department) {
-        const headOfDepartmentResponse = await axios.get(
-          `${API}/employees/${voucherResponse.data.head_of_department}/`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-            },
-          }
-        );
-        setHeadOfDepartment(headOfDepartmentResponse.data);
-      }
     } catch (error) {
-      console.error("Error fetching HOD:", error);
-      setError("Unable to fetch HOD data.");
-      toast.error("Failed to load HOD data");
+      console.error("Error fetching vouchers:", error);
+      setError("Unable to fetch voucher data.");
+      toast.error("Failed to load voucher data");
     } finally {
       setLoading(false);
     }
@@ -67,7 +60,7 @@ const AdminVoucherProfile = () => {
 
   const handleDeleteVoucher = (voucherId) => {
     setVoucherToDelete({ id: voucherId });
-    setShowConfirmModal(true);
+    setShowDeleteConfirmModal(true);
   };
 
   const confirmDeleteVoucher = async () => {
@@ -80,15 +73,67 @@ const AdminVoucherProfile = () => {
         },
       });
       toast.success("Voucher deleted successfully");
-      navigate("/hr/vouchers");
+      navigate("/admin/vouchers");
     } catch (error) {
       toast.error("Error deleting voucher");
     } finally {
-      setShowConfirmModal(false);
+      setShowDeleteConfirmModal(false);
       setVoucherToDelete(null);
     }
   };
 
+  const handleApproveVoucher = ({ voucherId }) => {
+    setVoucherToApprove({ id: voucherId });
+    setShowApproveConfirmModal(true);
+  }
+
+  const handleRejectVoucher = ({ voucherId }) => {
+    setVoucherToReject({ id: voucherId });
+    setShowRejectConfirmModal(true);
+  }
+
+  const confirmApproveVoucher = async () => {
+    if (!voucherToApprove) return;
+
+    try {
+      if(voucher.status != "pending") throw new error(`voucher already ${voucher.status}`)
+      await axios.put(`${API}/vouchers/${id}/`, {...voucher, status: "approved"}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      toast.success("Voucher approved successfully");
+      window.location.reload()
+    } catch (error) {
+      toast.error("Error approving voucher");
+    } finally {
+      setShowApproveConfirmModal(false);
+      setVoucherToApprove(null);
+    }
+  }
+
+  const confirmRejectVoucher = async () => {
+    if (!voucherToReject) return;
+
+    try {
+      if (voucher.status != "pending") throw new error(`voucher already ${voucher.status}`);
+      if (!reasonForRejection) throw new error ("you have to give a reason for rejection")
+      await axios.put(`${API}/vouchers/${id}/`, {...voucher, status: "rejected", reason_for_rejection: reasonForRejection}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      toast.success("Voucher rejected successfully");
+      window.location.reload()
+    } catch (error) {
+      toast.error("Error rejecting voucher");
+    } finally {
+      setShowRejectConfirmModal(false);
+      setVoucherToApprove(null);
+    }
+  }
 
   const getDocumentName = (url) => {
     const urlParts = url.split('/');
@@ -111,6 +156,20 @@ const AdminVoucherProfile = () => {
               <FaTrash className="inline-block mr-1" /> Delete
             </button>
           )}
+
+            <button
+              onClick={() => handleApproveVoucher(voucher.id)}
+              className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700"
+            >
+              Approve
+            </button>
+
+            <button
+              onClick={() => handleRejectVoucher(voucher.id)}
+              className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700"
+            >
+              Reject
+            </button>
 
         </div>
       </div>
@@ -135,7 +194,15 @@ const AdminVoucherProfile = () => {
 
         {/* Documents */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Documents</h2>
+          <h2 className="text-xl font-semibold mb-2">Status:</h2>
+          <StatusImage className="inline-block-mr-2 mb-4" status={voucher.status} width="150px"/>
+          {voucher.status === "rejected" && (
+            <>
+              <h2 className="text-xl font-semibold">Reason for Rejection: </h2>
+              <p className="mb-4">{`${voucher.reason_for_rejection}`}</p>
+            </>
+          )}
+          <h2 className="text-xl font-semibold mb-">Documents</h2>
           {voucher.documents && voucher.documents.length > 0 ? (
             <ul>
               {voucher.documents.map((doc, index) => (
@@ -159,11 +226,40 @@ const AdminVoucherProfile = () => {
 
       {/* Confirmation Modal for Deleting Employee */}
       <ConfirmationModal
-        isOpen={showConfirmModal}
+        isOpen={showDeleteConfirmModal}
+        task="Deletion"
         onConfirm={confirmDeleteVoucher}
-        onCancel={() => setShowConfirmModal(false)}
+        onClose={() => setShowDeleteConfirmModal(false)}
         message={`Are you sure you want to delete voucher#${voucherToDelete?.id}? This action cannot be undone.`}
-      />
+      >
+        <p>Are you sure you want to delete voucher#{voucherToDelete?.id}? This action cannot be undone.</p>
+      </ConfirmationModal>
+
+      <ConfirmationModal
+        isOpen={showApproveConfirmModal}
+        task="Voucher Approval"
+        onConfirm={confirmApproveVoucher}
+        onClose={() => setShowApproveConfirmModal(false)}
+        message={`Are you sure you want to Approve this voucher? This action cannot be undone.`}
+      >
+        <p>Are you sure you want to Approve this voucher?</p>
+      </ConfirmationModal>
+
+      <ConfirmationModal
+        task="Voucher Rejection"
+        isOpen={showRejectConfirmModal}
+        onConfirm={confirmRejectVoucher}
+        onClose={() => setShowRejectConfirmModal(false)}
+        message={`Are you sure you want to reject this voucher? This action cannot be undone.`}
+      >
+          <p>Please enter a reason for rejecting the voucher?</p>
+          <input
+            value={reasonForRejection}
+            className="w-full p-2 bg-gray-200 border-none outline-none"
+            onChange={(event) => setReasonForRejection(event.target.value)}
+            required
+          />
+        </ConfirmationModal>
     </div>
   );
 };

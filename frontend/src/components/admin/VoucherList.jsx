@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-key */
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   useTable,
   useSortBy,
@@ -10,9 +10,6 @@ import {
 import axios from "axios";
 import {
   FaFilter,
-  FaSearch,
-  FaTable as TableIcon,
-  FaTh as CardIcon,
   FaAngleDoubleLeft,
   FaAngleLeft,
   FaAngleRight,
@@ -37,6 +34,7 @@ import * as pdfFonts from "pdfmake/build/vfs_fonts";
 import ConfirmationModal from "./ConfirmationModal"; // Import the ConfirmationModal component
 import { useAuth } from "../../contexts/AuthContext";
 import API from "../../api/api";
+import StatusImage from "./StatusImage";
 
 // Initialize pdfMake with fonts
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -125,10 +123,16 @@ const VoucherList = () => {
     () => [
       { Header: "ID", accessor: "id" },
       { Header: "First Name", accessor: "employee_first_name" },
+      { Header: "middle Name", accessor: "employee_middle_name" },
       { Header: "Last Name", accessor: "employee_last_name" },
       { Header: "Date", accessor: "date" },
       { Header: "Amount", accessor: "amount" },
-      { Header: "Status", accessor: "status" },
+      {
+        Header: "Status",
+        Cell: ({ row }) => (
+          <StatusImage status={row.original.status} width="100px"/>
+        ),
+      },
       {
         Header: "Actions",
         Cell: ({ row }) => (
@@ -247,7 +251,7 @@ const VoucherList = () => {
   const handleExportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Employees");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Vouchers");
     XLSX.writeFile(workbook, "vouchers.xlsx");
   };
 
@@ -255,15 +259,23 @@ const VoucherList = () => {
     const docDefinition = {
       content: filteredData.map((voucher) => ({
         columns: [
-          { text: voucher.id, fontSize: 10 },
-          { text: voucher.employee_first_name, fontSize: 10 },
-          { text: voucher.employee_last_name, fontSize: 10 },
-          { text: voucher.date, fontSize: 10 },
-          { text: `$ ${voucher.amount}`, fontSize: 10 },
-          { text: voucher.status, fontSize: 10 },
+          { text: voucher.id, fontSize: 10 , width:"7%"},
+          { text: voucher.employee_first_name, fontSize: 10, width:"8%" },
+          { text: voucher.employee_middle_name, fontSize: 10, width:"8%" },
+          { text: voucher.employee_last_name, fontSize: 10, width:"8%" },
+          { text: voucher.department, fontSize: 10, width:"8%" },
+          { text: voucher.head_of_department, fontSize: 10, width:"8%" },
+          { text: voucher.date, fontSize: 10, width:"7%" },
+          { text: voucher.project, fontSize: 10, width:"8%" },
+          { text: voucher.category, fontSize: 10, width:"8%" },
+          { text: `$ ${voucher.amount}`, fontSize: 10, width:"7%" },
+          { text: `$ ${voucher.reason}`, fontSize: 10, width:"8%" },
+          { text: voucher.status, fontSize: 10, width:"7%" },
+          { text: voucher.reason_for_rejection, fontSize: 10, width:"8%" },
         ],
       })),
-      pageMargins: [40, 40, 40, 40],
+      // pageMargins: [40, 40, 40, 40],
+      pageOrientation: "landscape",
     };
 
     pdfMake.createPdf(docDefinition).download("vouchers.pdf");
@@ -294,6 +306,7 @@ const VoucherList = () => {
             <option value="">Filter by...</option>
             <option value="id">ID</option>
             <option value="employee_first_name">First Name</option>
+            <option value="employee_middle_name">Middle Name</option>
             <option value="employee_last_name">First Name</option>
             <option value="date">Date</option>
             <option value="amount">Amount</option>
