@@ -18,6 +18,19 @@ import {
   FaToggleOn,
   FaToggleOff,
   FaAddressBook,
+  FaSchool,
+  FaGraduationCap,
+  FaCalendarAlt,
+  FaTrash,
+  FaPlus,
+  FaBook,
+  FaUserTie,
+  FaBuilding,
+  FaRegSadTear,
+  FaLink,
+  FaIdCard,
+  FaLocationArrow,
+  FaHome,
 } from "react-icons/fa";
 
 const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
@@ -674,7 +687,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <div className="mb-4 w-full lg:w-1/2">
               <label className="block text-sm mb-2">Current Address</label>
               <div className="flex items-center bg-gray-200 rounded">
-                <FaAddressCard className="m-2" />
+                <FaHome className="m-2" />
                 <input
                   type="text"
                   name="address"
@@ -689,7 +702,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <div className="mb-4 w-full lg:w-1/2">
               <label className="block text-sm mb-2">Permanent Address</label>
               <div className="flex items-center bg-gray-200 rounded">
-                <FaAddressCard className="m-2" />
+                <FaHome className="m-2" />
                 <input
                   type="text"
                   name="permanent_address"
@@ -1077,7 +1090,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <div className="mb-4 w-full lg:w-1/2">
               <label className="block text-sm mb-2">Location</label>
               <div className="flex items-center bg-gray-200 rounded">
-                <FaAddressCard className="m-2" />
+                <FaLocationArrow className="m-2" />
                 <input
                   type="text"
                   name="location"
@@ -1091,7 +1104,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <div className="mb-4 w-full lg:w-1/2">
               <label className="block text-sm mb-2">EOBI No.</label>
               <div className="flex items-center bg-gray-200 rounded">
-                <FaUser className="m-2" />
+                <FaIdCard className="m-2" />
                 <input
                   type="text"
                   name="eobi_no"
@@ -1534,7 +1547,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <div className="mb-4 w-full lg:w-1/2">
               <label className="block text-sm mb-2">Company Name</label>
               <div className="flex items-center bg-gray-200 rounded">
-                <FaAddressCard className="m-2" />
+                <FaBuilding className="m-2" />
                 <input
                   type="text"
                   name="ref_company_1"
@@ -1607,7 +1620,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <div className="mb-4 w-full lg:w-1/2">
               <label className="block text-sm mb-2">Company Name</label>
               <div className="flex items-center bg-gray-200 rounded">
-                <FaAddressCard className="m-2" />
+                <FaBuilding className="m-2" />
                 <input
                   type="text"
                   name="ref_company_2"
@@ -1629,6 +1642,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             </div>
           </div>
 
+
           <div className="mb-4">
             {formData.qualifications.map((qualification, index) => (
               <div
@@ -1636,7 +1650,10 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
                 className="qualification-section mb-4 flex flex-wrap items-center gap-4 bg-gray-100 p-4 rounded shadow"
               >
                 <div className="flex-1 min-w-[200px]">
-                  <label className="block text-sm mb-1">Institute</label>
+                  <label className="block text-sm mb-1">
+                    <FaSchool className="inline-block mr-2 text-gray-600" />
+                    Institute
+                  </label>
                   <input
                     type="text"
                     name="institute"
@@ -1647,7 +1664,10 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
                 </div>
 
                 <div className="flex-1 min-w-[200px]">
-                  <label className="block text-sm mb-1">Degree</label>
+                  <label className="block text-sm mb-1">
+                    <FaGraduationCap className="inline-block mr-2 text-gray-600" />
+                    Degree
+                  </label>
                   <input
                     type="text"
                     name="degree"
@@ -1658,7 +1678,10 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
                 </div>
 
                 <div className="flex-1 min-w-[100px]">
-                  <label className="block text-sm mb-1">Year From</label>
+                  <label className="block text-sm mb-1">
+                    <FaCalendarAlt className="inline-block mr-2 text-gray-600" />
+                    Year From
+                  </label>
                   <input
                     type="number"
                     name="year_from"
@@ -1669,7 +1692,10 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
                 </div>
 
                 <div className="flex-1 min-w-[100px]">
-                  <label className="block text-sm mb-1">Year To</label>
+                  <label className="block text-sm mb-1">
+                    <FaCalendarAlt className="inline-block mr-2 text-gray-600" />
+                    Year To
+                  </label>
                   <input
                     type="number"
                     name="year_to"
@@ -1680,7 +1706,10 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
                 </div>
 
                 <div className="flex-1 min-w-[100px]">
-                  <label className="block text-sm mb-1">GPA</label>
+                  <label className="block text-sm mb-1">
+                    <FaBook className="inline-block mr-2 text-gray-600" />
+                    GPA
+                  </label>
                   <input
                     type="number"
                     name="gpa"
@@ -1694,8 +1723,9 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
                 <button
                   type="button"
                   onClick={() => removeQualification(index)}
-                  className="bg-red-500 text-white rounded hover:underline min-w-[80px] mt-4 md:mt-0"
+                  className="bg-red-500 text-white rounded hover:underline min-w-[80px] mt-4 md:mt-0 flex items-center justify-center gap-2"
                 >
+                  <FaTrash />
                   Remove
                 </button>
               </div>
@@ -1704,11 +1734,13 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <button
               type="button"
               onClick={addQualification}
-              className="bg-blue-500 text-white p-2 rounded min-w-[80px] mt-4"
+              className="bg-blue-500 text-white p-2 rounded min-w-[80px] mt-4 flex items-center justify-center gap-2"
             >
+              <FaPlus />
               Add Qualification
             </button>
           </div>
+
 
           {/* Experience */}
           <div className="my-8 text-center">
@@ -1719,75 +1751,86 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             </div>
           </div>
 
+
           <div className="b-4">
             {formData.employments.map((employment, index) => (
               <div key={index} className="employment-section mb-4 flex flex-wrap items-center gap-4 bg-gray-100 p-4 rounded shadow">
                 <div className="flex-1 min-w-[200px]">
-                  <label className="block text-sm mb-2">Company Name</label>
+                  <label className="block text-sm mb-2">
+                    <FaBuilding className="inline-block mr-2 text-gray-600" />
+                    Company Name
+                  </label>
                   <input
                     type="text"
                     name="company_name"
                     value={employment.company_name}
                     onChange={(e) => handleEmploymentChange(index, e)}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-
+                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
                   />
                 </div>
 
                 <div className="flex-1 min-w-[150px]">
-                  <label className="block text-sm mb-2">Designation</label>
+                  <label className="block text-sm mb-2">
+                    <FaUserTie className="inline-block mr-2 text-gray-600" />
+                    Designation
+                  </label>
                   <input
                     type="text"
                     name="designation"
                     value={employment.designation}
                     onChange={(e) => handleEmploymentChange(index, e)}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-
+                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
                   />
                 </div>
 
                 <div className="flex-1 min-w-[100px]">
-                  <label className="block text-sm mb-2">Year From</label>
+                  <label className="block text-sm mb-2">
+                    <FaCalendarAlt className="inline-block mr-2 text-gray-600" />
+                    Year From
+                  </label>
                   <input
                     type="number"
                     name="year_from"
                     value={employment.year_from}
                     onChange={(e) => handleEmploymentChange(index, e)}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-
+                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
                   />
                 </div>
 
                 <div className="flex-1 min-w-[100px]">
-                  <label className="block text-sm mb-2">Year To</label>
+                  <label className="block text-sm mb-2">
+                    <FaCalendarAlt className="inline-block mr-2 text-gray-600" />
+                    Year To
+                  </label>
                   <input
                     type="number"
                     name="year_to"
                     value={employment.year_to}
                     onChange={(e) => handleEmploymentChange(index, e)}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-
+                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
                   />
                 </div>
 
                 <div className="flex-1 min-w-[200px]">
-                  <label className="block text-sm mb-2">Reason for Leaving</label>
+                  <label className="block text-sm mb-2">
+                    <FaRegSadTear className="inline-block mr-2 text-gray-600" />
+                    Reason for Leaving
+                  </label>
                   <input
                     type="text"
                     name="reason_for_leaving"
-                    step="0.1"
                     value={employment.reason_for_leaving}
                     onChange={(e) => handleEmploymentChange(index, e)}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-
+                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
                   />
                 </div>
 
                 <button
                   type="button"
                   onClick={() => removeEmployment(index)}
-                  className="bg-red-500 text-white rounded hover:underline min-w-[80px] mt-4 md:mt-0"
+                  className="bg-red-500 text-white rounded hover:underline min-w-[80px] mt-4 md:mt-0 flex items-center justify-center gap-2"
                 >
+                  <FaTrash />
                   Remove
                 </button>
               </div>
@@ -1796,11 +1839,13 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <button
               type="button"
               onClick={addEmployment}
-              className="bg-blue-500 text-white p-2 rounded"
+              className="bg-blue-500 text-white p-2 rounded mt-4 flex items-center justify-center gap-2"
             >
+              <FaPlus />
               Add Employment
             </button>
           </div>
+
 
           {/* Dependent */}
           <div className="my-8 text-center">
@@ -1811,63 +1856,73 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             </div>
           </div>
 
+
           <div className="mb-4">
             {formData.dependents.map((dependent, index) => (
               <div key={index} className="dependent-section mb-4 flex flex-wrap items-center gap-4 bg-gray-100 p-4 rounded shadow">
 
                 <div className="flex-1 min-w-[200px]">
-                  <label className="block text-sm mb-2">Dependent Name</label>
+                  <label className="block text-sm mb-2">
+                    <FaUser className="inline-block mr-2 text-gray-600" />
+                    Dependent Name
+                  </label>
                   <input
                     type="text"
                     name="name"
                     value={dependent.name}
                     onChange={(e) => handleDependentChange(index, e)}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-
+                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
                   />
                 </div>
 
                 <div className="flex-1 min-w-[150px]">
-                  <label className="block text-sm mb-2">Date of Birth</label>
+                  <label className="block text-sm mb-2">
+                    <FaCalendarAlt className="inline-block mr-2 text-gray-600" />
+                    Date of Birth
+                  </label>
                   <input
                     type="date"
                     name="date_of_birth"
                     value={dependent.date_of_birth}
                     onChange={(e) => handleDependentChange(index, e)}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-
+                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
                   />
                 </div>
 
                 <div className="flex-1 min-w-[100px]">
-                  <label className="block text-sm mb-2">Relation</label>
+                  <label className="block text-sm mb-2">
+                    <FaLink className="inline-block mr-2 text-gray-600" />
+                    Relation
+                  </label>
                   <input
                     type="text"
                     name="relation"
                     value={dependent.relation}
                     onChange={(e) => handleDependentChange(index, e)}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-
+                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
                   />
                 </div>
 
-                <div className="mb-2">
-                  <label className="block text-sm mb-2">CNIC No.</label>
+                <div className="flex-1 min-w-[200px]">
+                  <label className="block text-sm mb-2">
+                    <FaIdCard className="inline-block mr-2 text-gray-600" />
+                    CNIC No.
+                  </label>
                   <input
                     type="text"
                     name="cnic"
                     value={dependent.cnic}
                     onChange={(e) => handleDependentChange(index, e)}
-                    className="w-full p-2 bg-gray-200 border-none outline-none"
-
+                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
                   />
                 </div>
 
                 <button
                   type="button"
                   onClick={() => removeDependent(index)}
-                  className="bg-red-500 text-white rounded hover:underline min-w-[80px] mt-4 md:mt-0"
+                  className="bg-red-500 text-white rounded hover:underline min-w-[80px] mt-4 md:mt-0 flex items-center justify-center gap-2"
                 >
+                  <FaTrash />
                   Remove
                 </button>
               </div>
@@ -1876,11 +1931,13 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <button
               type="button"
               onClick={addDependent}
-              className="bg-blue-500 text-white p-2 rounded"
+              className="bg-blue-500 text-white p-2 rounded mt-4 flex items-center justify-center gap-2"
             >
+              <FaPlus />
               Add Dependent
             </button>
           </div>
+
 
           {/* Documents */}
           <div className="my-8 text-center">
