@@ -275,6 +275,58 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
     }));
   };
 
+  const handleEmploymentChange = (index, e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => {
+      const updatedEmployments = [...prev.employments];
+      updatedEmployments[index] = { ...updatedEmployments[index], [name]: value };
+      return { ...prev, employments: updatedEmployments };
+    });
+  };
+
+  const addEmployment = () => {
+    setFormData((prev) => ({
+      ...prev,
+      employments: [
+        ...prev.employments,
+        { company_name: '', designation: '', year_from: '', year_to: '', reason_for_leaving: '' },
+      ],
+    }));
+  };
+
+  const removeEmployment = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      employments: prev.employments.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleDependentChange = (index, e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => {
+      const updatedDependents = [...prev.dependents];
+      updatedDependents[index] = { ...updatedDependents[index], [name]: value };
+      return { ...prev, dependents: updatedDependents };
+    });
+  };
+
+  const addDependent = () => {
+    setFormData((prev) => ({
+      ...prev,
+      dependents: [
+        ...prev.dependents,
+        { name: '', date_of_birth: '', relation: '', cnic: '' },
+      ],
+    }));
+  };
+
+  const removeDependent = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      dependents: prev.dependents.filter((_, i) => i !== index),
+    }));
+  };
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setFormData({
@@ -1127,158 +1179,6 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             </div>
           </div>
 
-          <div className="mb-4">
-            {formData.qualifications.map((qualification, index) => (
-              <div
-                key={index}
-                className="qualification-section mb-4 flex flex-wrap items-center gap-4 bg-gray-100 p-4 rounded shadow"
-              >
-                <div className="flex-1 min-w-[200px]">
-                  <label className="block text-sm mb-1">Institute</label>
-                  <input
-                    type="text"
-                    name="institute"
-                    value={qualification.institute}
-                    onChange={(e) => handleQualificationChange(index, e)}
-                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
-                  />
-                </div>
-
-                <div className="flex-1 min-w-[200px]">
-                  <label className="block text-sm mb-1">Degree</label>
-                  <input
-                    type="text"
-                    name="degree"
-                    value={qualification.degree}
-                    onChange={(e) => handleQualificationChange(index, e)}
-                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
-                  />
-                </div>
-
-                <div className="flex-1 min-w-[100px]">
-                  <label className="block text-sm mb-1">Year From</label>
-                  <input
-                    type="number"
-                    name="year_from"
-                    value={qualification.year_from}
-                    onChange={(e) => handleQualificationChange(index, e)}
-                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
-                  />
-                </div>
-
-                <div className="flex-1 min-w-[100px]">
-                  <label className="block text-sm mb-1">Year To</label>
-                  <input
-                    type="number"
-                    name="year_to"
-                    value={qualification.year_to}
-                    onChange={(e) => handleQualificationChange(index, e)}
-                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
-                  />
-                </div>
-
-                <div className="flex-1 min-w-[100px]">
-                  <label className="block text-sm mb-1">GPA</label>
-                  <input
-                    type="number"
-                    name="gpa"
-                    step="0.1"
-                    value={qualification.gpa}
-                    onChange={(e) => handleQualificationChange(index, e)}
-                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
-                  />
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => removeQualification(index)}
-                  className="bg-red-500 text-white rounded hover:underline min-w-[80px] mt-4 md:mt-0"
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-
-            <button
-              type="button"
-              onClick={addQualification}
-              className="bg-blue-500 text-white p-2 rounded min-w-[80px] mt-4"
-            >
-              Add Qualification
-            </button>
-          </div>
-
-          {/* <div className="mb-4">
-              {formData.dependents.map((dependent, index) => (
-                <div key={index} className="dependent-section mb-4 flex flex-wrap items-center gap-4 bg-gray-100 p-4 rounded shadow">
-
-                  <div className="flex-1 min-w-[200px]">
-                    <label className="block text-sm mb-2">Dependent Name</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={dependent.name}
-                      onChange={(e) => handleDependentChange(index, e)}
-                      className="w-full p-2 bg-gray-200 border-none outline-none"
-
-                    />
-                  </div>
-
-                  <div className="flex-1 min-w-[150px]">
-                    <label className="block text-sm mb-2">Date of Birth</label>
-                    <input
-                      type="date"
-                      name="date_of_birth"
-                      value={dependent.date_of_birth}
-                      onChange={(e) => handleDependentChange(index, e)}
-                      className="w-full p-2 bg-gray-200 border-none outline-none"
-
-                    />
-                  </div>
-
-                  <div className="flex-1 min-w-[100px]">
-                    <label className="block text-sm mb-2">Relation</label>
-                    <input
-                      type="text"
-                      name="relation"
-                      value={dependent.relation}
-                      onChange={(e) => handleDependentChange(index, e)}
-                      className="w-full p-2 bg-gray-200 border-none outline-none"
-
-                    />
-                  </div>
-
-                  <div className="mb-2">
-                    <label className="block text-sm mb-2">CNIC No.</label>
-                    <input
-                      type="text"
-                      name="cnic"
-                      value={dependent.cnic}
-                      onChange={(e) => handleDependentChange(index, e)}
-                      className="w-full p-2 bg-gray-200 border-none outline-none"
-
-                    />
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => removeDependent(index)}
-                    className="bg-red-500 text-white rounded hover:underline min-w-[80px] mt-4 md:mt-0"
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))}
-
-              <button
-                type="button"
-                onClick={addDependent}
-                className="bg-blue-500 text-white p-2 rounded"
-              >
-                Add Dependent
-              </button>
-            </div> */}
-
           {/* Next of Kin */}
           <div className="my-8 text-center">
             <div className="flex items-center">
@@ -1512,99 +1412,6 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             </div>
           </div>
 
-
-          {/* Experience */}
-          {/* <div className="my-8 text-center">
-              <div className="flex items-center">
-                <hr className="flex-grow border-t border-gray-300" />
-                <h1 className="mx-4 text-2xl font-bold tracking-wide">Experience</h1>
-                <hr className="flex-grow border-t border-gray-300" />
-              </div>
-            </div>
-
-            <div className="b-4">
-              {formData.employments.map((employment, index) => (
-                <div key={index} className="employment-section mb-4 flex flex-wrap items-center gap-4 bg-gray-100 p-4 rounded shadow">
-                  <div className="flex-1 min-w-[200px]">
-                    <label className="block text-sm mb-2">Company Name</label>
-                    <input
-                      type="text"
-                      name="company_name"
-                      value={employment.company_name}
-                      onChange={(e) => handleEmploymentChange(index, e)}
-                      className="w-full p-2 bg-gray-200 border-none outline-none"
-
-                    />
-                  </div>
-
-                  <div className="flex-1 min-w-[150px]">
-                    <label className="block text-sm mb-2">Designation</label>
-                    <input
-                      type="text"
-                      name="designation"
-                      value={employment.designation}
-                      onChange={(e) => handleEmploymentChange(index, e)}
-                      className="w-full p-2 bg-gray-200 border-none outline-none"
-
-                    />
-                  </div>
-
-                  <div className="flex-1 min-w-[100px]">
-                    <label className="block text-sm mb-2">Year From</label>
-                    <input
-                      type="number"
-                      name="year_from"
-                      value={employment.year_from}
-                      onChange={(e) => handleEmploymentChange(index, e)}
-                      className="w-full p-2 bg-gray-200 border-none outline-none"
-
-                    />
-                  </div>
-
-                  <div className="flex-1 min-w-[100px]">
-                    <label className="block text-sm mb-2">Year To</label>
-                    <input
-                      type="number"
-                      name="year_to"
-                      value={employment.year_to}
-                      onChange={(e) => handleEmploymentChange(index, e)}
-                      className="w-full p-2 bg-gray-200 border-none outline-none"
-
-                    />
-                  </div>
-
-                  <div className="flex-1 min-w-[200px]">
-                    <label className="block text-sm mb-2">Reason for Leaving</label>
-                    <input
-                      type="text"
-                      name="reason_for_leaving"
-                      step="0.1"
-                      value={employment.reason_for_leaving}
-                      onChange={(e) => handleEmploymentChange(index, e)}
-                      className="w-full p-2 bg-gray-200 border-none outline-none"
-
-                    />
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => removeEmployment(index)}
-                    className="bg-red-500 text-white rounded hover:underline min-w-[80px] mt-4 md:mt-0"
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))}
-
-              <button
-                type="button"
-                onClick={addEmployment}
-                className="bg-blue-500 text-white p-2 rounded"
-              >
-                Add Employment
-              </button>
-            </div> */}
-
           {/* References */}
           <div className="my-8 text-center">
             <div className="flex items-center">
@@ -1688,7 +1495,6 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
                   value={formData.ref_company_1}
                   onChange={handleInputChange}
                   className="w-full p-2 bg-gray-200 border-none outline-none"
-
                 />
               </div>
             </div>
@@ -1702,7 +1508,6 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
                   value={formData.ref_name_2}
                   onChange={handleInputChange}
                   className="w-full p-2 bg-gray-200 border-none outline-none"
-
                 />
               </div>
             </div>
@@ -1719,7 +1524,6 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
                   value={formData.ref_mobile_2}
                   onChange={handleInputChange}
                   className="w-full p-2 bg-gray-200 border-none outline-none"
-
                 />
               </div>
             </div>
@@ -1750,7 +1554,6 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
                   value={formData.ref_designation_2}
                   onChange={handleInputChange}
                   className="w-full p-2 bg-gray-200 border-none outline-none"
-
                 />
               </div>
             </div>
@@ -1769,6 +1572,268 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
                 />
               </div>
             </div>
+          </div>
+
+          {/* Qualifications */}
+          <div className="my-8 text-center">
+            <div className="flex items-center">
+              <hr className="flex-grow border-t border-gray-300" />
+              <h1 className="mx-4 text-2xl font-bold tracking-wide">Education</h1>
+              <hr className="flex-grow border-t border-gray-300" />
+            </div>
+          </div>
+
+          <div className="mb-4">
+            {formData.qualifications.map((qualification, index) => (
+              <div
+                key={index}
+                className="qualification-section mb-4 flex flex-wrap items-center gap-4 bg-gray-100 p-4 rounded shadow"
+              >
+                <div className="flex-1 min-w-[200px]">
+                  <label className="block text-sm mb-1">Institute</label>
+                  <input
+                    type="text"
+                    name="institute"
+                    value={qualification.institute}
+                    onChange={(e) => handleQualificationChange(index, e)}
+                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
+                  />
+                </div>
+
+                <div className="flex-1 min-w-[200px]">
+                  <label className="block text-sm mb-1">Degree</label>
+                  <input
+                    type="text"
+                    name="degree"
+                    value={qualification.degree}
+                    onChange={(e) => handleQualificationChange(index, e)}
+                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
+                  />
+                </div>
+
+                <div className="flex-1 min-w-[100px]">
+                  <label className="block text-sm mb-1">Year From</label>
+                  <input
+                    type="number"
+                    name="year_from"
+                    value={qualification.year_from}
+                    onChange={(e) => handleQualificationChange(index, e)}
+                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
+                  />
+                </div>
+
+                <div className="flex-1 min-w-[100px]">
+                  <label className="block text-sm mb-1">Year To</label>
+                  <input
+                    type="number"
+                    name="year_to"
+                    value={qualification.year_to}
+                    onChange={(e) => handleQualificationChange(index, e)}
+                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
+                  />
+                </div>
+
+                <div className="flex-1 min-w-[100px]">
+                  <label className="block text-sm mb-1">GPA</label>
+                  <input
+                    type="number"
+                    name="gpa"
+                    step="0.1"
+                    value={qualification.gpa}
+                    onChange={(e) => handleQualificationChange(index, e)}
+                    className="w-full p-2 bg-gray-200 border-none outline-none rounded"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => removeQualification(index)}
+                  className="bg-red-500 text-white rounded hover:underline min-w-[80px] mt-4 md:mt-0"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={addQualification}
+              className="bg-blue-500 text-white p-2 rounded min-w-[80px] mt-4"
+            >
+              Add Qualification
+            </button>
+          </div>
+
+          {/* Experience */}
+          <div className="my-8 text-center">
+            <div className="flex items-center">
+              <hr className="flex-grow border-t border-gray-300" />
+              <h1 className="mx-4 text-2xl font-bold tracking-wide">Experience</h1>
+              <hr className="flex-grow border-t border-gray-300" />
+            </div>
+          </div>
+
+          <div className="b-4">
+            {formData.employments.map((employment, index) => (
+              <div key={index} className="employment-section mb-4 flex flex-wrap items-center gap-4 bg-gray-100 p-4 rounded shadow">
+                <div className="flex-1 min-w-[200px]">
+                  <label className="block text-sm mb-2">Company Name</label>
+                  <input
+                    type="text"
+                    name="company_name"
+                    value={employment.company_name}
+                    onChange={(e) => handleEmploymentChange(index, e)}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+
+                  />
+                </div>
+
+                <div className="flex-1 min-w-[150px]">
+                  <label className="block text-sm mb-2">Designation</label>
+                  <input
+                    type="text"
+                    name="designation"
+                    value={employment.designation}
+                    onChange={(e) => handleEmploymentChange(index, e)}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+
+                  />
+                </div>
+
+                <div className="flex-1 min-w-[100px]">
+                  <label className="block text-sm mb-2">Year From</label>
+                  <input
+                    type="number"
+                    name="year_from"
+                    value={employment.year_from}
+                    onChange={(e) => handleEmploymentChange(index, e)}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+
+                  />
+                </div>
+
+                <div className="flex-1 min-w-[100px]">
+                  <label className="block text-sm mb-2">Year To</label>
+                  <input
+                    type="number"
+                    name="year_to"
+                    value={employment.year_to}
+                    onChange={(e) => handleEmploymentChange(index, e)}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+
+                  />
+                </div>
+
+                <div className="flex-1 min-w-[200px]">
+                  <label className="block text-sm mb-2">Reason for Leaving</label>
+                  <input
+                    type="text"
+                    name="reason_for_leaving"
+                    step="0.1"
+                    value={employment.reason_for_leaving}
+                    onChange={(e) => handleEmploymentChange(index, e)}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => removeEmployment(index)}
+                  className="bg-red-500 text-white rounded hover:underline min-w-[80px] mt-4 md:mt-0"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={addEmployment}
+              className="bg-blue-500 text-white p-2 rounded"
+            >
+              Add Employment
+            </button>
+          </div>
+
+          {/* Dependent */}
+          <div className="my-8 text-center">
+            <div className="flex items-center">
+              <hr className="flex-grow border-t border-gray-300" />
+              <h1 className="mx-4 text-2xl font-bold tracking-wide">Dependents</h1>
+              <hr className="flex-grow border-t border-gray-300" />
+            </div>
+          </div>
+
+          <div className="mb-4">
+            {formData.dependents.map((dependent, index) => (
+              <div key={index} className="dependent-section mb-4 flex flex-wrap items-center gap-4 bg-gray-100 p-4 rounded shadow">
+
+                <div className="flex-1 min-w-[200px]">
+                  <label className="block text-sm mb-2">Dependent Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={dependent.name}
+                    onChange={(e) => handleDependentChange(index, e)}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+
+                  />
+                </div>
+
+                <div className="flex-1 min-w-[150px]">
+                  <label className="block text-sm mb-2">Date of Birth</label>
+                  <input
+                    type="date"
+                    name="date_of_birth"
+                    value={dependent.date_of_birth}
+                    onChange={(e) => handleDependentChange(index, e)}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+
+                  />
+                </div>
+
+                <div className="flex-1 min-w-[100px]">
+                  <label className="block text-sm mb-2">Relation</label>
+                  <input
+                    type="text"
+                    name="relation"
+                    value={dependent.relation}
+                    onChange={(e) => handleDependentChange(index, e)}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+
+                  />
+                </div>
+
+                <div className="mb-2">
+                  <label className="block text-sm mb-2">CNIC No.</label>
+                  <input
+                    type="text"
+                    name="cnic"
+                    value={dependent.cnic}
+                    onChange={(e) => handleDependentChange(index, e)}
+                    className="w-full p-2 bg-gray-200 border-none outline-none"
+
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => removeDependent(index)}
+                  className="bg-red-500 text-white rounded hover:underline min-w-[80px] mt-4 md:mt-0"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={addDependent}
+              className="bg-blue-500 text-white p-2 rounded"
+            >
+              Add Dependent
+            </button>
           </div>
 
           {/* Documents */}
