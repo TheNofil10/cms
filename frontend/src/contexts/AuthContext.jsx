@@ -56,6 +56,7 @@ export const AuthProvider = ({ children }) => {
           Authorization: `Bearer ${access}`
         }
       });
+      console.log(userResponse.data);
       setCurrentUser(userResponse.data);
 
       return true;

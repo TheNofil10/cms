@@ -5,8 +5,8 @@ from .views import (
     DepartmentEmployeeView, DepartmentMemberListView, DepartmentViewSet, EmployeeAttendanceStatsView, EmployeeAttendanceView,
     EmployeeDepartmentView, EmployeeSuggestionView, EmployeeViewSet, AdminEmployeeView, EmployeeRecordViewSet, JobPostingViewSet, ApplicationViewSet,EmployeeDocumentsViewSet,
     LeaveManagementView, LeaveViewSet, PayrollViewSet, PerformanceReviewViewSet, TaskCommentViewSet, TaskViewSet, TodoViewSet, apply_leave, approve_leave_hr, approve_leave_manager, generate_job_details, generate_post, live_attendance,approve_app_attendance_manager,AppAttendanceViewSet,
-    VoucherListView, VoucherDocumentViewSet,
-    )
+    VoucherListView, VoucherDocumentViewSet, GenerateEmployeeCardView, UpdateEmployeeDocuments,)
+
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -39,6 +39,8 @@ application_status_update = ApplicationViewSet.as_view({'post': 'update_status'}
 urlpatterns = [
     path('', include(router.urls)),
     path('generate-post/', generate_post, name='generate-post'),
+    path('update-employee-documents/<int:employee_id>/', UpdateEmployeeDocuments.as_view(), name='update-employee-documents'),
+
     path('generate-job-details/', generate_job_details, name='generate_job_details'),
     path('admin/employees/', AdminEmployeeView.as_view({'get': 'list'}), name='admin_employee_list'),
     path('admin/employees/create/', AdminEmployeeView.as_view({'post': 'create'}), name='admin_employee_create'),
@@ -67,4 +69,5 @@ urlpatterns = [
     path('employee-suggestions/', EmployeeSuggestionView.as_view({'get': 'list'}), name='employee-suggestions'),
     path('tasks/<int:task_id>/comments/', task_comment_list, name='task-comments-list'),
     path('admin/live-attendance/', live_attendance, name='live-attendance'),
+    path('generate-card/<int:employee_id>/', GenerateEmployeeCardView.as_view(), name='generate_employee_card'),
 ]

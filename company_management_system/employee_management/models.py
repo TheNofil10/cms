@@ -435,6 +435,8 @@ class EmployeeAppAttendance(models.Model):
     location_address = models.CharField(
         max_length=255, blank=True, null=True
     )  # Location address (optional)
+    image = models.BinaryField(blank=True, null=True)  # Store as binary data (BLOB)
+
         # Metadata
     class Meta:
         db_table = 'employee_management_temp_appattendance'  # Custom table name

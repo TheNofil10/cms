@@ -18,7 +18,7 @@ const ManagerLeaveApplications = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        
+        console.log("app ",response.data[0].image);
 
         const applicationsWithEmployeeDetails = await Promise.all(
           response.data.map(async (application) => {
@@ -31,19 +31,25 @@ const ManagerLeaveApplications = () => {
                   },
                 }
               );
+              console.log("Employee Response:", employeeResponse.data);
               return {
                 ...application,
                 employee_username: employeeResponse.data.username,
                 employee_name: `${employeeResponse.data.first_name} ${employeeResponse.data.last_name}`,
                 employee_id: employeeResponse.data.id,
+                employee_image: response.data[0].image, // Assuming image field exists in employee data
               };
+              
+
+
             } catch (error) {
               console.error("Error fetching employee details:", error);
+
               return application;
             }
           })
+
         );
-        console.log("Applications with employee details:", applicationsWithEmployeeDetails); // Log enriched applications
 
         setApplications(applicationsWithEmployeeDetails);
       } catch (error) {
@@ -140,6 +146,9 @@ const ManagerLeaveApplications = () => {
                 Employee Name
               </th>
               <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Employee Image
+              </th>
+              <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Location
               </th>
               <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -174,6 +183,14 @@ const ManagerLeaveApplications = () => {
                     {application.employee_username}
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">
+                      {console.log("in here",application.employee_image)}
+                    <img
+                      src={application.employee_image}
+                      alt="Employee"
+                      className="w-8 h-8 rounded-full"
+                    />
+                </td>
+                  <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">
                     {application.location_address}
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">
@@ -189,7 +206,7 @@ const ManagerLeaveApplications = () => {
                     {application.status}
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">
-                    {application.status == "Pending" && (
+                    {application.status === "Pending" && (
                       <>
                         <button
                           onClick={() => handleApprove(application.id)}
@@ -211,7 +228,7 @@ const ManagerLeaveApplications = () => {
             ) : (
               <tr>
                 <td
-                  colSpan="7"
+                  colSpan="8"
                   className="px-4 py-2 text-center text-sm text-gray-600"
                 >
                   No Attendance applications available.
@@ -221,7 +238,7 @@ const ManagerLeaveApplications = () => {
           </tbody>
         </table>
       </div>
-      
+
       {isModalOpen && selectedApplication && (
         <LeaveApplicationDetails
           selectedApplication={selectedApplication}

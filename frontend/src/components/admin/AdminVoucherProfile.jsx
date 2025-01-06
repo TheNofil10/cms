@@ -1,50 +1,24 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import {
-  FaUserTie,
-  FaRegBuilding,
-  FaEnvelope,
-  FaPhone,
-  FaLinkedin,
-  FaBirthdayCake,
-  FaMoneyBillWave,
-  FaCalendarAlt,
   FaUserShield,
-  FaMapMarkerAlt,
-  FaShieldAlt,
-  FaEdit,
-  FaHome,
-  FaHeartbeat,
-  FaPray,
-  FaPassport,
-  FaWheelchair,
   FaCalendarCheck,
-  FaRegClock,
-  FaBusinessTime,
-  FaIdBadge,
-  FaMapMarkedAlt,
   FaBuilding,
-  FaUserAlt,
   FaIdCard,
-  FaUser,
   FaBriefcase,
-  FaUserCircle,
   FaTrash,
-  FaFileAlt,
   FaDollarSign,
   FaGripLines,
 } from "react-icons/fa";
 import { useAuth } from "../../contexts/AuthContext";
 import ConfirmationModal from "./ConfirmationModal";
 import API from "../../api/api";
-import UpdateProfileForm from "../employee/UpdateProfileForm";
 
 const AdminVoucherProfile = () => {
   const { id } = useParams();
   const [voucher, setVoucher] = useState(null);
-  const [department, setDepartment] = useState(null);
   const [headOfDepartment, setHeadOfDepartment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -52,7 +26,6 @@ const AdminVoucherProfile = () => {
   const navigate = useNavigate();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [voucherToDelete, setVoucherToDelete] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
 
 
   const fetchVoucher = async () => {
@@ -89,13 +62,8 @@ const AdminVoucherProfile = () => {
   };
 
   useEffect(() => {
-
     fetchVoucher();
   }, [id]);
-
-  const handleUpdateProfile = () => {
-    setIsEditing(true);
-  };
 
   const handleDeleteVoucher = (voucherId) => {
     setVoucherToDelete({ id: voucherId });
@@ -194,9 +162,8 @@ const AdminVoucherProfile = () => {
         isOpen={showConfirmModal}
         onConfirm={confirmDeleteVoucher}
         onCancel={() => setShowConfirmModal(false)}
-        message={`Are you sure you want to delete ${voucherToDelete?.id}? This action cannot be undone.`}
+        message={`Are you sure you want to delete voucher#${voucherToDelete?.id}? This action cannot be undone.`}
       />
-
     </div>
   );
 };

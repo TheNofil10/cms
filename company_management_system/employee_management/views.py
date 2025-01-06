@@ -1,4 +1,8 @@
 from datetime import datetime, timedelta
+import zipfile
+from io import BytesIO
+from tempfile import NamedTemporaryFile
+from PIL import Image, ImageDraw, ImageFont
 from django.conf import settings
 from django.utils.dateparse import parse_date
 from decimal import Decimal
@@ -9,8 +13,11 @@ from collections import defaultdict
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from django.utils import timezone
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, FileResponse
 from django.db import connection
+from django.views import View
+from django.core.files.base import ContentFile
+import shutil
 from django.views.decorators.http import require_GET
 from django.utils.timezone import make_aware
 from rest_framework.views import APIView
@@ -86,6 +93,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
 from .models import Employee
 from .serializers import AdminEmployeeSerializer
+from textwrap import wrap
 
 
 logger = logging.getLogger(__name__)
@@ -188,14 +196,18 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
     def parse_nested_data(self, data, prefix):
-        """Parses nested data like qualifications[0][field]."""
+        """Parses nested data like employments[0][field] and returns the full values."""
+        """Parses nested data like employments[0][field] and returns the full values."""
         parsed_data = defaultdict(dict)
         for key, value in data.items():
             if key.startswith(prefix):
                 # Extract the index and field name
                 index, field = key[len(prefix):-1].split('][')
-                parsed_data[int(index)][field] = value[0]  # Use the first value from the list
+                parsed_data[int(index)][field] = value  # Use the whole list instead of just the first value
+                parsed_data[int(index)][field] = value  # Use the whole list instead of just the first value
         return list(parsed_data.values())
+
+
 
     def handle_qualifications(self, employee, qualifications_data):
         """Handles saving qualifications for an employee."""
@@ -222,15 +234,21 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                 raise ValidationError({"employment_errors": employment_serializer.errors})
             
                 
-    def handle_dependents(self, employee, dependent_data):
-        """Handles saving employment records for an employee."""
-        for employment in dependent_data:
-            employment["employee"] = employee.id  # Associate with the employee
-            dependent_serializer = EmployeeDependentSerializer(data=employment)
+    def handle_dependents(self, employee, dependents_data):
+        """Handles saving dependent records for an employee."""
+        for dependent in dependents_data:
+            dependent["employee"] = employee.id  # Associate with the employee
+            dependent_serializer = EmployeeDependentSerializer(data=dependent)
             if dependent_serializer.is_valid():
+                print("Dependent data is valid")
                 dependent_serializer.save()
+                print("Dependent saved")
             else:
-                raise ValidationError({"employment_errors": dependent_serializer.errors})
+                raise ValidationError(
+                    {"dependent_errors": dependent_serializer.errors}
+                )
+
+   
     def get_permissions(self):
         if self.action == "destroy":
             if self.request.user.is_hr_manager or self.request.user.is_superuser:
@@ -262,6 +280,10 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             self.handle_qualifications(employee, qualifications_data)
             
         # Handle dependent
+        dependent_data = self.parse_nested_data(self.request.data, "dependents[")
+        print("dependent data is ",dependent_data)
+        if dependent_data:
+            self.handle_dependents(employee, dependent_data)
 
         
 
@@ -269,6 +291,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         print("employments data is ",employments_data)
         if employments_data:
             self.handle_employments(employee, employments_data)
+            
+        
         # Handle profile image upload
         if "profile_image" in self.request.FILES:
             employee.profile_image = self.request.FILES["profile_image"]
@@ -296,15 +320,16 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             if "em_contact_1" in self.request.data:
                 emergency_contact_data = {
                     'employee': employee.id,
-                    'em_name_1': self.request.data["em_contact_1"],
+                    'em_name_1': self.request.data["em_name_1"],
                     'em_relationship_1': self.request.data["em_relationship_1"],
                     'em_contact_1': self.request.data["em_contact_1"],
                     'em_email_1': self.request.data["em_email_1"],
-                    'em_name_2': self.request.data["em_contact_2"],
+                    'em_name_2': self.request.data["em_name_2"],
                     'em_relationship_2': self.request.data["em_relationship_2"],
                     'em_contact_2': self.request.data["em_contact_2"],
                     'em_email_2': self.request.data["em_email_2"],
                 }
+                print("emergency contact data is ",emergency_contact_data)
                 emergency_contact_serializer = EmployeeEmergencyContactSerializer(data=emergency_contact_data)
                 if emergency_contact_serializer.is_valid():
                     emergency_contact_serializer.save()
@@ -312,6 +337,29 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                     print(f"Error with emergency contact upload: {emergency_contact_serializer.errors}")
 
     def perform_update(self, serializer):
+    # Get the instance before updating
+        instance = self.get_object()
+        old_folder_name = f"Document for {instance.first_name} {instance.last_name}"  # Old folder name with "Document for" prefix
+
+        # Save the updated instance
+        instance = serializer.save()
+
+        # Check if the first name or last name has changed
+        new_folder_name = f"Document for {instance.first_name} {instance.last_name}"  # New folder name with updated first and last name
+        if old_folder_name != new_folder_name:
+            # Construct the old and new folder paths
+            old_folder_path = os.path.join(settings.MEDIA_ROOT, 'employee_documents', 'employees', old_folder_name)
+            new_folder_path = os.path.join(settings.MEDIA_ROOT, 'employee_documents', 'employees', new_folder_name)
+
+            try:
+                # Rename the folder
+                if os.path.exists(old_folder_path):
+                    os.rename(old_folder_path, new_folder_path)
+                    print(f"Folder renamed from '{old_folder_path}' to '{new_folder_path}'.")
+                else:
+                    print(f"Old folder '{old_folder_path}' does not exist.")
+            except Exception as e:
+                print(f"Error renaming folder: {e}")
         instance = serializer.save()
         if "profile_image" in self.request.FILES:
             instance.profile_image = self.request.FILES["profile_image"]
@@ -378,6 +426,30 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         print("Update successful, returning updated employee data.")
         return Response(serializer.data)
 
+    def perform_destroy(self, instance):
+        # Clean up the profile image
+        profile_image_folder = os.path.join(settings.MEDIA_ROOT, 'profile_images', 'employees', str(instance.id))
+        if os.path.exists(profile_image_folder):
+            try:
+                shutil.rmtree(profile_image_folder)  # Remove the profile image folder and its contents
+                print(f"Profile image folder '{profile_image_folder}' deleted.")
+            except Exception as e:
+                print(f"Error deleting profile image folder: {e}")
+
+        # Clean up the employee documents
+        employee_documents_folder = os.path.join(settings.MEDIA_ROOT, 'employee_documents', 'employees', f"Document for {instance.first_name} {instance.last_name}")
+        if os.path.exists(employee_documents_folder):
+            try:
+                shutil.rmtree(employee_documents_folder)  # Remove the documents folder and its contents
+                print(f"Documents folder '{employee_documents_folder}' deleted.")
+            except Exception as e:
+                print(f"Error deleting documents folder: {e}")
+        else:
+            print(f"Documents folder '{employee_documents_folder}' does not exist)")
+        
+        # Now, delete the employee instance from the database
+        super().perform_destroy(instance)
+
 class EmployeeDocumentsViewSet(viewsets.ModelViewSet):
     queryset = EmployeeDocuments.objects.all()
     serializer_class = EmployeeDocumentsSerializer
@@ -389,7 +461,10 @@ class EmployeeDocumentsViewSet(viewsets.ModelViewSet):
             document = self.request.FILES["document"]
             # Save the document
             serializer.save(document=document, employee=employee)
-            
+    
+    def perform_update(self, serializer):
+        print("Update operation invoked")
+        return super().perform_update(serializer)
     
     def destroy(self, request, *args, **kwargs):
         document = self.get_object()
@@ -402,6 +477,7 @@ class EmployeeDocumentsViewSet(viewsets.ModelViewSet):
 
         # Check if the file exists and delete it
         if os.path.exists(document_path):
+            
             os.remove(document_path)
 
         # Now check if the folder is empty
@@ -415,6 +491,64 @@ class EmployeeDocumentsViewSet(viewsets.ModelViewSet):
         document.delete()
 
         return Response({"message": "Document deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+
+
+class UpdateEmployeeDocuments(APIView):
+    def put(self, request, employee_id, *args, **kwargs):
+        print("data ", request.data)
+
+        if "documents" in request.data:
+            print("found documents")
+
+            for document in request.data.getlist("documents"):
+                print(f"Processing document: {document}")
+
+                try:
+                    employee = Employee.objects.get(id=employee_id)
+                    print("Found employee ", employee)
+                except Employee.DoesNotExist:
+                    return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
+
+                employee_name = f"{employee.first_name} {employee.last_name}"
+                folder_path = os.path.join(
+                    settings.MEDIA_ROOT,
+                    'employee_documents',
+                    'employees',
+                    f'Document for {employee_name}'
+                )
+                if not os.path.exists(folder_path):
+                    print(f"Folder does not exist. Creating folder: {folder_path}")
+                    os.makedirs(folder_path)
+
+                document_path = os.path.join(folder_path, document.name)
+                print("document path ", document_path)
+
+                with open(document_path, 'wb') as f:
+                    for chunk in document.chunks():
+                        f.write(chunk)
+
+                # Load the file into a ContentFile object
+                with open(document_path, 'rb') as file_obj:
+                    content_file = ContentFile(file_obj.read(), name=document.name)
+
+                document_data = {
+                    'employee': employee_id,
+                    'document': content_file  # Pass the file object to the serializer
+                }
+                print("document data ", document_data)
+
+                document_serializer = EmployeeDocumentsSerializer(data=document_data)
+
+                if document_serializer.is_valid():
+                    print("Document data is valid")
+                    document_serializer.save()  # Save the document record in the database
+                else:
+                    print(f"Error with document upload: {document_serializer.errors}")
+        else:
+            print("No documents found in request")
+
+        return Response({"message": "Employee documents updated successfully."})
+
 
 class AdminEmployeeView(viewsets.ViewSet):
     serializer_class = AdminEmployeeSerializer
@@ -665,6 +799,7 @@ class LeaveViewSet(viewsets.ModelViewSet):
         return [IsAuthenticated()]
     
     
+
 class AppAttendanceViewSet(viewsets.ModelViewSet):
     queryset = EmployeeAppAttendance.objects.all()
     serializer_class = AppattendanceSerializer
@@ -681,7 +816,6 @@ class AppAttendanceViewSet(viewsets.ModelViewSet):
         if self.action in ["create", "update", "partial_update", "destroy"]:
             return [IsAdminUser()]
         return [IsAuthenticated()]
-
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -717,50 +851,50 @@ def approve_app_attendance_manager(request, application_id):
 
     # Print log time to confirm microseconds are included (will show in microsecond format)
     print(f"Log time with microseconds: {log_time_with_microseconds}")
-
+    print("got log type ==?>" ,app_attendance.log_type)
     # Check if an attendance record exists for the employee on the given date
     attendance_record = Attendance.objects.filter(
         employee=app_attendance.employee,
         date=log_date
     ).first()  # Get the first record if exists
-
-    if not attendance_record:  # No attendance record for the day
+    print("attendance record is ",attendance_record)
+    if attendance_record:  # record will already be present...
         if app_attendance.log_type == "IN":
+            print("Processing time-in...")
             # Create a new attendance record for time-in
-            Attendance.objects.create(
-                employee=app_attendance.employee,
-                date=log_date,
-                time_in=log_time_with_microseconds,  # Store datetime with microseconds
-                status="present",
-                comments="Logged in from app",
-                hours_worked=None,  # Will calculate when out is logged
-                is_overtime=False,
-            )
+            
+            attendance_record.time_in = log_time_with_microseconds  # Store datetime with microseconds
+            attendance_record.status = "present"
+            attendance_record.comments = "Logged in from app"
+            attendance_record.hours_worked = None  # Will calculate when out is logged
+            attendance_record.is_overtime = False
+            attendance_record.save()
+            print("here")
             print(f"Time-in logged for {app_attendance.employee} at {log_time_with_microseconds}.")
-    else:
-        print("Processing time-out...")
-        time_in = attendance_record.time_in
-        if app_attendance.log_type == "OUT":
-            if time_in:  # Ensure time-in exists
-                # Combine time-in with date for proper calculations
-                time_in_datetime = datetime.combine(log_date, time_in)
-                time_diff = log_time_with_microseconds - time_in_datetime  # Calculate time difference
-
-                worked = time_diff.total_seconds() / 3600  # Worked hours in decimal
-                overtime = max(0, worked - 8)  # Calculate overtime hours
-
-                # Update attendance record
-                attendance_record.time_out = log_time_with_microseconds  # Store datetime for time_out with microseconds
-                attendance_record.hours_worked = round(worked, 2)  # Rounded to 2 decimal places
-                attendance_record.is_overtime = overtime > 0  # Boolean field
-                attendance_record.comments += " | Logged out from app"
-                attendance_record.save()
-
-                print(f"Time-out logged for {app_attendance.employee} at {log_time_with_microseconds}.")
-            else:
-                print(f"Time-in is missing for {app_attendance.employee} on {log_date}.")
         else:
-            print(f"Log type '{app_attendance.log_type}' is not handled.")
+            print("Processing time-out...")
+            time_in = attendance_record.time_in
+            if app_attendance.log_type == "OUT":
+                if time_in:  # Ensure time-in exists
+                    # Combine time-in with date for proper calculations
+                    time_in_datetime = datetime.combine(log_date, time_in)
+                    time_diff = log_time_with_microseconds - time_in_datetime  # Calculate time difference
+
+                    worked = time_diff.total_seconds() / 3600  # Worked hours in decimal
+                    overtime = max(0, worked - 8)  # Calculate overtime hours
+
+                    # Update attendance record
+                    attendance_record.time_out = log_time_with_microseconds  # Store datetime for time_out with microseconds
+                    attendance_record.hours_worked = round(worked, 2)  # Rounded to 2 decimal places
+                    attendance_record.is_overtime = overtime > 0  # Boolean field
+                    attendance_record.comments += " | Logged out from app"
+                    attendance_record.save()
+
+                    print(f"Time-out logged for {app_attendance.employee} at {log_time_with_microseconds}.")
+                else:
+                    print(f"Time-in is missing for {app_attendance.employee} on {log_date}.")
+            else:
+                print(f"Log type '{app_attendance.log_type}' is not handled.")
 
     # Optionally update the app attendance status
     app_attendance.status = "approved_by_manager"
@@ -1269,3 +1403,132 @@ class VoucherDocumentViewSet(viewsets.ModelViewSet):
             document = self.request.FILES["document"]
             # Save the document
             serializer.save(document=document)
+
+class GenerateEmployeeCardView(View):
+    def get(self, request, employee_id):
+        self.employee = Employee.objects.get(id=employee_id)
+        self.department = Department.objects.get(id=self.employee.department_id)
+        
+        # Open the card templates
+        template_path_page1 = os.path.join('employee_management/employee_card_template/page1.png')
+        template_path_page2 = os.path.join('employee_management/employee_card_template/page2.png')
+        
+        self.page1 = Image.open(template_path_page1)
+        self.page2 = Image.open(template_path_page2)
+        
+        # create font
+        self.font_path = os.path.join('employee_management/employee_card_template/font.ttf')
+        
+        # create page 1
+        self.create_page_1()
+        # create page 2
+        self.create_page_2()
+        
+        zip_buffer = BytesIO()
+                
+        # Create a zip file containing both images
+        with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
+            # Save Page 1
+            page1_buffer = BytesIO()
+            self.page1.save(page1_buffer, format="PNG")
+            page1_buffer.seek(0)
+            zf.writestr("front.png", page1_buffer.read())
+
+            # Save Page 2
+            page2_buffer = BytesIO()
+            self.page2.save(page2_buffer, format="PNG")
+            page2_buffer.seek(0)
+            zf.writestr("back.png", page2_buffer.read())
+
+        zip_buffer.seek(0)
+
+        # Send the zip file as the response
+        response = HttpResponse(zip_buffer, content_type="application/zip")
+        response["Content-Disposition"] = f'attachment; filename="{self.employee.id}_employee_card.zip"'
+        return response
+        
+    def create_page_1(self):
+        try:
+            # Open the employee's profile picture
+            profile_pic_path = self.employee.profile_image
+            profile_pic = Image.open(profile_pic_path).convert("RGBA")
+            
+            # Create a circular mask
+            size = (170, 170)
+            mask = Image.new("L", size, 0)
+            draw = ImageDraw.Draw(mask)
+            draw.ellipse((0, 0) + size, fill=255)
+            
+            # Resize and crop the profile picture into a circle
+            profile_pic = Image.open(profile_pic_path).convert("RGBA")
+            profile_pic = profile_pic.resize(size, Image.LANCZOS)
+            circular_pic = Image.new("RGBA", size, (255, 255, 255, 0))
+            circular_pic.paste(profile_pic, (0, 0), mask)
+            
+            # Paste the circular image onto the card
+            self.page1.paste(circular_pic, (70, 123), circular_pic)
+        except ValueError: pass
+            
+        draw = ImageDraw.Draw(self.page1)
+        # Write the name of the employee in the center
+        full_name = f"{self.employee.first_name} {self.employee.middle_name} {self.employee.last_name}"
+        name_font = ImageFont.truetype(self.font_path, 25)
+        page_width = self.page1.size[0]
+        
+        # Wrap text to fit within the max width
+        wrapped_text = wrap(full_name, width=19)
+
+        # Calculate the total height for all lines to vertically center them
+        line_height = name_font.getbbox("A")[1] + 25
+        total_text_height = line_height * len(wrapped_text)
+        y_start = 320 - (total_text_height // 2) 
+
+        # Draw each line centered
+        for i, line in enumerate(wrapped_text):
+            text_width = draw.textbbox((0, 0), text=line, font=name_font)[2]
+            x_position = (page_width - text_width) / 2
+            y_position = y_start + i * line_height
+            draw.text((x_position, y_position), line, font=name_font, fill="white")
+        
+        font = ImageFont.truetype(self.font_path, 18)
+        # Add Fields to the Card
+        draw.text((25, 375), f"Designation:", fill="white", font=font)
+        draw.text((25, 413), f"Department:", fill="white", font=font)
+        draw.text((25, 455), f"Location/City:", fill="white", font=font)
+
+        # Add text to the card
+        draw.text((120, 375), f"{self.employee.position}", fill="black", font=font)
+        draw.text((120, 413), f"{self.department.name}", fill="black", font=font)
+        draw.text((130, 455), f"{self.employee.location}", fill="black", font=font)
+        
+    def create_page_2(self):
+        draw = ImageDraw.Draw(self.page2)
+        font = ImageFont.truetype(self.font_path, 18)
+
+        # Add text to the card
+        draw.text((80, 30), f"{self.employee.cnic_no}", fill="black", font=font)
+        
+        # Address should wrap since it can be longer
+        # draw.text((105, 180), f"{self.employee.address}", fill="black", font=font)
+
+        address = f"{self.employee.address}"
+        
+        # Wrap text to fit within the max width
+        wrapped_text = wrap(address, width=25)
+
+        # Calculate the total height for all lines to vertically center them
+        line_height = font.getbbox("A")[1] + 20
+        y_start = 180
+
+        for i, line in enumerate(wrapped_text):
+            y_position = y_start + i * line_height
+            draw.text((105, y_position), line, font=font, fill="black")
+        
+        # 227, 270
+        draw.text((105, y_position + 47), f"{self.employee.phone}", fill="black", font=font)
+        draw.text((85, y_position + 90), f"{self.employee.email}", fill="black", font=font)
+        
+        # Add Fields to the Card
+        draw.text((25, 180), f"Address:", fill="black", font=font)
+        draw.text((25, y_position + 47), f"Number:", fill="black", font=font)
+        draw.text((25, y_position + 90), f"Email:", fill="black", font=font)
