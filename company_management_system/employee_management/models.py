@@ -104,7 +104,6 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     
     
     #step 13
-    
     ref_name_1 = models.CharField(max_length=255)
     ref_mobile_1 = models.CharField(max_length=15)
     ref_email_1 = models.EmailField(blank=True, null=True)
@@ -436,9 +435,8 @@ class EmployeeAppAttendance(models.Model):
         max_length=255, blank=True, null=True
     )  # Location address (optional)
     image = models.BinaryField(blank=True, null=True)  # Store as binary data (BLOB)
-
         # Metadata
-    class Meta:
+    class Meta: 
         db_table = 'employee_management_temp_appattendance'  # Custom table name
         verbose_name = 'Employee Attendance'
         verbose_name_plural = 'Employee Attendances'
