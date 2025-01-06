@@ -5,6 +5,7 @@ from tempfile import NamedTemporaryFile
 from PIL import Image, ImageDraw, ImageFont
 from django.conf import settings
 from django.utils.dateparse import parse_date
+import json
 from decimal import Decimal
 from rest_framework.exceptions import ValidationError
 from rest_framework import mixins
@@ -229,7 +230,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             else:
                 raise ValidationError({"employment_errors": employment_serializer.errors})
             
-                
+        
     def handle_dependents(self, employee, dependents_data):
         """Handles saving dependent records for an employee."""
         for dependent in dependents_data:
@@ -262,7 +263,28 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         elif user.is_hr_manager:
             return Employee.objects.filter(is_superuser=False)
         return Employee.objects.filter(department=user.department, is_superuser=False)
-        
+    def update_emergency_contacts(self, employee, data):
+        """Update or create emergency contacts for an employee."""
+        # Retrieve existing emergency contacts for the employee
+        try:
+            print("employee  ",employee)
+            emergency_contact = EmergencyContact.objects.filter(employee=employee).first()
+            print("emergency contact ",emergency_contact)
+            # Update the existing contact with new data
+            for field in ['em_name_1', 'em_relationship_1', 'em_contact_1', 'em_email_1', 
+                        'em_name_2', 'em_relationship_2', 'em_contact_2', 'em_email_2']:
+                setattr(emergency_contact, field, data.get(field))
+            emergency_contact.save()
+        except EmergencyContact.DoesNotExist:
+            # Create a new emergency contact if none exists
+            data['employee'] = employee.id
+            emergency_contact_serializer = EmployeeEmergencyContactSerializer(data=data)
+            if emergency_contact_serializer.is_valid():
+                emergency_contact_serializer.save()
+            else:
+                print(f"Error with emergency contact: {emergency_contact_serializer.errors}")
+                raise ValidationError({"emergency_contact_errors": emergency_contact_serializer.errors})
+
     def perform_create(self, serializer):
         print(self.request.FILES)
         # Save the employee instance
@@ -361,6 +383,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             instance.profile_image = self.request.FILES["profile_image"]
             instance.save()
 
+
     def update(self, request, *args, **kwargs):
         print("Update operation invoked")
         print(f"Request user: {request.user}, is_superuser: {request.user.is_superuser}, is_hr_manager: {getattr(request.user, 'is_hr_manager', False)}")
@@ -377,12 +400,42 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         if request.user.is_superuser:
             print("User is superuser, proceeding with update.")
             print("Validating the serializer.")
+            if "em_contact_1" in request.data:
+                emergency_contact_data = {
+                    'em_name_1': request.data.get("em_name_1"),
+                    'em_relationship_1': request.data.get("em_relationship_1"),
+                    'em_contact_1': request.data.get("em_contact_1"),
+                    'em_email_1': request.data.get("em_email_1"),
+                    'em_name_2': request.data.get("em_name_2"),
+                    'em_relationship_2': request.data.get("em_relationship_2"),
+                    'em_contact_2': request.data.get("em_contact_2"),
+                    'em_email_2': request.data.get("em_email_2"),
+                }
+                self.update_emergency_contacts(employee, emergency_contact_data)
             serializer = self.get_serializer(employee, data=request.data, partial=True)
             print("Serializer data:", serializer.initial_data)
             if not serializer.is_valid():
                 print(f"Validation failed: {serializer.errors}")
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+          # Extract qualifications
+            qualifications_data = request.data.get('qualifications')
+            print("Qualifications data (raw):", qualifications_data)  # Debugging line
 
+            # Check if qualifications data is empty or malformed
+            if not qualifications_data:
+                print("Qualifications data is empty or not provided.")
+                return JsonResponse({"error": "Qualifications data is missing or empty"}, status=400)
+
+            # Parse the JSON string into a Python object (list or dict)
+            try:
+                qualifications = json.loads(qualifications_data) if isinstance(qualifications_data, str) else qualifications_data
+                print("Qualifications data parsed:", qualifications)  # Debugging line
+            except (ValueError, TypeError) as e:
+                print(f"Error parsing qualifications data: {e}")
+                return JsonResponse({"error": "Invalid qualifications data format"}, status=400)
+
+            
+            
             print("Validation successful, performing the update.")
             self.perform_update(serializer)
 
