@@ -1368,6 +1368,14 @@ class TodoViewSet(viewsets.ModelViewSet):
 class VoucherListView(viewsets.ModelViewSet):
     queryset = Voucher.objects.all()
     serializer_class = VoucherSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return Voucher.objects.all()
+        
+        return Voucher.objects.filter(employee=self.request.user)
+
 
     def perform_create(self, serializer):
         voucher = serializer.save()
