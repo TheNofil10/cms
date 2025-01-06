@@ -149,27 +149,29 @@ const AdminVoucherProfile = () => {
       <div className="flex items-center mb-6">
         <div className="flex space-x-3">
           {currentUser.is_superuser && (
-            <button
-              onClick={() => handleDeleteVoucher(voucher.id)}
-              className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700"
-            >
-              <FaTrash className="inline-block mr-1" /> Delete
-            </button>
+            <>
+              <button
+                onClick={() => handleDeleteVoucher(voucher.id)}
+                className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700"
+              >
+                <FaTrash className="inline-block mr-1" /> Delete
+              </button>
+
+              <button
+                onClick={() => handleApproveVoucher(voucher.id)}
+                className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700"
+              >
+                Approve
+              </button>
+
+              <button
+                onClick={() => handleRejectVoucher(voucher.id)}
+                className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700"
+              >
+                Reject
+              </button>
+            </>
           )}
-
-            <button
-              onClick={() => handleApproveVoucher(voucher.id)}
-              className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700"
-            >
-              Approve
-            </button>
-
-            <button
-              onClick={() => handleRejectVoucher(voucher.id)}
-              className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700"
-            >
-              Reject
-            </button>
 
         </div>
       </div>

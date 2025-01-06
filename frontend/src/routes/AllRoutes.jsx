@@ -82,6 +82,7 @@ const AllRoutes = () => {
         <Route path="/employee/tasks/:id" element={<EmployeeTaskDetails />} />
         <Route path="/employee/vouchers" element={<VouchersPage />} />
         <Route path="/employee/vouchers/add" element={<AddVoucherPage />} />
+        <Route path="/employee/vouchers/:id" element={<AdminVoucherProfile />} />
         <Route path="/employee/department" element={<EmployeeDepartment />} />
         <Route
           element={
@@ -212,6 +213,7 @@ const AllRoutes = () => {
         <Route path="/hr/employees/:id" element={<AdminEmployeeProfile />} />
         <Route path="/hr/vouchers" element={<VouchersPage />} />
         <Route path="/hr/vouchers/add" element={<AddVoucherPage />} />
+        <Route path="/hr/vouchers/:id" element={<AdminVoucherProfile />} />
         <Route path="/hr/departments/:id" element={<DepartmentDetailPage />} />
         <Route path="/hr/departments" element={<DepartmentsPage />} />
         <Route path="/hr/payroll" element={<HRPayRoll />} />

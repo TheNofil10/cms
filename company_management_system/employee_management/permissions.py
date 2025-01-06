@@ -20,3 +20,7 @@ class IsAdminHRManagerHODOrManager(BasePermission):
 class IsManager(BasePermission):
     def has_permission(self, request, view):
         return bool(request.user and request.user.is_authenticated and request.user.is_manager)
+
+class IsSuperUser(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_superuser
