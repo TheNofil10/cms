@@ -383,7 +383,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-      <div className="bg-white w-full max-w-6xl h-[80vh] overflow-auto p-6 rounded-lg shadow-lg">
+      <div className="bg-white w-[90%] lg:w-[70%] h-[80vh] overflow-auto p-6 rounded-lg shadow-lg">
         <h2 className="text-2xl font-semibold mb-4">Update Profile</h2>
         <form onSubmit={handleSubmit}>
           {/* Required Information */}
