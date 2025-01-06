@@ -220,6 +220,60 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                     {"qualification_errors": qualification_serializer.errors}
                 )
                 
+    def update_qualifications(self, employee, qualifications_data):
+        """Handles saving qualifications for an employee, deletes previous qualifications first."""
+        # Step 1: Delete all previous qualifications for the employee
+        Qualification.objects.filter(employee=employee).delete()
+        print(f"All previous qualifications for employee {employee.id} have been deleted.")
+        
+        for qualification in qualifications_data:
+                qualification["employee"] = employee.id  # Associate with the employee
+                qualification_serializer = EmployeeQualificationSerializer(data=qualification)
+                if qualification_serializer.is_valid():
+                    print("data is valid")
+                    qualification_serializer.save()
+                    print("qualification saved")
+                else:
+                    raise ValidationError(
+                        {"qualification_errors": qualification_serializer.errors}
+                    )
+
+           
+    def update_dependent(self, employee, dependents_data):
+        """Handles saving qualifications for an employee, deletes previous qualifications first."""
+        # Step 1: Delete all previous qualifications for the employee
+        Dependent.objects.filter(employee=employee).delete()
+        print(f"All previous qualifications for employee {employee.id} have been deleted.")
+        
+        for dependent in dependents_data:
+                dependent["employee"] = employee.id  # Associate with the employee
+                dependent_serializer = EmployeeDependentSerializer(data=dependent)
+                if dependent_serializer.is_valid():
+                    print("Dependent data is valid")
+                    dependent_serializer.save()
+                    print("Dependent saved")
+                else:
+                    raise ValidationError(
+                        {"dependent_errors": dependent_serializer.errors}
+                    )
+
+        
+    def update_employement(self, employee, employments_data):
+        """Handles saving qualifications for an employee, deletes previous qualifications first."""
+        # Step 1: Delete all previous qualifications for the employee
+        Employment.objects.filter(employee=employee).delete()
+        print(f"All previous qualifications for employee {employee.id} have been deleted.")
+        
+        for employment in employments_data:
+            employment["employee"] = employee.id  # Associate with the employee
+            employment_serializer = EmployeeEmploymentSerializer(data=employment)
+            if employment_serializer.is_valid():
+                employment_serializer.save()
+            else:
+                raise ValidationError({"employment_errors": employment_serializer.errors})
+
+
+
     def handle_employments(self, employee, employments_data):
         """Handles saving employment records for an employee."""
         for employment in employments_data:
@@ -417,25 +471,23 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             if not serializer.is_valid():
                 print(f"Validation failed: {serializer.errors}")
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-          # Extract qualifications
-            qualifications_data = request.data.get('qualifications')
-            print("Qualifications data (raw):", qualifications_data)  # Debugging line
-
-            # Check if qualifications data is empty or malformed
-            if not qualifications_data:
-                print("Qualifications data is empty or not provided.")
-                return JsonResponse({"error": "Qualifications data is missing or empty"}, status=400)
-
-            # Parse the JSON string into a Python object (list or dict)
-            try:
-                qualifications = json.loads(qualifications_data) if isinstance(qualifications_data, str) else qualifications_data
-                print("Qualifications data parsed:", qualifications)  # Debugging line
-            except (ValueError, TypeError) as e:
-                print(f"Error parsing qualifications data: {e}")
-                return JsonResponse({"error": "Invalid qualifications data format"}, status=400)
+            qualifications_data = self.parse_nested_data(self.request.data, "qualifications[")
+            print("qualifications data is ",qualifications_data)
+            if qualifications_data:
+               self.update_qualifications(employee, qualifications_data)
+               
+            dependent_data = self.parse_nested_data(self.request.data, "dependents[")
+            print("dependent data is ",dependent_data)
+            if dependent_data:
+                self.update_dependent(employee, dependent_data)
 
             
-            
+
+            employments_data = self.parse_nested_data(self.request.data, "employments[")
+            print("employments data is ",employments_data)
+            if employments_data:
+                self.update_employement(employee, employments_data)
+        
             print("Validation successful, performing the update.")
             self.perform_update(serializer)
 
