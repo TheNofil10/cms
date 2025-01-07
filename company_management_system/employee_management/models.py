@@ -520,6 +520,7 @@ class Voucher(models.Model):
     other_category = models.CharField(max_length=255, null=True)
     status = models.CharField(max_length=20, default='pending', null=False)
     reason_for_rejection = models.CharField(max_length=255, default=None, null=True)
+    archived = models.BooleanField(default=False, null=False)
     
     def __str__(self):
         return self.id

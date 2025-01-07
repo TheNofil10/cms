@@ -12,6 +12,7 @@ import {
   FaDollarSign,
   FaGripLines,
 } from "react-icons/fa";
+import { IoMdArchive } from "react-icons/io";
 import { useAuth } from "../../contexts/AuthContext";
 import ConfirmationModal from "./ConfirmationModal";
 import API from "../../api/api";
@@ -24,10 +25,10 @@ const AdminVoucherProfile = () => {
   const [error, setError] = useState(null);
   const { currentUser } = useAuth();
   const navigate = useNavigate();
-  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+  const [showConfirmArchiveModal, setShowConfirmArchiveModal] = useState(false);
   const [showApproveConfirmModal, setShowApproveConfirmModal] = useState(false);
   const [showRejectConfirmModal, setShowRejectConfirmModal] = useState(false);
-  const [voucherToDelete, setVoucherToDelete] = useState(null);
+  const [voucherToArchive, setVoucherToArchive] = useState(null);
   const [voucherToApprove, setVoucherToApprove] = useState(null);
   const [voucherToReject, setVoucherToReject] = useState(null);
   const [reasonForRejection, setReasonForRejection] = useState("");
@@ -58,29 +59,32 @@ const AdminVoucherProfile = () => {
     fetchVoucher();
   }, [id]);
 
-  const handleDeleteVoucher = (voucherId) => {
-    setVoucherToDelete({ id: voucherId });
-    setShowDeleteConfirmModal(true);
+  const handleArchiveVoucher = (voucherId) => {
+    setVoucherToArchive({ id: voucherId });
+    setShowConfirmArchiveModal(true);
   };
 
-  const confirmDeleteVoucher = async () => {
-    if (!voucherToDelete) return;
+  const confirmArchiveVoucher = async () => {
+    if (!voucherToArchive) return;
 
     try {
-      await axios.delete(`${API}/vouchers/${id}/`, {
+      if(voucher.status === "pending") throw new error(`Voucher is still pending. Please approve or reject`)
+        console.log(voucher);
+      await axios.put(`${API}/vouchers/${voucher.id}/`, {...voucher, archived: true}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'multipart/form-data',
         },
       });
-      toast.success("Voucher deleted successfully");
-      navigate("/admin/vouchers");
+      toast.success("Voucher archived successfully");
+      navigate("/admin/employees");
     } catch (error) {
-      toast.error("Error deleting voucher");
+      toast.error("Error archiving voucher");
     } finally {
-      setShowDeleteConfirmModal(false);
-      setVoucherToDelete(null);
+      setShowConfirmArchiveModal(false);
+      setVoucherToArchive(null);
     }
-  };
+  }
 
   const handleApproveVoucher = ({ voucherId }) => {
     setVoucherToApprove({ id: voucherId });
@@ -151,10 +155,10 @@ const AdminVoucherProfile = () => {
           {currentUser.is_superuser && (
             <>
               <button
-                onClick={() => handleDeleteVoucher(voucher.id)}
-                className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700"
+                onClick={() => handleArchiveVoucher(voucher.id)}
+                className="bg-yellow-600 text-white px-4 py-2 rounded-full hover:bg-yellow-700"
               >
-                <FaTrash className="inline-block mr-1" /> Delete
+                <IoMdArchive className="inline-block mr-1" /> Archive
               </button>
 
               <button
@@ -228,13 +232,13 @@ const AdminVoucherProfile = () => {
 
       {/* Confirmation Modal for Deleting Employee */}
       <ConfirmationModal
-        isOpen={showDeleteConfirmModal}
+        isOpen={showConfirmArchiveModal}
         task="Deletion"
-        onConfirm={confirmDeleteVoucher}
-        onClose={() => setShowDeleteConfirmModal(false)}
-        message={`Are you sure you want to delete voucher#${voucherToDelete?.id}? This action cannot be undone.`}
+        onConfirm={confirmArchiveVoucher}
+        onClose={() => setShowConfirmArchiveModal(false)}
+        message={`Are you sure you want to delete voucher#${voucherToArchive?.id}? This action cannot be undone.`}
       >
-        <p>Are you sure you want to delete voucher#{voucherToDelete?.id}? This action cannot be undone.</p>
+        <p>Are you sure you want to delete voucher#{voucherToArchive?.id}? This action cannot be undone.</p>
       </ConfirmationModal>
 
       <ConfirmationModal

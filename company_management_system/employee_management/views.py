@@ -1378,7 +1378,7 @@ class VoucherListView(viewsets.ModelViewSet):
         return Voucher.objects.filter(employee=self.request.user)
     
     def get_permissions(self):
-        if self.action in ['update', 'partial_update', 'destroy']:
+        if self.action in ['update', 'partial_update']:
             return [IsSuperUser()]
         return [IsAuthenticated()]
 

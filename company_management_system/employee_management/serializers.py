@@ -312,7 +312,8 @@ class VoucherSerializer(serializers.ModelSerializer):
         model = Voucher
         fields = [
             'id', 'department', 'employee','department_name', 'employee_first_name', 'employee_middle_name', 'employee_last_name',
-            'date', 'amount', 'reason', 'project', 'category', 'other_category', 'status', 'documents', 'reason_for_rejection',
+            'date', 'amount', 'reason', 'project', 'category', 'other_category', 'status', 'documents', 'reason_for_rejection', 
+            'archived'
         ]
         
     def create(self, validated_data):

@@ -16,7 +16,6 @@ import {
   FaAngleDoubleRight,
   FaBox,
   FaEye as ViewIcon,
-  FaTrash as DeleteIcon,
   FaSortDown,
   FaSortUp,
   FaSort,
@@ -24,14 +23,14 @@ import {
   FaChevronUp,
   FaPlus,
 } from "react-icons/fa";
-import { ToastContainer, toast } from "react-toastify";
+import { IoMdArchive } from "react-icons/io";
+import { toast } from "react-toastify";
 import AdminEmployeeProfile from "./AdminEmployeeProfile";
-import EmployeeCard from "./EmployeeCard";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from "pdfmake/build/vfs_fonts";
-import ConfirmationModal from "./ConfirmationModal"; // Import the ConfirmationModal component
+import ConfirmationModal from "./ConfirmationModal";
 import { useAuth } from "../../contexts/AuthContext";
 import API from "../../api/api";
 import StatusImage from "./StatusImage";
@@ -40,14 +39,13 @@ import StatusImage from "./StatusImage";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const VoucherList = () => {
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [voucherToDelete, setVoucherToDelete] = useState(null);
+  const [showConfirmArchiveModal, setShowConfirmArchiveModal] = useState(false);
+  const [voucherToArchive, setVoucherToArchive] = useState(null);
   const [vouchers, setVouchers] = useState([]);
-  const [employees, setEmployees] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const [showArchived, setShowArchived] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [view, setView] = useState("table");
   const { currentUser } = useAuth();
   const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [filters, setFilters] = useState({
@@ -82,27 +80,6 @@ const VoucherList = () => {
 
     fetchVouchers();
 
-    const fetchEmployees = async () => {
-      try {
-        const response = await axios.get(
-          `${API}/employees/`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-            },
-          }
-        );
-        setEmployees(response.data.results || response.data || []);
-      } catch (error) {
-        console.error("Error fetching employees:", error);
-        setError("There was an error fetching the employee data.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEmployees();
-
   }, []);
 
   useEffect(() => {
@@ -118,6 +95,11 @@ const VoucherList = () => {
       setFilteredData(vouchers);
     }
   }, [filters, vouchers]);
+
+  const filteredVouchers = useMemo(
+  () => vouchers.filter((voucher) => !voucher.archived), // Filter out archived vouchers
+  [vouchers]
+);
 
   const columns = useMemo(
     () => [
@@ -144,11 +126,11 @@ const VoucherList = () => {
               <ViewIcon onClick={() => handleVoucherClick(row.original)} />
             </button>
             <button
-              className="text-red-600 disabled:text-gray-300 disabled:hover:text-gray-300 hover:text-red-800 bg-transparent border-none"
-              onClick={() => handleDeleteVoucher(row.original.id)}
-              disabled={!currentUser.is_superuser}
+              className="text-yellow-600 disabled:text-gray-300 disabled:hover:text-gray-300 hover:text-red-800 bg-transparent border-none"
+              onClick={() => handleArchiveVoucher(row.original.id)}
+              disabled={!currentUser.is_superuser || row.original.archived}
             >
-              <DeleteIcon />
+              <IoMdArchive />
             </button>
           </div>
         ),
@@ -165,9 +147,6 @@ const VoucherList = () => {
     headerGroups,
     page,
     prepareRow,
-    state,
-    setGlobalFilter,
-    setAllFilters,
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -177,7 +156,7 @@ const VoucherList = () => {
     setPageSize: setTablePageSize,
     state: { pageIndex },
   } = useTable(
-    { columns, data, initialState: { pageSize } },
+    { columns, data: showArchived ? data : filteredVouchers, initialState: { pageSize } },
     useFilters,
     useGlobalFilter,
     useSortBy,
@@ -194,39 +173,34 @@ const VoucherList = () => {
     else navigate(`/employee/vouchers/${voucher.id}`);
   };
 
-  const handleDeleteVoucher = (voucherID) => {
-    setVoucherToDelete({ id: voucherID });
-    setShowConfirmModal(true);
+  const handleArchiveVoucher = (voucherID) => {
+    setVoucherToArchive({ id: voucherID });
+    setShowConfirmArchiveModal(true);
   };
 
-  const confirmDeleteVoucher = async () => {
-    if (!voucherToDelete) return;
+  const confirmArchiveVoucher = async () => {
+    if (!voucherToArchive) return;
+    const voucher = vouchers.filter((v) => v.id === voucherToArchive.id)[0]
+    if (voucher.archived) throw new error ("Voucher is already archived")
 
     try {
-      await axios.delete(
-        `${API}/vouchers/${voucherToDelete.id}/`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
-        }
-      );
-      setVouchers(vouchers.filter((emp) => emp.id !== voucherToDelete.id));
-      setFilteredData(
-        filteredData.filter((emp) => emp.id !== voucherToDelete.id)
-      );
-      toast.success("Successfully deleted");
+      if(voucher.status === "pending") throw new error(`Voucher is still pending. Please approve or reject`)
+        console.log(voucher);
+      await axios.put(`${API}/vouchers/${voucher.id}/`, {...voucher, archived: true}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      toast.success("Voucher archived successfully");
+      window.location.reload()
     } catch (error) {
-      if (error.response && error.response.status === 404) {
-        toast.error("Voucher not found");
-      } else {
-        console.error("Error deleting voucher:", error);
-      }
+      toast.error("Error archiving voucher");
     } finally {
-      setShowConfirmModal(false);
-      setVoucherToDelete(null);
+      setShowConfirmArchiveModal(false);
+      setVoucherToArchive(null);
     }
-  };
+  }
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -360,6 +334,14 @@ const VoucherList = () => {
               </div>
             )}
           </div>
+          {currentUser.is_superuser && (
+            <button
+              className="bg-black text-white border-none font-medium py-1 px-3 rounded text-sm"
+              onClick={() => setShowArchived((showArchived) => !showArchived)}
+            >
+              <IoMdArchive className="inline mr-1" /> View Archived
+            </button>
+          )}
 
           {/* Create Voucher Button */}
             <button
@@ -377,114 +359,112 @@ const VoucherList = () => {
 
       {loading && <p>Loading...</p>}
       {error && <p>{error}</p>}
-      {view === "table" && (
-        <div>
-          <table
-            {...getTableProps()}
-            className="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm"
-          >
-            <thead className="bg-gray-100">
-              {headerGroups.map((headerGroup) => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map((column) => (
-                    <th
-                      {...column.getHeaderProps(column.getSortByToggleProps())}
-                      className="px-4 py-2 border-b text-left text-black"
-                    >
-                      <div className="flex items-center">
-                        {column.render("Header")}
-                        <span className="ml-2">
-                          {column.isSorted ? (
-                            column.isSortedDesc ? (
-                              <FaSortDown />
-                            ) : (
-                              <FaSortUp />
-                            )
+      <div>
+        <table
+          {...getTableProps()}
+          className="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm"
+        >
+          <thead className="bg-gray-100">
+            {headerGroups.map((headerGroup) => (
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  <th
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    className="px-4 py-2 border-b text-left text-black"
+                  >
+                    <div className="flex items-center">
+                      {column.render("Header")}
+                      <span className="ml-2">
+                        {column.isSorted ? (
+                          column.isSortedDesc ? (
+                            <FaSortDown />
                           ) : (
-                            <FaSort />
-                          )}
-                        </span>
-                      </div>
-                    </th>
+                            <FaSortUp />
+                          )
+                        ) : (
+                          <FaSort />
+                        )}
+                      </span>
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {page.map((row) => {
+              prepareRow(row);
+              return (
+                <tr
+                  {...row.getRowProps()}
+                  className="cursor-pointer hover:bg-gray-100"
+                >
+                  {row.cells.map((cell) => (
+                    <td
+                      {...cell.getCellProps()}
+                      className="px-4 py-2 border-b text-black"
+                    >
+                      {cell.render("Cell")}
+                    </td>
                   ))}
                 </tr>
+              );
+            })}
+          </tbody>
+        </table>
+
+        <div className="mt-4 flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => gotoPage(0)}
+              disabled={!canPreviousPage}
+              className="px-4 py-2 bg-gray-200 text-black rounded-lg"
+            >
+              <FaAngleDoubleLeft />
+            </button>
+            <button
+              onClick={() => previousPage()}
+              disabled={!canPreviousPage}
+              className="px-4 py-2 bg-gray-200 text-black rounded-lg"
+            >
+              <FaAngleLeft />
+            </button>
+            <button
+              onClick={() => nextPage()}
+              disabled={!canNextPage}
+              className="px-4 py-2 bg-gray-200 text-black rounded-lg"
+            >
+              <FaAngleRight />
+            </button>
+            <button
+              onClick={() => gotoPage(pageOptions.length - 1)}
+              disabled={!canNextPage}
+              className="px-4 py-2 bg-gray-200 text-black rounded-lg"
+            >
+              <FaAngleDoubleRight />
+            </button>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <span className="text-black">Page Size:</span>
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                const newSize = Number(e.target.value);
+                setPageSize(newSize);
+                setTablePageSize(newSize);
+              }}
+              className="border border-gray-300 rounded-lg p-2 bg-white text-black"
+            >
+              {[10, 20, 30, 40, 50].map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
               ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-              {page.map((row) => {
-                prepareRow(row);
-                return (
-                  <tr
-                    {...row.getRowProps()}
-                    className="cursor-pointer hover:bg-gray-100"
-                  >
-                    {row.cells.map((cell) => (
-                      <td
-                        {...cell.getCellProps()}
-                        className="px-4 py-2 border-b text-black"
-                      >
-                        {cell.render("Cell")}
-                      </td>
-                    ))}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-
-          <div className="mt-4 flex justify-between items-center">
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => gotoPage(0)}
-                disabled={!canPreviousPage}
-                className="px-4 py-2 bg-gray-200 text-black rounded-lg"
-              >
-                <FaAngleDoubleLeft />
-              </button>
-              <button
-                onClick={() => previousPage()}
-                disabled={!canPreviousPage}
-                className="px-4 py-2 bg-gray-200 text-black rounded-lg"
-              >
-                <FaAngleLeft />
-              </button>
-              <button
-                onClick={() => nextPage()}
-                disabled={!canNextPage}
-                className="px-4 py-2 bg-gray-200 text-black rounded-lg"
-              >
-                <FaAngleRight />
-              </button>
-              <button
-                onClick={() => gotoPage(pageOptions.length - 1)}
-                disabled={!canNextPage}
-                className="px-4 py-2 bg-gray-200 text-black rounded-lg"
-              >
-                <FaAngleDoubleRight />
-              </button>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <span className="text-black">Page Size:</span>
-              <select
-                value={pageSize}
-                onChange={(e) => {
-                  const newSize = Number(e.target.value);
-                  setPageSize(newSize);
-                  setTablePageSize(newSize);
-                }}
-                className="border border-gray-300 rounded-lg p-2 bg-white text-black"
-              >
-                {[10, 20, 30, 40, 50].map((size) => (
-                  <option key={size} value={size}>
-                    {size}
-                  </option>
-                ))}
-              </select>
-            </div>
+            </select>
           </div>
         </div>
-      )}
+      </div>
       {selectedVoucher && (
         <AdminEmployeeProfile
           voucher={selectedVoucher}
@@ -493,11 +473,14 @@ const VoucherList = () => {
       )}
 
       <ConfirmationModal
-        isOpen={showConfirmModal}
-        onClose={() => setShowConfirmModal(false)}
-        onConfirm={confirmDeleteVoucher}
-        voucherId={voucherToDelete ? voucherToDelete.id : ""}
-      />
+        task="Voucher Rejection"
+        isOpen={showConfirmArchiveModal}
+        onConfirm={confirmArchiveVoucher}
+        onClose={() => setShowConfirmArchiveModal(false)}
+        message={`Are you sure you want to reject this voucher? This action cannot be undone.`}
+      >
+        {`Are you sure you want to archive voucher#${voucherToArchive?.id}? This action cannot be undone.`}
+        </ConfirmationModal>
     </div>
   );
 };
