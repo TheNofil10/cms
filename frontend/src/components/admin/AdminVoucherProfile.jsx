@@ -77,7 +77,7 @@ const AdminVoucherProfile = () => {
         },
       });
       toast.success("Voucher archived successfully");
-      navigate("/admin/employees");
+      navigate("/admin/vouchers");
     } catch (error) {
       toast.error("Error archiving voucher");
     } finally {
@@ -154,12 +154,14 @@ const AdminVoucherProfile = () => {
         <div className="flex space-x-3">
           {currentUser.is_superuser && (
             <>
+            {!voucher.archived && (
               <button
                 onClick={() => handleArchiveVoucher(voucher.id)}
                 className="bg-yellow-600 text-white px-4 py-2 rounded-full hover:bg-yellow-700"
               >
                 <IoMdArchive className="inline-block mr-1" /> Archive
               </button>
+            )}
 
               <button
                 onClick={() => handleApproveVoucher(voucher.id)}
