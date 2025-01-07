@@ -339,7 +339,7 @@ const VoucherList = () => {
               className="bg-black text-white border-none font-medium py-1 px-3 rounded text-sm"
               onClick={() => setShowArchived((showArchived) => !showArchived)}
             >
-              <IoMdArchive className="inline mr-1" /> View Archived
+              <IoMdArchive className="inline mr-1" /> {showArchived ? "Hide Archived" : "Show Archived"}
             </button>
           )}
 
