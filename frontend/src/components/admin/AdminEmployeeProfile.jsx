@@ -33,6 +33,10 @@ import {
   FaUserCircle,
   FaTrash,
   FaFileAlt,
+  FaVenusMars,
+  FaCar,
+  FaMale,
+  FaUserFriends,
 } from "react-icons/fa";
 import { useAuth } from "../../contexts/AuthContext";
 import ConfirmationModal from "./ConfirmationModal";
@@ -235,17 +239,17 @@ const AdminEmployeeProfile = () => {
           <h2 className="text-xl font-semibold mb-4">Other Information</h2>
           <p><FaUserCircle className="inline-block mr-2" /> Marital Status: {employee.marital_status ? "Married" : "Single"}</p>
           <p><FaHeartbeat className="inline-block mr-2" /> Blood Group: {employee.blood_group || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Gender: {employee.gender || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Driving Liscence: {employee.dv_license_no || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Driving Liscence Issue: {employee.dv_license_issue_date || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Driving Liscence Expiry: {employee.dv_license_expiry_date || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Company Email: {employee.company_email || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Father's Name: {employee.father_name || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Father's CNIC: {employee.father_cnic_no || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Spouse Name: {employee.spouse_name || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Spouse D.O.B: {employee.spouse_date_of_birth || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Spouse Relation: {employee.spouse_relationship || "-"}</p>
-          <p><FaUser className="inline-block mr-2" /> Spouse CNIC: {employee.spouse_cnic || "-"}</p>
+          <p><FaVenusMars className="inline-block mr-2" /> Gender: {employee.gender || "-"}</p>
+          <p><FaCar className="inline-block mr-2" /> Driving License: {employee.dv_license_no || "-"}</p>
+          <p><FaCalendarAlt className="inline-block mr-2" /> Driving License Issue: {employee.dv_license_issue_date || "-"}</p>
+          <p><FaCalendarAlt className="inline-block mr-2" /> Driving License Expiry: {employee.dv_license_expiry_date || "-"}</p>
+          <p><FaEnvelope className="inline-block mr-2" /> Company Email: {employee.company_email || "-"}</p>
+          <p><FaMale className="inline-block mr-2" /> Father's Name: {employee.father_name || "-"}</p>
+          <p><FaIdCard className="inline-block mr-2" /> Father's CNIC: {employee.father_cnic_no || "-"}</p>
+          <p><FaUserFriends className="inline-block mr-2" /> Spouse Name: {employee.spouse_name || "-"}</p>
+          <p><FaCalendarAlt className="inline-block mr-2" /> Spouse D.O.B: {employee.spouse_date_of_birth || "-"}</p>
+          <p><FaUserFriends className="inline-block mr-2" /> Spouse Relation: {employee.spouse_relationship || "-"}</p>
+          <p><FaIdCard className="inline-block mr-2" /> Spouse CNIC: {employee.spouse_cnic || "-"}</p>
         </div>
 
         {/* Job Details */}
@@ -269,13 +273,13 @@ const AdminEmployeeProfile = () => {
           <p><FaUserAlt className="inline-block mr-2" /> Ref Name 1: {employee.ref_name_1 || "-"}</p>
           <p><FaPhone className="inline-block mr-2" /> Mobile 1: {employee.ref_mobile_1 || "-"}</p>
           <p><FaEnvelope className="inline-block mr-2" /> Email 1: {employee.ref_email_1 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Company 1: {employee.ref_company_1 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Designation 1: {employee.ref_designation_1 || "-"}</p>
+          <p><FaBuilding className="inline-block mr-2" /> Company 1: {employee.ref_company_1 || "-"}</p>
+          <p><FaBriefcase className="inline-block mr-2" /> Designation 1: {employee.ref_designation_1 || "-"}</p>
           <p><FaUserAlt className="inline-block mr-2" /> Ref Name 2: {employee.ref_name_2 || "-"}</p>
           <p><FaPhone className="inline-block mr-2" /> Mobile 2: {employee.ref_mobile_2 || "-"}</p>
           <p><FaEnvelope className="inline-block mr-2" /> Email 2: {employee.ref_email_2 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Company 2: {employee.ref_company_2 || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Designation 2: {employee.ref_designation_2 || "-"}</p>
+          <p><FaBuilding className="inline-block mr-2" /> Company 2: {employee.ref_company_2 || "-"}</p>
+          <p><FaBriefcase className="inline-block mr-2" /> Designation 2: {employee.ref_designation_2 || "-"}</p>
         </div>
 
         {/* Contact Info */}
@@ -283,8 +287,8 @@ const AdminEmployeeProfile = () => {
           <h2 className="text-xl font-semibold mb-4">Contact Information</h2>
           <p><FaUserAlt className="inline-block mr-2" /> Phone No: {employee.phone || "-"}</p>
           <p><FaPhone className="inline-block mr-2" /> Alternate Phone No: {employee.alternate_phone || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Current Address: {employee.address || "-"}</p>
-          <p><FaUserAlt className="inline-block mr-2" /> Permanent Address: {employee.permanent_address || "-"}</p>
+          <p><FaHome className="inline-block mr-2" /> Current Address: {employee.address || "-"}</p>
+          <p><FaHome className="inline-block mr-2" /> Permanent Address: {employee.permanent_address || "-"}</p>
         </div>
 
         {/* Emergency Contacts */}
@@ -292,14 +296,14 @@ const AdminEmployeeProfile = () => {
           <h2 className="text-xl font-semibold mb-4">Emergency Contacts</h2>
           {employee.emergency_contacts && employee.emergency_contacts.length > 0 ? (
             <>
-              <p><FaUserAlt className="inline-block mr-2" /> Name 1: {employee.emergency_contacts[0].em_name_1 || "-"}</p>
-              <p><FaPhone className="inline-block mr-2" /> Contact 1: {employee.emergency_contacts[0].em_contact_1 || "-"}</p>
-              <p><FaEnvelope className="inline-block mr-2" /> Email 1: {employee.emergency_contacts[0].em_email_1 || "-"}</p>
-              <p><FaEnvelope className="inline-block mr-2" /> Relation 1: {employee.emergency_contacts[0].em_relationship_1 || "-"}</p>
-              <p><FaUserAlt className="inline-block mr-2" /> Name 2: {employee.emergency_contacts[0].em_name_2 || "-"}</p>
-              <p><FaPhone className="inline-block mr-2" /> Contact 2: {employee.emergency_contacts[0].em_contact_2 || "-"}</p>
-              <p><FaEnvelope className="inline-block mr-2" /> Email 2: {employee.emergency_contacts[0].em_email_2 || "-"}</p>
-              <p><FaEnvelope className="inline-block mr-2" /> Relation 2: {employee.emergency_contacts[0].em_relationship_2 || "-"}</p>
+              <p><FaUserAlt className="inline-block mr-2" /> Name 1: {employee.emergency_contacts[0]?.em_name_1 || "-"}</p>
+              <p><FaPhone className="inline-block mr-2" /> Contact 1: {employee.emergency_contacts[0]?.em_contact_1 || "-"}</p>
+              <p><FaEnvelope className="inline-block mr-2" /> Email 1: {employee.emergency_contacts[0]?.em_email_1 || "-"}</p>
+              <p><FaHeartbeat className="inline-block mr-2" /> Relation 1: {employee.emergency_contacts[0]?.em_relationship_1 || "-"}</p>
+              <p><FaUserAlt className="inline-block mr-2" /> Name 2: {employee.emergency_contacts[0]?.em_name_2 || "-"}</p>
+              <p><FaPhone className="inline-block mr-2" /> Contact 2: {employee.emergency_contacts[0]?.em_contact_2 || "-"}</p>
+              <p><FaEnvelope className="inline-block mr-2" /> Email 2: {employee.emergency_contacts[0]?.em_email_2 || "-"}</p>
+              <p><FaHeartbeat className="inline-block mr-2" /> Relation 2: {employee.emergency_contacts[0]?.em_relationship_2 || "-"}</p>
             </>
           ) : (
             <p>No emergency contacts available.</p> // This will show if the emergency_contacts array is empty or undefined
@@ -310,12 +314,12 @@ const AdminEmployeeProfile = () => {
         {/* NOK */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Next Of Kin Details</h2>
-          <p><FaEnvelope className="inline-block mr-2" /> Name: {employee.nok_name || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Realtion: {employee.nok_relationship || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> CNIC: {employee.nok_cnic || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Contact: {employee.nok_contact || "-"}</p>
+          <p><FaUserAlt className="inline-block mr-2" /> Name: {employee.nok_name || "-"}</p>
+          <p><FaHeartbeat className="inline-block mr-2" /> Relation: {employee.nok_relationship || "-"}</p>
+          <p><FaIdCard className="inline-block mr-2" /> CNIC: {employee.nok_cnic || "-"}</p>
+          <p><FaPhone className="inline-block mr-2" /> Contact: {employee.nok_contact || "-"}</p>
           <p><FaEnvelope className="inline-block mr-2" /> Email: {employee.nok_email || "-"}</p>
-          <p><FaEnvelope className="inline-block mr-2" /> Address: {employee.nok_permanent_address || "-"}</p>
+          <p><FaHome className="inline-block mr-2" /> Address: {employee.nok_permanent_address || "-"}</p>
         </div>
 
         {/* Qualifications Section */}

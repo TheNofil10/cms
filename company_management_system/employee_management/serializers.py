@@ -47,6 +47,16 @@ class EmployeeEmergencyContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmergencyContact
         fields = "__all__"
+
+    def update(self, instance, validated_data):
+        # Handle partial update
+        for attr, value in validated_data.items():
+            if value is not None:
+                setattr(instance, attr, value)
+        instance.save()
+        return instance
+
+        
 class EmployeeDependentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dependent

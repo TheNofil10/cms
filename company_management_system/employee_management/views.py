@@ -5,6 +5,7 @@ from tempfile import NamedTemporaryFile
 from PIL import Image, ImageDraw, ImageFont
 from django.conf import settings
 from django.utils.dateparse import parse_date
+import json
 from decimal import Decimal
 from rest_framework.exceptions import ValidationError
 from rest_framework import mixins
@@ -224,6 +225,60 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                     {"qualification_errors": qualification_serializer.errors}
                 )
                 
+    def update_qualifications(self, employee, qualifications_data):
+        """Handles saving qualifications for an employee, deletes previous qualifications first."""
+        # Step 1: Delete all previous qualifications for the employee
+        Qualification.objects.filter(employee=employee).delete()
+        print(f"All previous qualifications for employee {employee.id} have been deleted.")
+        
+        for qualification in qualifications_data:
+                qualification["employee"] = employee.id  # Associate with the employee
+                qualification_serializer = EmployeeQualificationSerializer(data=qualification)
+                if qualification_serializer.is_valid():
+                    print("data is valid")
+                    qualification_serializer.save()
+                    print("qualification saved")
+                else:
+                    raise ValidationError(
+                        {"qualification_errors": qualification_serializer.errors}
+                    )
+
+           
+    def update_dependent(self, employee, dependents_data):
+        """Handles saving qualifications for an employee, deletes previous qualifications first."""
+        # Step 1: Delete all previous qualifications for the employee
+        Dependent.objects.filter(employee=employee).delete()
+        print(f"All previous qualifications for employee {employee.id} have been deleted.")
+        
+        for dependent in dependents_data:
+                dependent["employee"] = employee.id  # Associate with the employee
+                dependent_serializer = EmployeeDependentSerializer(data=dependent)
+                if dependent_serializer.is_valid():
+                    print("Dependent data is valid")
+                    dependent_serializer.save()
+                    print("Dependent saved")
+                else:
+                    raise ValidationError(
+                        {"dependent_errors": dependent_serializer.errors}
+                    )
+
+        
+    def update_employement(self, employee, employments_data):
+        """Handles saving qualifications for an employee, deletes previous qualifications first."""
+        # Step 1: Delete all previous qualifications for the employee
+        Employment.objects.filter(employee=employee).delete()
+        print(f"All previous qualifications for employee {employee.id} have been deleted.")
+        
+        for employment in employments_data:
+            employment["employee"] = employee.id  # Associate with the employee
+            employment_serializer = EmployeeEmploymentSerializer(data=employment)
+            if employment_serializer.is_valid():
+                employment_serializer.save()
+            else:
+                raise ValidationError({"employment_errors": employment_serializer.errors})
+
+
+
     def handle_employments(self, employee, employments_data):
         """Handles saving employment records for an employee."""
         for employment in employments_data:
@@ -234,7 +289,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             else:
                 raise ValidationError({"employment_errors": employment_serializer.errors})
             
-                
+        
     def handle_dependents(self, employee, dependents_data):
         """Handles saving dependent records for an employee."""
         for dependent in dependents_data:
@@ -267,7 +322,29 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         elif user.is_hr_manager:
             return Employee.objects.filter(is_superuser=False)
         return Employee.objects.filter(department=user.department, is_superuser=False)
-        
+    def update_emergency_contacts(self, employee, data):
+        """Update or create emergency contacts for an employee."""
+        # Retrieve existing emergency contacts for the employee
+        try:
+            print("employee  ",employee)
+            emergency_contact = EmergencyContact.objects.filter(employee=employee).first()
+            print("emergency contact ",emergency_contact)
+            # Update the existing contact with new data
+            if emergency_contact != None:
+                for field in ['em_name_1', 'em_relationship_1', 'em_contact_1', 'em_email_1', 
+                            'em_name_2', 'em_relationship_2', 'em_contact_2', 'em_email_2']:
+                    setattr(emergency_contact, field, data.get(field))
+                emergency_contact.save()
+        except EmergencyContact.DoesNotExist:
+            # Create a new emergency contact if none exists
+            data['employee'] = employee.id
+            emergency_contact_serializer = EmployeeEmergencyContactSerializer(data=data)
+            if emergency_contact_serializer.is_valid():
+                emergency_contact_serializer.save()
+            else:
+                print(f"Error with emergency contact: {emergency_contact_serializer.errors}")
+                raise ValidationError({"emergency_contact_errors": emergency_contact_serializer.errors})
+
     def perform_create(self, serializer):
         print(self.request.FILES)
         # Save the employee instance
@@ -366,6 +443,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             instance.profile_image = self.request.FILES["profile_image"]
             instance.save()
 
+
     def update(self, request, *args, **kwargs):
         print("Update operation invoked")
         print(f"Request user: {request.user}, is_superuser: {request.user.is_superuser}, is_hr_manager: {getattr(request.user, 'is_hr_manager', False)}")
@@ -382,12 +460,40 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         if request.user.is_superuser:
             print("User is superuser, proceeding with update.")
             print("Validating the serializer.")
+            if "em_contact_1" in request.data:
+                emergency_contact_data = {
+                    'em_name_1': request.data.get("em_name_1"),
+                    'em_relationship_1': request.data.get("em_relationship_1"),
+                    'em_contact_1': request.data.get("em_contact_1"),
+                    'em_email_1': request.data.get("em_email_1"),
+                    'em_name_2': request.data.get("em_name_2"),
+                    'em_relationship_2': request.data.get("em_relationship_2"),
+                    'em_contact_2': request.data.get("em_contact_2"),
+                    'em_email_2': request.data.get("em_email_2"),
+                }
+                self.update_emergency_contacts(employee, emergency_contact_data)
             serializer = self.get_serializer(employee, data=request.data, partial=True)
             print("Serializer data:", serializer.initial_data)
             if not serializer.is_valid():
                 print(f"Validation failed: {serializer.errors}")
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            qualifications_data = self.parse_nested_data(self.request.data, "qualifications[")
+            print("qualifications data is ",qualifications_data)
+            if qualifications_data:
+               self.update_qualifications(employee, qualifications_data)
+               
+            dependent_data = self.parse_nested_data(self.request.data, "dependents[")
+            print("dependent data is ",dependent_data)
+            if dependent_data:
+                self.update_dependent(employee, dependent_data)
 
+            
+
+            employments_data = self.parse_nested_data(self.request.data, "employments[")
+            print("employments data is ",employments_data)
+            if employments_data:
+                self.update_employement(employee, employments_data)
+        
             print("Validation successful, performing the update.")
             self.perform_update(serializer)
 
