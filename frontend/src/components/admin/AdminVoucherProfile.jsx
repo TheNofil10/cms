@@ -68,7 +68,8 @@ const AdminVoucherProfile = () => {
     if (!voucherToArchive) return;
 
     try {
-      if(voucher.manager_status !== "rejected" && voucher.superuser_status === 'pending') throw new error(`Voucher is still pending. Please approve or reject`)
+      if (voucher.archived) throw new Error ("Archive Failed: Voucher is already archived")
+      if(voucher.manager_status !== "rejected" && voucher.superuser_status === 'pending') throw new error(`Archive Failed: voucher is still pending. Please approve or reject`)
         console.log(voucher);
       await axios.put(`${API}/vouchers/${voucher.id}/`, {...voucher, archived: true}, {
         headers: {
@@ -100,8 +101,8 @@ const AdminVoucherProfile = () => {
     if (!voucherToApprove) return;
 
     try {
-      if(voucher.manager_status != "pending" && currentUser.is_manager) throw new error(`voucher already ${voucher.manager_status}`)
-      if (voucher.superuser_status != 'pending' && currentUser.is_superuser) throw new error(`voucher already ${voucher.manager_status}`)
+      if(voucher.manager_status != "pending" && currentUser.is_manager) throw new Error(`Approval Failed: voucher already ${voucher.manager_status}`)
+      if (voucher.superuser_status != 'pending' && currentUser.is_superuser) throw new Error(`Approval Failed: Voucher already ${voucher.manager_status}`)
 
       const voucherUpdate = currentUser.is_manager ? {...voucher, manager_status: "approved"} : {...voucher, superuser_status: "approved"}
       await axios.put(`${API}/vouchers/${id}/`, voucherUpdate, {
@@ -113,7 +114,7 @@ const AdminVoucherProfile = () => {
       toast.success("Voucher approved successfully");
       window.location.reload()
     } catch (error) {
-      toast.error("Error approving voucher");
+      toast.error(error.message);
     } finally {
       setShowApproveConfirmModal(false);
       setVoucherToApprove(null);
@@ -124,8 +125,8 @@ const AdminVoucherProfile = () => {
     if (!voucherToReject) return;
 
     try {
-      if(voucher.manager_status != "pending" && currentUser.is_manager) throw new error(`voucher already ${voucher.manager_status}`)
-      if (voucher.superuser_status != 'pending' && currentUser.is_superuser) throw new error(`voucher already ${voucher.manager_status}`)
+      if(voucher.manager_status != "pending" && currentUser.is_manager) throw new Error(`Rejection Failed: Voucher already ${voucher.manager_status}`)
+      if (voucher.superuser_status != 'pending' && currentUser.is_superuser) throw new Error(`Rejection Failed: voucher already ${voucher.manager_status}`)
       if (!reasonForRejection) throw new error ("you have to give a reason for rejection")
 
       const voucherUpdate = currentUser.is_manager ? {...voucher, manager_status: "rejected"} : {...voucher, superuser_status: "rejected"}
@@ -138,7 +139,7 @@ const AdminVoucherProfile = () => {
       toast.success("Voucher rejected successfully");
       window.location.reload()
     } catch (error) {
-      toast.error("Error rejecting voucher");
+      toast.error(error.message);
     } finally {
       setShowRejectConfirmModal(false);
       setVoucherToApprove(null);
