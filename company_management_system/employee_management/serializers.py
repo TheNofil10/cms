@@ -322,10 +322,11 @@ class VoucherSerializer(serializers.ModelSerializer):
         model = Voucher
         fields = [
             'id', 'department', 'employee','department_name', 'employee_first_name', 'employee_middle_name', 'employee_last_name',
-            'date', 'amount', 'reason', 'project', 'category', 'other_category', 'status', 'documents', 'reason_for_rejection', 
+            'date', 'amount', 'reason', 'project', 'category', 'other_category', 'manager_status', 'superuser_status', 'documents', 'reason_for_rejection', 
             'archived', 'head_of_department', 'head_of_department_first_name', 'head_of_department_last_name'
         ]
         
     def create(self, validated_data):
-        validated_data['status'] = 'pending'
+        validated_data['manager_status'] = 'pending'
+        validated_data['superuser_status'] = 'pending'
         return super().create(validated_data)

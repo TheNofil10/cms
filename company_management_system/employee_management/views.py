@@ -30,6 +30,7 @@ from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .permissions import IsSuperUser, IsManagerOrSuperUser
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 import os
 from .serializers import (
     ApplicantSerializer,
@@ -1479,10 +1480,10 @@ class VoucherListView(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_superuser:
-            return Voucher.objects.all()
+            return Voucher.objects.filter(Q(manager_status="approved") | Q(employee=self.request.user))
         
         if self.request.user.is_manager:
-            return Voucher.objects.filter(employee__manager=self.request.user)
+            return Voucher.objects.filter(Q(employee__manager=self.request.user) | Q(employee=self.request.user))
         
         return Voucher.objects.filter(employee=self.request.user)
     

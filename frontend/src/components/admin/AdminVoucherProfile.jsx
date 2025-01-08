@@ -68,7 +68,7 @@ const AdminVoucherProfile = () => {
     if (!voucherToArchive) return;
 
     try {
-      if(voucher.status === "pending") throw new error(`Voucher is still pending. Please approve or reject`)
+      if(voucher.manager_status !== "rejected" && voucher.superuser_status === 'pending') throw new error(`Voucher is still pending. Please approve or reject`)
         console.log(voucher);
       await axios.put(`${API}/vouchers/${voucher.id}/`, {...voucher, archived: true}, {
         headers: {
@@ -100,8 +100,11 @@ const AdminVoucherProfile = () => {
     if (!voucherToApprove) return;
 
     try {
-      if(voucher.status != "pending") throw new error(`voucher already ${voucher.status}`)
-      await axios.put(`${API}/vouchers/${id}/`, {...voucher, status: "approved"}, {
+      if(voucher.manager_status != "pending" && currentUser.is_manager) throw new error(`voucher already ${voucher.manager_status}`)
+      if (voucher.superuser_status != 'pending' && currentUser.is_superuser) throw new error(`voucher already ${voucher.manager_status}`)
+
+      const voucherUpdate = currentUser.is_manager ? {...voucher, manager_status: "approved"} : {...voucher, superuser_status: "approved"}
+      await axios.put(`${API}/vouchers/${id}/`, voucherUpdate, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'multipart/form-data',
@@ -121,9 +124,12 @@ const AdminVoucherProfile = () => {
     if (!voucherToReject) return;
 
     try {
-      if (voucher.status != "pending") throw new error(`voucher already ${voucher.status}`);
+      if(voucher.manager_status != "pending" && currentUser.is_manager) throw new error(`voucher already ${voucher.manager_status}`)
+      if (voucher.superuser_status != 'pending' && currentUser.is_superuser) throw new error(`voucher already ${voucher.manager_status}`)
       if (!reasonForRejection) throw new error ("you have to give a reason for rejection")
-      await axios.put(`${API}/vouchers/${id}/`, {...voucher, status: "rejected", reason_for_rejection: reasonForRejection}, {
+
+      const voucherUpdate = currentUser.is_manager ? {...voucher, manager_status: "rejected"} : {...voucher, superuser_status: "rejected"}
+      await axios.put(`${API}/vouchers/${id}/`, {...voucherUpdate, reason_for_rejection: reasonForRejection}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'multipart/form-data',
@@ -202,9 +208,12 @@ const AdminVoucherProfile = () => {
 
         {/* Documents */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-2">Status:</h2>
-          <StatusImage className="inline-block-mr-2 mb-4" status={voucher.status}/>
-          {voucher.status === "rejected" && (
+          <h2 className="text-xl font-semibold mb-2">Manager Status:</h2>
+          <StatusImage className="inline-block-mr-2 mb-4" status={voucher.manager_status}/>
+
+          <h2 className="text-xl font-semibold mb-2">Admin Status:</h2>
+          <StatusImage className="inline-block-mr-2 mb-4" status={voucher.superuser_status}/>
+          {(voucher.manager_status === "rejected" || voucher.superuser_status === 'rejected') && (
             <>
               <h2 className="text-xl font-semibold">Reason for Rejection: </h2>
               <p className="mb-4">{`${voucher.reason_for_rejection}`}</p>

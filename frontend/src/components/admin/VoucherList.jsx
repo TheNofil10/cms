@@ -114,9 +114,15 @@ const VoucherList = () => {
         )
        },
       {
-        Header: "Status",
+        Header: "Manager Status",
         Cell: ({ row }) => (
-          <StatusImage status={row.original.status}/>
+          <StatusImage status={row.original.manager_status}/>
+        ),
+      },
+      {
+        Header: "Admin Status",
+        Cell: ({ row }) => (
+          <StatusImage status={row.original.superuser_status}/>
         ),
       },
       {
@@ -187,10 +193,10 @@ const VoucherList = () => {
   const confirmArchiveVoucher = async () => {
     if (!voucherToArchive) return;
     const voucher = vouchers.filter((v) => v.id === voucherToArchive.id)[0]
-    if (voucher.archived) throw new error ("Voucher is already archived")
 
     try {
-      if(voucher.status === "pending") throw new error(`Voucher is still pending. Please approve or reject`)
+      if (voucher.archived) throw new Error ("Voucher is already archived")
+      if(voucher.manager_status !== "rejected" && voucher.superuser_status === 'pending') throw new Error(`Voucher is still pending. Please approve or reject`)
         console.log(voucher);
       await axios.put(`${API}/vouchers/${voucher.id}/`, {...voucher, archived: true}, {
         headers: {
@@ -201,7 +207,7 @@ const VoucherList = () => {
       toast.success("Voucher archived successfully");
       window.location.reload()
     } catch (error) {
-      toast.error("Error archiving voucher");
+      toast.error(error.message);
     } finally {
       setShowConfirmArchiveModal(false);
       setVoucherToArchive(null);
@@ -250,7 +256,7 @@ const VoucherList = () => {
           { text: voucher.category, fontSize: 10, width:"8%" },
           { text: `PKR ${voucher.amount}`, fontSize: 10, width:"7%" },
           { text: voucher.reason, fontSize: 10, width:"8%" },
-          { text: voucher.status, fontSize: 10, width:"7%" },
+          { text: voucher.superuser_status === 'pending' ? voucher.manager_status : voucher.superuser_status, fontSize: 10, width:"7%" },
           { text: voucher.reason_for_rejection, fontSize: 10, width:"8%" },
         ],
       })),
@@ -290,7 +296,8 @@ const VoucherList = () => {
             <option value="employee_last_name">First Name</option>
             <option value="date">Date</option>
             <option value="amount">Amount</option>
-            <option value="status">Status</option>
+            <option value="manager_status">Status</option>
+            <option value="superuser_status">Status</option>
           </select>
           <input
             type="text"

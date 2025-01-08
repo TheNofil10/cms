@@ -158,6 +158,7 @@ const AddVoucher = () => {
  
   const handleCreate = (e) => {
     e.preventDefault();
+    console.log(formData);
     setLoading(true);
   
     const formDataObj = new FormData();

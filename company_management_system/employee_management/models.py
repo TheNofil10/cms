@@ -516,7 +516,8 @@ class Voucher(models.Model):
     project = models.CharField(max_length=255, null=True)
     category = models.CharField(max_length=30, null=False)
     other_category = models.CharField(max_length=255, null=True)
-    status = models.CharField(max_length=20, default='pending', null=False)
+    manager_status = models.CharField(max_length=20, default='pending', null=False)
+    superuser_status = models.CharField(max_length=20, default='pending', null=False)
     reason_for_rejection = models.CharField(max_length=255, default=None, null=True)
     archived = models.BooleanField(default=False, null=False)
     

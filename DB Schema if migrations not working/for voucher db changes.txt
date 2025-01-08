@@ -16,7 +16,8 @@ CREATE TABLE employee_management_voucher (
     category VARCHAR (30) NOT NULL,
     other_category VARCHAR (255) NULL,
     reason_for_rejection VARCHAR (255) NULL,
-    status VARCHAR(255) NOT NULL,
+    manager_status VARCHAR(255) NOT NULL,
+    superuser_status VARCHAR(255) NOT NULL,
     archived BOOLEAN NOT NULL,
     
 	FOREIGN KEY (department_id) References employee_management_department(id),
