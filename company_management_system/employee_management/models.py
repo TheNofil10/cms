@@ -89,40 +89,39 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     #step 9
     
     # Fields for Next of Kin
-    nok_name = models.CharField(max_length=255)  # Next of Kin Name
-    nok_relationship = models.CharField(max_length=255)  # Relationship with the user
-    nok_cnic = models.CharField(max_length=15, unique=False)  # CNIC Number
+    nok_name = models.CharField(max_length=255, blank=True)  # Next of Kin Name
+    nok_relationship = models.CharField(max_length=255, blank=True)  # Relationship with the user
+    nok_cnic = models.CharField(max_length=15, unique=False, blank=True)  # CNIC Number
     nok_contact = models.CharField(max_length=15, blank=True)  # Contact Number
-    nok_email = models.EmailField(max_length=255)  # Email Address
-    nok_permanent_address = models.TextField()  # Permanent Address
+    nok_email = models.EmailField(max_length=255, blank=True)  # Email Address
+    nok_permanent_address = models.TextField(blank=True)  # Permanent Address
     
     
     #step 10
-    nationality = models.CharField(max_length=255, null=False, blank=False)
-    religion = models.CharField(max_length=255, null=False, blank=False)
+    nationality = models.CharField(max_length=255, null=False, blank=True)
+    religion = models.CharField(max_length=255, null=False, blank=True)
     disability = models.CharField(max_length=255, null=True, blank=True)  # Optional field
     
     
     #step 13
-    
-    ref_name_1 = models.CharField(max_length=255)
-    ref_mobile_1 = models.CharField(max_length=15)
+    ref_name_1 = models.CharField(max_length=255,blank=True)
+    ref_mobile_1 = models.CharField(max_length=15,blank=True)
     ref_email_1 = models.EmailField(blank=True, null=True)
-    ref_designation_1 = models.CharField(max_length=255)
-    ref_company_1 = models.CharField(max_length=255)
+    ref_designation_1 = models.CharField(max_length=255,blank=True)
+    ref_company_1 = models.CharField(max_length=255,blank=True)
 
-    ref_name_2 = models.CharField(max_length=255)
-    ref_mobile_2 = models.CharField(max_length=15)
+    ref_name_2 = models.CharField(max_length=255,blank=True)
+    ref_mobile_2 = models.CharField(max_length=15,blank=True)
     ref_email_2 = models.EmailField(blank=True, null=True)
-    ref_designation_2 = models.CharField(max_length=255)
-    ref_company_2 = models.CharField(max_length=255)
+    ref_designation_2 = models.CharField(max_length=255,blank=True)
+    ref_company_2 = models.CharField(max_length=255,blank=True)
     
     
     #step 14
-    spouse_name = models.CharField(max_length=255)
-    spouse_date_of_birth = models.DateField()
-    spouse_relationship = models.CharField(max_length=255)
-    spouse_cnic = models.CharField(max_length=15)
+    spouse_name = models.CharField(max_length=255,blank=True)
+    spouse_date_of_birth = models.DateField(blank=True)
+    spouse_relationship = models.CharField(max_length=255,blank=True)
+    spouse_cnic = models.CharField(max_length=15,blank=True)
     
     
     USERNAME_FIELD = "username"
@@ -159,11 +158,11 @@ class EmergencyContact(models.Model):
 
 class Qualification(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='qualifications')
-    institute = models.CharField(max_length=255, null=False, blank=False)
-    degree = models.CharField(max_length=255, null=False, blank=False)
-    year_from = models.IntegerField(null=False, blank=False)
-    year_to = models.IntegerField(null=False, blank=False)
-    gpa = models.DecimalField(max_digits=4, decimal_places=2, null=False, blank=False)
+    institute = models.CharField(max_length=255, null=True, blank=True)
+    degree = models.CharField(max_length=255, null=True, blank=True)
+    year_from = models.IntegerField(null=True, blank=True)
+    year_to = models.IntegerField(null=True, blank=True)
+    gpa = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
 
     def __str__(self):
         return f"{self.degree} from {self.institute}"
@@ -436,9 +435,8 @@ class EmployeeAppAttendance(models.Model):
         max_length=255, blank=True, null=True
     )  # Location address (optional)
     image = models.BinaryField(blank=True, null=True)  # Store as binary data (BLOB)
-
         # Metadata
-    class Meta:
+    class Meta: 
         db_table = 'employee_management_temp_appattendance'  # Custom table name
         verbose_name = 'Employee Attendance'
         verbose_name_plural = 'Employee Attendances'
