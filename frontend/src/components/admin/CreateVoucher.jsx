@@ -86,9 +86,10 @@ const AddVoucher = () => {
 
   const updateDepartmentDetails = (value) => {
     console.log("Selected Value:", value);
-    const selectedDepartment = departments.find((department) => department.id === value);
+    const selectedDepartment = departments.find((department) => department.id === Number(value));
+    console.log(selectedDepartment);
     const head = selectedDepartment?.manager
-      ? employees.find((employee) => employee.id === selectedDepartment.manager)
+      ? selectedDepartment?.manager
       : null;
     console.log("Department Head:", head);
     setDepartmentHead(head ? `${head.first_name} ${head.last_name}` : "No Head");
