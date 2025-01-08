@@ -325,10 +325,11 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             emergency_contact = EmergencyContact.objects.filter(employee=employee).first()
             print("emergency contact ",emergency_contact)
             # Update the existing contact with new data
-            for field in ['em_name_1', 'em_relationship_1', 'em_contact_1', 'em_email_1', 
-                        'em_name_2', 'em_relationship_2', 'em_contact_2', 'em_email_2']:
-                setattr(emergency_contact, field, data.get(field))
-            emergency_contact.save()
+            if emergency_contact != None:
+                for field in ['em_name_1', 'em_relationship_1', 'em_contact_1', 'em_email_1', 
+                            'em_name_2', 'em_relationship_2', 'em_contact_2', 'em_email_2']:
+                    setattr(emergency_contact, field, data.get(field))
+                emergency_contact.save()
         except EmergencyContact.DoesNotExist:
             # Create a new emergency contact if none exists
             data['employee'] = employee.id
