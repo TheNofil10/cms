@@ -152,7 +152,7 @@ const AdminVoucherProfile = () => {
     <div className="container mx-auto p-8 bg-gray-200 rounded-lg shadow-lg max-w-5xl mt-10 mb-10">
       <div className="flex items-center mb-6">
         <div className="flex space-x-3">
-          {currentUser.is_superuser && (
+          {(currentUser.is_superuser || currentUser.is_manager) && (
             <>
             {!voucher.archived && (
               <button
@@ -191,7 +191,7 @@ const AdminVoucherProfile = () => {
           <p><FaUserShield className="inline-block mr-2" /><b> Created By: </b>{`${voucher.employee_first_name} ${voucher.employee_middle_name} ${voucher.employee_last_name}`}</p>
           {console.log(voucher)}
           <p><FaBuilding className="inline-block mr-2" /><b> Department: </b>{`${voucher.department_name}`}</p>
-          <p><FaUserShield className="inline-block mr-2" /><b> Head of Department: </b>{`${voucher.head_of_department}`}</p>
+          <p><FaUserShield className="inline-block mr-2" /><b> Head of Department: </b>{`${voucher.head_of_department_first_name} ${voucher.head_of_department_last_name}`}</p>
           <p><FaCalendarCheck className="inline-block mr-2" /><b> Date Created: </b>{`${voucher.date}`}</p>
           <p><FaBriefcase className="inline-block mr-2" /><b> Project: </b>{`${voucher.project}`}</p>
           <p><FaBriefcase className="inline-block mr-2" /><b> Category: </b>{voucher.category? voucher.category : voucher.other_category}</p>

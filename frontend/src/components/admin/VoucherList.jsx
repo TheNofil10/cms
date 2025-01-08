@@ -128,7 +128,7 @@ const VoucherList = () => {
             <button
               className="text-yellow-600 disabled:text-gray-300 disabled:hover:text-gray-300 hover:text-red-800 bg-transparent border-none"
               onClick={() => handleArchiveVoucher(row.original.id)}
-              disabled={!currentUser.is_superuser || row.original.archived}
+              disabled={(!currentUser.is_superuser && !currentUser.is_manager) || row.original.archived}
             >
               <IoMdArchive />
             </button>
@@ -170,6 +170,8 @@ const VoucherList = () => {
       navigate(`/admin/vouchers/${voucher.id}`);
     else if (currentUser.is_hr_manager)
       navigate(`/hr/vouchers/${voucher.id}`);
+    else if (currentUser.is_manager)
+      navigate(`/manager/vouchers/${voucher.id}`)
     else navigate(`/employee/vouchers/${voucher.id}`);
   };
 
@@ -334,7 +336,7 @@ const VoucherList = () => {
               </div>
             )}
           </div>
-          {currentUser.is_superuser && (
+          {(currentUser.is_superuser || currentUser.is_manager) && (
             <button
               className="bg-black text-white border-none font-medium py-1 px-3 rounded text-sm"
               onClick={() => setShowArchived((showArchived) => !showArchived)}
@@ -349,7 +351,8 @@ const VoucherList = () => {
               onClick={() => 
                 {if (currentUser.is_superuser) navigate("/admin/vouchers/add")
                 else if (currentUser.is_hr_manager) navigate("/hr/vouchers/add")
-                else if (currentUser.is_staff) navigate("/employee/vouchers/add")
+                else if (currentUser.is_manager) navigate("/manager/vouchers/add")
+                else navigate("/employee/vouchers/add")
                 }}
             >
               <FaPlus className="inline mr-1" /> Create Voucher
