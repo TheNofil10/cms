@@ -222,28 +222,37 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                 
     def update_qualifications(self, employee, qualifications_data):
         """Handles saving qualifications for an employee, deletes previous qualifications first."""
+        
         # Step 1: Delete all previous qualifications for the employee
+        print("Employee is in update qualification", employee)
         Qualification.objects.filter(employee=employee).delete()
         print(f"All previous qualifications for employee {employee.id} have been deleted.")
         
+        # Step 2: Check if qualifications_data is empty
+        if not qualifications_data:  # If empty or None
+            print(f"No qualifications provided for employee {employee.id}. Nothing to add.")
+            return  # Exit the method after deleting
+        
+        # Step 3: Add new qualifications if provided
         for qualification in qualifications_data:
-                qualification["employee"] = employee.id  # Associate with the employee
-                qualification_serializer = EmployeeQualificationSerializer(data=qualification)
-                if qualification_serializer.is_valid():
-                    print("data is valid")
-                    qualification_serializer.save()
-                    print("qualification saved")
-                else:
-                    raise ValidationError(
-                        {"qualification_errors": qualification_serializer.errors}
-                    )
+            qualification["employee"] = employee.id  # Associate with the employee
+            qualification_serializer = EmployeeQualificationSerializer(data=qualification)
+            if qualification_serializer.is_valid():
+                print("Data is valid")
+                qualification_serializer.save()
+                print("Qualification saved")
+            else:
+                raise ValidationError(
+                    {"qualification_errors": qualification_serializer.errors}
+                )
+
 
            
     def update_dependent(self, employee, dependents_data):
         """Handles saving qualifications for an employee, deletes previous qualifications first."""
         # Step 1: Delete all previous qualifications for the employee
         Dependent.objects.filter(employee=employee).delete()
-        print(f"All previous qualifications for employee {employee.id} have been deleted.")
+        print(f"All previous dependent for employee {employee.id} have been deleted.")
         
         for dependent in dependents_data:
                 dependent["employee"] = employee.id  # Associate with the employee
@@ -474,20 +483,18 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             qualifications_data = self.parse_nested_data(self.request.data, "qualifications[")
             print("qualifications data is ",qualifications_data)
-            if qualifications_data:
-               self.update_qualifications(employee, qualifications_data)
+            self.update_qualifications(employee, qualifications_data)
                
             dependent_data = self.parse_nested_data(self.request.data, "dependents[")
             print("dependent data is ",dependent_data)
-            if dependent_data:
-                self.update_dependent(employee, dependent_data)
+        
+            self.update_dependent(employee, dependent_data)
 
             
 
             employments_data = self.parse_nested_data(self.request.data, "employments[")
             print("employments data is ",employments_data)
-            if employments_data:
-                self.update_employement(employee, employments_data)
+            self.update_employement(employee, employments_data)
         
             print("Validation successful, performing the update.")
             self.perform_update(serializer)
