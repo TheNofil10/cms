@@ -1,0 +1,36 @@
+use cms;
+
+drop table employee_management_voucherdocuments;
+drop table employee_management_voucher;
+
+
+CREATE TABLE employee_management_voucher (
+	id INT AUTO_INCREMENT PRIMARY KEY,  -- Auto-increment primary key for voucher
+	department_id BIGINT NOT NULL,
+    employee_id INT NOT NULL,
+    head_of_department_id INT NULL,
+    date DATE NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+	reason VARCHAR(255) NOT NULL,
+    project VARCHAR (255) NULL,
+    category VARCHAR (30) NOT NULL,
+    other_category VARCHAR (255) NULL,
+    reason_for_rejection VARCHAR (255) NULL,
+    status VARCHAR(255) NOT NULL,
+    archived BOOLEAN NOT NULL,
+    
+	FOREIGN KEY (department_id) References employee_management_department(id),
+	FOREIGN KEY (employee_id) References employee_management_employee(id),
+    FOREIGN KEY (head_of_department_id) References employee_management_employee(id)
+);
+
+
+CREATE TABLE employee_management_voucherdocuments (
+    id INT AUTO_INCREMENT PRIMARY KEY,  -- Auto-increment primary key for document
+    voucher_id INT,                     -- Foreign key column pointing to voucher's id
+    employee_id INT,
+    document VARCHAR(255),              -- Field for storing the document filename or path
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Timestamp for when the document is uploaded
+    FOREIGN KEY (employee_id) References employee_management_employee(id),
+    FOREIGN KEY (voucher_id) REFERENCES employee_management_voucher(id)  -- Foreign key constraint to reference the voucher table
+);
