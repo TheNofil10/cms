@@ -546,8 +546,8 @@ const Signup = () => {
             {loading ? "Submitting..." : "Submit"}
           </button>
           <ToastContainer />
-        </div> 
-      </div> 
+        </div>
+      </div>
 
       <form
         onSubmit={handleSignup}
