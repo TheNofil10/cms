@@ -24,3 +24,16 @@ class IsManager(BasePermission):
 class IsSuperUser(BasePermission):
     def has_permission(self, request, view):
         return bool(request.user and request.user.is_authenticated and request.user.is_superuser)
+
+class IsManagerOrSuperUser(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated
+
+    def has_object_permission(self, request, view, obj):
+        # Allow superusers to view all vouchers
+        if request.user.is_superuser:
+            return True
+        # Allow managers to view vouchers of their employees
+        if hasattr(obj.employee, 'manager') and obj.employee.manager == request.user:
+            return True
+        return False

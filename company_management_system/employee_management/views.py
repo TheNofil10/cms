@@ -28,7 +28,7 @@ from .permissions import IsAdminHRManagerHODOrManager, IsAdminOrHRManager, IsMan
 from rest_framework.viewsets import ModelViewSet
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from .permissions import IsSuperUser
+from .permissions import IsSuperUser, IsManagerOrSuperUser
 from django.shortcuts import get_object_or_404
 import os
 from .serializers import (
@@ -1481,11 +1481,15 @@ class VoucherListView(viewsets.ModelViewSet):
         if self.request.user.is_superuser:
             return Voucher.objects.all()
         
+        if self.request.user.is_manager:
+            return Voucher.objects.filter(employee__manager=self.request.user)
+        
         return Voucher.objects.filter(employee=self.request.user)
     
     def get_permissions(self):
         if self.action in ['update', 'partial_update']:
-            return [IsSuperUser() or IsManager()]
+            return [IsManagerOrSuperUser()]
+
         return [IsAuthenticated()]
 
 

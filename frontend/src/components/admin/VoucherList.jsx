@@ -108,11 +108,15 @@ const VoucherList = () => {
       { Header: "middle Name", accessor: "employee_middle_name" },
       { Header: "Last Name", accessor: "employee_last_name" },
       { Header: "Date", accessor: "date" },
-      { Header: "Amount", accessor: "amount" },
+      { Header: "Amount", 
+        Cell: ({ row }) => (
+          <span>PKR {row.original.amount}</span>
+        )
+       },
       {
         Header: "Status",
         Cell: ({ row }) => (
-          <StatusImage status={row.original.status} width="100px"/>
+          <StatusImage status={row.original.status}/>
         ),
       },
       {
@@ -128,7 +132,7 @@ const VoucherList = () => {
             <button
               className="text-yellow-600 disabled:text-gray-300 disabled:hover:text-gray-300 hover:text-red-800 bg-transparent border-none"
               onClick={() => handleArchiveVoucher(row.original.id)}
-              disabled={!currentUser.is_superuser || row.original.archived}
+              disabled={(!currentUser.is_superuser && !currentUser.is_manager) || row.original.archived}
             >
               <IoMdArchive />
             </button>
@@ -170,6 +174,8 @@ const VoucherList = () => {
       navigate(`/admin/vouchers/${voucher.id}`);
     else if (currentUser.is_hr_manager)
       navigate(`/hr/vouchers/${voucher.id}`);
+    else if (currentUser.is_manager)
+      navigate(`/manager/vouchers/${voucher.id}`)
     else navigate(`/employee/vouchers/${voucher.id}`);
   };
 
@@ -242,8 +248,8 @@ const VoucherList = () => {
           { text: voucher.date, fontSize: 10, width:"7%" },
           { text: voucher.project, fontSize: 10, width:"8%" },
           { text: voucher.category, fontSize: 10, width:"8%" },
-          { text: `$ ${voucher.amount}`, fontSize: 10, width:"7%" },
-          { text: `$ ${voucher.reason}`, fontSize: 10, width:"8%" },
+          { text: `PKR ${voucher.amount}`, fontSize: 10, width:"7%" },
+          { text: voucher.reason, fontSize: 10, width:"8%" },
           { text: voucher.status, fontSize: 10, width:"7%" },
           { text: voucher.reason_for_rejection, fontSize: 10, width:"8%" },
         ],
@@ -334,7 +340,7 @@ const VoucherList = () => {
               </div>
             )}
           </div>
-          {currentUser.is_superuser && (
+          {(currentUser.is_superuser || currentUser.is_manager) && (
             <button
               className="bg-black text-white border-none font-medium py-1 px-3 rounded text-sm"
               onClick={() => setShowArchived((showArchived) => !showArchived)}
@@ -349,7 +355,8 @@ const VoucherList = () => {
               onClick={() => 
                 {if (currentUser.is_superuser) navigate("/admin/vouchers/add")
                 else if (currentUser.is_hr_manager) navigate("/hr/vouchers/add")
-                else if (currentUser.is_staff) navigate("/employee/vouchers/add")
+                else if (currentUser.is_manager) navigate("/manager/vouchers/add")
+                else navigate("/employee/vouchers/add")
                 }}
             >
               <FaPlus className="inline mr-1" /> Create Voucher
