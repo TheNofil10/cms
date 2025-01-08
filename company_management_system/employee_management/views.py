@@ -502,62 +502,42 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             print("Update successful, returning updated employee data.")
             return Response("Employee updated successfully.", status=status.HTTP_200_OK)
 
-        if getattr(request.user, "is_hr_manager", False) and request.user != employee:
-            print("User is HR manager and not the employee being updated, proceeding with update.")
-            print("Validating the serializer.")
-            if "em_contact_1" in request.data:
-                emergency_contact_data = {
-                    'em_name_1': request.data.get("em_name_1"),
-                    'em_relationship_1': request.data.get("em_relationship_1"),
-                    'em_contact_1': request.data.get("em_contact_1"),
-                    'em_email_1': request.data.get("em_email_1"),
-                    'em_name_2': request.data.get("em_name_2"),
-                    'em_relationship_2': request.data.get("em_relationship_2"),
-                    'em_contact_2': request.data.get("em_contact_2"),
-                    'em_email_2': request.data.get("em_email_2"),
-                }
-                self.update_emergency_contacts(employee, emergency_contact_data)
-            serializer = self.get_serializer(employee, data=request.data, partial=True)
-            print("Serializer data:", serializer.initial_data)
-            if not serializer.is_valid():
-                print(f"Validation failed: {serializer.errors}")
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            qualifications_data = self.parse_nested_data(self.request.data, "qualifications[")
-            print("qualifications data is ",qualifications_data)
-            self.update_qualifications(employee, qualifications_data)
-               
-            dependent_data = self.parse_nested_data(self.request.data, "dependents[")
-            print("dependent data is ",dependent_data)
-        
-            self.update_dependent(employee, dependent_data)
 
-            
 
-            employments_data = self.parse_nested_data(self.request.data, "employments[")
-            print("employments data is ",employments_data)
-            self.update_employement(employee, employments_data)
-        
-            print("Validation successful, performing the update.")
-            self.perform_update(serializer)
-
-            print("Update successful, returning updated employee data.")
-            return Response("Employee updated successfully.", status=status.HTTP_200_OK)
-
-        if request.user != employee:
-            print(f"Permission denied: Request user ({request.user.id}) is not allowed to update employee ({employee.id})")
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
-        # Validate and perform the update
-        print("Validating the serializer.")
+        if "em_contact_1" in request.data:
+            emergency_contact_data = {
+                'em_name_1': request.data.get("em_name_1"),
+                'em_relationship_1': request.data.get("em_relationship_1"),
+                'em_contact_1': request.data.get("em_contact_1"),
+                'em_email_1': request.data.get("em_email_1"),
+                'em_name_2': request.data.get("em_name_2"),
+                'em_relationship_2': request.data.get("em_relationship_2"),
+                'em_contact_2': request.data.get("em_contact_2"),
+                'em_email_2': request.data.get("em_email_2"),
+            }
+            self.update_emergency_contacts(employee, emergency_contact_data)
         serializer = self.get_serializer(employee, data=request.data, partial=True)
         print("Serializer data:", serializer.initial_data)
         if not serializer.is_valid():
             print(f"Validation failed: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        qualifications_data = self.parse_nested_data(self.request.data, "qualifications[")
+        print("qualifications data is ",qualifications_data)
+        self.update_qualifications(employee, qualifications_data)
+            
+        dependent_data = self.parse_nested_data(self.request.data, "dependents[")
+        print("dependent data is ",dependent_data)
+    
+        self.update_dependent(employee, dependent_data)
 
+        
+
+        employments_data = self.parse_nested_data(self.request.data, "employments[")
+        print("employments data is ",employments_data)
+        self.update_employement(employee, employments_data)
+    
         print("Validation successful, performing the update.")
         self.perform_update(serializer)
-
         print("Update successful, returning updated employee data.")
         return Response(serializer.data)
 

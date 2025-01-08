@@ -199,12 +199,14 @@ const AdminEmployeeProfile = () => {
           </p>
         </div>
         <div className="flex space-x-3">
+        {!currentUser.is_manager && (
           <button
             onClick={handleUpdateProfile}
             className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700"
           >
             <FaEdit className="inline-block mr-1" /> Edit
           </button>
+          )}
           {currentUser.is_superuser && (
             <button
               onClick={() => handleDeleteEmployee(employee.id, employee.first_name)}
