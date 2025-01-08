@@ -195,7 +195,7 @@ const AdminVoucherProfile = () => {
           <p><FaCalendarCheck className="inline-block mr-2" /><b> Date Created: </b>{`${voucher.date}`}</p>
           <p><FaBriefcase className="inline-block mr-2" /><b> Project: </b>{`${voucher.project}`}</p>
           <p><FaBriefcase className="inline-block mr-2" /><b> Category: </b>{voucher.category? voucher.category : voucher.other_category}</p>
-          <p><FaDollarSign className="inline-block mr-2" /><b> Amount: </b>{`$ ${voucher.amount}`}</p>
+          <p><FaDollarSign className="inline-block mr-2" /><b> Amount: </b>{`PKR ${voucher.amount}`}</p>
           <p><FaGripLines className="inline-block mr-2" /><b> Reason: </b>{`${voucher.reason}`}</p>
         </div>
 
@@ -203,7 +203,7 @@ const AdminVoucherProfile = () => {
         {/* Documents */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-2">Status:</h2>
-          <StatusImage className="inline-block-mr-2 mb-4" status={voucher.status} width="150px"/>
+          <StatusImage className="inline-block-mr-2 mb-4" status={voucher.status}/>
           {voucher.status === "rejected" && (
             <>
               <h2 className="text-xl font-semibold">Reason for Rejection: </h2>

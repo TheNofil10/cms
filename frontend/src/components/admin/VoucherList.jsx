@@ -108,11 +108,15 @@ const VoucherList = () => {
       { Header: "middle Name", accessor: "employee_middle_name" },
       { Header: "Last Name", accessor: "employee_last_name" },
       { Header: "Date", accessor: "date" },
-      { Header: "Amount", accessor: "amount" },
+      { Header: "Amount", 
+        Cell: ({ row }) => (
+          <span>PKR {row.original.amount}</span>
+        )
+       },
       {
         Header: "Status",
         Cell: ({ row }) => (
-          <StatusImage status={row.original.status} width="100px"/>
+          <StatusImage status={row.original.status}/>
         ),
       },
       {
@@ -244,8 +248,8 @@ const VoucherList = () => {
           { text: voucher.date, fontSize: 10, width:"7%" },
           { text: voucher.project, fontSize: 10, width:"8%" },
           { text: voucher.category, fontSize: 10, width:"8%" },
-          { text: `$ ${voucher.amount}`, fontSize: 10, width:"7%" },
-          { text: `$ ${voucher.reason}`, fontSize: 10, width:"8%" },
+          { text: `PKR ${voucher.amount}`, fontSize: 10, width:"7%" },
+          { text: voucher.reason, fontSize: 10, width:"8%" },
           { text: voucher.status, fontSize: 10, width:"7%" },
           { text: voucher.reason_for_rejection, fontSize: 10, width:"8%" },
         ],
