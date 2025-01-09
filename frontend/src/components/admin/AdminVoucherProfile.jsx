@@ -31,7 +31,7 @@ const AdminVoucherProfile = () => {
   const [voucherToArchive, setVoucherToArchive] = useState(null);
   const [voucherToApprove, setVoucherToApprove] = useState(null);
   const [voucherToReject, setVoucherToReject] = useState(null);
-  const [reasonForRejection, setReasonForRejection] = useState("");
+  const [remarks, setRemarks] = useState("");
 
 
   const fetchVoucher = async () => {
@@ -127,10 +127,10 @@ const AdminVoucherProfile = () => {
     try {
       if(voucher.manager_status != "pending" && currentUser.is_manager) throw new Error(`Rejection Failed: Voucher already ${voucher.manager_status}`)
       if (voucher.superuser_status != 'pending' && currentUser.is_superuser) throw new Error(`Rejection Failed: voucher already ${voucher.manager_status}`)
-      if (!reasonForRejection) throw new error ("you have to give a reason for rejection")
+      if (!remarks) throw new error ("you have to give a reason for rejection")
 
       const voucherUpdate = currentUser.is_manager ? {...voucher, manager_status: "rejected"} : {...voucher, superuser_status: "rejected"}
-      await axios.put(`${API}/vouchers/${id}/`, {...voucherUpdate, reason_for_rejection: reasonForRejection}, {
+      await axios.put(`${API}/vouchers/${id}/`, {...voucherUpdate, remarks: remarks}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'multipart/form-data',
@@ -217,7 +217,7 @@ const AdminVoucherProfile = () => {
           {(voucher.manager_status === "rejected" || voucher.superuser_status === 'rejected') && (
             <>
               <h2 className="text-xl font-semibold">Reason for Rejection: </h2>
-              <p className="mb-4">{`${voucher.reason_for_rejection}`}</p>
+              <p className="mb-4">{`${voucher.remarks}`}</p>
             </>
           )}
           <h2 className="text-xl font-semibold mb-">Documents</h2>
@@ -250,7 +250,7 @@ const AdminVoucherProfile = () => {
         onClose={() => setShowConfirmArchiveModal(false)}
         message={`Are you sure you want to delete voucher#${voucherToArchive?.id}? This action cannot be undone.`}
       >
-        <p>Are you sure you want to delete voucher#{voucherToArchive?.id}? This action cannot be undone.</p>
+        <p>Are you sure you want to archive voucher#{voucherToArchive?.id}? This action cannot be undone.</p>
       </ConfirmationModal>
 
       <ConfirmationModal
@@ -261,6 +261,12 @@ const AdminVoucherProfile = () => {
         message={`Are you sure you want to Approve this voucher? This action cannot be undone.`}
       >
         <p>Are you sure you want to Approve this voucher?</p>
+        <input
+            value={remarks}
+            className="w-full p-2 bg-gray-200 border-none outline-none"
+            onChange={(event) => setRemarks(event.target.value)}
+            required
+          />
       </ConfirmationModal>
 
       <ConfirmationModal
@@ -272,9 +278,9 @@ const AdminVoucherProfile = () => {
       >
           <p>Please enter a reason for rejecting the voucher?</p>
           <input
-            value={reasonForRejection}
+            value={remarks}
             className="w-full p-2 bg-gray-200 border-none outline-none"
-            onChange={(event) => setReasonForRejection(event.target.value)}
+            onChange={(event) => setRemarks(event.target.value)}
             required
           />
         </ConfirmationModal>

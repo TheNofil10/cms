@@ -257,7 +257,7 @@ const VoucherList = () => {
           { text: `PKR ${voucher.amount}`, fontSize: 10, width:"7%" },
           { text: voucher.reason, fontSize: 10, width:"8%" },
           { text: voucher.superuser_status === 'pending' ? voucher.manager_status : voucher.superuser_status, fontSize: 10, width:"7%" },
-          { text: voucher.reason_for_rejection, fontSize: 10, width:"8%" },
+          { text: voucher.remarks, fontSize: 10, width:"8%" },
         ],
       })),
       // pageMargins: [40, 40, 40, 40],
@@ -491,7 +491,7 @@ const VoucherList = () => {
         isOpen={showConfirmArchiveModal}
         onConfirm={confirmArchiveVoucher}
         onClose={() => setShowConfirmArchiveModal(false)}
-        message={`Are you sure you want to reject this voucher? This action cannot be undone.`}
+        message={`Are you sure you want to archive this voucher? This action cannot be undone.`}
       >
         {`Are you sure you want to archive voucher#${voucherToArchive?.id}? This action cannot be undone.`}
         </ConfirmationModal>
