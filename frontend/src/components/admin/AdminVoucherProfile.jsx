@@ -161,7 +161,7 @@ const AdminVoucherProfile = () => {
         <div className="flex space-x-3">
           {(currentUser.is_superuser || currentUser.is_manager) && (
             <>
-            {!voucher.archived && (
+            {!(voucher.manager_status !== "rejected" && voucher.superuser_status === 'pending') && !voucher.archived && (
               <button
                 onClick={() => handleArchiveVoucher(voucher.id)}
                 className="bg-yellow-600 text-white px-4 py-2 rounded-full hover:bg-yellow-700"
@@ -169,20 +169,25 @@ const AdminVoucherProfile = () => {
                 <IoMdArchive className="inline-block mr-1" /> Archive
               </button>
             )}
+            
+            {!(voucher.manager_status != "pending" && currentUser.is_manager) && !(voucher.superuser_status != 'pending' && currentUser.is_superuser) && (
+              <>
+                <button
+                  onClick={() => handleApproveVoucher(voucher.id)}
+                  className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700"
+                >
+                  Approve
+                </button>
 
-              <button
-                onClick={() => handleApproveVoucher(voucher.id)}
-                className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700"
-              >
-                Approve
-              </button>
+                <button
+                  onClick={() => handleRejectVoucher(voucher.id)}
+                  className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700"
+                >
+                  Reject
+                </button>
+              </>
+            )}
 
-              <button
-                onClick={() => handleRejectVoucher(voucher.id)}
-                className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700"
-              >
-                Reject
-              </button>
             </>
           )}
 
