@@ -135,13 +135,16 @@ const VoucherList = () => {
             >
               <ViewIcon onClick={() => handleVoucherClick(row.original)} />
             </button>
-            <button
-              className="text-yellow-600 disabled:text-gray-300 disabled:hover:text-gray-300 hover:text-red-800 bg-transparent border-none"
-              onClick={() => handleArchiveVoucher(row.original.id)}
-              disabled={(!currentUser.is_superuser && !currentUser.is_manager) || row.original.archived}
+
+            {(currentUser.is_superuser || currentUser.is_manager) && !row.original.archived && (
+              <button
+                className="text-yellow-600 disabled:text-gray-300 disabled:hover:text-gray-300 hover:text-red-800 bg-transparent border-none"
+                onClick={() => handleArchiveVoucher(row.original.id)}
+                disabled={row.original.manager_status !== "rejected" && row.original.superuser_status === 'pending'}
             >
-              <IoMdArchive />
-            </button>
+                <IoMdArchive />
+              </button>
+            )}
           </div>
         ),
       },
