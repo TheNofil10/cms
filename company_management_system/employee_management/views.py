@@ -713,6 +713,7 @@ class DepartmentViewSet(viewsets.ModelViewSet):
             and hasattr(user, "is_hr_manager")
             and user.is_hr_manager
         ):
+            print("User is superuser or HR manager")
             return Department.objects.all()
         if user.is_authenticated:
             return Department.objects.filter(employees=user)

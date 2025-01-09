@@ -137,7 +137,9 @@ class EmployeeBriefSerializer(serializers.ModelSerializer):
 class DepartmentSerializer(serializers.ModelSerializer):
     members = EmployeeBriefSerializer(many=True, read_only=True, source="employees")
     manager = EmployeeBriefSerializer(read_only=True)
-
+    manager_id = serializers.PrimaryKeyRelatedField(
+        queryset=Employee.objects.all(), required=False
+    )
     class Meta:
         model = Department
         fields = "__all__"

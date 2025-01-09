@@ -23,7 +23,7 @@ const AddDepartmentForm = () => {
     location: "",
     budget: "",
     office_phone: "",
-    manager_id: "",
+    manager: "",
   });
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -78,7 +78,7 @@ const AddDepartmentForm = () => {
       case 3:
         return formData.budget && formData.office_phone;
       case 4:
-        return formData.manager_id;
+        return formData.manager;
       default:
         return true;
     }
@@ -242,8 +242,8 @@ const AddDepartmentForm = () => {
                   <FaUser className="m-2" />
                   <input
                     type="text"
-                    name="manager_id"
-                    value={formData.manager_id}
+                    name="manager"
+                    value={formData.manager}
                     onChange={handleInputChange}
                     className="w-full p-2 bg-gray-200 border-none outline-none"
                     placeholder="Enter manager ID"

@@ -43,6 +43,7 @@ const DepartmentDetailPage = () => {
             },
           }
         );
+        console.log(response.data);
         setDepartment(response.data);
         setFormData({
           name: response.data.name || "",
@@ -177,7 +178,7 @@ const DepartmentDetailPage = () => {
                 {department.manager ? (
                   <ManagerCard
                     profileImage={department.manager.profile_image}
-                    name={department.manager.name}
+                    name={department.manager.first_name + " " + department.manager.last_name}
                     department={department.name}
                     position="Manager"
                     username={department.manager.username}
