@@ -76,6 +76,7 @@ from .models import (
     EmployeeAppAttendance,
     EmployeeDocuments,
     EmergencyContact,
+    Encodings
 )
 from django.core.files.storage import default_storage
 from datetime import timedelta
@@ -98,6 +99,25 @@ logger = logging.getLogger(__name__)
 
 co = cohere.Client(settings.COHERE_API_KEY)
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_employee_encoding(request, employee_id):
+    print("Request user is:", request)
+    print("Employee ID is:", employee_id)
+
+    try:
+        # Check if an encoding exists for the given employee_id
+        encoding_exists = Encodings.objects.filter(employee_id=employee_id).exists()
+
+        # Return True if encoding exists, otherwise False
+        return Response({"encoding_exists": encoding_exists})
+
+    except Exception as e:
+        print("Error:", e)
+        return Response({
+            "message": "An error occurred while checking the encoding.",
+            "error": str(e)
+        }, status=500)
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -855,11 +875,11 @@ class AttendanceViewSet(viewsets.ModelViewSet):
         today = timezone.now().date()
         yesterday = today - timedelta(days=1)
         week_start = today - timedelta(days=today.weekday())
-        week_end = yesterday
+        week_end = today
         month_start = today.replace(day=1)
-        month_end = yesterday
+        month_end = today
         year_start = today.replace(month=1, day=1)
-        year_end = yesterday
+        year_end = today
 
         # Start with the base queryset
         queryset = Attendance.objects.all()

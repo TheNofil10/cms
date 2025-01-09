@@ -38,6 +38,7 @@ const AttendanceTable = () => {
     employee_id: "",
     employee_name: "",
     dateFilter: "today",
+    status: "",
   });
   const [pageSize, setPageSize] = useState(10);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -152,6 +153,14 @@ const AttendanceTable = () => {
       );
     }
 
+    if (filters.status) {
+      filtered = filtered.filter((record) =>
+        record.status
+          ?.toLowerCase()
+          .includes(filters.status.toLowerCase())
+      );
+    }
+
     setFilteredData(filtered);
   }, [filters, attendanceData]);
 
@@ -216,7 +225,7 @@ const AttendanceTable = () => {
         pageSize,
         sortBy: [
           {
-            id: "date",
+            id: "time_in",
             desc: true,
           },
         ],
@@ -376,6 +385,18 @@ const AttendanceTable = () => {
               </>
             )}
           </div>
+
+          <select
+            name="status"
+            value={filters.status}
+            onChange={handleFilterChange}
+            className="border px-2 py-1 rounded-md mr-2"
+          >
+            <option value="">All</option>
+            <option value="absent">Absent</option>
+            <option value="present">Present</option>
+          </select>
+
           <div className="relative">
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -450,14 +471,14 @@ const AttendanceTable = () => {
                     status === "present"
                       ? "bg-green-200"
                       : status === "late"
-                      ? "bg-green-100"
-                      : status === "leave" ||
-                        status === "sick_leave" ||
-                        status === "casual_leave"
-                      ? "bg-yellow-100"
-                      : status === "absent"
-                      ? "bg-red-100"
-                      : "bg-white";
+                        ? "bg-green-100"
+                        : status === "leave" ||
+                          status === "sick_leave" ||
+                          status === "casual_leave"
+                          ? "bg-yellow-100"
+                          : status === "absent"
+                            ? "bg-red-100"
+                            : "bg-white";
 
                   return (
                     <tr {...row.getRowProps()} className={`text-sm ${rowBgColor}`}>
@@ -524,8 +545,8 @@ const AttendanceTable = () => {
             </select>
           </div>
         </div>
-        
-        
+
+
         <UpdateAttendanceModal
           isOpen={isModalOpen}
           onClose={() =>

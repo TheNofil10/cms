@@ -7,6 +7,19 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
+class Encodings(models.Model):
+    encoding_id = models.AutoField(primary_key=True, db_column='encodingID')  # Mapping to 'encodingID' in the database
+    employee_id = models.IntegerField(null=True, blank=True, db_column='employeeid')  # Mapping to 'employeeid' in the database
+    encoding = models.TextField(null=True, blank=True, db_column='encoding')  # Mapping to 'encoding' in the database
+
+    class Meta:
+        db_table = 'encodings'  # Ensure the table name is 'encodings'
+        verbose_name = 'Encoding'
+        verbose_name_plural = 'Encodings'
+
+    def __str__(self):
+        return f"Encoding {self.encoding_id} for Employee {self.employee_id}"
+
 def employee_image_path(instance, filename):
     return f"profile_images/employees/{instance.id}/{filename}"
 

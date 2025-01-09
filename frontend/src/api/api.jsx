@@ -1,5 +1,6 @@
 const API = "http://localhost:8000/api";
 const SERVER_URL =  "http://localhost:8000";
+const ENCODING_URL =  "http://localhost:8001";
 
 // const API = "http://192.168.62.25:8000/api";
 // const SERVER_URL =  "http://192.168.62.25:8000";
@@ -9,3 +10,4 @@ const SERVER_URL =  "http://localhost:8000";
 
 export default API;
 export { SERVER_URL };
+export { ENCODING_URL };

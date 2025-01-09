@@ -42,6 +42,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import ConfirmationModal from "./ConfirmationModal";
 import API from "../../api/api";
 import UpdateProfileForm from "../employee/UpdateProfileForm";
+import FacialEncoding from "./FacialEncoding";
 
 const AdminEmployeeProfile = () => {
   const { id } = useParams();
@@ -55,6 +56,12 @@ const AdminEmployeeProfile = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [employeeToDelete, setEmployeeToDelete] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [facialData, setFacialData] = useState(null);
+  const [showFacial, setShowFacial] = useState(false);
+
+  const toggleFacial = () => {
+    setShowFacial(!showFacial);
+  };
 
   const generateEmployeeCard = async (employeeId) => {
     try {
@@ -83,48 +90,77 @@ const AdminEmployeeProfile = () => {
 
   const fetchEmployee = async () => {
     try {
-      const employeeResponse = await axios.get(
-        `${API}/employees/${id}/`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
-        }
-      );
+      setLoading(true); // Set loading state
+
+      // Fetch Employee Data
+      const employeeResponse = await axios.get(`${API}/employees/${id}/`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
       setEmployee(employeeResponse.data);
       console.log("Employee data: ", employeeResponse.data);
 
+      // Fetch Department Data
       if (employeeResponse.data.department) {
-        const departmentResponse = await axios.get(
-          `${API}/departments/${employeeResponse.data.department}/`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-            },
-          }
-        );
-        setDepartment(departmentResponse.data);
+        try {
+          const departmentResponse = await axios.get(
+            `${API}/departments/${employeeResponse.data.department}/`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+              },
+            }
+          );
+          setDepartment(departmentResponse.data);
+        } catch (departmentError) {
+          console.error("Error fetching department data: ", departmentError);
+          toast.warn("Failed to load department data. Some details may be missing.");
+        }
       }
 
+      // Fetch Manager Data
       if (employeeResponse.data.manager) {
-        const managerResponse = await axios.get(
-          `${API}/employees/${employeeResponse.data.manager}/`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-            },
-          }
-        );
-        setManager(managerResponse.data);
+        try {
+          const managerResponse = await axios.get(
+            `${API}/employees/${employeeResponse.data.manager}/`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+              },
+            }
+          );
+          setManager(managerResponse.data);
+        } catch (managerError) {
+          console.error("Error fetching manager data: ", managerError);
+          toast.warn("Failed to load manager data. Some details may be missing.");
+        }
       }
+
+      // Fetch Facial Encoding Data
+      try {
+        const facialResponse = await axios.get(`${API}/employee-facial/${id}/`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        });
+        setFacialData(facialResponse.data.encoding_exists); // Assuming a state for facial data
+        console.log("Facial encoding data: ", facialResponse.data);
+      } catch (facialError) {
+        console.log("Facial Error: ", facialError);
+        console.error("Error fetching facial encoding data: ", facialError);
+        toast.warn("Failed to load facial encoding data.");
+      }
+
     } catch (error) {
-      console.error("Error fetching employee:", error);
+      console.error("Error fetching employee data: ", error);
       setError("Unable to fetch employee data.");
-      toast.error("Failed to load employee data");
+      toast.error("Failed to load employee data. Please try again later.");
     } finally {
-      setLoading(false);
+      setLoading(false); // Always stop loading spinner
     }
   };
+
 
   useEffect(() => {
 
@@ -199,14 +235,12 @@ const AdminEmployeeProfile = () => {
           </p>
         </div>
         <div className="flex space-x-3">
-        {!currentUser.is_manager && (
           <button
             onClick={handleUpdateProfile}
             className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700"
           >
             <FaEdit className="inline-block mr-1" /> Edit
           </button>
-          )}
           {currentUser.is_superuser && (
             <button
               onClick={() => handleDeleteEmployee(employee.id, employee.first_name)}
@@ -421,8 +455,6 @@ const AdminEmployeeProfile = () => {
           </div>
         </div>
 
-
-
         {/* Documents */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Documents</h2>
@@ -445,14 +477,44 @@ const AdminEmployeeProfile = () => {
             <p>No documents available</p>
           )}
         </div>
+
+        {/* Facial */}
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <h2 className="text-xl font-semibold mb-4">Employee Facial</h2>
+          {facialData === false ? (
+            <p>Pending</p>
+          ) : facialData ? (
+            <p>Completed</p>
+          ) : (
+            <p>-</p>
+          )}
+        </div>
       </div>
 
       <button
         type="submit"
         onClick={() => generateEmployeeCard(employee.id)}
-        className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200 my-5">
+        className="bg-black text-white p-2 rounded hover:bg-gray-800 transition duration-200 my-5 mr-4">
         Generate Employee Card
       </button>
+
+      {(currentUser.is_hr_manager || currentUser.is_superuser) && (
+        <button
+          type="button"
+          onClick={toggleFacial}
+          className="bg-green-500 text-white p-2 rounded hover:bg-green-600 transition duration-200 my-5"
+        >
+          Update Facial
+        </button>
+      )}
+
+
+      {/* Pass the showFacial state as isOpen and toggleFacial as onClose */}
+      <FacialEncoding
+        isOpen={showFacial}
+        onClose={toggleFacial}
+        employeeId={employee.id} // Example employee name, pass other required props
+      />
 
       {/* Confirmation Modal for Deleting Employee */}
       <ConfirmationModal
@@ -462,15 +524,17 @@ const AdminEmployeeProfile = () => {
         message={`Are you sure you want to delete ${employeeToDelete?.name}? This action cannot be undone.`}
       />
 
-      {isEditing && (
-        <UpdateProfileForm
-          employee={employee}
-          onClose={handleCloseUpdateForm}
-          onUpdate={handleProfileUpdated}
-        />
-      )}
+      {
+        isEditing && (
+          <UpdateProfileForm
+            employee={employee}
+            onClose={handleCloseUpdateForm}
+            onUpdate={handleProfileUpdated}
+          />
+        )
+      }
 
-    </div>
+    </div >
   );
 };
 
