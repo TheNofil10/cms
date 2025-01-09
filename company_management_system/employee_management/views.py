@@ -1480,9 +1480,21 @@ class VoucherListView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        if self.request.user.is_superuser:
-            return Voucher.objects.filter(Q(manager_status="approved") | Q(employee=self.request.user))
+        user = self.request.user
+        print("user is", user)
         
+        # Check if the user belongs to the finance department
+        try:
+            if user.department.name.lower() == "finance":
+                return Voucher.objects.filter(
+                    manager_status="approved",
+                    superuser_status="approved"
+                )
+        except AttributeError:
+             pass 
+        if self.request.user.is_superuser:
+                return Voucher.objects.filter(Q(manager_status="approved") | Q(employee=self.request.user))
+
         if self.request.user.is_manager:
             return Voucher.objects.filter(Q(employee__manager=self.request.user) | Q(employee=self.request.user))
         
