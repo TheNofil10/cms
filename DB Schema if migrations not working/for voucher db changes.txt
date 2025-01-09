@@ -4,6 +4,7 @@ drop table employee_management_voucherdocuments;
 drop table employee_management_voucher;
 
 
+
 CREATE TABLE employee_management_voucher (
 	id INT AUTO_INCREMENT PRIMARY KEY,  -- Auto-increment primary key for voucher
 	department_id BIGINT NOT NULL,
@@ -15,7 +16,7 @@ CREATE TABLE employee_management_voucher (
     project VARCHAR (255) NULL,
     category VARCHAR (30) NOT NULL,
     other_category VARCHAR (255) NULL,
-    reason_for_rejection VARCHAR (255) NULL,
+    remarks VARCHAR (255) NULL,
     manager_status VARCHAR(255) NOT NULL,
     superuser_status VARCHAR(255) NOT NULL,
     archived BOOLEAN NOT NULL,
@@ -24,6 +25,7 @@ CREATE TABLE employee_management_voucher (
 	FOREIGN KEY (employee_id) References employee_management_employee(id),
     FOREIGN KEY (head_of_department_id) References employee_management_employee(id)
 );
+
 
 
 CREATE TABLE employee_management_voucherdocuments (

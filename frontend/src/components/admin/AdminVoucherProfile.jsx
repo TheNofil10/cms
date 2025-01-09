@@ -68,8 +68,8 @@ const AdminVoucherProfile = () => {
     if (!voucherToArchive) return;
 
     try {
-      if (voucher.archived) throw new Error ("Archive Failed: Voucher is already archived")
-      if(voucher.manager_status !== "rejected" && voucher.superuser_status === 'pending') throw new error(`Archive Failed: voucher is still pending. Please approve or reject`)
+      if (voucher.archived) throw new Error("Archive Failed: Voucher is already archived")
+      if(voucher.manager_status !== "rejected" && voucher.superuser_status === 'pending') throw new Error(`Archive Failed: voucher is still pending. Please approve or reject`)
         console.log(voucher);
       await axios.put(`${API}/vouchers/${voucher.id}/`, {...voucher, archived: true}, {
         headers: {
@@ -80,7 +80,7 @@ const AdminVoucherProfile = () => {
       toast.success("Voucher archived successfully");
       navigate("/admin/vouchers");
     } catch (error) {
-      toast.error("Error archiving voucher");
+      toast.error(error.message);
     } finally {
       setShowConfirmArchiveModal(false);
       setVoucherToArchive(null);

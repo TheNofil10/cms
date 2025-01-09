@@ -158,12 +158,9 @@ const AddVoucher = () => {
  
   const handleCreate = (e) => {
     e.preventDefault();
-    console.log(formData);
     setLoading(true);
   
     const formDataObj = new FormData();
-
-    console.log(formData);
     
     // Loop through formData and append necessary fields
     Object.keys(formData).forEach((key) => {
