@@ -35,6 +35,7 @@ const AddVoucher = () => {
           }
         );
         setDepartments(response.data.results || response.data || []);
+        if (response.data.length === 1) updateDepartmentDetails(0)
       } catch (error) {
         console.error("Error fetching departments:", error);
         setError("There was an error fetching the department data.");
@@ -371,7 +372,7 @@ const AddVoucher = () => {
                 </div>
               </div>
               
-              <div className="flex justify-between">
+              <div className="flex justify-end">
                 <button
                   type="button"
                   onClick={handleNextStep}
