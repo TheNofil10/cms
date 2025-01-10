@@ -266,7 +266,7 @@ const AdminVoucherProfile = () => {
         message={`Are you sure you want to Approve this voucher? This action cannot be undone.`}
       >
         <p>Are you sure you want to Approve this voucher?</p>
-        <input
+        <textarea
             value={remarks}
             className="w-full p-2 bg-gray-200 border-none outline-none"
             onChange={(event) => setRemarks(event.target.value)}
@@ -282,7 +282,7 @@ const AdminVoucherProfile = () => {
         message={`Are you sure you want to reject this voucher? This action cannot be undone.`}
       >
           <p>Please enter a reason for rejecting the voucher?</p>
-          <input
+          <textarea
             value={remarks}
             className="w-full p-2 bg-gray-200 border-none outline-none"
             onChange={(event) => setRemarks(event.target.value)}

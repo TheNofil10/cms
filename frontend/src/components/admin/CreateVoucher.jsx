@@ -363,9 +363,9 @@ const AddVoucher = () => {
 
               <div className="mb-4">
                 <label className="block text-sm mb-2">Reason *</label>
-                <div className="flex items-center bg-gray-200 rounded">
+                <div className="flex bg-gray-200 rounded">
                   <FaAddressCard className="m-2" />
-                  <input
+                  <textarea
                     type="text"
                     name="reason"
                     value={formData.reason}
