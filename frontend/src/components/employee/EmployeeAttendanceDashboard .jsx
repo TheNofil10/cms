@@ -16,7 +16,7 @@ const EmployeeAttendanceDashboard = () => {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
   });
-  
+
   const [endDate, setEndDate] = useState(
     new Date().toISOString().split("T")[0]
   );
@@ -24,6 +24,7 @@ const EmployeeAttendanceDashboard = () => {
   useEffect(() => {
     const fetchAttendanceData = async () => {
       try {
+        // Fetching attendance stats
         const statsResponse = await axios.get(
           `${API}/attendance/stats/employee/`,
           {
@@ -38,10 +39,27 @@ const EmployeeAttendanceDashboard = () => {
         );
         setStats(statsResponse.data);
         console.log(statsResponse.data);
+      } catch (error) {
+        console.error("Error fetching attendance stats:", error);
+        if (error.response) {
+          // Server responded with a status other than 2xx
+          toast.error(
+            `Error fetching stats: ${error.response.status} - ${error.response.data.message || "Server Error"}`
+          );
+        } else if (error.request) {
+          // Request was made but no response received
+          toast.error("Error fetching stats: No response from server");
+        } else {
+          // Other errors
+          toast.error(`Error fetching stats: ${error.message}`);
+        }
+        return; // Stop execution if stats fetching fails
+      }
 
+      try {
         // Fetching attendance data
         const attendanceResponse = await axios.get(
-           ` ${API}/attendance/ `,
+          `${API}/attendance/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -62,10 +80,22 @@ const EmployeeAttendanceDashboard = () => {
 
         setAttendanceData(filteredData);
       } catch (error) {
-        toast.error("Error fetching attendance data");
         console.error("Error fetching attendance data:", error);
+        if (error.response) {
+          // Server responded with a status other than 2xx
+          toast.error(
+            `Error fetching attendance: ${error.response.status} - ${error.response.data.message || "Server Error"}`
+          );
+        } else if (error.request) {
+          // Request was made but no response received
+          toast.error("Error fetching attendance: No response from server");
+        } else {
+          // Other errors
+          toast.error(`Error fetching attendance: ${error.message}`);
+        }
       }
     };
+
 
     fetchAttendanceData();
   }, [currentUser, startDate, endDate]);
@@ -224,7 +254,7 @@ const EmployeeAttendanceDashboard = () => {
         </div>
       </div>
 
-      
+
     </div>
   );
 };
