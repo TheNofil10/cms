@@ -1487,13 +1487,16 @@ class VoucherListView(viewsets.ModelViewSet):
         try:
             if user.department.name.lower() == "finance":
                 return Voucher.objects.filter(
-                    manager_status="approved",
-                    superuser_status="approved"
+                    ~Q(manager_status="rejected")
+                    & Q(superuser_status="approved")
                 )
+                
         except AttributeError:
-             pass 
+             pass
+         
         if self.request.user.is_superuser:
-                return Voucher.objects.filter(Q(manager_status="approved") | Q(employee=self.request.user))
+                # voucher.objects.filter(employee_id -> employee -> employee.is_manager)
+                return Voucher.objects.filter(Q(manager_status="approved") | Q(employee=self.request.user) | Q(employee__is_manager=True))
 
         if self.request.user.is_manager:
             return Voucher.objects.filter(Q(employee__manager=self.request.user) | Q(employee=self.request.user))
