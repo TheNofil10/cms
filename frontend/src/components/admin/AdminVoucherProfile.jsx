@@ -104,8 +104,14 @@ const AdminVoucherProfile = () => {
       if(voucher.manager_status != "pending" && currentUser.is_manager) throw new Error(`Approval Failed: voucher already ${voucher.manager_status}`)
       if (voucher.superuser_status != 'pending' && currentUser.is_superuser) throw new Error(`Approval Failed: Voucher already ${voucher.manager_status}`)
 
-      const voucherUpdate = currentUser.is_manager ? {...voucher, manager_status: "approved", remarks: remarks} : {...voucher, superuser_status: "approved", remarks: remarks}
-      await axios.put(`${API}/vouchers/${id}/`, voucherUpdate, {
+      const updatedVoucher = {
+        ...voucher,
+        remarks,
+        ...(currentUser.is_manager && { manager_status: "approved", manager_remarks: remarks }),
+        ...(currentUser.is_superuser && { superuser_status: "approved", admin_remarks: remarks }),
+      };
+        
+      await axios.put(`${API}/vouchers/${id}/`, updatedVoucher, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'multipart/form-data',
@@ -130,9 +136,15 @@ const AdminVoucherProfile = () => {
       if(voucher.superuser_status != 'pending' && currentUser.is_superuser) throw new Error(`Rejection Failed: voucher already ${voucher.manager_status}`)
       if(!remarks) throw new error ("you have to give a reason for rejection")
       
+      const updatedVoucher = {
+        ...voucher,
+        remarks,
+        ...(currentUser.is_manager && { manager_status: "rejected", manager_remarks: remarks }),
+        ...(currentUser.is_superuser && { superuser_status: "rejected", admin_remarks: remarks }),
+      };
       
-      const voucherUpdate = currentUser.is_manager ? {...voucher, manager_status: "rejected", remarks: remarks, status: 0} : {...voucher, superuser_status: "rejected", remarks: remarks, status: 0}
-      await axios.put(`${API}/vouchers/${id}/`, {...voucherUpdate, remarks: remarks}, {
+      // const voucherUpdate = currentUser.is_manager ? {...voucher, manager_status: "rejected", remarks: remarks, status: 0} : {...voucher, superuser_status: "rejected", remarks: remarks, status: 0}
+      await axios.put(`${API}/vouchers/${id}/`, {...updatedVoucher, remarks: remarks}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           'Content-Type': 'multipart/form-data',
@@ -216,12 +228,26 @@ const AdminVoucherProfile = () => {
           <h2 className="text-xl font-semibold mb-2">Manager Status:</h2>
           <StatusImage className="inline-block-mr-2 mb-4" status={voucher.manager_status}/>
 
+          {voucher.manager_remarks && (
+            <>
+              <h2 className="text-xl font-semibold">Manager Remarks: </h2>
+              <p className="mb-4">{`${voucher.manager_remarks}`}</p>
+            </>
+          )}
+
           <h2 className="text-xl font-semibold mb-2">Admin Status:</h2>
           <StatusImage className="inline-block-mr-2 mb-4" status={voucher.superuser_status}/>
           {voucher.remarks && (
             <>
               <h2 className="text-xl font-semibold">Remarks: </h2>
               <p className="mb-4">{`${voucher.remarks}`}</p>
+            </>
+          )}
+
+          {voucher.admin_remarks && (
+            <>
+              <h2 className="text-xl font-semibold">Admin Remarks: </h2>
+              <p className="mb-4">{`${voucher.admin_remarks}`}</p>
             </>
           )}
         </div>
