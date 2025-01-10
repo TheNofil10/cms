@@ -955,15 +955,47 @@ class AppAttendanceViewSet(viewsets.ModelViewSet):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def apply_leave(request):
-    employee = request.user
     data = request.data
-    leave = Leave.objects.create(
-        employee=employee,
-        leave_type=data["leave_type"],
-        start_date=data["start_date"],
-        end_date=data["end_date"],
-        reason=data["reason"],
-    )
+
+    employee = request.user
+    requested_leave_type = data["leave_type"]
+    print("requested leave type is ",requested_leave_type)
+    employeedata = Employee.objects.get(id=employee.id)
+    print("employee data is ",employeedata.remaining_anaual_leave)
+    if requested_leave_type == "Annual Leave":
+        print("Checking if user has remaining leave days...")
+        if employeedata.remaining_anaual_leave == 0:
+            print("User has no remaining leave days.")
+            return Response(
+                {"detail": "You have no remaining annual leave days."}
+            )
+        else:
+            print("User has remaining leave days.")
+            print("remaining leaves are ",employeedata.remaining_anaual_leave)
+            
+            print("employement date is ",employeedata.employment_date)
+            print("current date is ",employeedata.employment_date + timedelta(days=365))
+            print("current date is ",timezone.now().date())
+            #checking if 1 year has passed when the employee joined
+            if employeedata.employment_date + timedelta(days=365) > timezone.now().date():
+                print("1 year has passed since employee joined")
+                newanualleaves = employeedata.remaining_anaual_leave - 1
+                employeedata.remaining_anaual_leave = newanualleaves
+                employeedata.save()
+                print("new leaves are ",employeedata.remaining_anaual_leave)
+            else:
+                print("1 year has not passed since employee joined")
+
+
+
+            
+    # leave = Leave.objects.create(
+    #     employee=employee,
+    #     leave_type=data["leave_type"],
+    #     start_date=data["start_date"],
+    #     end_date=data["end_date"],
+    #     reason=data["reason"],
+    # )
     return Response(
         {"detail": "Leave request submitted successfully."},
         status=status.HTTP_201_CREATED,

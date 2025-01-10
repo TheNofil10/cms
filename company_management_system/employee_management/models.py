@@ -135,6 +135,9 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     spouse_date_of_birth = models.DateField(blank=True)
     spouse_relationship = models.CharField(max_length=255,blank=True)
     spouse_cnic = models.CharField(max_length=15,blank=True)
+    remaining_anaual_leave = models.IntegerField(default=15)
+   # remaining_sick_leave = models.IntegerField(default=8)
+    #remaining_casual_leave = models.IntegerField(default=10)
     
     
     USERNAME_FIELD = "username"
@@ -411,8 +414,6 @@ class Leave(models.Model):
         ('sick_leave', 'Sick Leave'),
         ('casual_leave', 'Casual Leave'),
         ('annual_leave', 'Annual Leave'),
-        ('maternity_leave', 'Maternity Leave'),
-        ('paternity_leave', 'Paternity Leave'),
     ]
     
     employee = models.ForeignKey('Employee', on_delete=models.CASCADE)
