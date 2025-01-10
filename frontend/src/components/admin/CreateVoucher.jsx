@@ -19,8 +19,6 @@ const SERVER_URL = API;
 const AddVoucher = () => {
   const { currentUser } = useAuth();
   const [departments, setDepartments] = useState([]);
-  const [employees, setEmployees] = useState([]);
-  const [error, setError] = useState("");
   const [departmentHead, setDepartmentHead] = useState([]);
 
   useEffect(() => {
@@ -41,34 +39,12 @@ const AddVoucher = () => {
         }
       } catch (error) {
         console.error("Error fetching departments:", error);
-        setError("There was an error fetching the department data.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchDepartments();
-
-    const fetchEmployees = async () => {
-      try {
-        const response = await axios.get(
-          `${API}/employees/`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-            },
-          }
-        );
-        setEmployees(response.data.results || response.data || []);
-      } catch (error) {
-        console.error("Error fetching employees:", error);
-        setError("There was an error fetching the employee data.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEmployees();
 }, []);
 
   const [formData, setFormData] = useState({

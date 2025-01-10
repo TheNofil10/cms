@@ -8,7 +8,6 @@ import {
   FaBuilding,
   FaIdCard,
   FaBriefcase,
-  FaGripLines,
   FaMoneyBillWave 
 } from "react-icons/fa";
 import { IoMdArchive } from "react-icons/io";
@@ -138,7 +137,6 @@ const AdminVoucherProfile = () => {
       
       const updatedVoucher = {
         ...voucher,
-        remarks,
         ...(currentUser.is_manager && { manager_status: "rejected", manager_remarks: remarks }),
         ...(currentUser.is_superuser && { superuser_status: "rejected", admin_remarks: remarks }),
       };
@@ -209,7 +207,7 @@ const AdminVoucherProfile = () => {
       <div className="grid grid-cols-2 gap-8">
 
         {/* Voucher Information */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-6 rounded-lg shadow-sm h-80 max-h-80 overflow-y-auto">
           <h2 className="text-xl font-bold mb-4">Voucher Information</h2>
           <p><FaIdCard className="inline-block mr-2" /><b> Voucher ID: </b>{`${voucher.id}`}</p>
           <p><FaUserShield className="inline-block mr-2" /><b> Created By: </b>{`${voucher.employee_first_name} ${voucher.employee_middle_name} ${voucher.employee_last_name}`}</p>
@@ -223,8 +221,9 @@ const AdminVoucherProfile = () => {
         </div>
 
         {/* Status and Remarks */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-6 rounded-lg shadow-sm h-80 max-h-80 overflow-y-auto">
           <h1 className="text-xl font-bold mb-4">Status and Remarks</h1>
+
           <h2 className="text-xl font-semibold mb-2">Manager Status:</h2>
           <StatusImage className="inline-block-mr-2 mb-4" status={voucher.manager_status}/>
 
@@ -237,12 +236,6 @@ const AdminVoucherProfile = () => {
 
           <h2 className="text-xl font-semibold mb-2">Admin Status:</h2>
           <StatusImage className="inline-block-mr-2 mb-4" status={voucher.superuser_status}/>
-          {voucher.remarks && (
-            <>
-              <h2 className="text-xl font-semibold">Remarks: </h2>
-              <p className="mb-4">{`${voucher.remarks}`}</p>
-            </>
-          )}
 
           {voucher.admin_remarks && (
             <>
@@ -253,13 +246,13 @@ const AdminVoucherProfile = () => {
         </div>
 
         {/* Reason */}
-        <div className="bg-white p-6 rounded-lg shadow-sm h-60 max-h-60 overflow-y-auto">
+        <div className="bg-white p-6 rounded-lg shadow-sm h-80 max-h-80 overflow-y-auto">
           <h1 className="text-xl font-bold mb-4">Reason for Voucher</h1>
           <p>{`${voucher.reason}`}</p>
         </div>
 
         {/* Documents */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-6 rounded-lg shadow-sm h-80 max-h-80 overflow-y-auto">
           <h2 className="text-xl font-bold mb-">Documents</h2>
           {voucher.documents && voucher.documents.length > 0 ? (
             <ul>
