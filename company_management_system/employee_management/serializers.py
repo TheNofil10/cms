@@ -332,7 +332,6 @@ class VoucherSerializer(serializers.ModelSerializer):
         ]
         
     def create(self, validated_data):
-        validated_data['status'] = 0
         return super().create(validated_data)
 
 

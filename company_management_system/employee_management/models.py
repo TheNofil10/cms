@@ -522,7 +522,6 @@ class Voucher(models.Model):
     category = models.CharField(max_length=30, null=False)
     other_category = models.CharField(max_length=100, null=True)
     status = models.ForeignKey(VoucherStatus, default=1, on_delete=models.CASCADE, related_name="voucher_status", null=False)
-    remarks = models.TextField(default=None, null=True)
     manager_remarks = models.TextField(default=None, null=True)
     admin_remarks = models.TextField(default=None, null=True)
     archived = models.BooleanField(default=False, null=False)
