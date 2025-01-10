@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import {
   FaAddressCard,
   FaCalendar,
-  FaDollarSign,
+  FaMoneyBillWave,
   FaUserShield,
   FaSpinner,
 } from "react-icons/fa";
@@ -298,7 +298,7 @@ const AddVoucher = () => {
               <div className="mb-4">
                 <label className="block text-sm mb-2">Amount *</label>
                 <div className="flex items-center bg-gray-200 rounded">
-                  <FaDollarSign className="m-2" />
+                  <FaMoneyBillWave className="m-2" />
                   <input
                     type="text"
                     name="amount"

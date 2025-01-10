@@ -8,9 +8,8 @@ import {
   FaBuilding,
   FaIdCard,
   FaBriefcase,
-  FaTrash,
-  FaDollarSign,
   FaGripLines,
+  FaMoneyBillWave 
 } from "react-icons/fa";
 import { IoMdArchive } from "react-icons/io";
 import { useAuth } from "../../contexts/AuthContext";
@@ -101,10 +100,11 @@ const AdminVoucherProfile = () => {
     if (!voucherToApprove) return;
 
     try {
+      if(!currentUser.is_manager && !currentUser.is_superuser) throw new Error("You must be a manager or superuser to reject vouchers")
       if(voucher.manager_status != "pending" && currentUser.is_manager) throw new Error(`Approval Failed: voucher already ${voucher.manager_status}`)
       if (voucher.superuser_status != 'pending' && currentUser.is_superuser) throw new Error(`Approval Failed: Voucher already ${voucher.manager_status}`)
 
-      const voucherUpdate = currentUser.is_manager ? {...voucher, manager_status: "approved"} : {...voucher, superuser_status: "approved"}
+      const voucherUpdate = currentUser.is_manager ? {...voucher, manager_status: "approved", remarks: remarks} : {...voucher, superuser_status: "approved", remarks: remarks}
       await axios.put(`${API}/vouchers/${id}/`, voucherUpdate, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -125,11 +125,13 @@ const AdminVoucherProfile = () => {
     if (!voucherToReject) return;
 
     try {
+      if(!currentUser.is_manager && !currentUser.is_superuser) throw new Error("You must be a manager or superuser to reject vouchers")
       if(voucher.manager_status != "pending" && currentUser.is_manager) throw new Error(`Rejection Failed: Voucher already ${voucher.manager_status}`)
-      if (voucher.superuser_status != 'pending' && currentUser.is_superuser) throw new Error(`Rejection Failed: voucher already ${voucher.manager_status}`)
-      if (!remarks) throw new error ("you have to give a reason for rejection")
-
-      const voucherUpdate = currentUser.is_manager ? {...voucher, manager_status: "rejected"} : {...voucher, superuser_status: "rejected"}
+      if(voucher.superuser_status != 'pending' && currentUser.is_superuser) throw new Error(`Rejection Failed: voucher already ${voucher.manager_status}`)
+      if(!remarks) throw new error ("you have to give a reason for rejection")
+      
+      
+      const voucherUpdate = currentUser.is_manager ? {...voucher, manager_status: "rejected", remarks: remarks, status: 0} : {...voucher, superuser_status: "rejected", remarks: remarks, status: 0}
       await axios.put(`${API}/vouchers/${id}/`, {...voucherUpdate, remarks: remarks}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -207,7 +209,7 @@ const AdminVoucherProfile = () => {
           <p><FaCalendarCheck className="inline-block mr-2" /><b> Date Created: </b>{`${voucher.date}`}</p>
           <p><FaBriefcase className="inline-block mr-2" /><b> Project: </b>{`${voucher.project}`}</p>
           <p><FaBriefcase className="inline-block mr-2" /><b> Category: </b>{voucher.category? voucher.category : voucher.other_category}</p>
-          <p><FaDollarSign className="inline-block mr-2" /><b> Amount: </b>{`PKR ${voucher.amount}`}</p>
+          <p><FaMoneyBillWave className="inline-block mr-2" /><b> Amount: </b>{`PKR ${voucher.amount}`}</p>
           <p><FaGripLines className="inline-block mr-2" /><b> Reason: </b>{`${voucher.reason}`}</p>
         </div>
 
@@ -219,9 +221,9 @@ const AdminVoucherProfile = () => {
 
           <h2 className="text-xl font-semibold mb-2">Admin Status:</h2>
           <StatusImage className="inline-block-mr-2 mb-4" status={voucher.superuser_status}/>
-          {(voucher.manager_status === "rejected" || voucher.superuser_status === 'rejected') && (
+          {voucher.remarks && (
             <>
-              <h2 className="text-xl font-semibold">Reason for Rejection: </h2>
+              <h2 className="text-xl font-semibold">Remarks: </h2>
               <p className="mb-4">{`${voucher.remarks}`}</p>
             </>
           )}

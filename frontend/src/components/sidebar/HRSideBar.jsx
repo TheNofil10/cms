@@ -1,6 +1,6 @@
 import React from "react";
 import Sidebar, { SidebarItem } from "./Sidebar";
-import { FaHome, FaUsers, FaCalendarAlt, FaUser, FaDollarSign, FaBriefcase, FaBuilding } from "react-icons/fa";
+import { FaHome, FaUsers, FaCalendarAlt, FaUser, FaMoneyBillWave, FaBriefcase, FaBuilding } from "react-icons/fa";
 import { MdOutlineCardGiftcard } from "react-icons/md";
 import { Settings, LogOut } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
@@ -13,7 +13,7 @@ const HRSideBar = ({ expanded, onToggle }) => {
       <SidebarItem icon={<FaHome />} text="Dashboard" to="/hr/dashboard" />
       <SidebarItem icon={<FaBriefcase />} text="Job Postings" to="/hr/job-postings" />
       <SidebarItem icon={<FaCalendarAlt />} text="Attendance" to="/hr/attendance" />
-      <SidebarItem icon={<FaDollarSign />} text="Payroll" to="/hr/payroll" />
+      <SidebarItem icon={<FaMoneyBillWave />} text="Payroll" to="/hr/payroll" />
       <SidebarItem icon={<FaUsers />} text="Employees List" to="/hr/employees" />
       <SidebarItem icon={<MdOutlineCardGiftcard />} text="Vouchers" to="/hr/vouchers" />
       <SidebarItem icon={<FaBuilding />} text="Departments List" to="/hr/departments" />

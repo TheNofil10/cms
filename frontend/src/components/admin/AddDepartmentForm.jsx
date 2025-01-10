@@ -6,7 +6,7 @@ import {
   FaInfoCircle,
   FaPhone,
   FaMapMarkerAlt,
-  FaDollarSign,
+  FaMoneyBillWave,
   FaCalendar,
   FaEnvelope,
   FaUser,
@@ -191,7 +191,7 @@ const AddDepartmentForm = () => {
               <div className="mb-4">
                 <label className="block text-sm mb-2">Budget</label>
                 <div className="flex items-center bg-gray-200 rounded">
-                  <FaDollarSign className="m-2" />
+                  <FaMoneyBillWave className="m-2" />
                   <input
                     type="number"
                     name="budget"

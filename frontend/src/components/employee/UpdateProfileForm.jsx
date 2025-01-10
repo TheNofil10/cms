@@ -13,7 +13,7 @@ import {
   FaUpload,
   FaSpinner,
   FaCalendar,
-  FaDollarSign,
+  FaMoneyBillWave,
   FaUserShield,
   FaToggleOn,
   FaToggleOff,
@@ -967,7 +967,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
             <div className="mb-4 w-full lg:w-1/2">
               <label className="block text-sm mb-2">Salary</label>
               <div className="flex items-center bg-gray-200 rounded">
-                <FaDollarSign className="m-2" />
+                <FaMoneyBillWave className="m-2" />
                 <input
                   type="text"
                   name="salary"
