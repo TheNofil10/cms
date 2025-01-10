@@ -14,7 +14,7 @@ import { IoMdArchive } from "react-icons/io";
 import { useAuth } from "../../contexts/AuthContext";
 import ConfirmationModal from "./ConfirmationModal";
 import API from "../../api/api";
-import StatusImage from "./StatusImage";
+import Status from "./Status";
 
 const AdminVoucherProfile = () => {
   const { id } = useParams();
@@ -67,7 +67,7 @@ const AdminVoucherProfile = () => {
 
     try {
       if (voucher.archived) throw new Error("Archive Failed: Voucher is already archived")
-      if(voucher.manager_status !== "rejected" && voucher.superuser_status === 'pending') throw new Error(`Archive Failed: voucher is still pending. Please approve or reject`)
+      if(voucher.status_stage !== "ready for collection" && voucher.status_stage !== "rejected") throw new Error(`Archive Failed: voucher is still pending. Please approve or reject`)
         console.log(voucher);
       await axios.put(`${API}/vouchers/${voucher.id}/`, {...voucher, archived: true}, {
         headers: {
@@ -100,14 +100,19 @@ const AdminVoucherProfile = () => {
 
     try {
       if(!currentUser.is_manager && !currentUser.is_superuser) throw new Error("You must be a manager or superuser to reject vouchers")
-      if(voucher.manager_status != "pending" && currentUser.is_manager) throw new Error(`Approval Failed: voucher already ${voucher.manager_status}`)
-      if (voucher.superuser_status != 'pending' && currentUser.is_superuser) throw new Error(`Approval Failed: Voucher already ${voucher.manager_status}`)
+      if((currentUser.is_manager && voucher.status >= 2) || (currentUser.is_superuser && voucher.status >= 3)) {
+        throw new Error("Voucher is already being processed")
+      }
+      if(voucher.status === 0) {
+        throw new Error("Voucher has already been rejected")
+      }
 
       const updatedVoucher = {
         ...voucher,
         remarks,
-        ...(currentUser.is_manager && { manager_status: "approved", manager_remarks: remarks }),
-        ...(currentUser.is_superuser && { superuser_status: "approved", admin_remarks: remarks }),
+        status: voucher.status + 1,
+        ...(currentUser.is_manager && { status: 2, manager_remarks: remarks }),
+        ...(currentUser.is_superuser && { status: 3, admin_remarks: remarks }),
       };
         
       await axios.put(`${API}/vouchers/${id}/`, updatedVoucher, {
@@ -131,17 +136,18 @@ const AdminVoucherProfile = () => {
 
     try {
       if(!currentUser.is_manager && !currentUser.is_superuser) throw new Error("You must be a manager or superuser to reject vouchers")
-      if(voucher.manager_status != "pending" && currentUser.is_manager) throw new Error(`Rejection Failed: Voucher already ${voucher.manager_status}`)
-      if(voucher.superuser_status != 'pending' && currentUser.is_superuser) throw new Error(`Rejection Failed: voucher already ${voucher.manager_status}`)
+      if(voucher.status === 0) {
+        throw new Error("Voucher has already been rejected")
+      }
       if(!remarks) throw new error ("you have to give a reason for rejection")
       
       const updatedVoucher = {
         ...voucher,
-        ...(currentUser.is_manager && { manager_status: "rejected", manager_remarks: remarks }),
-        ...(currentUser.is_superuser && { superuser_status: "rejected", admin_remarks: remarks }),
+        status: 0,
+        ...(currentUser.is_manager && { manager_remarks: remarks }),
+        ...(currentUser.is_superuser && { admin_remarks: remarks }),
       };
       
-      // const voucherUpdate = currentUser.is_manager ? {...voucher, manager_status: "rejected", remarks: remarks, status: 0} : {...voucher, superuser_status: "rejected", remarks: remarks, status: 0}
       await axios.put(`${API}/vouchers/${id}/`, {...updatedVoucher, remarks: remarks}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -173,7 +179,7 @@ const AdminVoucherProfile = () => {
         <div className="flex justify-end space-x-3">
           {(currentUser.is_superuser || currentUser.is_manager) && (
             <>
-            {!(voucher.manager_status !== "rejected" && voucher.superuser_status === 'pending') && !voucher.archived && (
+            {(voucher.status_stage === 'rejected' || voucher.status_stage === 'ready for collection') && !voucher.archived && (
               <button
                 onClick={() => handleArchiveVoucher(voucher.id)}
                 className="bg-yellow-600 text-white px-4 py-2 rounded-full hover:bg-yellow-700"
@@ -182,7 +188,7 @@ const AdminVoucherProfile = () => {
               </button>
             )}
             
-            {!(voucher.manager_status != "pending" && currentUser.is_manager) && !(voucher.superuser_status != 'pending' && currentUser.is_superuser) && (
+            {!(voucher.status >= 2 && currentUser.is_manager) && !(voucher.status >= 3 && currentUser.is_superuser) && (
               <>
                 <button
                   onClick={() => handleApproveVoucher(voucher.id)}
@@ -224,8 +230,8 @@ const AdminVoucherProfile = () => {
         <div className="bg-white p-6 rounded-lg shadow-sm h-80 max-h-80 overflow-y-auto">
           <h1 className="text-xl font-bold mb-4">Status and Remarks</h1>
 
-          <h2 className="text-xl font-semibold mb-2">Manager Status:</h2>
-          <StatusImage className="inline-block-mr-2 mb-4" status={voucher.manager_status}/>
+          <h2 className="text-xl font-semibold mb-2">Status:</h2>
+          <Status className="inline-block-mr-2 mb-4" status={voucher.status_stage}/>
 
           {voucher.manager_remarks && (
             <>
@@ -233,9 +239,6 @@ const AdminVoucherProfile = () => {
               <p className="mb-4">{`${voucher.manager_remarks}`}</p>
             </>
           )}
-
-          <h2 className="text-xl font-semibold mb-2">Admin Status:</h2>
-          <StatusImage className="inline-block-mr-2 mb-4" status={voucher.superuser_status}/>
 
           {voucher.admin_remarks && (
             <>

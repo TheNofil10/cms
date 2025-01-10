@@ -503,6 +503,11 @@ class ComplianceReport(models.Model):
 
     def __str__(self):
         return self.report_name
+
+
+class VoucherStatus(models.Model):
+    id = models.IntegerField(primary_key=True)
+    status = models.CharField(max_length=20, null=False)    
     
     
 class Voucher(models.Model):
@@ -518,7 +523,7 @@ class Voucher(models.Model):
     other_category = models.CharField(max_length=100, null=True)
     manager_status = models.CharField(max_length=20, default='pending', null=False)
     superuser_status = models.CharField(max_length=20, default='pending', null=False)
-    status = models.CharField(max_length=20, default='Stage 1', null=False)
+    status = models.ForeignKey(VoucherStatus, default=1, on_delete=models.CASCADE, related_name="voucher_status", null=False)
     remarks = models.TextField(default=None, null=True)
     manager_remarks = models.TextField(default=None, null=True)
     admin_remarks = models.TextField(default=None, null=True)

@@ -1487,8 +1487,7 @@ class VoucherListView(viewsets.ModelViewSet):
         try:
             if user.department.name.lower() == "finance":
                 return Voucher.objects.filter(
-                    ~Q(manager_status="rejected")
-                    & Q(superuser_status="approved")
+                    Q(status__gte=3)
                 )
                 
         except AttributeError:
@@ -1496,7 +1495,7 @@ class VoucherListView(viewsets.ModelViewSet):
          
         if self.request.user.is_superuser:
                 # voucher.objects.filter(employee_id -> employee -> employee.is_manager)
-                return Voucher.objects.filter(Q(manager_status="approved") | Q(employee=self.request.user) | Q(employee__is_manager=True))
+                return Voucher.objects.filter(Q(status__gte=2) | Q(status=0) | Q(employee=self.request.user) | Q(employee__is_manager=True))
 
         if self.request.user.is_manager:
             return Voucher.objects.filter(Q(employee__manager=self.request.user) | Q(employee=self.request.user))
@@ -1544,6 +1543,7 @@ class VoucherDocumentViewSet(viewsets.ModelViewSet):
             document = self.request.FILES["document"]
             # Save the document
             serializer.save(document=document)
+
 
 class GenerateEmployeeCardView(View):
     def get(self, request, employee_id):

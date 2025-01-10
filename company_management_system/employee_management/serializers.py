@@ -24,6 +24,7 @@ from .models import (
     Dependent,
     Voucher,
     VoucherDocuments,
+    VoucherStatus
 )
 
 class EmployeeDocumentsSerializer(serializers.ModelSerializer):
@@ -319,6 +320,7 @@ class VoucherSerializer(serializers.ModelSerializer):
     documents = VoucherDocumentSerializer(many=True, read_only=True)
     head_of_department_first_name = serializers.CharField(source='head_of_department.first_name', read_only=True)
     head_of_department_last_name = serializers.CharField(source='head_of_department.last_name', read_only=True)
+    status_stage = serializers.CharField(source='status.status', read_only=True)
     
     class Meta:
         model = Voucher
@@ -326,10 +328,16 @@ class VoucherSerializer(serializers.ModelSerializer):
             'id', 'department', 'employee','department_name', 'employee_first_name', 'employee_middle_name', 'employee_last_name',
             'date', 'amount', 'reason', 'project', 'category', 'other_category', 'manager_status', 'superuser_status', 'documents', 
             'archived', 'head_of_department', 'head_of_department_first_name', 'head_of_department_last_name', 'manager_remarks',
-            'admin_remarks', 'status'
+            'admin_remarks', 'status', 'status_stage'
         ]
         
     def create(self, validated_data):
         validated_data['manager_status'] = 'pending'
         validated_data['superuser_status'] = 'pending'
         return super().create(validated_data)
+
+
+class StatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VoucherStatus
+        fields = "__all__"

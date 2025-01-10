@@ -33,7 +33,7 @@ import * as pdfFonts from "pdfmake/build/vfs_fonts";
 import ConfirmationModal from "./ConfirmationModal";
 import { useAuth } from "../../contexts/AuthContext";
 import API from "../../api/api";
-import StatusImage from "./StatusImage";
+import Status from "./Status";
 
 // Initialize pdfMake with fonts
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -116,13 +116,7 @@ const VoucherList = () => {
       {
         Header: "Manager Status",
         Cell: ({ row }) => (
-          <StatusImage status={row.original.manager_status}/>
-        ),
-      },
-      {
-        Header: "Admin Status",
-        Cell: ({ row }) => (
-          <StatusImage status={row.original.superuser_status}/>
+          <Status status={row.original.status_stage}/>
         ),
       },
       {
@@ -140,7 +134,7 @@ const VoucherList = () => {
               <button
                 className="text-yellow-600 disabled:text-gray-300 disabled:hover:text-gray-300 hover:text-red-800 bg-transparent border-none"
                 onClick={() => handleArchiveVoucher(row.original.id)}
-                disabled={row.original.manager_status !== "rejected" && row.original.superuser_status === 'pending'}
+                disabled={row.original.status_stage !== 'rejected' && row.original.satus_change ==='ready for collection'}
             >
                 <IoMdArchive />
               </button>
@@ -199,8 +193,9 @@ const VoucherList = () => {
 
     try {
       if (voucher.archived) throw new Error("Archive Failed: Voucher is already archived")
-      if(voucher.manager_status !== "rejected" && voucher.superuser_status === 'pending') throw new Error(`Archive Failed: voucher is still pending. Please approve or reject`)
-        console.log(voucher);
+      if(voucher.status_stage !== "ready for collection" && voucher.status_stage !== "rejected") throw new Error(`Archive Failed: voucher is still pending. Please approve or reject`)
+      console.log(voucher);
+
       await axios.put(`${API}/vouchers/${voucher.id}/`, {...voucher, archived: true}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -249,18 +244,19 @@ const VoucherList = () => {
       content: filteredData.map((voucher) => ({
         columns: [
           { text: voucher.id, fontSize: 10 , width:"7%"},
-          { text: voucher.employee_first_name, fontSize: 10, width:"8%" },
-          { text: voucher.employee_middle_name, fontSize: 10, width:"8%" },
-          { text: voucher.employee_last_name, fontSize: 10, width:"8%" },
-          { text: voucher.department, fontSize: 10, width:"8%" },
-          { text: voucher.head_of_department, fontSize: 10, width:"8%" },
+          { text: voucher.employee_first_name, fontSize: 10, width:"7%" },
+          { text: voucher.employee_middle_name, fontSize: 10, width:"7%" },
+          { text: voucher.employee_last_name, fontSize: 10, width:"7%" },
+          { text: voucher.department, fontSize: 10, width:"7%" },
+          { text: voucher.head_of_department, fontSize: 10, width:"7%" },
           { text: voucher.date, fontSize: 10, width:"7%" },
-          { text: voucher.project, fontSize: 10, width:"8%" },
-          { text: voucher.category, fontSize: 10, width:"8%" },
+          { text: voucher.project, fontSize: 10, width:"7%" },
+          { text: voucher.category, fontSize: 10, width:"7%" },
           { text: `PKR ${voucher.amount}`, fontSize: 10, width:"7%" },
-          { text: voucher.reason, fontSize: 10, width:"8%" },
-          { text: voucher.superuser_status === 'pending' ? voucher.manager_status : voucher.superuser_status, fontSize: 10, width:"7%" },
-          { text: voucher.remarks, fontSize: 10, width:"8%" },
+          { text: voucher.reason, fontSize: 10, width:"7%" },
+          { text: voucher.status_stage, fontSize: 10, width:"7%" },
+          { text: voucher.manager_remarks, fontSize: 10, width:"7%" },
+          { text: voucher.admin_remarks, fontSize: 10, width:"7%" },
         ],
       })),
       // pageMargins: [40, 40, 40, 40],
@@ -299,8 +295,7 @@ const VoucherList = () => {
             <option value="employee_last_name">First Name</option>
             <option value="date">Date</option>
             <option value="amount">Amount</option>
-            <option value="manager_status">Status</option>
-            <option value="superuser_status">Status</option>
+            <option value="status">Status</option>
           </select>
           <input
             type="text"
