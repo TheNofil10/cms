@@ -159,8 +159,8 @@ const AdminVoucherProfile = () => {
 
   return (
     <div className="container mx-auto p-8 bg-gray-200 rounded-lg shadow-lg max-w-5xl mt-10 mb-10">
-      <div className="flex items-center mb-6">
-        <div className="flex space-x-3">
+      <div className="flex justify-end items-center mb-6">
+        <div className="flex justify-end space-x-3">
           {(currentUser.is_superuser || currentUser.is_manager) && (
             <>
             {!(voucher.manager_status !== "rejected" && voucher.superuser_status === 'pending') && !voucher.archived && (
@@ -189,10 +189,8 @@ const AdminVoucherProfile = () => {
                 </button>
               </>
             )}
-
             </>
           )}
-
         </div>
       </div>
 

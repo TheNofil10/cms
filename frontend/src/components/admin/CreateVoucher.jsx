@@ -35,7 +35,10 @@ const AddVoucher = () => {
           }
         );
         setDepartments(response.data.results || response.data || []);
-        if (response.data.length === 1) updateDepartmentDetails(0)
+        if (response.data.length === 1) {
+          updateDepartmentDetails(0)
+          formData.department = response.data.at(0).id
+        }
       } catch (error) {
         console.error("Error fetching departments:", error);
         setError("There was an error fetching the department data.");
@@ -136,6 +139,7 @@ const AddVoucher = () => {
   };
   
   const handleNextStep = () => {
+    console.log(formData);
     if (validateStep(step)) {
       setStep(step + 1);
     } else {
