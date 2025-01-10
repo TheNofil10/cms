@@ -243,7 +243,11 @@ const AddVoucher = () => {
                         onChange={handleInputChange}
                         className="w-full p-2 bg-gray-200 border-none outline-none"
                     >
-                        <option value="">-- Select a department --</option>
+                      {
+                        (currentUser.is_hr_manager || currentUser.is_superuser) && (
+                          <option value="">-- Select a department --</option>
+                        )
+                      }
                         {departments.map((department) => (
                             <option key={department.id} value={department.id}>
                                 {department.name}
@@ -296,7 +300,7 @@ const AddVoucher = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm mb-2">Amount *</label>
+                <label className="block text-sm mb-2">Amount (PKR) *</label>
                 <div className="flex items-center bg-gray-200 rounded">
                   <FaMoneyBillWave className="m-2" />
                   <input
