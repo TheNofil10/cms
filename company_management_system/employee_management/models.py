@@ -521,8 +521,6 @@ class Voucher(models.Model):
     project = models.CharField(max_length=255, null=True)
     category = models.CharField(max_length=30, null=False)
     other_category = models.CharField(max_length=100, null=True)
-    manager_status = models.CharField(max_length=20, default='pending', null=False)
-    superuser_status = models.CharField(max_length=20, default='pending', null=False)
     status = models.ForeignKey(VoucherStatus, default=1, on_delete=models.CASCADE, related_name="voucher_status", null=False)
     remarks = models.TextField(default=None, null=True)
     manager_remarks = models.TextField(default=None, null=True)

@@ -2,8 +2,12 @@ use cms;
 
 drop table employee_management_voucherdocuments;
 drop table employee_management_voucher;
+drop table employee_management_voucherstatus;
 
-
+CREATE TABLE employee_management_voucherstatus (
+	id INT PRIMARY KEY,
+    status VARCHAR (50)
+);
 
 CREATE TABLE employee_management_voucher (
 	id INT AUTO_INCREMENT PRIMARY KEY,  -- Auto-increment primary key for voucher
@@ -12,20 +16,20 @@ CREATE TABLE employee_management_voucher (
     head_of_department_id INT NULL,
     date DATE NOT NULL,
     amount DECIMAL(10, 2) NOT NULL,
-	reason VARCHAR(255) NOT NULL,
+	reason TEXT NOT NULL,
     project VARCHAR (255) NULL,
     category VARCHAR (30) NOT NULL,
-    other_category VARCHAR (255) NULL,
-    remarks VARCHAR (255) NULL,
-    manager_status VARCHAR(255) NOT NULL,
-    superuser_status VARCHAR(255) NOT NULL,
+    other_category VARCHAR (100) NULL,
+    manager_remarks TEXT NULL,
+    admin_remarks TEXT NULL,
+    status_id INT NOT NULL,
     archived BOOLEAN NOT NULL,
     
 	FOREIGN KEY (department_id) References employee_management_department(id),
 	FOREIGN KEY (employee_id) References employee_management_employee(id),
-    FOREIGN KEY (head_of_department_id) References employee_management_employee(id)
+    FOREIGN KEY (head_of_department_id) References employee_management_employee(id),
+    FOREIGN KEY (status_id) References employee_management_voucherstatus(id)
 );
-
 
 
 CREATE TABLE employee_management_voucherdocuments (
@@ -35,5 +39,41 @@ CREATE TABLE employee_management_voucherdocuments (
     document VARCHAR(255),              -- Field for storing the document filename or path
     uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Timestamp for when the document is uploaded
     FOREIGN KEY (employee_id) References employee_management_employee(id),
-    FOREIGN KEY (voucher_id) REFERENCES employee_management_voucher(id)  -- Foreign key constraint to reference the voucher table
+    FOREIGN KEY (voucher_id) REFERENCES employee_management_voucher(id)  -- Foreign key constraint to reference the voucher table
 );
+
+INSERT INTO employee_management_voucherstatus (
+	id, status
+) VALUES (0, 'rejected');
+
+INSERT INTO employee_management_voucherstatus (
+	id, status
+) VALUES (1, 'voucher created');
+
+INSERT INTO employee_management_voucherstatus (
+	id, status
+) VALUES (2, 'manager approved');
+
+INSERT INTO employee_management_voucherstatus (
+	id, status
+) VALUES (3, 'admin approved');
+
+INSERT INTO employee_management_voucherstatus (
+	id, status
+) VALUES (4, 'expense review');
+
+INSERT INTO employee_management_voucherstatus (
+	id, status
+) VALUES (5, 'cheque created');
+
+INSERT INTO employee_management_voucherstatus (
+	id, status
+) VALUES (6, 'cfo approved');
+
+INSERT INTO employee_management_voucherstatus (
+	id, status
+) VALUES (7, 'md signed');
+
+INSERT INTO employee_management_voucherstatus (
+	id, status
+) VALUES (8, 'ready for collection');

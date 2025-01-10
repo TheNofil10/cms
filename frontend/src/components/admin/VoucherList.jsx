@@ -114,7 +114,7 @@ const VoucherList = () => {
         )
        },
       {
-        Header: "Manager Status",
+        Header: "Status",
         Cell: ({ row }) => (
           <Status status={row.original.status_stage}/>
         ),

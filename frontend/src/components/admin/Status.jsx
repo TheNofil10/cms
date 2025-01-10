@@ -1,9 +1,8 @@
 const Status = ({ status, className }) => {
     const getImagePath = () => {
-      // if (status === "pending") return "#FFBF00";
-      // if (status === "approved") return "green";
+      if (status === "ready for collection") return "green";
       if (status === "rejected") return "red";
-      else return "green"
+      else return "#FFBF00"
     }
 
     return (
