@@ -198,7 +198,7 @@ const AdminVoucherProfile = () => {
 
         {/* Voucher Information */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Voucher Information</h2>
+          <h2 className="text-xl font-bold mb-4">Voucher Information</h2>
           <p><FaIdCard className="inline-block mr-2" /><b> Voucher ID: </b>{`${voucher.id}`}</p>
           <p><FaUserShield className="inline-block mr-2" /><b> Created By: </b>{`${voucher.employee_first_name} ${voucher.employee_middle_name} ${voucher.employee_last_name}`}</p>
           {console.log(voucher)}
@@ -208,12 +208,11 @@ const AdminVoucherProfile = () => {
           <p><FaBriefcase className="inline-block mr-2" /><b> Project: </b>{`${voucher.project}`}</p>
           <p><FaBriefcase className="inline-block mr-2" /><b> Category: </b>{voucher.category? voucher.category : voucher.other_category}</p>
           <p><FaMoneyBillWave className="inline-block mr-2" /><b> Amount: </b>{`PKR ${voucher.amount}`}</p>
-          <p><FaGripLines className="inline-block mr-2" /><b> Reason: </b>{`${voucher.reason}`}</p>
         </div>
 
-
-        {/* Documents */}
+        {/* Status and Remarks */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
+          <h1 className="text-xl font-bold mb-4">Status and Remarks</h1>
           <h2 className="text-xl font-semibold mb-2">Manager Status:</h2>
           <StatusImage className="inline-block-mr-2 mb-4" status={voucher.manager_status}/>
 
@@ -225,7 +224,17 @@ const AdminVoucherProfile = () => {
               <p className="mb-4">{`${voucher.remarks}`}</p>
             </>
           )}
-          <h2 className="text-xl font-semibold mb-">Documents</h2>
+        </div>
+
+        {/* Reason */}
+        <div className="bg-white p-6 rounded-lg shadow-sm h-60 max-h-60 overflow-y-auto">
+          <h1 className="text-xl font-bold mb-4">Reason for Voucher</h1>
+          <p>{`${voucher.reason}`}</p>
+        </div>
+
+        {/* Documents */}
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <h2 className="text-xl font-bold mb-">Documents</h2>
           {voucher.documents && voucher.documents.length > 0 ? (
             <ul>
               {voucher.documents.map((doc, index) => (
@@ -246,6 +255,8 @@ const AdminVoucherProfile = () => {
           )}
         </div>
       </div>
+
+      
 
       {/* Confirmation Modal for Deleting Employee */}
       <ConfirmationModal
