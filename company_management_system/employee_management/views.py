@@ -1054,15 +1054,6 @@ def apply_leave(request):
                     {"detail": "No remaining leaves"}
             )
 
-
-
-
-
-            
-
-
-
-
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def approve_app_attendance_manager(request, application_id):
