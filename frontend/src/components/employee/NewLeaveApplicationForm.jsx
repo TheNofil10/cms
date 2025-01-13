@@ -37,8 +37,7 @@ const NewLeaveApplicationForm = ({ handleFormClose }) => {
             <select name="leaveType" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
               <option value="Annual Leave">Annual Leave</option>
               <option value="Sick Leave">Sick Leave</option>
-              <option value="Maternity Leave">Maternity Leave</option>
-              <option value="Paternity Leave">Paternity Leave</option>
+              <option value="Casual Leave">Casual Leave</option>
             </select>
           </div>
 

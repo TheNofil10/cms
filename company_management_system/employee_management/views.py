@@ -961,7 +961,6 @@ def apply_leave(request):
     requested_leave_type = data["leave_type"]
     print("requested leave type is ",requested_leave_type)
     employeedata = Employee.objects.get(id=employee.id)
-    print("employee data is ",employeedata.remaining_anaual_leave)
     if requested_leave_type == "Annual Leave":
         print("Checking if user has remaining leave days...")
         if employeedata.remaining_anaual_leave == 0:
@@ -985,6 +984,32 @@ def apply_leave(request):
                 print("new leaves are ",employeedata.remaining_anaual_leave)
             else:
                 print("1 year has not passed since employee joined")
+    elif requested_leave_type == "Sick Leave":
+        print("Sick leave initiated")
+        print("remaining leaves are ",employeedata.remaining_sick_leave)
+        if employeedata.remaining_sick_leave > 0 :
+            print("employee has available sick leaves")
+            newsickleaves=employeedata.remaining_sick_leave - 1
+            employeedata.remaining_sick_leave = newsickleaves
+            employeedata.save()
+            print("done minus-ing sick leave from db")
+
+        elif employeedata.remaining_sick_leave == 0:
+            print("No Remaining leaves ")
+    elif requested_leave_type == "Casual Leave":
+        print("Sick leave initiated") 
+        print("remaining leaves are ",employeedata.remaining_casual_leave)
+        if employeedata.remaining_casual_leave > 0 :
+            print("employee has available sick leaves")
+            newscasualeaves=employeedata.remaining_casual_leave - 1
+            employeedata.remaining_casual_leave = newscasualeaves
+            employeedata.save()
+            print("done minus-ing sick leave from db")
+
+        elif employeedata.remaining_casual_leave == 0:
+            print("No Remaining leaves ")
+
+
 
 
 
