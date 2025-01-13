@@ -959,39 +959,44 @@ def apply_leave(request):
 
     employee = request.user
     requested_leave_type = data["leave_type"]
-    print("requested leave type is ",requested_leave_type)
+    print("requested leave type is ", requested_leave_type)
     employeedata = Employee.objects.get(id=employee.id)
+
+    # Convert start_date and end_date from string to datetime
+    start_date = datetime.strptime(data["start_date"], "%Y-%m-%d").date()
+    end_date = datetime.strptime(data["end_date"], "%Y-%m-%d").date()
+
+    # Calculate the number of days requested for leave
+    leave_days_requested = (end_date - start_date).days + 1  # Including the end day
+
     if requested_leave_type == "Annual Leave":
         print("Checking if user has remaining leave days...")
-        if employeedata.remaining_anaual_leave == 0:
-            print("User has no remaining leave days.")
+        if employeedata.remaining_anaual_leave < leave_days_requested:
+            print(f"Not enough annual leave days. Requested: {leave_days_requested}, Available: {employeedata.remaining_anaual_leave}")
             return Response(
-                {"detail": "You have no remaining annual leave days."}
+                {"detail": f"You have only {employeedata.remaining_anaual_leave} remaining annual leave days."},
+                status=status.HTTP_400_BAD_REQUEST,
             )
         else:
             print("User has remaining leave days.")
-            print("remaining leaves are ",employeedata.remaining_anaual_leave)
-            
-            print("employement date is ", employeedata.employment_date)
-            print("current date is ", timezone.now().date())
+            print("remaining leaves are ", employeedata.remaining_anaual_leave)
 
             # Calculate the difference between current date and employment date
             days_since_employment = (timezone.now().date() - employeedata.employment_date).days
 
-            #checking if 1 year has passed when the employee joined
+            # Checking if 1 year has passed when the employee joined
             if days_since_employment >= 365:
                 print("1 year has passed since employee joined")
-                newanualleaves = employeedata.remaining_anaual_leave - 1
-                employeedata.remaining_anaual_leave = newanualleaves
+                employeedata.remaining_anaual_leave -= leave_days_requested
                 employeedata.save()
-                print("new leaves are ",employeedata.remaining_anaual_leave)
+                print("new leaves are ", employeedata.remaining_anaual_leave)
                 leave = Leave.objects.create(
-                     employee=employee,
-                     leave_type=data["leave_type"],
-                     start_date=data["start_date"],
-                     end_date=data["end_date"],
-                     reason=data["reason"],
-                 )
+                    employee=employee,
+                    leave_type=data["leave_type"],
+                    start_date=data["start_date"],
+                    end_date=data["end_date"],
+                    reason=data["reason"],
+                )
                 return Response(
                     {"detail": "Leave request submitted successfully."},
                     status=status.HTTP_201_CREATED,
@@ -999,60 +1004,62 @@ def apply_leave(request):
             else:
                 print("1 year has not passed since employee joined")
                 return Response(
-                    {"detail": "1 year has not passed since employee joined."}
+                    {"detail": "1 year has not passed since employee joined."},
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
+
     elif requested_leave_type == "Sick Leave":
         print("Sick leave initiated")
-        print("remaining leaves are ",employeedata.remaining_sick_leave)
-        if employeedata.remaining_sick_leave > 0 :
+        print("remaining leaves are ", employeedata.remaining_sick_leave)
+        if employeedata.remaining_sick_leave < leave_days_requested:
+            print(f"Not enough sick leave days. Requested: {leave_days_requested}, Available: {employeedata.remaining_sick_leave}")
+            return Response(
+                {"detail": f"You have only {employeedata.remaining_sick_leave} remaining sick leave days."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        else:
             print("employee has available sick leaves")
-            newsickleaves=employeedata.remaining_sick_leave - 1
-            employeedata.remaining_sick_leave = newsickleaves
+            employeedata.remaining_sick_leave -= leave_days_requested
             employeedata.save()
             print("done minus-ing sick leave from db")
             leave = Leave.objects.create(
-                     employee=employee,
-                     leave_type=data["leave_type"],
-                     start_date=data["start_date"],
-                     end_date=data["end_date"],
-                     reason=data["reason"],
-                 )
-            return Response(
-                    {"detail": "Leave request submitted successfully."},
-                    status=status.HTTP_201_CREATED,
-                )
-
-        elif employeedata.remaining_sick_leave == 0:
-            print("No Remaining leaves ")
-            return Response(
-                    {"detail": "No remaining leaves"}
+                employee=employee,
+                leave_type=data["leave_type"],
+                start_date=data["start_date"],
+                end_date=data["end_date"],
+                reason=data["reason"],
             )
+            return Response(
+                {"detail": "Leave request submitted successfully."},
+                status=status.HTTP_201_CREATED,
+            )
+
     elif requested_leave_type == "Casual Leave":
-        print("Sick leave initiated") 
-        print("remaining leaves are ",employeedata.remaining_casual_leave)
-        if employeedata.remaining_casual_leave > 0 :
-            print("employee has available sick leaves")
-            newscasualeaves=employeedata.remaining_casual_leave - 1
-            employeedata.remaining_casual_leave = newscasualeaves
-            employeedata.save()
-            print("done minus-ing sick leave from db")
-            leave = Leave.objects.create(
-                     employee=employee,
-                     leave_type=data["leave_type"],
-                     start_date=data["start_date"],
-                     end_date=data["end_date"],
-                     reason=data["reason"],
-                 )
+        print("Casual leave initiated")
+        print("remaining leaves are ", employeedata.remaining_casual_leave)
+        if employeedata.remaining_casual_leave < leave_days_requested:
+            print(f"Not enough casual leave days. Requested: {leave_days_requested}, Available: {employeedata.remaining_casual_leave}")
             return Response(
-                    {"detail": "Leave request submitted successfully."},
-                    status=status.HTTP_201_CREATED,
-                )
-
-        elif employeedata.remaining_sick_leave == 0:
-            print("No Remaining leaves ")
-            return Response(
-                    {"detail": "No remaining leaves"}
+                {"detail": f"You have only {employeedata.remaining_casual_leave} remaining casual leave days."},
+                status=status.HTTP_400_BAD_REQUEST,
             )
+        else:
+            print("employee has available casual leaves")
+            employeedata.remaining_casual_leave -= leave_days_requested
+            employeedata.save()
+            print("done minus-ing casual leave from db")
+            leave = Leave.objects.create(
+                employee=employee,
+                leave_type=data["leave_type"],
+                start_date=data["start_date"],
+                end_date=data["end_date"],
+                reason=data["reason"],
+            )
+            return Response(
+                {"detail": "Leave request submitted successfully."},
+                status=status.HTTP_201_CREATED,
+            )
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
