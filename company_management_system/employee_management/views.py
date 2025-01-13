@@ -76,6 +76,7 @@ from .models import (
     EmployeeAppAttendance,
     EmployeeDocuments,
     EmergencyContact,
+    Encodings,
 )
 from django.core.files.storage import default_storage
 from datetime import timedelta
@@ -97,6 +98,27 @@ logger = logging.getLogger(__name__)
 
 
 co = cohere.Client(settings.COHERE_API_KEY)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_employee_encoding(request, employee_id):
+    print("Request user is:", request)
+    print("Employee ID is:", employee_id)
+
+    try:
+        # Check if an encoding exists for the given employee_id
+        encoding_exists = Encodings.objects.filter(employee_id=employee_id).exists()
+
+        # Return True if encoding exists, otherwise False
+        return Response({"encoding_exists": encoding_exists})
+
+    except Exception as e:
+        print("Error:", e)
+        return Response({
+            "message": "An error occurred while checking the encoding.",
+            "error": str(e)
+        }, status=500)
 
 
 @api_view(["POST"])
@@ -859,11 +881,11 @@ class AttendanceViewSet(viewsets.ModelViewSet):
         today = timezone.now().date()
         yesterday = today - timedelta(days=1)
         week_start = today - timedelta(days=today.weekday())
-        week_end = yesterday
+        week_end = today
         month_start = today.replace(day=1)
-        month_end = yesterday
+        month_end = today
         year_start = today.replace(month=1, day=1)
-        year_end = yesterday
+        year_end = today
 
         # Start with the base queryset
         queryset = Attendance.objects.all()
@@ -898,7 +920,7 @@ class AttendanceViewSet(viewsets.ModelViewSet):
         else:
             # Regular users can only see their own attendance records
             return queryset.filter(employee=user)
-
+        
 
 class LeaveViewSet(viewsets.ModelViewSet):
     queryset = Leave.objects.all()
@@ -938,20 +960,114 @@ class AppAttendanceViewSet(viewsets.ModelViewSet):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
+
 def apply_leave(request):
-    employee = request.user
     data = request.data
-    leave = Leave.objects.create(
-        employee=employee,
-        leave_type=data["leave_type"],
-        start_date=data["start_date"],
-        end_date=data["end_date"],
-        reason=data["reason"],
-    )
-    return Response(
-        {"detail": "Leave request submitted successfully."},
-        status=status.HTTP_201_CREATED,
-    )
+
+    employee = request.user
+    requested_leave_type = data["leave_type"]
+    print("requested leave type is ", requested_leave_type)
+    employeedata = Employee.objects.get(id=employee.id)
+
+    # Convert start_date and end_date from string to datetime
+    start_date = datetime.strptime(data["start_date"], "%Y-%m-%d").date()
+    end_date = datetime.strptime(data["end_date"], "%Y-%m-%d").date()
+
+    # Calculate the number of days requested for leave
+    leave_days_requested = (end_date - start_date).days + 1  # Including the end day
+
+    if requested_leave_type == "Annual Leave":
+        print("Checking if user has remaining leave days...")
+        if employeedata.remaining_anaual_leave < leave_days_requested:
+            print(f"Not enough annual leave days. Requested: {leave_days_requested}, Available: {employeedata.remaining_anaual_leave}")
+            return Response(
+                {"detail": f"You have only {employeedata.remaining_anaual_leave} remaining annual leave days."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        else:
+            print("User has remaining leave days.")
+            print("remaining leaves are ", employeedata.remaining_anaual_leave)
+
+            # Calculate the difference between current date and employment date
+            days_since_employment = (timezone.now().date() - employeedata.employment_date).days
+
+            # Checking if 1 year has passed when the employee joined
+            if days_since_employment >= 365:
+                print("1 year has passed since employee joined")
+                employeedata.remaining_anaual_leave -= leave_days_requested
+                employeedata.save()
+                print("new leaves are ", employeedata.remaining_anaual_leave)
+                leave = Leave.objects.create(
+                    employee=employee,
+                    leave_type=data["leave_type"],
+                    start_date=data["start_date"],
+                    end_date=data["end_date"],
+                    reason=data["reason"],
+                )
+                return Response(
+                    {"detail": "Leave request submitted successfully."},
+                    status=status.HTTP_201_CREATED,
+                )
+            else:
+                print("1 year has not passed since employee joined")
+                return Response(
+                    {"detail": "1 year has not passed since employee joined."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+    elif requested_leave_type == "Sick Leave":
+        print("Sick leave initiated")
+        print("remaining leaves are ", employeedata.remaining_sick_leave)
+        if employeedata.remaining_sick_leave < leave_days_requested:
+            print(f"Not enough sick leave days. Requested: {leave_days_requested}, Available: {employeedata.remaining_sick_leave}")
+            return Response(
+                {"detail": f"You have only {employeedata.remaining_sick_leave} remaining sick leave days."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        else:
+            print("employee has available sick leaves")
+            employeedata.remaining_sick_leave -= leave_days_requested
+            employeedata.save()
+            print("done minus-ing sick leave from db")
+            leave = Leave.objects.create(
+                employee=employee,
+                leave_type=data["leave_type"],
+                start_date=data["start_date"],
+                end_date=data["end_date"],
+                reason=data["reason"],
+            )
+            return Response(
+                {"detail": "Leave request submitted successfully."},
+                status=status.HTTP_201_CREATED,
+            )
+
+    elif requested_leave_type == "Casual Leave":
+        print("Casual leave initiated")
+        print("remaining leaves are ", employeedata.remaining_casual_leave)
+        if employeedata.remaining_casual_leave < leave_days_requested:
+            print(f"Not enough casual leave days. Requested: {leave_days_requested}, Available: {employeedata.remaining_casual_leave}")
+            return Response(
+                {"detail": f"You have only {employeedata.remaining_casual_leave} remaining casual leave days."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        else:
+            print("employee has available casual leaves")
+            employeedata.remaining_casual_leave -= leave_days_requested
+            employeedata.save()
+            print("done minus-ing casual leave from db")
+            leave = Leave.objects.create(
+                employee=employee,
+                leave_type=data["leave_type"],
+                start_date=data["start_date"],
+                end_date=data["end_date"],
+                reason=data["reason"],
+            )
+            return Response(
+                {"detail": "Leave request submitted successfully."},
+                status=status.HTTP_201_CREATED,
+            )
+
+
 
 
 
