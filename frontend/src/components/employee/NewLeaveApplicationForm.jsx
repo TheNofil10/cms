@@ -19,10 +19,20 @@ const NewLeaveApplicationForm = ({ handleFormClose }) => {
           Authorization: `Bearer ${token}`,
         },
       });
+    
+      // Success: handle form close and show success message
       handleFormClose();
       toast.success("Leave Application Sent Successfully");
     } catch (error) {
-      console.error('Error submitting leave application:', error);
+      // Error handling
+      if (error.response) {
+        // Response errors (like validation issues or 400 status)
+        const errorMessage = error.response.data.detail || 'An error occurred. Please try again later.';
+        toast.error(errorMessage);
+      } else {
+        // Network or other errors
+        toast.error('Something went wrong. Please try again later.');
+      }
     }
   };
 
