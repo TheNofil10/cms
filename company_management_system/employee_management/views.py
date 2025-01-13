@@ -76,7 +76,7 @@ from .models import (
     EmployeeAppAttendance,
     EmployeeDocuments,
     EmergencyContact,
-    Encodings
+    Encodings,
 )
 from django.core.files.storage import default_storage
 from datetime import timedelta
@@ -99,6 +99,7 @@ logger = logging.getLogger(__name__)
 
 co = cohere.Client(settings.COHERE_API_KEY)
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_employee_encoding(request, employee_id):
@@ -118,6 +119,7 @@ def get_employee_encoding(request, employee_id):
             "message": "An error occurred while checking the encoding.",
             "error": str(e)
         }, status=500)
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -348,26 +350,28 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         return Employee.objects.filter(department=user.department, is_superuser=False)
     def update_emergency_contacts(self, employee, data):
         """Update or create emergency contacts for an employee."""
-        # Retrieve existing emergency contacts for the employee
-        try:
-            print("employee  ",employee)
-            emergency_contact = EmergencyContact.objects.filter(employee=employee).first()
-            print("emergency contact ",emergency_contact)
-            # Update the existing contact with new data
-            if emergency_contact != None:
-                for field in ['em_name_1', 'em_relationship_1', 'em_contact_1', 'em_email_1', 
-                            'em_name_2', 'em_relationship_2', 'em_contact_2', 'em_email_2']:
-                    setattr(emergency_contact, field, data.get(field))
+            # Retrieve existing emergency contacts for the employee
+           
+        print("employee  ",employee)
+        emergency_contact = EmergencyContact.objects.filter(employee=employee).first()
+        print("emergency contact ",emergency_contact)
+              # Update the existing contact with new data
+        if emergency_contact != None:
+          for field in ['em_name_1', 'em_relationship_1', 'em_contact_1', 'em_email_1', 
+             'em_name_2', 'em_relationship_2', 'em_contact_2', 'em_email_2']:
+                setattr(emergency_contact, field, data.get(field))
                 emergency_contact.save()
-        except EmergencyContact.DoesNotExist:
+        else:  
             # Create a new emergency contact if none exists
             data['employee'] = employee.id
+            print("employe in em ",data['employee'])
             emergency_contact_serializer = EmployeeEmergencyContactSerializer(data=data)
             if emergency_contact_serializer.is_valid():
-                emergency_contact_serializer.save()
+               print("saving emergency contacts")
+               emergency_contact_serializer.save()
             else:
-                print(f"Error with emergency contact: {emergency_contact_serializer.errors}")
-                raise ValidationError({"emergency_contact_errors": emergency_contact_serializer.errors})
+               print(f"Error with emergency contact: {emergency_contact_serializer.errors}")
+               raise ValidationError({"emergency_contact_errors": emergency_contact_serializer.errors})
 
     def perform_create(self, serializer):
         print(self.request.FILES)
@@ -543,8 +547,11 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         qualifications_data = self.parse_nested_data(self.request.data, "qualifications[")
         print("qualifications data is ",qualifications_data)
+        
         self.update_qualifications(employee, qualifications_data)
-            
+        employments_data = self.parse_nested_data(self.request.data, "employments[")
+        print("employments data is ",employments_data)
+        self.update_employement(employee, employments_data)
         dependent_data = self.parse_nested_data(self.request.data, "dependents[")
         print("dependent data is ",dependent_data)
     
@@ -552,14 +559,13 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
         
 
-        employments_data = self.parse_nested_data(self.request.data, "employments[")
-        print("employments data is ",employments_data)
-        self.update_employement(employee, employments_data)
+
     
         print("Validation successful, performing the update.")
         self.perform_update(serializer)
         print("Update successful, returning updated employee data.")
         return Response(serializer.data)
+
 
     def perform_destroy(self, instance):
         # Clean up the profile image
@@ -914,7 +920,7 @@ class AttendanceViewSet(viewsets.ModelViewSet):
         else:
             # Regular users can only see their own attendance records
             return queryset.filter(employee=user)
-
+        
 
 class LeaveViewSet(viewsets.ModelViewSet):
     queryset = Leave.objects.all()
@@ -954,20 +960,114 @@ class AppAttendanceViewSet(viewsets.ModelViewSet):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
+
 def apply_leave(request):
-    employee = request.user
     data = request.data
-    leave = Leave.objects.create(
-        employee=employee,
-        leave_type=data["leave_type"],
-        start_date=data["start_date"],
-        end_date=data["end_date"],
-        reason=data["reason"],
-    )
-    return Response(
-        {"detail": "Leave request submitted successfully."},
-        status=status.HTTP_201_CREATED,
-    )
+
+    employee = request.user
+    requested_leave_type = data["leave_type"]
+    print("requested leave type is ", requested_leave_type)
+    employeedata = Employee.objects.get(id=employee.id)
+
+    # Convert start_date and end_date from string to datetime
+    start_date = datetime.strptime(data["start_date"], "%Y-%m-%d").date()
+    end_date = datetime.strptime(data["end_date"], "%Y-%m-%d").date()
+
+    # Calculate the number of days requested for leave
+    leave_days_requested = (end_date - start_date).days + 1  # Including the end day
+
+    if requested_leave_type == "Annual Leave":
+        print("Checking if user has remaining leave days...")
+        if employeedata.remaining_anaual_leave < leave_days_requested:
+            print(f"Not enough annual leave days. Requested: {leave_days_requested}, Available: {employeedata.remaining_anaual_leave}")
+            return Response(
+                {"detail": f"You have only {employeedata.remaining_anaual_leave} remaining annual leave days."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        else:
+            print("User has remaining leave days.")
+            print("remaining leaves are ", employeedata.remaining_anaual_leave)
+
+            # Calculate the difference between current date and employment date
+            days_since_employment = (timezone.now().date() - employeedata.employment_date).days
+
+            # Checking if 1 year has passed when the employee joined
+            if days_since_employment >= 365:
+                print("1 year has passed since employee joined")
+                employeedata.remaining_anaual_leave -= leave_days_requested
+                employeedata.save()
+                print("new leaves are ", employeedata.remaining_anaual_leave)
+                leave = Leave.objects.create(
+                    employee=employee,
+                    leave_type=data["leave_type"],
+                    start_date=data["start_date"],
+                    end_date=data["end_date"],
+                    reason=data["reason"],
+                )
+                return Response(
+                    {"detail": "Leave request submitted successfully."},
+                    status=status.HTTP_201_CREATED,
+                )
+            else:
+                print("1 year has not passed since employee joined")
+                return Response(
+                    {"detail": "1 year has not passed since employee joined."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+    elif requested_leave_type == "Sick Leave":
+        print("Sick leave initiated")
+        print("remaining leaves are ", employeedata.remaining_sick_leave)
+        if employeedata.remaining_sick_leave < leave_days_requested:
+            print(f"Not enough sick leave days. Requested: {leave_days_requested}, Available: {employeedata.remaining_sick_leave}")
+            return Response(
+                {"detail": f"You have only {employeedata.remaining_sick_leave} remaining sick leave days."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        else:
+            print("employee has available sick leaves")
+            employeedata.remaining_sick_leave -= leave_days_requested
+            employeedata.save()
+            print("done minus-ing sick leave from db")
+            leave = Leave.objects.create(
+                employee=employee,
+                leave_type=data["leave_type"],
+                start_date=data["start_date"],
+                end_date=data["end_date"],
+                reason=data["reason"],
+            )
+            return Response(
+                {"detail": "Leave request submitted successfully."},
+                status=status.HTTP_201_CREATED,
+            )
+
+    elif requested_leave_type == "Casual Leave":
+        print("Casual leave initiated")
+        print("remaining leaves are ", employeedata.remaining_casual_leave)
+        if employeedata.remaining_casual_leave < leave_days_requested:
+            print(f"Not enough casual leave days. Requested: {leave_days_requested}, Available: {employeedata.remaining_casual_leave}")
+            return Response(
+                {"detail": f"You have only {employeedata.remaining_casual_leave} remaining casual leave days."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        else:
+            print("employee has available casual leaves")
+            employeedata.remaining_casual_leave -= leave_days_requested
+            employeedata.save()
+            print("done minus-ing casual leave from db")
+            leave = Leave.objects.create(
+                employee=employee,
+                leave_type=data["leave_type"],
+                start_date=data["start_date"],
+                end_date=data["end_date"],
+                reason=data["reason"],
+            )
+            return Response(
+                {"detail": "Leave request submitted successfully."},
+                status=status.HTTP_201_CREATED,
+            )
+
+
 
 
 

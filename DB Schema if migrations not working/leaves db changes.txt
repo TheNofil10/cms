@@ -1,0 +1,43 @@
+alter table employee_management_employee 
+add column remaining_anaual_leave int not null default 15;
+
+alter table employee_management_employee 
+add column remaining_sick_leave int not null default 15;
+
+alter table employee_management_employee 
+add column remaining_casual_leave int not null default 15;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

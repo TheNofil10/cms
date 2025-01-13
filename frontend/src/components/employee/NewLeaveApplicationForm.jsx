@@ -19,10 +19,20 @@ const NewLeaveApplicationForm = ({ handleFormClose }) => {
           Authorization: `Bearer ${token}`,
         },
       });
+    
+      // Success: handle form close and show success message
       handleFormClose();
       toast.success("Leave Application Sent Successfully");
     } catch (error) {
-      console.error('Error submitting leave application:', error);
+      // Error handling
+      if (error.response) {
+        // Response errors (like validation issues or 400 status)
+        const errorMessage = error.response.data.detail || 'An error occurred. Please try again later.';
+        toast.error(errorMessage);
+      } else {
+        // Network or other errors
+        toast.error('Something went wrong. Please try again later.');
+      }
     }
   };
 
@@ -37,8 +47,7 @@ const NewLeaveApplicationForm = ({ handleFormClose }) => {
             <select name="leaveType" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
               <option value="Annual Leave">Annual Leave</option>
               <option value="Sick Leave">Sick Leave</option>
-              <option value="Maternity Leave">Maternity Leave</option>
-              <option value="Paternity Leave">Paternity Leave</option>
+              <option value="Casual Leave">Casual Leave</option>
             </select>
           </div>
 
