@@ -7,19 +7,6 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
-class Encodings(models.Model):
-    encoding_id = models.AutoField(primary_key=True, db_column='encodingID')  # Mapping to 'encodingID' in the database
-    employee_id = models.IntegerField(null=True, blank=True, db_column='employeeid')  # Mapping to 'employeeid' in the database
-    encoding = models.TextField(null=True, blank=True, db_column='encoding')  # Mapping to 'encoding' in the database
-
-    class Meta:
-        db_table = 'encodings'  # Ensure the table name is 'encodings'
-        verbose_name = 'Encoding'
-        verbose_name_plural = 'Encodings'
-
-    def __str__(self):
-        return f"Encoding {self.encoding_id} for Employee {self.employee_id}"
-
 def employee_image_path(instance, filename):
     return f"profile_images/employees/{instance.id}/{filename}"
 
@@ -135,9 +122,6 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     spouse_date_of_birth = models.DateField(blank=True)
     spouse_relationship = models.CharField(max_length=255,blank=True)
     spouse_cnic = models.CharField(max_length=15,blank=True)
-    remaining_anaual_leave = models.IntegerField(default=15)
-    remaining_sick_leave = models.IntegerField(default=8)
-    remaining_casual_leave = models.IntegerField(default=10)
     
     
     USERNAME_FIELD = "username"
@@ -414,6 +398,8 @@ class Leave(models.Model):
         ('sick_leave', 'Sick Leave'),
         ('casual_leave', 'Casual Leave'),
         ('annual_leave', 'Annual Leave'),
+        ('maternity_leave', 'Maternity Leave'),
+        ('paternity_leave', 'Paternity Leave'),
     ]
     
     employee = models.ForeignKey('Employee', on_delete=models.CASCADE)
