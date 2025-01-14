@@ -166,7 +166,7 @@ class Qualification(models.Model):
     degree = models.CharField(max_length=255, null=True, blank=True)
     year_from = models.IntegerField(null=True, blank=True)
     year_to = models.IntegerField(null=True, blank=True)
-    gpa = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
+    gpa = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f"{self.degree} from {self.institute}"

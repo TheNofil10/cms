@@ -7,7 +7,9 @@ add column remaining_sick_leave int not null default 15;
 alter table employee_management_employee 
 add column remaining_casual_leave int not null default 15;
 
-
+---------------------QUALIFICATION GPA UPDATE ----------------------------
+ALTER TABLE `employee_management_qualification`
+MODIFY column `gpa` varchar(10) NOT NULL;
 
 
 

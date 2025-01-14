@@ -1711,7 +1711,7 @@ const UpdateProfileForm = ({ employee, onClose, onUpdate }) => {
                     GPA
                   </label>
                   <input
-                    type="number"
+                    type="text"
                     name="gpa"
                     step="0.1"
                     value={qualification.gpa}

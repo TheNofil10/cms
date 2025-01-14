@@ -105,11 +105,11 @@ const Login = () => {
               {loading ? <FaSpinner className="animate-spin mr-2" /> : "Login"}
             </button>
 
-            <div className="flex justify-between mt-4">
+            {/* <div className="flex justify-between mt-4">
               <Link to="/forget-password" className="text-black text-sm underline">
                 Forgot Password?
               </Link>
-            </div>
+            </div> */}
           </form>
         </div>
       </div>
