@@ -166,7 +166,7 @@ const Signup = () => {
     profile_image: null,
     imagePreview: null,
     is_staff: false,
-    is_active: false,
+    is_active: true,
     is_hr_manager: false,
     is_manager: false,
     documents: [],
@@ -436,8 +436,40 @@ const Signup = () => {
         navigate("/hr/employees");
       })
       .catch((error) => {
-        console.log(error);
-        toast.error("An error occurred. Please try again.");
+        console.error("Error creating employee:", error);
+
+        // Handle server-side errors (status code 4xx or 5xx)
+        if (error.response) {
+          const { status, data } = error.response;
+          console.error("Response data:", data);
+          toast.error("Response data:\n" + Object.entries(data)
+          .map(([key, value]) => `${key}: ${value}`)
+          .join('\n')
+        );
+        
+
+          if (status === 400) {
+            toast.error(
+              data.message || "Validation error. Please check your inputs."
+            );
+          } else if (status === 401) {
+            toast.error("Unauthorized. Please log in again.");
+          } else if (status === 403) {
+            toast.error("You do not have permission to perform this action.");
+          } else if (status === 500) {
+            toast.error("Server error. Please try again later.");
+          } else {
+            toast.error(data.message || "An error occurred. Please try again.");
+          }
+        }
+        // Handle client-side or network errors
+        else if (error.request) {
+          console.error("No response received from the server:", error.request);
+          toast.error("Unable to connect to the server. Please try again.");
+        } else {
+          console.error("Error setting up request:", error.message);
+          toast.error("An unexpected error occurred. Please try again.");
+        }
       })
       .finally(() => {
         setLoading(false);
@@ -635,6 +667,7 @@ const Signup = () => {
                 value={formData.department}
                 onChange={handleInputChange}
                 className="w-full p-2 bg-gray-200 border-none outline-none"
+                required
               >
                 <option value="">-- Select a department --</option>
                 {departments.map((department) => (

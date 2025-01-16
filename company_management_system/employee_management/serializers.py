@@ -70,37 +70,50 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Employee
-        fields = "__all__"  
-    
+        fields = "__all__"
+
     def create(self, validated_data):
         password = validated_data.pop("password", None)
-        employee = super().create(validated_data)
-        if password:
-            employee.set_password(password)
-            employee.save()
-        return employee
+        try:
+            employee = super().create(validated_data)
+            if password:
+                employee.set_password(password)
+                employee.save()
+            return employee
+        except Exception as e:
+            print(f"Error during employee creation: {e}")
+            raise serializers.ValidationError(
+                {"detail": "An error occurred while creating the employee. Please try again."}
+            )
 
     def update(self, instance, validated_data):
         password = validated_data.pop("password", None)
-        instance = super().update(instance, validated_data)
-        if password:
-            instance.set_password(password)
-            instance.save()
-        return instance
+        try:
+            instance = super().update(instance, validated_data)
+            if password:
+                instance.set_password(password)
+                instance.save()
+            return instance
+        except Exception as e:
+            print(f"Error during employee update: {e}")
+            raise serializers.ValidationError(
+                {"detail": "An error occurred while updating the employee. Please try again."}
+            )
 
-    
     def perform_update(self, serializer):
         try:
             instance = serializer.save()
-            if "profile_image" in self.request.FILES:
-                instance.profile_image = self.request.FILES["profile_image"]
+            if "profile_image" in self.context["request"].FILES:
+                instance.profile_image = self.context["request"].FILES["profile_image"]
                 instance.save()
-        except  Exception as e:
-            print(f"Validation error: {e}")
+        except serializers.ValidationError as e:
+            print(f"Validation error during update: {e}")
             raise
         except Exception as e:
-            print(f"Error during update: {e}")
-            raise
+            print(f"Unexpected error during update: {e}")
+            raise serializers.ValidationError(
+                {"detail": "An error occurred while updating the profile image. Please try again."}
+            )
 
 class AdminEmployeeSerializer(serializers.ModelSerializer):
     class Meta:
