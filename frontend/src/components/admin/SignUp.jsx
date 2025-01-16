@@ -569,21 +569,21 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-start items-center rounded shadow-xl bg-white text-gray-900 w-full px-4">
+    <div className="min-h-screen flex flex-col justify-start items-center rounded shadow-xl bg-gray-100 text-gray-900 w-full px-4">
       <div className="w-full mt-0">
 
-        <div>
+        {/* <div>
           <button onClick={fillSampleData}>Fill Sample Data</button>
           <button onClick={handleSignup} disabled={loading}>
             {loading ? "Submitting..." : "Submit"}
           </button>
           <ToastContainer />
-        </div>
+        </div> */}
       </div>
 
       <form
         onSubmit={handleSignup}
-        className="bg-white text-black p-8 rounded-lg shadow-2xl"
+        className="bg-white text-black p-8 rounded-lg shadow-2xl mt-6 mb-6 w-3/4"
       >
         {/* Required Information */}
         <div className="my-8 text-center">
