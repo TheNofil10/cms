@@ -218,9 +218,9 @@ const Signup = () => {
     spouse_date_of_birth: "",
     spouse_relationship: "",
     spouse_cnic: "",
-    qualifications: [{ institute: '', degree: '', year_from: '', year_to: '', gpa: '' }],
-    employments: [{ company_name: '', designation: '', year_from: '', year_to: '', reason_for_leaving: '' }],
-    dependents: [{ name: '', date_of_birth: '', relation: '', cnic: '' }],
+    qualifications: [],
+    employments: [],
+    dependents: [],
   });
 
   const [step, setStep] = useState(1);

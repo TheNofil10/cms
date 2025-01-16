@@ -35,14 +35,14 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     middle_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100)
     username = models.CharField(max_length=100, unique=True)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, null=True, blank=True)
     password = models.CharField(max_length=128)
-    phone = models.CharField(max_length=15)
+    phone = models.CharField(max_length=15, null=True, blank=True)
     alternate_phone = models.CharField(max_length=15, null=True, blank=True)
-    address = models.TextField()
-    permanent_address = models.TextField()
-    date_of_birth = models.DateField()
-    employment_date = models.DateField()
+    address = models.TextField(null=True, blank=True)
+    permanent_address = models.TextField(null=True, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
+    employment_date = models.DateField(null=True, blank=True)
     department = models.ForeignKey(
         "Department",
         null=True,
@@ -50,7 +50,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):
         on_delete=models.SET_NULL,
         related_name="employees",
     )
-    position = models.CharField(max_length=100)
+    position = models.CharField(max_length=100, null=True, blank=True)
     salary = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     manager = models.ForeignKey(
         "self",
@@ -146,15 +146,15 @@ class Employee(AbstractBaseUser, PermissionsMixin):
 class EmergencyContact(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='emergency_contacts')
     
-    em_name_1 = models.CharField(max_length=255)
-    em_relationship_1 = models.CharField(max_length=255)
+    em_name_1 = models.CharField(max_length=255, null=True, blank=True)
+    em_relationship_1 = models.CharField(max_length=255, null=True, blank=True)
     em_contact_1 = models.CharField(max_length=20, null=True, blank=True)
-    em_email_1 = models.EmailField()
+    em_email_1 = models.EmailField(null=True, blank=True)
 
-    em_name_2 = models.CharField(max_length=255)
-    em_relationship_2 = models.CharField(max_length=255)
+    em_name_2 = models.CharField(max_length=255, null=True, blank=True)
+    em_relationship_2 = models.CharField(max_length=255, null=True, blank=True)
     em_contact_2 = models.CharField(max_length=20, null=True, blank=True)
-    em_email_2 = models.EmailField()
+    em_email_2 = models.EmailField(null=True, blank=True)
 
     def __str__(self):
         return f"Emergency Contact for {self.employee.first_name} {self.employee.last_name}"
