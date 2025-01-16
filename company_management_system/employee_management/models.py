@@ -35,7 +35,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     middle_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100)
     username = models.CharField(max_length=100, unique=True)
-    email = models.EmailField(unique=True, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
     password = models.CharField(max_length=128)
     phone = models.CharField(max_length=15, null=True, blank=True)
     alternate_phone = models.CharField(max_length=15, null=True, blank=True)

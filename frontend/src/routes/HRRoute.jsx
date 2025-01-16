@@ -9,13 +9,16 @@ const HRRoute = ({ element }) => {
   if (!currentUser) {
     return <Navigate to="/login" />;
   }
+  console.log("currentUser.is_hr_manager", currentUser.is_hr_manager);
 
-  if (!currentUser.is_hr_manager) {
-    toast.error("cAN'T ACCESS THIS PAGE")
-    return <Navigate to="/employee/dashboard" />;
+  if (currentUser.is_hr_manager) {
+    return element;
+  }
+  else {
+    toast.error("Cannot access HR page")
+    return <Navigate to="/admin/dashboard" />;
   }
 
-  return element;
 };
 
 export default HRRoute;

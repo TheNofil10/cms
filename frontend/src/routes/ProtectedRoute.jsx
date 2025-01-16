@@ -10,12 +10,18 @@ const ProtectedRoute = ({ element, adminOnly }) => {
     return <Navigate to="/login" />;
   }
 
-  if (adminOnly && !currentUser.is_staff) {
-    toast.error("cAN'T ACCESS THIS PAGE")
-    return <Navigate to="/employee/dashboard" />;
+  console.log("adminOnly", adminOnly);
+  console.log("currentUser.is_staff", currentUser.is_staff);
+
+  if (adminOnly) {
+    return element;
+  }
+  else {
+    toast.error("Cannot access Admin page")
+    return <Navigate to="/manager/dashboard" />;
   }
 
-  return element;
+
 };
 
 export default ProtectedRoute;

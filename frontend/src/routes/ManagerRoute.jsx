@@ -9,14 +9,18 @@ const ManagerRoute = ({ element, managerOnly }) => {
   if (!currentUser) {
     return <Navigate to="/login" />;
   }
-  console.log("dffsdsfds",managerOnly);
+  console.log("managerOnly", managerOnly);
+  console.log("currentUser.is_manager", currentUser.is_manager);
 
-  if (managerOnly && !currentUser.is_manager) {
-    toast.error("cAN'T ACCESS THIS PAGE")
+  if (managerOnly) {
+    return element;
+  }
+  else {
+    toast.error("Cannot access Manager page")
     return <Navigate to="/admin/dashboard" />;
   }
 
-  return element;
+
 };
 
 export default ManagerRoute;
