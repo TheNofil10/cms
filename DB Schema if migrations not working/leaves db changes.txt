@@ -12,7 +12,7 @@ ALTER TABLE `employee_management_qualification`
 MODIFY column `gpa` varchar(10) NOT NULL;
 
 
----------------------Employee signup fix ----------------------------
+---------------------Employee signup fix -------------------------------
 SHOW INDEX FROM employee_management_employee WHERE Column_name = 'email';
 
 ALTER TABLE employee_management_employee DROP INDEX email;
