@@ -35,7 +35,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     middle_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100)
     username = models.CharField(max_length=100, unique=True)
-    email = models.EmailField(null=True, blank=True)
+    email = models.CharField(max_length=255,null=True, blank=True)
     password = models.CharField(max_length=128)
     phone = models.CharField(max_length=15, null=True, blank=True)
     alternate_phone = models.CharField(max_length=15, null=True, blank=True)
@@ -82,7 +82,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     dv_license_no = models.CharField(max_length=255, null=True, blank=True)
     dv_license_issue_date = models.DateField(null=True, blank=True)
     dv_license_expiry_date = models.DateField(null=True, blank=True)
-    company_email = models.EmailField(max_length=255, null=True, blank=True)
+    company_email = models.CharField(max_length=255, null=True, blank=True)
     father_name = models.CharField(max_length=255, null=True, blank=True)
     father_cnic_no = models.CharField(max_length=15, null=True, blank=True)
     
@@ -93,7 +93,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     nok_relationship = models.CharField(max_length=255, blank=True)  # Relationship with the user
     nok_cnic = models.CharField(max_length=15, unique=False, blank=True)  # CNIC Number
     nok_contact = models.CharField(max_length=15, blank=True)  # Contact Number
-    nok_email = models.EmailField(max_length=255, blank=True)  # Email Address
+    nok_email = models.CharField(max_length=255, blank=True)  # Email Address
     nok_permanent_address = models.TextField(blank=True)  # Permanent Address
     
     
@@ -106,13 +106,13 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     #step 13
     ref_name_1 = models.CharField(max_length=255,blank=True)
     ref_mobile_1 = models.CharField(max_length=15,blank=True)
-    ref_email_1 = models.EmailField(blank=True, null=True)
+    ref_email_1 = models.CharField(blank=True,max_length=255, null=True)
     ref_designation_1 = models.CharField(max_length=255,blank=True)
     ref_company_1 = models.CharField(max_length=255,blank=True)
 
     ref_name_2 = models.CharField(max_length=255,blank=True)
     ref_mobile_2 = models.CharField(max_length=15,blank=True)
-    ref_email_2 = models.EmailField(blank=True, null=True)
+    ref_email_2 = models.CharField(max_length=255,blank=True, null=True)
     ref_designation_2 = models.CharField(max_length=255,blank=True)
     ref_company_2 = models.CharField(max_length=255,blank=True)
     
@@ -149,12 +149,12 @@ class EmergencyContact(models.Model):
     em_name_1 = models.CharField(max_length=255, null=True, blank=True)
     em_relationship_1 = models.CharField(max_length=255, null=True, blank=True)
     em_contact_1 = models.CharField(max_length=20, null=True, blank=True)
-    em_email_1 = models.EmailField(null=True, blank=True)
+    em_email_1 = models.CharField(max_length=255,null=True, blank=True)
 
     em_name_2 = models.CharField(max_length=255, null=True, blank=True)
     em_relationship_2 = models.CharField(max_length=255, null=True, blank=True)
     em_contact_2 = models.CharField(max_length=20, null=True, blank=True)
-    em_email_2 = models.EmailField(null=True, blank=True)
+    em_email_2 = models.CharField(max_length=255,null=True, blank=True)
 
     def __str__(self):
         return f"Emergency Contact for {self.employee.first_name} {self.employee.last_name}"
@@ -313,7 +313,7 @@ class JobPosting(models.Model):
 class Applicant(models.Model):
     job_posting = models.ForeignKey(JobPosting, on_delete=models.CASCADE, related_name='applicants')
     name = models.CharField(max_length=255)
-    email = models.EmailField()
+    email = models.CharField(max_length=255, null=True,blank=True)
     
     resume = models.FileField(upload_to='resumes/')
     status = models.CharField(max_length=50, choices=[('applied', 'Applied'), ('shortlisted', 'Shortlisted'), ('rejected', 'Rejected')])
